@@ -41,7 +41,12 @@ public class EBXMLTimestampFormatter implements TimestampFormatter {
             DateTime date = new DateTime( time );
             return date.toDate();
         } catch ( ParseException e ) {
-            throw new NexusException( "Error while parsing timestamp:", e );
+            try {
+                SimpleDateFormat ebXMLDateFormat = new SimpleDateFormat( "yyyyMMdd'T'HHmmss.SSS'Z'" );
+                return ebXMLDateFormat.parse( time );
+            } catch ( ParseException pe3 ) {
+                throw new NexusException( "Error while parsing timestamp:", e );
+            }
         }
 
 //        try {
