@@ -242,6 +242,7 @@ public class ServicePojo implements java.io.Serializable {
     }
 
     
+    @XmlAttribute
     public boolean isAutostart() {
     
         return autostart;
