@@ -46,6 +46,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -59,6 +60,7 @@ import org.bouncycastle.mail.smime.SMIMEEnvelopedGenerator;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
+import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -168,7 +170,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
                 // Send the message
                 sendMessage( transport, mimeMsg, new Address[] { addr} );
-                
+
                 transport.close();
             } else {
                 LOG.error( "Cannot connect" );
@@ -183,25 +185,39 @@ public class SmtpSender extends AbstractService implements SenderAware {
     private Object[] connect( String host, String user, String password ) throws Exception {
 
         String protocolString = "smtp";
+        boolean authenticate = false;
+
+        if ( !StringUtils.isEmpty( user ) && !StringUtils.isEmpty( password ) ) {
+            authenticate = true;
+        }
 
         if ( host != null && !host.trim().equals( "" ) ) {
             Properties props = System.getProperties();
-            protocolString = "smtp";
             props.put( "mail.smtp.host", host );
-            props.put( "mail.smtp.auth", "true" );
-
             props.put( "mail.host", host );
+
+            if ( authenticate ) {
+                props.put( "mail.smtp.auth", "true" );
+            } else {
+                props.put( "mail.smtp.auth", "false" );
+            }
 
             // Get a Session object
             Session session = Session.getInstance( props, null );
 
-            PasswordAuthentication passwordAuthentication = new PasswordAuthentication( user, password );
             String urlNameString = protocolString + "://" + host;
             URLName urlName = new URLName( urlNameString );
+            if ( authenticate ) {
+                PasswordAuthentication passwordAuthentication = new PasswordAuthentication( user, password );
+                session.setPasswordAuthentication( urlName, passwordAuthentication );
+            }
 
-            session.setPasswordAuthentication( urlName, passwordAuthentication );
             Transport transport = session.getTransport( urlName );
-            transport.connect( host, user, password );
+            if ( authenticate ) {
+                transport.connect( host, user, password );
+            } else {
+                transport.connect();
+            }
 
             return new Object[] { session, transport};
         }
@@ -398,35 +414,38 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
         Session session = null;
         Transport transport = null;
+        
+        if ( status.equals( BeanStatus.STARTED )  ) {
+            try {
+                Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
+                        (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ) );
+                session = (Session) connectionInfo[0];
+                transport = (Transport) connectionInfo[1];
 
-        try {
-            Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
-                    (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ) );
-            session = (Session) connectionInfo[0];
-            transport = (Transport) connectionInfo[1];
-
-            // construct the message
-            Message msg = new MimeMessage( session );
-            msg.setRecipients( Message.RecipientType.TO, InternetAddress.parse( recipient, false ) );
-            msg.setHeader( "X-Mailer", "msgsend" );
-            msg.setFrom( new InternetAddress( (String) getParameter( EMAIL_PARAM_NAME ) ) );
-            if ( ( mimeBodyParts != null ) && ( mimeBodyParts.length != 0 ) ) {
-                Multipart multipart = new MimeMultipart();
-                for ( int i = 0; i < mimeBodyParts.length; i++ ) {
-                    multipart.addBodyPart( mimeBodyParts[i] );
+                // construct the message
+                Message msg = new MimeMessage( session );
+                msg.setRecipients( Message.RecipientType.TO, InternetAddress.parse( recipient, false ) );
+                msg.setHeader( "X-Mailer", "msgsend" );
+                msg.setFrom( new InternetAddress( (String) getParameter( EMAIL_PARAM_NAME ) ) );
+                if ( ( mimeBodyParts != null ) && ( mimeBodyParts.length != 0 ) ) {
+                    Multipart multipart = new MimeMultipart();
+                    for ( int i = 0; i < mimeBodyParts.length; i++ ) {
+                        multipart.addBodyPart( mimeBodyParts[i] );
+                    }
+                    msg.setContent( multipart );
+                } else {
+                    msg.setText( description );
                 }
-                msg.setContent( multipart );
-            } else {
-                msg.setText( description );
+                msg.setSentDate( new Date() );
+                msg.setSubject( subjectLine );
+                msg.saveChanges();
+                // send the thing off
+                sendMessage( transport, msg, msg.getAllRecipients() );
+            } catch ( Exception e ) {
+                throw new NexusException( "Error composing mail Exception: " + e );
             }
-            msg.setSentDate( new Date() );
-            msg.setSubject( subjectLine );
-            msg.saveChanges();
-            // send the thing off
-            sendMessage( transport, msg, msg.getAllRecipients() );
-        } catch ( Exception e ) {
-            throw new NexusException( "Error composing mail Exception: " + e );
         }
+
     }
 
     private void sendMessage( Transport transport, Message message, Address[] addresses ) throws MessagingException {
