@@ -93,7 +93,8 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                     messageContext.getMessagePojo().getMessageId() ) ) {
                 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool( 1 );
 
-                ScheduledFuture<?> handle = scheduler.scheduleAtFixedRate( messageSender, 0, interval, TimeUnit.SECONDS );
+                ScheduledFuture<?> handle = scheduler
+                        .scheduleAtFixedRate( messageSender, 0, interval, TimeUnit.SECONDS );
                 LOG.debug( new LogMessage( "Waiting " + interval + " seconds until message resend...", messageContext
                         .getMessagePojo() ) );
                 Engine.getInstance().getTransactionService().registerProcessingMessage(
@@ -282,7 +283,8 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                                 LOG.debug( new LogMessage(
                                         "Received ack message, backend still processing - conversation ID: "
                                                 + conversationPojo.getConversationId(), messagePojo ) );
-                            } else if ( conversationPojo.getStatus() != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED ) {
+                            } else if ( ( conversationPojo.getStatus() != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED )
+                                    || ( conversationPojo.getStatus() != org.nexuse2e.Constants.CONVERSATION_STATUS_ERROR ) ) {
                                 LOG.error( new LogMessage( "Unexpected conversation state after sending ack message: "
                                         + conversationPojo.getStatus(), messagePojo ) );
                             }

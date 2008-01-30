@@ -114,6 +114,16 @@ public class ModifyMessageAction extends NexusE2EAction {
             }
 
         }
+        
+        // Make sure form selection criteria is reset
+        reportingPropertiesForm.setParticipantId( null );
+        reportingPropertiesForm.setMessageId( null );
+        reportingPropertiesForm.setConversationId( null );
+        reportingPropertiesForm.setChoreographyId( null );
+        
+        reportingPropertiesForm.setConversationEnabled( false );
+        reportingPropertiesForm.setMessageEnabled( false );
+        
         return success;
     }
 } // ModifyMessageAction
