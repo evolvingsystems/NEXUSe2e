@@ -185,13 +185,6 @@
 	  	}
 	  }
           
-		this.selectAll = function (state) {
-			var checkboxes = document.forms['reportingPropertiesForm'].selected;
-			for (i = 0; i < checkboxes.length; i++) {     
-		 		checkboxes[i].checked = state;
-			}
-		}
-  	
   	/*
   	this.testFnkt = function() {
   		debug("executing");  		
@@ -605,14 +598,22 @@
       </logic:iterate>
     </table>
     <logic:equal name="reportingPropertiesForm" property="convColSelect" value="true">
-    <table class="NEXUS_BUTTON_TABLE" width="100%">
-        <tr>                
-          <td class="BUTTON_LEFT"><nexus:link href="" id="startLink" onClick="scriptScope.selectAll(true);" styleClass="NexusLink"><nobr>Select all</nobr></nexus:link></td>
-          <td class="BUTTON_LEFT"><nexus:link href="" id="startLink" onClick="scriptScope.selectAll(false);" styleClass="NexusLink"><nobr>Deselect all</nobr></nexus:link></td>
-          <td class="BUTTON_RIGHT"><nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='delete';"><img src="images/reset.gif" name="clearButton"></nexus:submit></td>
-          <td class="NexusHeaderLink">Delete</td>
-        </tr>
-    </table>
+                <table class="NEXUS_BUTTON_TABLE" width="100%" border="1">
+                    <tr>
+                        <td class="BUTTON_LEFT" width="75px"><a href=#" id="startLink"
+                            onClick="javascript: scriptScope.selectAll(true);return false;" class="NexusLink">
+                            <nobr>Select all</nobr>
+                        </a><br /><a href="#" id="startLink"
+                            onClick="javascript: scriptScope.selectAll(false)" class="NexusLink">
+                            <nobr>Deselect all</nobr>
+                        </a></td>
+                        <td  class="BUTTON_RIGHT"><nexus:submit
+                            onClick="document.forms['reportingPropertiesForm'].command.value='delete';">
+                            <img src="images/reset.gif" name="clearButton">
+                        </nexus:submit></td>
+                        <td style="width: 50px">Delete</td>
+                    </tr>
+                </table>
     </logic:equal>
   </logic:notEmpty>
 </logic:notEqual>
