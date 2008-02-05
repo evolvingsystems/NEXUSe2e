@@ -364,7 +364,6 @@ public class ProcessConversationReportAction extends NexusE2EAction {
                     MessagePojo pojo = (MessagePojo) i.next();
                     ReportMessageEntryForm entry = new ReportMessageEntryForm();
                     entry.setMessageProperties( pojo );
-                    entry.setTimezone( timezone );
                     logItems.add( entry );
 
                 }
