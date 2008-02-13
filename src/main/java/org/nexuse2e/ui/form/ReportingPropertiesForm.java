@@ -236,8 +236,10 @@ public class ReportingPropertiesForm extends ActionForm {
                 || actionMapping.getPath().equals( "/ProcessConversationReport" )
                 || actionMapping.getPath().equals( "/ProcessEngineLog" ) ) {
             // System.out.println( "reseting....." );
-            setStartEnabled( false );
-            setEndEnabled( false );
+            if (!actionMapping.getPath().equals( "/ReportingForward" )) { // quick-and-dirty fix 4.0.x branch only
+                setStartEnabled( false );
+                setEndEnabled( false );
+            }
             setConversationEnabled( false );
             setMessageEnabled( false );
             setMessageTextEnabled( false );
