@@ -60,7 +60,7 @@
                 <comment></comment>
             </column>
         </property>
-        <property name="createdDate" type="timestamp" not-null="true">
+        <property name="createdDate" type="timestamp" not-null="true" index="ix_message_6">
             <column name="created_date" not-null="true">
                 <comment></comment>
             </column>
@@ -76,13 +76,13 @@
             </column>
         </property>
         <bag name="messagePayloads" inverse="true" cascade="save-update,delete-orphan" lazy="false">
-        	<key column="nx_message_id"/> 
-        	<one-to-many class="org.nexuse2e.pojo.MessagePayloadPojo"/>
-		</bag>
-		
-		<bag name="messageLabels" inverse="true" cascade="all,delete-orphan">
-        	<key column="nx_message_id"/> 
-        	<one-to-many class="org.nexuse2e.pojo.MessageLabelPojo"/>
-		</bag>
+          <key column="nx_message_id"/> 
+          <one-to-many class="org.nexuse2e.pojo.MessagePayloadPojo"/>
+    </bag>
+    
+    <bag name="messageLabels" inverse="true" cascade="all,delete-orphan">
+          <key column="nx_message_id"/> 
+          <one-to-many class="org.nexuse2e.pojo.MessageLabelPojo"/>
+    </bag>
     </class>
 </hibernate-mapping>
