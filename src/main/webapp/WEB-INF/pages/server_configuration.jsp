@@ -28,11 +28,11 @@
 	</tr>
 	<tr>
 		<td class="NEXUSIcon"><nexus:link styleClass="NexusImgLink"
-			href="ServerIdentities.do">
+			href="ServerIdentities.do?type=1">
 			<img border="0" src="images/tree/reports_g.gif">
 		</nexus:link></td>
 		<td class="NEXUSNameNoWidth"><nexus:link styleClass="NexusLink"
-			href="ServerIdentities.do">Server Identities</nexus:link></td>
+			href="ServerIdentities.do?type=1">Server Identities</nexus:link></td>
 	</tr>
 	<tr>
 		<td class="NEXUSIcon"><nexus:link styleClass="NexusImgLink"
