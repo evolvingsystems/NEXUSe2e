@@ -35,6 +35,7 @@ import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ParameterDescriptor;
+import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.ebxml.v20.HeaderDeserializer;
 import org.nexuse2e.pojo.ActionPojo;
@@ -260,8 +261,11 @@ public class FrontendInboundDispatcher extends StateMachineExecutor implements D
                                         org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE );
                             }
                             // Persist status changes
-                            Engine.getInstance().getTransactionService().updateTransaction(
-                                    messagePojo.getConversation() );
+                            try {
+                                Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
+                            } catch (StateTransitionException stex) {
+                                LOG.warn( stex.getMessage() );
+                            }
                         }
                     } else {
                         LOG.trace( "error response message found" );
@@ -326,8 +330,11 @@ public class FrontendInboundDispatcher extends StateMachineExecutor implements D
                                 referencedMessagePojo.getConversation().getMessages().add( messagePojo );
                                 referencedMessagePojo.setModifiedDate( endDate );
                                 referencedMessagePojo.setEndDate( endDate );
-                                Engine.getInstance().getTransactionService().updateTransaction(
-                                        referencedMessagePojo.getConversation() );
+                                try {
+                                    Engine.getInstance().getTransactionService().updateTransaction( referencedMessagePojo );
+                                } catch (StateTransitionException stex) {
+                                    LOG.warn( stex.getMessage() );
+                                }
                                 Engine.getInstance().getTransactionService().deregisterProcessingMessage(
                                         referencedMessagePojo.getMessageId() );
                             } catch ( NexusException e ) {
