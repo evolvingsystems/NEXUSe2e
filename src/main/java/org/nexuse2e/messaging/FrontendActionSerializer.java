@@ -31,7 +31,6 @@ import org.nexuse2e.NexusException;
 import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
 import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
@@ -100,7 +99,7 @@ public class FrontendActionSerializer implements Manageable {
 
             // Persist the message
             try {
-                queueMessage( messageContext, true );
+                queueMessage( messageContext, conversationPojo, true );
             } catch ( Exception e ) {
                 throw new NexusException( "Error storing new conversation/message state: " + e );
             }
@@ -118,15 +117,12 @@ public class FrontendActionSerializer implements Manageable {
      * @param newMessage
      * @throws NexusException
      */
-    private void queueMessage( MessageContext messageContext, boolean newMessage )
+    private void queueMessage( MessageContext messageContext, ConversationPojo conversationPojo, boolean newMessage )
             throws NexusException {
 
-        MessagePojo messagePojo = messageContext.getMessagePojo();
-        ConversationPojo conversationPojo = messagePojo.getConversation();
-        
         synchronized ( conversationPojo ) {
-            messagePojo.setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_QUEUED );
-            messagePojo.setModifiedDate( new Date() );
+            messageContext.getMessagePojo().setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_QUEUED );
+            messageContext.getMessagePojo().setModifiedDate( new Date() );
             if ( newMessage ) {
                 List<MessagePojo> messages = conversationPojo.getMessages();
                 /*
@@ -135,15 +131,11 @@ public class FrontendActionSerializer implements Manageable {
                  LOG.debug( "tempMessagePojo: " + tempMessagePojo );
                  }
                  */
-                messages.add( messagePojo );
-                Engine.getInstance().getTransactionService().storeTransaction(
-                        conversationPojo, messagePojo );
+                messages.add( messageContext.getMessagePojo() );
+                Engine.getInstance().getTransactionService().storeTransaction( conversationPojo,
+                        messageContext.getMessagePojo() );
             } else {
-                try {
-                    Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
-                } catch (StateTransitionException stex) {
-                    LOG.warn( stex.getMessage() );
-                }
+                Engine.getInstance().getTransactionService().updateTransaction( conversationPojo );
             }
 
             // Submit the message to the queue/backend
@@ -178,7 +170,7 @@ public class FrontendActionSerializer implements Manageable {
             throws NexusException {
 
         if ( messageContext != null ) {
-            queueMessage( messageContext, false );
+            queueMessage( messageContext, messageContext.getConversation(), false );
         } else {
             LOG.error( "Message: " + messageId + " could not be found in database, cancelled requeueing!" );
         }
@@ -357,14 +349,12 @@ public class FrontendActionSerializer implements Manageable {
 
                         // Persist the message
                         try {
-                            Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
-                        } catch ( NexusException e ) {
+                            Engine.getInstance().getTransactionService().updateTransaction( conversationPojo );
+                        } catch ( Exception e ) {
                             e.printStackTrace();
                             LOG.error( new LogMessage(
                                     "InboundQueueListener.run detected an exception when storing message ack status: "
-                                            + e + " - " + e.getMessage(), messagePojo ) );
-                        } catch (StateTransitionException stex) {
-                            LOG.warn( stex.getMessage() );
+                                            + e, messagePojo ) );
                         }
                     } // synchronized
                 } catch ( NexusException nex ) {
@@ -376,14 +366,13 @@ public class FrontendActionSerializer implements Manageable {
                         conversationPojo.setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_ERROR );
                         // Persist the message
                         try {
-                            Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
-                        } catch ( NexusException e ) {
+                            Engine.getInstance().getTransactionService().updateTransaction(
+                                    messagePojo.getConversation() );
+                        } catch ( Exception e ) {
                             e.printStackTrace();
                             LOG.error( new LogMessage(
                                     "InboundQueueListener.run detected an exception when storing message error status: "
-                                            + e + " - " + e.getMessage(), messagePojo ) );
-                        } catch (StateTransitionException stex) {
-                            LOG.warn( stex.getMessage() );
+                                            + e, messagePojo ) );
                         }
                     }
                 } catch ( InterruptedException ex ) {

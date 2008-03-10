@@ -52,8 +52,6 @@ import org.nexuse2e.controller.TransactionService;
 import org.nexuse2e.controller.TransactionServiceImpl;
 import org.nexuse2e.dao.BasicDAO;
 import org.nexuse2e.dao.ConfigDAO;
-import org.nexuse2e.dao.LogDAO;
-import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.integration.NEXUSe2eInterface;
 import org.nexuse2e.integration.NEXUSe2eInterfaceImpl;
 import org.nexuse2e.messaging.TimestampFormatter;
@@ -709,38 +707,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
             }
         }
         return null;
-    }
-
-    /**
-     * Convenience method to get the transaction DAO.
-     * @return The transaction DAO.
-     * @throws NexusException If the transaction DAO is not available.
-     */
-    public TransactionDAO getTransactionDAO() throws NexusException {
-        try {
-            return (TransactionDAO) getDao( "transactionDao" );
-        } catch (Exception ex) {
-            if (ex instanceof NexusException) {
-                throw (NexusException) ex;
-            }
-            throw new NexusException( ex );
-        }
-    }
-    
-    /**
-     * Convenience method to get the log DAO.
-     * @return The log DAO.
-     * @throws NexusException If the log DAO is not available.
-     */
-    public LogDAO getLogDAO() throws NexusException {
-        try {
-            return (LogDAO) getDao( "logDao" );
-        } catch (Exception ex) {
-            if (ex instanceof NexusException) {
-                throw (NexusException) ex;
-            }
-            throw new NexusException( ex );
-        }
     }
 
     /**

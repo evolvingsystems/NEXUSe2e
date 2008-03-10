@@ -450,16 +450,50 @@ public class TransactionDAO extends BasicDAO {
         Session session = null;
         Transaction transaction = null;
 
+        // session = getSession();
+        // transaction = session.beginTransaction();
+
+        // saveRecord( conversationPojo, session, transaction );
         saveOrUpdateRecord( conversationPojo, session, transaction );
 
+        // transaction.commit();
+        // releaseSession( session );
     } // storeTransaction
 
     public void reattachConversation( ConversationPojo conversationPojo ) throws NexusException {
 
         LOG.debug( "updateTransaction: " + conversationPojo );
 
+        //Session session = null;
+        //Transaction transaction = null;
+
+        // session = getSession();
+        // transaction = session.beginTransaction();
+
         reattachRecord( conversationPojo );
-    }
+
+        // transaction.commit();
+        // releaseSession( session );
+
+    } // updateTransaction
+
+    public void updateTransaction( ConversationPojo conversationPojo ) throws NexusException {
+
+        LOG.debug( "updateTransaction: " + conversationPojo );
+
+        Session session = null;
+        Transaction transaction = null;
+
+        // session = getSession();
+        // transaction = session.beginTransaction();
+
+        // reattachRecord( conversationPojo );
+        updateRecord( conversationPojo, session, transaction );
+
+        // transaction.commit();
+        // releaseSession( session );
+
+    } // updateTransaction
 
     public void updateMessage( MessagePojo messagePojo ) throws NexusException {
 
@@ -468,7 +502,7 @@ public class TransactionDAO extends BasicDAO {
         Session session = null;
         Transaction transaction = null;
 
-        mergeRecord( messagePojo, session, transaction );
+        updateRecord( messagePojo, session, transaction );
     } // updateMessage
 
     public void updateConversation( ConversationPojo conversationPojo ) throws NexusException {
@@ -479,9 +513,9 @@ public class TransactionDAO extends BasicDAO {
         Transaction transaction = null;
 
         reattachRecord( conversationPojo );
-        mergeRecord( conversationPojo, session, transaction );
+        updateRecord( conversationPojo, session, transaction );
     } // updateMessage
-    
+
     /**
      * 
      * @param field

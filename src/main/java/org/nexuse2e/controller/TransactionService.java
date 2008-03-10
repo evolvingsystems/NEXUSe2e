@@ -227,31 +227,11 @@ public interface TransactionService extends Manageable {
             throws NexusException; // storeTransaction
 
     /**
-     * Updates the given message and it's parent conversation. If the status transition cannot be
-     * performed, this method updates the transaction but leaves the status unchanged unless
-     * <code>force</code> is set to <code>true</code>.
-     * @param message The message to update.
-     * @param force If <code>true</code>, this will force the transaction to be updated exactly as
-     * passed here, even if the status transition is invalid. <code>force</code> shall always be
-     * <code>false</code> for automatic (state machine based) transitions.
-     * @throws NexusException If a persistence layer problem occurred.
-     * @throws StateTransitionException If the given message could not be updated because of an
-     * illegal state transition. This will only be thrown if <code>force</code> is set to
-     * <code>false</code>.
+     * @param conversationPojo
+     * @param messagePojo
+     * @throws NexusException
      */
-    public abstract void updateTransaction( MessagePojo message, boolean force )
-            throws NexusException, StateTransitionException;
-
-    /**
-     * Updates the given message and it's parent conversation. If the status transition cannot be
-     * performed, this method updates the transaction but leaves the status unchanged.
-     * @param message The message to update.
-     * @throws NexusException If a persistence layer problem occurred.
-     * @throws StateTransitionException If the given message could not be updated because of an
-     * illegal state transition.
-     */
-    public abstract void updateTransaction( MessagePojo message )
-            throws NexusException, StateTransitionException;
+    public abstract void updateTransaction( ConversationPojo conversationPojo ) throws NexusException; // updateTransaction
 
     /**
      * @param messagePojo

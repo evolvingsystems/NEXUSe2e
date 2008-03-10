@@ -31,7 +31,6 @@ import org.nexuse2e.NexusException;
 import org.nexuse2e.ProtocolSpecificKey;
 import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
-import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
@@ -292,22 +291,16 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                         }
 
                         // Persist status changes
-                        try {
-                            Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
-                        } catch (StateTransitionException stex) {
-                            LOG.warn( stex.getMessage() );
-                        }
+                        Engine.getInstance().getTransactionService().updateTransaction( conversationPojo );
                     } // synchronized
 
                     LOG.debug( new LogMessage( "Message sent.", messagePojo ) );
                 } catch ( Throwable e ) {
                     // Persist retry count changes
                     try {
-                        Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
+                        Engine.getInstance().getTransactionService().updateMessage( messagePojo );
                     } catch ( NexusException e1 ) {
                         LOG.error( new LogMessage( "Error saving message: " + e1, messagePojo ) );
-                    } catch (StateTransitionException stex) {
-                        LOG.warn( stex.getMessage() );
                     }
 
                     /*
@@ -352,13 +345,11 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                     messagePojo.setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_FAILED );
                     messagePojo.getConversation().setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_ERROR );
                     try {
-                        Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
+                        Engine.getInstance().getTransactionService().updateTransaction( messagePojo.getConversation() );
                     } catch ( NexusException e ) {
                         LOG.error( new LogMessage( "Error updating conversation/message on failed atempt message!",
                                 messagePojo ) );
                         e.printStackTrace();
-                    } catch (StateTransitionException stex) {
-                        LOG.warn( stex.getMessage() );
                     }
                 }
                 // }

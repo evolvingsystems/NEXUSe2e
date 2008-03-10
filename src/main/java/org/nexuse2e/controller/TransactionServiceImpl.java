@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -40,6 +39,7 @@ import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.IdGenerator;
+import org.nexuse2e.dao.LogDAO;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.messaging.Constants;
 import org.nexuse2e.messaging.MessageContext;
@@ -66,68 +66,6 @@ public class TransactionServiceImpl implements TransactionService {
     private Hashtable<String, String>                 synchronousReplies = new Hashtable<String, String>();
 
     private Constants.BeanStatus                      status             = Constants.BeanStatus.UNDEFINED;
-
-    private static Map<Integer, int[]>                followUpConversationStates;
-    private static Map<Integer, int[]>                followUpMessageStates;
-    
-    
-    static {
-        followUpConversationStates = new HashMap<Integer, int[]>();
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_ERROR,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_IDLE,
-                    Constants.CONVERSATION_STATUS_COMPLETED } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_CREATED,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_PROCESSING } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_PROCESSING,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_AWAITING_ACK,
-                    Constants.CONVERSATION_STATUS_AWAITING_BACKEND,
-                    Constants.CONVERSATION_STATUS_SENDING_ACK,
-                    Constants.CONVERSATION_STATUS_ACK_SENT_AWAITING_BACKEND,
-                    Constants.CONVERSATION_STATUS_BACKEND_SENT_SENDING_ACK,
-                    Constants.CONVERSATION_STATUS_IDLE,
-                    Constants.CONVERSATION_STATUS_ERROR,
-                    Constants.CONVERSATION_STATUS_COMPLETED } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_AWAITING_ACK,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_COMPLETED,
-                    Constants.CONVERSATION_STATUS_ERROR,
-                    Constants.CONVERSATION_STATUS_IDLE } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_IDLE,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_PROCESSING } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_SENDING_ACK,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_ACK_SENT_AWAITING_BACKEND } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_ACK_SENT_AWAITING_BACKEND,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_COMPLETED,
-                    Constants.CONVERSATION_STATUS_ERROR,
-                    Constants.CONVERSATION_STATUS_IDLE } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_AWAITING_BACKEND,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_BACKEND_SENT_SENDING_ACK } );
-        followUpConversationStates.put( Constants.CONVERSATION_STATUS_BACKEND_SENT_SENDING_ACK,
-                new int[] {
-                    Constants.CONVERSATION_STATUS_COMPLETED,
-                    Constants.CONVERSATION_STATUS_ERROR,
-                    Constants.CONVERSATION_STATUS_IDLE } );
-        
-        
-        followUpMessageStates = new HashMap<Integer, int[]>();
-        followUpMessageStates.put( Constants.MESSAGE_STATUS_RETRYING,
-                new int[] {
-                    Constants.MESSAGE_STATUS_FAILED,
-                    Constants.MESSAGE_STATUS_SENT } );
-        followUpMessageStates.put( Constants.MESSAGE_STATUS_QUEUED,
-                new int[] {
-                    Constants.MESSAGE_STATUS_RETRYING,
-                    Constants.MESSAGE_STATUS_FAILED,
-                    Constants.MESSAGE_STATUS_SENT } );
-    }
-    
 
     public ConversationPojo createConversation( String choreographyId, String partnerId, String conversationId )
             throws NexusException {
@@ -177,7 +115,14 @@ public class TransactionServiceImpl implements TransactionService {
     public ConversationPojo getConversation( String conversationId ) throws NexusException {
 
         LOG.trace( "Entering TransactionDataService.getConversation..." );
-        return Engine.getInstance().getTransactionDAO().getConversationByConversationId( conversationId, null, null );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+
+        return transactionDao.getConversationByConversationId( conversationId, null, null );
 
     }
 
@@ -188,14 +133,21 @@ public class TransactionServiceImpl implements TransactionService {
             throws NexusException {
 
         LOG.trace( "Entering TransactionDataService.getConversation..." );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+
         PartnerPojo partner = Engine.getInstance().getActiveConfigurationAccessService().getPartnerByPartnerId(
                 partnerId );
         if ( partner == null ) {
             return null;
         }
 
-        return Engine.getInstance().getTransactionDAO().getConversationByConversationId(
-                choreographyId, conversationId, partner.getNxPartnerId(), null, null );
+        return transactionDao.getConversationByConversationId( choreographyId, conversationId,
+                partner.getNxPartnerId(), null, null );
 
     }
 
@@ -206,8 +158,13 @@ public class TransactionServiceImpl implements TransactionService {
             String conversationId, Date start, Date end, int itemsPerPage, int page, int field, boolean ascending,
             Session session, Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getConversationsForReport(
-                status, nxChoreographyId, nxPartnerId, conversationId, start,
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+        return transactionDao.getConversationsForReport( status, nxChoreographyId, nxPartnerId, conversationId, start,
                 end, itemsPerPage, page, field, ascending, session, transaction );
 
     }
@@ -218,8 +175,14 @@ public class TransactionServiceImpl implements TransactionService {
     public int getConversationsCount( String status, int nxChoreographyId, int nxPartnerId, String conversationId,
             Date start, Date end, int field, boolean ascending ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getConversationsCount(
-                status, nxChoreographyId, nxPartnerId, conversationId, start, end, field, ascending );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+        return transactionDao.getConversationsCount( status, nxChoreographyId, nxPartnerId, conversationId, start, end,
+                field, ascending );
     }
 
     /* (non-Javadoc)
@@ -235,10 +198,16 @@ public class TransactionServiceImpl implements TransactionService {
      */
     public MessagePojo getMessage( String messageId, boolean isReferencedMessageId ) throws NexusException {
 
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
         if ( isReferencedMessageId ) {
-            return Engine.getInstance().getTransactionDAO().getMessageByReferencedMessageId( messageId, null, null );
+            return transactionDao.getMessageByReferencedMessageId( messageId, null, null );
         } else {
-            return Engine.getInstance().getTransactionDAO().getMessageByMessageId( messageId, null, null );
+            return transactionDao.getMessageByMessageId( messageId, null, null );
         }
     }
 
@@ -249,8 +218,13 @@ public class TransactionServiceImpl implements TransactionService {
             String conversationId, String messageId, String type, Date start, Date end, int itemsPerPage, int page,
             int field, boolean ascending ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getMessagesForReport(
-                status, nxChoreographyId, nxPartnerId, conversationId, messageId,
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+        return transactionDao.getMessagesForReport( status, nxChoreographyId, nxPartnerId, conversationId, messageId,
                 type, start, end, itemsPerPage, page, field, ascending );
     }
 
@@ -260,8 +234,15 @@ public class TransactionServiceImpl implements TransactionService {
     public int getMessagesCount( String status, int nxChoreographyId, int nxPartnerId, String conversationId,
             String messageId, Date startDate, Date endDate ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getMessagesCount(
-                status, nxChoreographyId, nxPartnerId, conversationId, messageId, startDate, endDate );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+
+        return transactionDao.getMessagesCount( status, nxChoreographyId, nxPartnerId, conversationId, messageId,
+                startDate, endDate );
 
     }
 
@@ -270,7 +251,12 @@ public class TransactionServiceImpl implements TransactionService {
      */
     public List<MessagePojo> getMessagesFromConversation( ConversationPojo conversation ) throws NexusException {
 
-        TransactionDAO transactionDao = Engine.getInstance().getTransactionDAO();
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
 
         Session session = transactionDao.getDBSession();
         session.lock( conversation, LockMode.NONE );
@@ -287,7 +273,12 @@ public class TransactionServiceImpl implements TransactionService {
      */
     public List<MessagePayloadPojo> getMessagePayloadsFromMessage( MessagePojo message ) throws NexusException {
 
-        TransactionDAO transactionDao = Engine.getInstance().getTransactionDAO();
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
 
         Session session = transactionDao.getDBSession();
         session.lock( message, LockMode.NONE );
@@ -316,7 +307,14 @@ public class TransactionServiceImpl implements TransactionService {
     @SuppressWarnings("unchecked")
     public List<MessagePojo> getActiveMessages() throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getActiveMessages();
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+
+            return transactionDao.getActiveMessages();
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
     } // getActiveMessages
 
     /* (non-Javadoc)
@@ -346,7 +344,16 @@ public class TransactionServiceImpl implements TransactionService {
         if ( message.getModifiedDate() == null ) {
             message.setModifiedDate( date );
         }
-        TransactionDAO transactionDao = Engine.getInstance().getTransactionDAO();
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
         PartnerPojo partner = Engine.getInstance().getActiveConfigurationAccessService().getPartnerByPartnerId(
                 partnerId );
         if ( partner == null ) {
@@ -375,7 +382,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         message.setTRP( participant.getConnection().getTrp() );
         ActionPojo action = null;
-        if ( message.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
+        if ( message.getType() != Constants.INT_MESSAGE_TYPE_ACK ) {
             action = Engine.getInstance().getActiveConfigurationAccessService().getActionFromChoreographyByActionId(
                     choreography, actionId );
             if ( action == null ) {
@@ -383,9 +390,7 @@ public class TransactionServiceImpl implements TransactionService {
                         + choreography.getName() );
             }
 
-        } else if ( message.getType() == Constants.INT_MESSAGE_TYPE_ACK ) {
-            action = new ActionPojo( choreography, new Date(), new Date(), 0, false, false, null, null, actionId );
-        } else { // error message
+        } else {
             action = new ActionPojo( choreography, new Date(), new Date(), 0, false, false, null, null, actionId );
         }
 
@@ -396,14 +401,13 @@ public class TransactionServiceImpl implements TransactionService {
             conversation = new ConversationPojo();
             conversation.setPartner( partner );
             conversation.setChoreography( choreography );
-            if ( action != null && !action.isStart() && ( message.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) ) {
+            if ( action != null && !action.isStart() && ( message.getType() != Constants.INT_MESSAGE_TYPE_ACK ) ) {
                 throw new NexusException( "action:" + action.getName() + " is not a valid starting action!" );
             }
             //conversation.setCurrentAction( action );
             conversation.setConversationId( conversationId );
             conversation.setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_CREATED );
         }
-
         message.setConversation( conversation );
         message.setAction( action );
 
@@ -458,166 +462,46 @@ public class TransactionServiceImpl implements TransactionService {
     public void storeTransaction( ConversationPojo conversationPojo, MessagePojo messagePojo ) throws NexusException {
 
         if ( ( conversationPojo != null ) && ( messagePojo != null ) ) {
-            LOG.debug( "storeTransaction: " + conversationPojo.getConversationId() + " - "
+            LOG
+                    .debug( "storeTransaction: " + conversationPojo.getConversationId() + " - "
                             + messagePojo.getMessageId() );
         } else if ( conversationPojo != null ) {
             LOG.debug( "storeTransaction: " + conversationPojo.getConversationId() );
         }
 
-        Engine.getInstance().getTransactionDAO().storeTransaction( conversationPojo, messagePojo );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        transactionDao.storeTransaction( conversationPojo, messagePojo );
     } // storeTransaction
 
-
-    /**
-     * Checks if the transition to the given status is allowed and returns it if so.
-     * @param message The original message.
-     * @param messageStatus The target message status.
-     * @return <code>messageStatus</code> if transition is allowed, or the original
-     * message status if not.
+    /* (non-Javadoc)
+     * @see org.nexuse2e.controller.TransactionService#updateTransaction(org.nexuse2e.pojo.ConversationPojo)
      */
-    public int getAllowedTransitionStatus( MessagePojo message, int messageStatus ) {
-        
-        if (message.getStatus() == messageStatus) {
-            return messageStatus;
-        }
-        int[] validStates = followUpMessageStates.get( message.getStatus() );
-        if (validStates != null) {
-            for (int status : validStates) {
-                if (status == messageStatus) {
-                    return messageStatus;
-                }
-            }
-        }
-        return message.getStatus();
-    }
-        
-    /**
-     * Checks if the transition to the given status is allowed and returns it if so.
-     * @param message The original message.
-     * @param conversationStatus The target conversation status.
-     * @return <code>conversationStatus</code> if transition is allowed, or the original
-     * conversation status if not.
-     */
-    public int getAllowedTransitionStatus( ConversationPojo conversation, int conversationStatus ) {
-        
-        if (conversation.getStatus() == conversationStatus) {
-            return conversationStatus;
-        }
-        int[] validStates = followUpConversationStates.get( conversation.getStatus() );
-        if (validStates != null) {
-            for (int status : validStates) {
-                if (status == conversationStatus) {
-                    return conversationStatus;
-                }
-            }
-        }
-        
-        return conversation.getStatus();
-    }
-    
+    public void updateTransaction( ConversationPojo conversationPojo ) throws NexusException {
 
-    public void updateTransaction( MessagePojo message )
-    throws NexusException, StateTransitionException {
-        updateTransaction( message, false );
-    }
+        LOG.debug( "updateTransaction: " + conversationPojo.getConversationId() );
 
-    public void updateTransaction( MessagePojo message, boolean force )
-    throws NexusException, StateTransitionException {
-
-        Session session = getDBSession();
-        Transaction transaction = null;
-        
-        int messageStatus = message.getStatus();
-        int conversationStatus = message.getConversation().getStatus();
-        
-        if (messageStatus < Constants.MESSAGE_STATUS_FAILED
-                || messageStatus > Constants.MESSAGE_STATUS_STOPPED) {
-            throw new IllegalArgumentException( "Illegal message status: " + messageStatus
-                    + ", only values >= " + Constants.MESSAGE_STATUS_FAILED
-                    + " and <= " + Constants.MESSAGE_STATUS_STOPPED + " allowed" );
-        }
-        
-        if (conversationStatus < Constants.CONVERSATION_STATUS_ERROR
-                || conversationStatus > Constants.CONVERSATION_STATUS_COMPLETED) {
-            throw new IllegalArgumentException( "Illegal conversation status: " + conversationStatus
-                    + ", only values >= " + Constants.CONVERSATION_STATUS_ERROR
-                    + " and <= " + Constants.CONVERSATION_STATUS_COMPLETED + " allowed" );
-        }
-        
-        TransactionDAO transactionDAO = Engine.getInstance().getTransactionDAO();
-        int allowedMessageStatus = messageStatus;
-        int allowedConversationStatus = conversationStatus;
+        TransactionDAO transactionDao;
         try {
-            transaction = session.beginTransaction();
-            MessagePojo persistentMessage = (MessagePojo) transactionDAO.getRecordById(
-                    MessagePojo.class, message.getNxMessageId(), session, transaction );
-            
-            if (persistentMessage != null) {
-                if (!force) {
-                    allowedMessageStatus = getAllowedTransitionStatus( persistentMessage, messageStatus );
-                    allowedConversationStatus = getAllowedTransitionStatus(
-                            persistentMessage.getConversation(), conversationStatus );
-                }
-                message.setStatus( allowedMessageStatus );
-                message.getConversation().setStatus( allowedConversationStatus );
-                
-                if (messageStatus == allowedMessageStatus && conversationStatus == allowedConversationStatus) {
-                    boolean updateMessage = message.getNxMessageId() > 0;
-                    
-                    // persist unsaved messages first
-                    List<MessagePojo> messages = message.getConversation().getMessages();
-                    for (MessagePojo m : messages) {
-                        if (m.getNxMessageId() <= 0) {
-                            session.save( m );
-                        }
-                    }
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
 
-                    // we need to merge the message into the persistent message a persistent version exists
-                    if (updateMessage) {
-                        session.merge( message );
-                    }
-                    // now, merge the conversation to it's persistent instance
-                    session.merge( message.getConversation() );
-                }
-            }
-            
-            transaction.commit();
-        } catch (Throwable t) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            if (t instanceof RuntimeException) {
-                throw (RuntimeException) t;
-            }
-            if (t instanceof NexusException) {
-                throw (NexusException) t;
-            }
-            if (t instanceof Error) {
-                throw (Error) t;
-            }
-            throw new NexusException( (Exception) t );
-        } finally {
-            session.close();
-            releaseDBSession( session );
-        }
-        
-        String errMsg = null;
-        
-        if (allowedMessageStatus != messageStatus) {
-            errMsg = "Illegal transition: Cannot set message status from " + allowedMessageStatus + " to " + messageStatus;
-        }
-        if (allowedConversationStatus != conversationStatus) {
-            if (errMsg != null) {
-                errMsg += ", cannot set conversation status from " + allowedConversationStatus + " to " + conversationStatus;
-            } else {
-                errMsg = "Illegal transition: Cannot set conversation status from "
-                    + allowedConversationStatus + " to " + conversationStatus;
-            }
-        }
-        if (errMsg != null) {
-            throw new StateTransitionException( errMsg );
-        }
-        
+        transactionDao.updateTransaction( conversationPojo );
     } // updateTransaction
 
     /* (non-Javadoc)
@@ -627,7 +511,18 @@ public class TransactionServiceImpl implements TransactionService {
 
         LOG.debug( "updateMessage: " + messagePojo.getMessageId() );
 
-        Engine.getInstance().getTransactionDAO().updateMessage( messagePojo );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        transactionDao.updateMessage( messagePojo );
     } // updateMessage
 
     /* (non-Javadoc)
@@ -637,7 +532,18 @@ public class TransactionServiceImpl implements TransactionService {
 
         LOG.debug( "updateConversation: " + conversationPojo.getConversationId() );
 
-        Engine.getInstance().getTransactionDAO().updateConversation( conversationPojo );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        transactionDao.updateConversation( conversationPojo );
     } // updateMessage
 
     /* (non-Javadoc)
@@ -711,12 +617,7 @@ public class TransactionServiceImpl implements TransactionService {
         messagePojo.setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_STOPPED );
         messagePojo.setModifiedDate( new Date() );
         messagePojo.getConversation().setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE );
-        try {
-            updateTransaction( messagePojo, true );
-        } catch (StateTransitionException stex) {
-            LOG.error( "Program error: Unexpected " + stex + " was thrown" );
-            stex.printStackTrace();
-        }
+        updateTransaction( messagePojo.getConversation() );
         deregisterProcessingMessage( id );
     } // stopProcessingMessage
 
@@ -749,7 +650,17 @@ public class TransactionServiceImpl implements TransactionService {
      */
     public void deleteMessage( MessagePojo message, Session session, Transaction transaction ) throws NexusException {
 
-        Engine.getInstance().getTransactionDAO().deleteMessage( message, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        transactionDao.deleteMessage( message, session, transaction );
 
     }
 
@@ -762,9 +673,17 @@ public class TransactionServiceImpl implements TransactionService {
     public void deleteConversation( ConversationPojo conversation, Session session, Transaction transaction )
             throws NexusException {
 
-        if (conversation != null) {
-            Engine.getInstance().getTransactionDAO().deleteConversation( conversation, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
         }
+        transactionDao.deleteConversation( conversation, session, transaction );
 
     }
 
@@ -774,8 +693,18 @@ public class TransactionServiceImpl implements TransactionService {
     public List<MessagePojo> getMessagesByPartnerAndDirection( PartnerPojo partner, boolean outbound, int sort,
             boolean ascending, Session session, Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getMessagesByPartnerAndDirection(
-                partner, outbound, sort, ascending, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return transactionDao.getMessagesByPartnerAndDirection( partner, outbound, sort, ascending, session,
+                transaction );
     }
 
     /* (non-Javadoc)
@@ -784,7 +713,17 @@ public class TransactionServiceImpl implements TransactionService {
     public List<ConversationPojo> getConversationsByPartner( PartnerPojo partner, Session session,
             Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getConversationsByPartner( partner, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return transactionDao.getConversationsByPartner( partner, session, transaction );
     }
 
     /* (non-Javadoc)
@@ -793,8 +732,17 @@ public class TransactionServiceImpl implements TransactionService {
     public List<ConversationPojo> getConversationsByChoreography( ChoreographyPojo choreography, Session session,
             Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getConversationsByChoreography(
-                choreography, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return transactionDao.getConversationsByChoreography( choreography, session, transaction );
     }
 
     /* (non-Javadoc)
@@ -803,8 +751,17 @@ public class TransactionServiceImpl implements TransactionService {
     public List<ConversationPojo> getConversationsByPartnerAndChoreography( PartnerPojo partner,
             ChoreographyPojo choreography, Session session, Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getConversationsByPartnerAndChoreography(
-                partner, choreography, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return transactionDao.getConversationsByPartnerAndChoreography( partner, choreography, session, transaction );
     }
 
     /* (non-Javadoc)
@@ -813,8 +770,17 @@ public class TransactionServiceImpl implements TransactionService {
     public List<MessagePojo> getMessagesByPartner( PartnerPojo partner, int field, boolean ascending, Session session,
             Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getMessagesByPartner(
-                partner, field, ascending, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return transactionDao.getMessagesByPartner( partner, field, ascending, session, transaction );
     }
 
     /* (non-Javadoc)
@@ -823,8 +789,18 @@ public class TransactionServiceImpl implements TransactionService {
     public List<MessagePojo> getMessagesByChoreographyAndPartner( ChoreographyPojo choreography, PartnerPojo partner,
             int field, boolean ascending, Session session, Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getMessagesByChoreographyAndPartner(
-                choreography, partner, field, ascending, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return transactionDao.getMessagesByChoreographyAndPartner( choreography, partner, field, ascending, session,
+                transaction );
     }
 
     /* (non-Javadoc)
@@ -834,8 +810,18 @@ public class TransactionServiceImpl implements TransactionService {
             PartnerPojo partner, ConversationPojo conversation, int field, boolean ascending, Session session,
             Transaction transaction ) throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getMessagesByChoreographyPartnerAndConversation(
-                choreography, partner, conversation, field, ascending, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return transactionDao.getMessagesByChoreographyPartnerAndConversation( choreography, partner, conversation,
+                field, ascending, session, transaction );
     }
 
     /* (non-Javadoc)
@@ -844,8 +830,17 @@ public class TransactionServiceImpl implements TransactionService {
     public int getLogEntriesForReportCount( String severity, String messageText, Date start, Date end, int field,
             boolean ascending ) throws NexusException {
 
-        return Engine.getInstance().getLogDAO().getLogEntriesForReportCount(
-                severity, messageText, start, end, field, ascending );
+        LogDAO logDao;
+        try {
+            logDao = (LogDAO) Engine.getInstance().getDao( "logDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return logDao.getLogEntriesForReportCount( severity, messageText, start, end, field, ascending );
     }
 
     /* (non-Javadoc)
@@ -855,8 +850,18 @@ public class TransactionServiceImpl implements TransactionService {
             int itemsPerPage, int page, int field, boolean ascending, Session session, Transaction transaction )
             throws NexusException {
 
-        return Engine.getInstance().getLogDAO().getLogEntriesForReport(
-                severity, messageText, start, end, itemsPerPage, page, field, ascending, session, transaction );
+        LogDAO logDao;
+        try {
+            logDao = (LogDAO) Engine.getInstance().getDao( "logDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        return logDao.getLogEntriesForReport( severity, messageText, start, end, itemsPerPage, page, field, ascending,
+                session, transaction );
     }
 
     /* (non-Javadoc)
@@ -923,7 +928,13 @@ public class TransactionServiceImpl implements TransactionService {
      */
     public Session getDBSession() throws NexusException {
 
-        return Engine.getInstance().getTransactionDAO().getDBSession();
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+        return transactionDao.getDBSession();
 
     }
 
@@ -932,12 +943,28 @@ public class TransactionServiceImpl implements TransactionService {
      */
     public void releaseDBSession( Session session ) throws NexusException {
 
-        Engine.getInstance().getTransactionDAO().releaseDBSession( session );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            throw new NexusException( e );
+        }
+        transactionDao.releaseDBSession( session );
     }
 
     public void deleteLogEntry( LogPojo logEntry, Session session, Transaction transaction ) throws NexusException {
 
-        Engine.getInstance().getTransactionDAO().deleteLogEntry( logEntry, session, transaction );
+        TransactionDAO transactionDao;
+        try {
+            transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new NexusException( e );
+        } catch ( Error e ) {
+            e.printStackTrace();
+            throw e;
+        }
+        transactionDao.deleteLogEntry( logEntry, session, transaction );
 
     }
 

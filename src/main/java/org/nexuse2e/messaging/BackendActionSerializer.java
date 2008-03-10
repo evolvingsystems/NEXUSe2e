@@ -30,7 +30,6 @@ import org.nexuse2e.NexusException;
 import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
 import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
@@ -99,7 +98,7 @@ public class BackendActionSerializer extends AbstractPipelet {
 
             // Persist and queue the message
             try {
-                queueMessage( messageContext, true );
+                queueMessage( messageContext, conversationPojo, true );
             } catch ( Exception e ) {
                 e.printStackTrace();
                 LOG.error( new LogMessage(
@@ -117,40 +116,35 @@ public class BackendActionSerializer extends AbstractPipelet {
 
     /**
      * @param messageContext
+     * @param conversationPojo
      * @param newMessage
      * @throws NexusException
      */
-    private void queueMessage( MessageContext messageContext, boolean newMessage )
+    private void queueMessage( MessageContext messageContext, ConversationPojo conversationPojo, boolean newMessage )
             throws NexusException {
-
-        MessagePojo messagePojo = messageContext.getMessagePojo();
-        ConversationPojo conversationPojo = messagePojo.getConversation();
 
         synchronized ( conversationPojo ) {
 
             List<MessagePojo> messages = conversationPojo.getMessages();
 
-            messagePojo.setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_QUEUED );
-            messagePojo.setModifiedDate( new Date() );
+            messageContext.getMessagePojo().setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_QUEUED );
+            messageContext.getMessagePojo().setModifiedDate( new Date() );
 
-            try {
-                if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
-                    conversationPojo.setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_PROCESSING );
-                    if ( newMessage ) {
-                        messages.add( messagePojo );
-                        Engine.getInstance().getTransactionService().storeTransaction(
-                                conversationPojo, messagePojo );
-                    } else {
-                        Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
-                    }
-                } else {
-                    messageContext.getMessagePojo().setConversation( null );
+            if ( messageContext.getMessagePojo().getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
+                messageContext.getMessagePojo().getConversation().setStatus(
+                        org.nexuse2e.Constants.CONVERSATION_STATUS_PROCESSING );
+                if ( newMessage ) {
                     messages.add( messageContext.getMessagePojo() );
-                    messageContext.getMessagePojo().setConversation( conversationPojo );
-                    Engine.getInstance().getTransactionService().updateTransaction( messagePojo );
+                    Engine.getInstance().getTransactionService().storeTransaction( conversationPojo,
+                            messageContext.getMessagePojo() );
+                } else {
+                    Engine.getInstance().getTransactionService().updateTransaction( conversationPojo );
                 }
-            } catch (StateTransitionException stex) {
-                LOG.warn( stex.getMessage() );
+            } else {
+                messageContext.getMessagePojo().setConversation( null );
+                messages.add( messageContext.getMessagePojo() );
+                messageContext.getMessagePojo().setConversation( conversationPojo );
+                Engine.getInstance().getTransactionService().updateTransaction( conversationPojo );
             }
 
             // Submit the message to the queue/backend
@@ -168,7 +162,7 @@ public class BackendActionSerializer extends AbstractPipelet {
             LOG.error( "No MessageContext supplied!" );
             throw new NexusException( "No MessageContext supplied!" );
         }
-        queueMessage( messageContext, false );
+        queueMessage( messageContext, messageContext.getConversation(), false );
     } // requeueMessage
 
     /**
@@ -199,7 +193,7 @@ public class BackendActionSerializer extends AbstractPipelet {
             throws NexusException {
 
         if ( messageContext != null ) {
-            queueMessage( messageContext, false );
+            queueMessage( messageContext, messageContext.getConversation(), false );
         } else {
             LOG.error( new LogMessage( "Message: " + messageId
                     + " could not be found in database, cancelled requeueing!", conversationId, messageId ) );
