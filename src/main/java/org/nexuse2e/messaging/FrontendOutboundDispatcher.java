@@ -235,17 +235,36 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                             cancelRetrying( false );
                             return;
                         }
+                        
+                        // quick fix: remember original conversation and message states
+                        int conversationStatus = conversationPojo.getStatus();
+                        int messageStatus = messagePojo.getStatus();
+                        MessagePojo currentMessage = Engine.getInstance().getTransactionService().getMessage(
+                                messagePojo.getMessageId() );
+                        if (currentMessage != null) {
+                            messageStatus = currentMessage.getStatus();
+                            if (currentMessage.getConversation() != null) {
+                                conversationStatus = currentMessage.getConversation().getStatus();
+                            }
+                            TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+                            transactionDAO.reattachRecord( messagePojo );
+                            transactionDAO.reattachRecord( conversationPojo );
+                        }
 
                         // Send message
                         messageContext.getMessagePojo().setRetries( retryCount - 1 );
                         messageContext = pipeline.processMessage( messageContext );
                         
-                        // quick fix: reload conversation and message states
-                        MessagePojo currentMessage = Engine.getInstance().getTransactionService().getMessage(
+                        // quick fix: reload conversation and message states to check if
+                        // persistent objects have changed
+                        currentMessage = Engine.getInstance().getTransactionService().getMessage(
                                 messagePojo.getMessageId() );
                         if (currentMessage != null) {
-                            messagePojo.setStatus( currentMessage.getStatus() );
-                            if (currentMessage.getConversation() != null) {
+                            if (currentMessage.getStatus() != messageStatus) {
+                                messagePojo.setStatus( currentMessage.getStatus() );
+                            }
+                            if (currentMessage.getConversation() != null
+                                    && currentMessage.getConversation().getStatus() != conversationStatus) {
                                 conversationPojo.setStatus( currentMessage.getConversation().getStatus() );
                             }
                             TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
