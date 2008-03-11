@@ -226,7 +226,8 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                         if ( ( messagePojo.getType() != Constants.INT_MESSAGE_TYPE_NORMAL )
                                 && ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_PROCESSING ) ) {
                             conversationPojo.setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_SENDING_ACK );
-                        } else if ( messagePojo.getEndDate() != null ) {
+                        } else if ( ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL )
+                                && ( messagePojo.getEndDate() != null ) ) {
 
                             // If message has been ack'ed while we were waiting do nothing
                             LOG.info( "Cancelled sending message (ack was just received): "
