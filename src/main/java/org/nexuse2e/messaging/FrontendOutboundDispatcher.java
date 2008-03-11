@@ -31,6 +31,7 @@ import org.nexuse2e.NexusException;
 import org.nexuse2e.ProtocolSpecificKey;
 import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
+import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
@@ -237,6 +238,19 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                         // Send message
                         messageContext.getMessagePojo().setRetries( retryCount - 1 );
                         messageContext = pipeline.processMessage( messageContext );
+                        
+                        // quick fix: reload conversation and message states
+                        MessagePojo currentMessage = Engine.getInstance().getTransactionService().getMessage(
+                                messagePojo.getMessageId() );
+                        if (currentMessage != null) {
+                            messagePojo.setStatus( currentMessage.getStatus() );
+                            if (currentMessage.getConversation() != null) {
+                                conversationPojo.setStatus( currentMessage.getConversation().getStatus() );
+                            }
+                            TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+                            transactionDAO.reattachRecord( messagePojo );
+                            transactionDAO.reattachRecord( conversationPojo );
+                        }
 
                         if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
                             if ( ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_PROCESSING )
