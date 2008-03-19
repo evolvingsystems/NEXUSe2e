@@ -370,6 +370,12 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                 } else {
                     LOG.debug( new LogMessage( "Max number of retries reached!", messagePojo ) );
                 }
+                
+                if (!(conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE &&
+                    conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED)) {
+
+                    LOG.debug( "NOT updating status in cancelRetrying() method" );
+                }
                 cancelRetrying( conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE &&
                         conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED );
             }
