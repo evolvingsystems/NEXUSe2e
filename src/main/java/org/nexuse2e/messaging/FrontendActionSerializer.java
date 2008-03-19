@@ -333,6 +333,7 @@ public class FrontendActionSerializer implements Manageable {
                         messagePojo.setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_SENT );
                         messagePojo.setModifiedDate( new Date() );
                         if ( ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_ACK_SENT_AWAITING_BACKEND )
+                                || ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_SENDING_ACK )
                                 || ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE ) ) {
                             if ( conversationPojo.getCurrentAction().isEnd() ) {
                                 conversationPojo.setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED );

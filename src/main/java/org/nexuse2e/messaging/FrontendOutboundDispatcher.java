@@ -287,6 +287,7 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
                         if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
                             if ( ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_PROCESSING )
+                                    || ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_AWAITING_BACKEND )
                                     || ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_AWAITING_ACK ) ) {
                                 if ( messageContext.getParticipant().getConnection().isReliable() ) {
                                     conversationPojo
