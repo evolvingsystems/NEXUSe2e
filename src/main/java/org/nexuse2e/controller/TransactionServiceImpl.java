@@ -490,6 +490,18 @@ public class TransactionServiceImpl implements TransactionService {
 
         LOG.debug( "updateTransaction: " + conversationPojo.getConversationId() );
 
+        if (conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_ERROR) {
+            boolean oneFailed = false;
+            for (MessagePojo message : conversationPojo.getMessages()) {
+                if (message.getStatus() == Constants.MESSAGE_STATUS_FAILED) {
+                    oneFailed = true;
+                }
+            }
+            if (!oneFailed) {
+                System.out.println( "spooky" );
+            }
+        }
+        
         TransactionDAO transactionDao;
         try {
             transactionDao = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
@@ -599,7 +611,7 @@ public class TransactionServiceImpl implements TransactionService {
                         scheduler.shutdownNow();
                     }
                 } catch ( Exception e ) {
-                    e.printStackTrace();
+                    LOG.warn( "Exception caught while trying to shut down the message scheduler", e );
                 }
                 processingMessages.remove( id );
             } else {

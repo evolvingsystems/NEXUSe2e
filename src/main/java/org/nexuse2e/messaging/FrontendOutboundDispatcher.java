@@ -218,6 +218,28 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
             LOG.trace( "Message ( " + messagePojo.getMessageId() + " ) end timestamp: " + messagePojo.getEndDate() );
 
+            // quick fix: remember original conversation and message states
+            int conversationStatus = conversationPojo.getStatus();
+            int messageStatus = messagePojo.getStatus();
+            MessagePojo currentMessage = null;
+            
+            try {
+                currentMessage = Engine.getInstance().getTransactionService().getMessage(
+                        messagePojo.getMessageId() );
+                if (currentMessage != null) {
+                    messageStatus = currentMessage.getStatus();
+                    if (currentMessage.getConversation() != null) {
+                        conversationStatus = currentMessage.getConversation().getStatus();
+                    }
+                    TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+                    transactionDAO.reattachRecord( messagePojo );
+                    transactionDAO.reattachRecord( conversationPojo );
+                }
+            } catch (Exception e) {
+                LOG.error( "Unexpected error in message sender thread", e );
+            }
+            
+            
             if ( retryCount <= retries ) {
                 LOG.debug( new LogMessage( "Sending message...", messagePojo ) );
                 try {
@@ -235,37 +257,28 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                             cancelRetrying( false );
                             return;
                         }
-                        
-                        // quick fix: remember original conversation and message states
-                        int conversationStatus = conversationPojo.getStatus();
-                        int messageStatus = messagePojo.getStatus();
-                        MessagePojo currentMessage = Engine.getInstance().getTransactionService().getMessage(
-                                messagePojo.getMessageId() );
-                        if (currentMessage != null) {
-                            messageStatus = currentMessage.getStatus();
-                            if (currentMessage.getConversation() != null) {
-                                conversationStatus = currentMessage.getConversation().getStatus();
-                            }
-                            TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
-                            transactionDAO.reattachRecord( messagePojo );
-                            transactionDAO.reattachRecord( conversationPojo );
-                        }
+                    } // synchronized
 
-                        // Send message
-                        messageContext.getMessagePojo().setRetries( retryCount - 1 );
-                        messageContext = pipeline.processMessage( messageContext );
+                    // Send message
+                    messageContext.getMessagePojo().setRetries( retryCount - 1 );
+                    messageContext = pipeline.processMessage( messageContext );
                         
+                    synchronized ( conversationPojo ) {
                         // quick fix: reload conversation and message states to check if
                         // persistent objects have changed
                         currentMessage = Engine.getInstance().getTransactionService().getMessage(
                                 messagePojo.getMessageId() );
+                        boolean convFixed = false;
+                        boolean msgFixed = false;
                         if (currentMessage != null) {
                             if (currentMessage.getStatus() != messageStatus) {
                                 messagePojo.setStatus( currentMessage.getStatus() );
+                                msgFixed = true;
                             }
                             if (currentMessage.getConversation() != null
                                     && currentMessage.getConversation().getStatus() != conversationStatus) {
                                 conversationPojo.setStatus( currentMessage.getConversation().getStatus() );
+                                convFixed = true;
                             }
                             TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
                             transactionDAO.reattachRecord( messagePojo );
@@ -291,9 +304,13 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                                     }
                                 }
                             } else {
-                                LOG.error( new LogMessage(
-                                        "Unexpected conversation state after sending normal message: "
-                                                + conversationPojo.getStatus(), messagePojo ) );
+                                if (conversationPojo.getStatus() != Constants.CONVERSATION_STATUS_IDLE &&
+                                        conversationPojo.getStatus() != Constants.CONVERSATION_STATUS_COMPLETED) {
+                                    LOG.error( new LogMessage(
+                                            "Unexpected conversation state after sending normal message: "
+                                                    + conversationPojo.getStatus() + " (msgFixed = " + msgFixed
+                                                    + ", convFixed = " + convFixed, messagePojo ) );
+                                }
                             }
                         } else {
                             // Engine.getInstance().getTransactionService().deregisterProcessingMessage( messagePojo.getMessageId() );
@@ -353,17 +370,10 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                 } else {
                     LOG.debug( new LogMessage( "Max number of retries reached!", messagePojo ) );
                 }
-                cancelRetrying();
+                cancelRetrying( conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE &&
+                        conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED );
             }
         } // run
-
-        /**
-         * Stop the thread for resending the message based on its reliability parameters
-         */
-        private void cancelRetrying() {
-
-            cancelRetrying( true );
-        }
 
         /**
          * Stop the thread for resending the message based on its reliability parameters. If updateStatus is true also

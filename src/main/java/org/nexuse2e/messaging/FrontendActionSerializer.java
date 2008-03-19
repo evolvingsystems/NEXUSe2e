@@ -324,10 +324,12 @@ public class FrontendActionSerializer implements Manageable {
                                     .setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_ACK_SENT_AWAITING_BACKEND );
 
                         }
+                    } // synchronized
 
-                        // Initiate the backend process
-                        FrontendActionSerializer.this.backendInboundDispatcher.processMessage( messageContext );
+                    // Initiate the backend process
+                    FrontendActionSerializer.this.backendInboundDispatcher.processMessage( messageContext );
 
+                    synchronized ( conversationPojo ) {
                         messagePojo.setStatus( org.nexuse2e.Constants.MESSAGE_STATUS_SENT );
                         messagePojo.setModifiedDate( new Date() );
                         if ( ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_ACK_SENT_AWAITING_BACKEND )
