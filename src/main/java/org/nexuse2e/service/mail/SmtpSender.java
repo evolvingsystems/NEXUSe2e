@@ -60,9 +60,9 @@ import org.bouncycastle.mail.smime.SMIMEEnvelopedGenerator;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
-import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.Constants.Layer;
 import org.nexuse2e.configuration.Constants;
+import org.nexuse2e.configuration.ListParameter;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.Constants.ParameterType;
 import org.nexuse2e.messaging.MessageContext;
@@ -73,6 +73,7 @@ import org.nexuse2e.pojo.ParticipantPojo;
 import org.nexuse2e.service.AbstractService;
 import org.nexuse2e.service.SenderAware;
 import org.nexuse2e.transport.TransportSender;
+import org.nexuse2e.util.CertificatePojoSocketFactory;
 import org.nexuse2e.util.CertificateUtil;
 
 /**
@@ -89,27 +90,55 @@ public class SmtpSender extends AbstractService implements SenderAware {
     public static final String EMAIL_PARAM_NAME    = "email";
     public static final String USER_PARAM_NAME     = "user";
     public static final String PASSWORD_PARAM_NAME = "password";
-    public static final String USE_SSL_PARAM_NAME  = "ssl";
+    public static final String ENCRYPTION_PARAM_NAME = "encrpytion";
 
     private TransportSender    transportSender;
 
+    public SmtpSender() {
+        super();
+    }
+    
     @Override
     public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
 
         parameterMap.put( HOST_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Host",
                 "SMTP host name or IP address", "" ) );
         parameterMap.put( PORT_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Port",
-                "SMTP port number (default is 25)", "25" ) );
+                "SMTP port number (default is 25 or 465 for SSL)", "25" ) );
         parameterMap.put( EMAIL_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Email",
                 "Sender email address", "" ) );
         parameterMap.put( USER_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "User",
                 "Authentication user name", "" ) );
         parameterMap.put( PASSWORD_PARAM_NAME, new ParameterDescriptor( ParameterType.PASSWORD, "Password",
                 "Authentication user password", "" ) );
-        parameterMap.put( USE_SSL_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN, "Use SSL",
-                "Use Secure Socket Layer", Boolean.FALSE ) );
+        ListParameter encryptionTypeDrowdown = new ListParameter();
+        encryptionTypeDrowdown.addElement( "None", "none" );
+        encryptionTypeDrowdown.addElement( "TLS", "tls" );
+        encryptionTypeDrowdown.addElement( "SSL", "ssl" );
+        parameterMap.put( ENCRYPTION_PARAM_NAME, new ParameterDescriptor(
+                ParameterType.LIST, "Encryption", "Connection encryption type", encryptionTypeDrowdown ) );
     }
 
+    private boolean isSslEnabled() {
+        ListParameter lp = getParameter( ENCRYPTION_PARAM_NAME );
+        if (lp != null) {
+            if ("ssl".equals( lp.getSelectedValue() )) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean isTlsEnabled() {
+        ListParameter lp = getParameter( ENCRYPTION_PARAM_NAME );
+        if (lp != null) {
+            if ("tls".equals( lp.getSelectedValue() )) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     @Override
     public void start() {
 
@@ -144,7 +173,9 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
             // LOG.trace( "sendMessage: " + smtpHost + " - " + smtpUser + " - " + smtpPassword );
             Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
-                    (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ) );
+                    (String) getParameter( USER_PARAM_NAME ),
+                    (String) getParameter( PASSWORD_PARAM_NAME ),
+                    (String) getParameter( PORT_PARAM_NAME ) );
             if ( connectionInfo != null ) {
                 session = (Session) connectionInfo[0];
                 transport = (Transport) connectionInfo[1];
@@ -170,7 +201,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
                 // Send the message
                 sendMessage( transport, mimeMsg, new Address[] { addr} );
-
+                
                 transport.close();
             } else {
                 LOG.error( "Cannot connect" );
@@ -182,42 +213,39 @@ public class SmtpSender extends AbstractService implements SenderAware {
         }
     }
 
-    private Object[] connect( String host, String user, String password ) throws Exception {
+    private Object[] connect( String host, String user, String password, String port ) throws Exception {
 
-        String protocolString = "smtp";
-        boolean authenticate = false;
+        boolean ssl = isSslEnabled();
+        boolean tls = isTlsEnabled();
 
-        if ( !StringUtils.isEmpty( user ) && !StringUtils.isEmpty( password ) ) {
-            authenticate = true;
-        }
-
+        String protocol = ssl ? "smtps" : "smtp";
+        
         if ( host != null && !host.trim().equals( "" ) ) {
-            Properties props = System.getProperties();
-            props.put( "mail.smtp.host", host );
-            props.put( "mail.host", host );
-
-            if ( authenticate ) {
-                props.put( "mail.smtp.auth", "true" );
+            Properties props = new Properties( System.getProperties() );
+            props.put( "mail." + protocol + ".host", host );
+            props.put( "mail." + protocol + ".auth", "true" );
+            if (!StringUtils.isEmpty( port )) {
+                props.put( "mail." + protocol + ".port", port );
             } else {
-                props.put( "mail.smtp.auth", "false" );
+                props.remove( "mail." + protocol + ".port" );
             }
+            if (ssl) {
+                props.put( "mail." + protocol + ".socketFactory.class", CertificatePojoSocketFactory.class.getName() );
+            }
+            props.put( "mail." + protocol + ".starttls.enable", Boolean.toString( tls ) );
+            
+            props.put( "mail.host", host );
 
             // Get a Session object
             Session session = Session.getInstance( props, null );
 
-            String urlNameString = protocolString + "://" + host;
+            PasswordAuthentication passwordAuthentication = new PasswordAuthentication( user, password );
+            String urlNameString = protocol + "://" + host;
             URLName urlName = new URLName( urlNameString );
-            if ( authenticate ) {
-                PasswordAuthentication passwordAuthentication = new PasswordAuthentication( user, password );
-                session.setPasswordAuthentication( urlName, passwordAuthentication );
-            }
 
+            session.setPasswordAuthentication( urlName, passwordAuthentication );
             Transport transport = session.getTransport( urlName );
-            if ( authenticate ) {
-                transport.connect( host, user, password );
-            } else {
-                transport.connect();
-            }
+            transport.connect( host, user, password );
 
             return new Object[] { session, transport};
         }
@@ -369,7 +397,9 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
             // LOG.trace( "sendMessage: " + smtpHost + " - " + smtpUser + " - " + smtpPassword );
             Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
-                    (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ) );
+                    (String) getParameter( USER_PARAM_NAME ),
+                    (String) getParameter( PASSWORD_PARAM_NAME ),
+                    (String) getParameter( PORT_PARAM_NAME ) );
             session = (Session) connectionInfo[0];
             transport = (Transport) connectionInfo[1];
 
@@ -414,38 +444,37 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
         Session session = null;
         Transport transport = null;
-        
-        if ( status.equals( BeanStatus.STARTED )  ) {
-            try {
-                Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
-                        (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ) );
-                session = (Session) connectionInfo[0];
-                transport = (Transport) connectionInfo[1];
 
-                // construct the message
-                Message msg = new MimeMessage( session );
-                msg.setRecipients( Message.RecipientType.TO, InternetAddress.parse( recipient, false ) );
-                msg.setHeader( "X-Mailer", "msgsend" );
-                msg.setFrom( new InternetAddress( (String) getParameter( EMAIL_PARAM_NAME ) ) );
-                if ( ( mimeBodyParts != null ) && ( mimeBodyParts.length != 0 ) ) {
-                    Multipart multipart = new MimeMultipart();
-                    for ( int i = 0; i < mimeBodyParts.length; i++ ) {
-                        multipart.addBodyPart( mimeBodyParts[i] );
-                    }
-                    msg.setContent( multipart );
-                } else {
-                    msg.setText( description );
+        try {
+            Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
+                    (String) getParameter( USER_PARAM_NAME ),
+                    (String) getParameter( PASSWORD_PARAM_NAME ),
+                    (String) getParameter( PORT_PARAM_NAME ) );
+            session = (Session) connectionInfo[0];
+            transport = (Transport) connectionInfo[1];
+
+            // construct the message
+            Message msg = new MimeMessage( session );
+            msg.setRecipients( Message.RecipientType.TO, InternetAddress.parse( recipient, false ) );
+            msg.setHeader( "X-Mailer", "msgsend" );
+            msg.setFrom( new InternetAddress( (String) getParameter( EMAIL_PARAM_NAME ) ) );
+            if ( ( mimeBodyParts != null ) && ( mimeBodyParts.length != 0 ) ) {
+                Multipart multipart = new MimeMultipart();
+                for ( int i = 0; i < mimeBodyParts.length; i++ ) {
+                    multipart.addBodyPart( mimeBodyParts[i] );
                 }
-                msg.setSentDate( new Date() );
-                msg.setSubject( subjectLine );
-                msg.saveChanges();
-                // send the thing off
-                sendMessage( transport, msg, msg.getAllRecipients() );
-            } catch ( Exception e ) {
-                throw new NexusException( "Error composing mail Exception: " + e );
+                msg.setContent( multipart );
+            } else {
+                msg.setText( description );
             }
+            msg.setSentDate( new Date() );
+            msg.setSubject( subjectLine );
+            msg.saveChanges();
+            // send the thing off
+            sendMessage( transport, msg, msg.getAllRecipients() );
+        } catch ( Exception e ) {
+            throw new NexusException( "Error composing mail Exception: " + e );
         }
-
     }
 
     private void sendMessage( Transport transport, Message message, Address[] addresses ) throws MessagingException {
