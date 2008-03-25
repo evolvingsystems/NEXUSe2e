@@ -218,33 +218,36 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
             LOG.trace( "Message ( " + messagePojo.getMessageId() + " ) end timestamp: " + messagePojo.getEndDate() );
 
-            // quick fix: remember original conversation and message states
-            int conversationStatus = conversationPojo.getStatus();
-            int messageStatus = messagePojo.getStatus();
-            MessagePojo currentMessage = null;
-            
-            try {
-                currentMessage = Engine.getInstance().getTransactionService().getMessage(
-                        messagePojo.getMessageId() );
-                if (currentMessage != null) {
-                    messageStatus = currentMessage.getStatus();
-                    if (currentMessage.getConversation() != null) {
-                        conversationStatus = currentMessage.getConversation().getStatus();
-                    }
-                    TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
-                    transactionDAO.reattachRecord( messagePojo );
-                    transactionDAO.reattachRecord( conversationPojo );
-                }
-            } catch (Exception e) {
-                LOG.error( "Unexpected error in message sender thread", e );
-            }
-            
             
             if ( retryCount <= retries ) {
                 LOG.debug( new LogMessage( "Sending message...", messagePojo ) );
                 try {
+                    int conversationStatus;
+                    int messageStatus;
+                    MessagePojo currentMessage = null;
+                    
                     retryCount++;
                     synchronized ( conversationPojo ) {
+                        // quick fix: remember original conversation and message states
+                        conversationStatus = conversationPojo.getStatus();
+                        messageStatus = messagePojo.getStatus();
+
+                        try {
+                            currentMessage = Engine.getInstance().getTransactionService().getMessage(
+                                    messagePojo.getMessageId() );
+                            if (currentMessage != null) {
+                                messageStatus = currentMessage.getStatus();
+                                if (currentMessage.getConversation() != null) {
+                                    conversationStatus = currentMessage.getConversation().getStatus();
+                                }
+                                TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+                                transactionDAO.reattachRecord( messagePojo );
+                                transactionDAO.reattachRecord( conversationPojo );
+                            }
+                        } catch (Exception e) {
+                            LOG.error( "Unexpected error in message sender thread", e );
+                        }
+                        
                         if ( ( messagePojo.getType() != Constants.INT_MESSAGE_TYPE_NORMAL )
                                 && ( conversationPojo.getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_PROCESSING ) ) {
                             conversationPojo.setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_SENDING_ACK );
@@ -364,21 +367,41 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                     LOG.error( new LogMessage( "Error sending message: " + e, messagePojo ), e );
                 }
             } else {
-                if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
-                    LOG.error( new LogMessage(
-                            "Maximum number of retries reached without receiving acknowledgment - choreography: "
-                                    + messagePojo.getConversation().getChoreography().getName(), messagePojo ) );
-                } else {
-                    LOG.debug( new LogMessage( "Max number of retries reached!", messagePojo ) );
-                }
-                
-                if (!(conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE &&
-                    conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED)) {
+                synchronized ( conversationPojo ) {
+                    // quick fix: remember original conversation and message states
+                    int conversationStatus = conversationPojo.getStatus();
 
-                    LOG.debug( "NOT updating status in cancelRetrying() method" );
-                }
-                cancelRetrying( conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE &&
-                        conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED );
+                    try {
+                        MessagePojo currentMessage = Engine.getInstance().getTransactionService().getMessage(
+                                messagePojo.getMessageId() );
+                        if (currentMessage != null) {
+                            if (currentMessage.getConversation() != null) {
+                                conversationStatus = currentMessage.getConversation().getStatus();
+                            }
+                            TransactionDAO transactionDAO = (TransactionDAO) Engine.getInstance().getDao( "transactionDao" );
+                            transactionDAO.reattachRecord( messagePojo );
+                            transactionDAO.reattachRecord( conversationPojo );
+                        }
+                    } catch (Exception e) {
+                        LOG.error( "Unexpected error in message sender thread", e );
+                    }
+
+                    if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
+                        LOG.error( new LogMessage(
+                                "Maximum number of retries reached without receiving acknowledgment - choreography: "
+                                        + messagePojo.getConversation().getChoreography().getName(), messagePojo ) );
+                    } else {
+                        LOG.debug( new LogMessage( "Max number of retries reached!", messagePojo ) );
+                    }
+                    
+                    if (!(conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE &&
+                        conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED)) {
+    
+                        LOG.debug( "NOT updating status in cancelRetrying() method" );
+                    }
+                    cancelRetrying( conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_IDLE &&
+                            conversationStatus != org.nexuse2e.Constants.CONVERSATION_STATUS_COMPLETED );
+                } // synchronized
             }
         } // run
 
