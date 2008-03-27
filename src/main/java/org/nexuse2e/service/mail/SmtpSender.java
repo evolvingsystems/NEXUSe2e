@@ -83,21 +83,22 @@ import org.nexuse2e.util.CertificateUtil;
  */
 public class SmtpSender extends AbstractService implements SenderAware {
 
-    private static Logger      LOG                 = Logger.getLogger( SmtpSender.class );
+    private static Logger      LOG                   = Logger.getLogger( SmtpSender.class );
 
-    public static final String HOST_PARAM_NAME     = "host";
-    public static final String PORT_PARAM_NAME     = "port";
-    public static final String EMAIL_PARAM_NAME    = "email";
-    public static final String USER_PARAM_NAME     = "user";
-    public static final String PASSWORD_PARAM_NAME = "password";
+    public static final String HOST_PARAM_NAME       = "host";
+    public static final String PORT_PARAM_NAME       = "port";
+    public static final String EMAIL_PARAM_NAME      = "email";
+    public static final String USER_PARAM_NAME       = "user";
+    public static final String PASSWORD_PARAM_NAME   = "password";
     public static final String ENCRYPTION_PARAM_NAME = "encrpytion";
 
     private TransportSender    transportSender;
 
     public SmtpSender() {
+
         super();
     }
-    
+
     @Override
     public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
 
@@ -115,30 +116,32 @@ public class SmtpSender extends AbstractService implements SenderAware {
         encryptionTypeDrowdown.addElement( "None", "none" );
         encryptionTypeDrowdown.addElement( "TLS", "tls" );
         encryptionTypeDrowdown.addElement( "SSL", "ssl" );
-        parameterMap.put( ENCRYPTION_PARAM_NAME, new ParameterDescriptor(
-                ParameterType.LIST, "Encryption", "Connection encryption type", encryptionTypeDrowdown ) );
+        parameterMap.put( ENCRYPTION_PARAM_NAME, new ParameterDescriptor( ParameterType.LIST, "Encryption",
+                "Connection encryption type", encryptionTypeDrowdown ) );
     }
 
     private boolean isSslEnabled() {
+
         ListParameter lp = getParameter( ENCRYPTION_PARAM_NAME );
-        if (lp != null) {
-            if ("ssl".equals( lp.getSelectedValue() )) {
+        if ( lp != null ) {
+            if ( "ssl".equals( lp.getSelectedValue() ) ) {
                 return true;
             }
         }
         return false;
     }
-    
+
     private boolean isTlsEnabled() {
+
         ListParameter lp = getParameter( ENCRYPTION_PARAM_NAME );
-        if (lp != null) {
-            if ("tls".equals( lp.getSelectedValue() )) {
+        if ( lp != null ) {
+            if ( "tls".equals( lp.getSelectedValue() ) ) {
                 return true;
             }
         }
         return false;
     }
-    
+
     @Override
     public void start() {
 
@@ -173,8 +176,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
             // LOG.trace( "sendMessage: " + smtpHost + " - " + smtpUser + " - " + smtpPassword );
             Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
-                    (String) getParameter( USER_PARAM_NAME ),
-                    (String) getParameter( PASSWORD_PARAM_NAME ),
+                    (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ),
                     (String) getParameter( PORT_PARAM_NAME ) );
             if ( connectionInfo != null ) {
                 session = (Session) connectionInfo[0];
@@ -201,7 +203,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
                 // Send the message
                 sendMessage( transport, mimeMsg, new Address[] { addr} );
-                
+
                 transport.close();
             } else {
                 LOG.error( "Cannot connect" );
@@ -217,35 +219,49 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
         boolean ssl = isSslEnabled();
         boolean tls = isTlsEnabled();
+        boolean authenticate = false;
+
+        if ( !StringUtils.isEmpty( user ) && !StringUtils.isEmpty( password ) ) {
+            authenticate = true;
+        }
 
         String protocol = ssl ? "smtps" : "smtp";
-        
+
         if ( host != null && !host.trim().equals( "" ) ) {
             Properties props = new Properties( System.getProperties() );
             props.put( "mail." + protocol + ".host", host );
-            props.put( "mail." + protocol + ".auth", "true" );
-            if (!StringUtils.isEmpty( port )) {
+            if ( authenticate ) {
+                props.put( "mail." + protocol + ".auth", "true" );
+            } else {
+                props.put( "mail." + protocol + ".auth", "false" );
+            }
+            if ( !StringUtils.isEmpty( port ) ) {
                 props.put( "mail." + protocol + ".port", port );
             } else {
                 props.remove( "mail." + protocol + ".port" );
             }
-            if (ssl) {
+            if ( ssl ) {
                 props.put( "mail." + protocol + ".socketFactory.class", CertificatePojoSocketFactory.class.getName() );
             }
             props.put( "mail." + protocol + ".starttls.enable", Boolean.toString( tls ) );
-            
+
             props.put( "mail.host", host );
 
             // Get a Session object
             Session session = Session.getInstance( props, null );
 
-            PasswordAuthentication passwordAuthentication = new PasswordAuthentication( user, password );
             String urlNameString = protocol + "://" + host;
             URLName urlName = new URLName( urlNameString );
-
-            session.setPasswordAuthentication( urlName, passwordAuthentication );
+            if ( authenticate ) {
+                PasswordAuthentication passwordAuthentication = new PasswordAuthentication( user, password );
+                session.setPasswordAuthentication( urlName, passwordAuthentication );
+            }
             Transport transport = session.getTransport( urlName );
-            transport.connect( host, user, password );
+            if ( authenticate ) {
+                transport.connect( host, user, password );
+            } else {
+                transport.connect();
+            }
 
             return new Object[] { session, transport};
         }
@@ -397,8 +413,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
             // LOG.trace( "sendMessage: " + smtpHost + " - " + smtpUser + " - " + smtpPassword );
             Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
-                    (String) getParameter( USER_PARAM_NAME ),
-                    (String) getParameter( PASSWORD_PARAM_NAME ),
+                    (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ),
                     (String) getParameter( PORT_PARAM_NAME ) );
             session = (Session) connectionInfo[0];
             transport = (Transport) connectionInfo[1];
@@ -447,8 +462,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
         try {
             Object[] connectionInfo = connect( (String) getParameter( HOST_PARAM_NAME ),
-                    (String) getParameter( USER_PARAM_NAME ),
-                    (String) getParameter( PASSWORD_PARAM_NAME ),
+                    (String) getParameter( USER_PARAM_NAME ), (String) getParameter( PASSWORD_PARAM_NAME ),
                     (String) getParameter( PORT_PARAM_NAME ) );
             session = (Session) connectionInfo[0];
             transport = (Transport) connectionInfo[1];
