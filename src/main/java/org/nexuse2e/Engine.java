@@ -279,7 +279,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
         try {
             // undefined - no db connection, spring not configured.
-            // instanciated - db connected, string config loaded.
+            // instantiated - db connected, string config loaded.
             // initialized - engineconfig loaded
             // started - transports and connectors are running.
 
@@ -355,6 +355,8 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
                     status = BeanStatus.ERROR;
                     return;
                 }
+            } else {
+                currentConfiguration.init();
             }
 
             // Add transaction service to static beans so its life cylcle is managed correctly

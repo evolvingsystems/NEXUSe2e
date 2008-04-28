@@ -134,4 +134,11 @@ public class DatabaseLogger extends AbstractLogger {
         status = BeanStatus.INITIALIZED;
     }
 
+    @Override
+    public void teardown() {
+
+        logDao = null;
+        super.teardown();
+    }
+
 }
