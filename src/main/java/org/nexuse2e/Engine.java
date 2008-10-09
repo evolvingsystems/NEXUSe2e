@@ -1074,6 +1074,9 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         }
         currentConfiguration = null;
 
+        // Invalidate cached configuration copies
+        invalidateConfigurations();
+        
     } // deactivate
 
     /**
@@ -1171,6 +1174,17 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         }
     }
 
+    /**
+     * Detaches all configurations.
+     * @param key The key.
+     */
+    public void invalidateConfigurations() {
+
+        if ( configurations != null ) {
+            configurations.clear();
+        }
+    }
+    
     /**
      * @return the localSessionFactoryBean
      */
