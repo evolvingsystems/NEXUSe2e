@@ -1,0 +1,2 @@
+Please download Apache CXF 2.0.6 from http://cxf.apache.org/download.html
+and copy the library to this folder (<project_root>/lib).

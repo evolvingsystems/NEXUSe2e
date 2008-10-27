@@ -23,7 +23,7 @@ mvn install:install-file -DgroupId=org.nexuse2e -DartifactId=nexuse2e_legacy -Dv
 mvn install:install-file -DgroupId=org.apache.incubator -DartifactId=ftpserver -Dversion=0.1 -Dpackaging=jar -Dfile=lib/ftpserver-dev.jar
 #mvn install:install-file -DgroupId=javax.xml.bind -DartifactId=jaxb-api -Dversion=2.0 -Dpackaging=jar -Dfile=lib/jaxb-api.jar
 mvn install:install-file -DgroupId=javax.xml.bind -DartifactId=jaxb-impl -Dversion=2.0.5 -Dpackaging=jar -Dfile=lib/jaxb-impl.jar
-mvn install:install-file -DgroupId=org.apache.cxf -DartifactId=apache-cxf -Dversion=2.0.4-incubator -Dpackaging=jar -Dfile=lib/cxf-2.0.4-incubator.jar
+mvn install:install-file -DgroupId=org.apache.cxf -DartifactId=apache-cxf -Dversion=2.0.6 -Dpackaging=jar -Dfile=lib/cxf-2.0.6.jar
 
 mvn install:install-file -DgroupId=org.eclipse.birt -DartifactId=coreapi -Dversion=2.2.1 -Dpackaging=jar -Dfile=lib/coreapi.jar
 mvn install:install-file -DgroupId=org.eclipse.birt -DartifactId=engineapi -Dversion=2.2.1 -Dpackaging=jar -Dfile=lib/engineapi.jar
