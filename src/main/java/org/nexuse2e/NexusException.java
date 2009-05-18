@@ -1,25 +1,27 @@
 /**
- * NEXUSe2e Business Messaging Open Source  
- * Copyright 2007, Tamgroup and X-ioma GmbH   
- *  
- * This is free software; you can redistribute it and/or modify it  
- * under the terms of the GNU Lesser General Public License as  
- * published by the Free Software Foundation version 2.1 of  
- * the License.  
- *  
- * This software is distributed in the hope that it will be useful,  
- * but WITHOUT ANY WARRANTY; without even the implied warranty of  
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
- * Lesser General Public License for more details.  
- *  
- * You should have received a copy of the GNU Lesser General Public  
- * License along with this software; if not, write to the Free  
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ *  NEXUSe2e Business Messaging Open Source
+ *  Copyright 2000-2009, Tamgroup and X-ioma GmbH
+ *
+ *  This is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation version 2.1 of
+ *  the License.
+ *
+ *  This software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this software; if not, write to the Free
+ *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e;
 
 import javax.xml.ws.WebFault;
+
+import org.nexuse2e.logging.LogMessage;
 
 @WebFault(name = "NexusException", targetNamespace="http://integration.nexuse2e.org")
 public class NexusException extends Exception {
@@ -57,6 +59,35 @@ public class NexusException extends Exception {
     public NexusException( String message, Exception nested ) {
 
         super( message, nested );
+    }
+    
+    /**
+     * Initializes the exception from a LogMessage instance.
+     * @param logMessage The LogMessage that carries the information for this exception.
+     */
+    public NexusException( LogMessage logMessage ) {
+    	super( logMessage.toString() );
+    	setInfoFromLogMessage( logMessage );
+    }
+    
+    /**
+     * Initializes the exception from a LogMessage instance.
+     * @param logMessage The LogMessage that carries the information for this exception.
+     * @param nested The nested cause of this exception.
+     */
+    public NexusException( LogMessage logMessage, Exception nested ) {
+    	super( logMessage.toString(), nested );
+    	setInfoFromLogMessage( logMessage );
+    }
+    
+    /**
+     * Initializes the <code>conversationId</code> and <code>messageId</code>
+     * fields of this instance from the given <code>logMessage</code>.
+     * @param logMessage The LogMessage that carries the information for this exception.
+     */
+    private void setInfoFromLogMessage( LogMessage logMessage ) {
+    	setConversationId( logMessage.getConversationId() );
+    	setMessageId( logMessage.getMessageId() );
     }
 
     public String getConversationDetails() {
