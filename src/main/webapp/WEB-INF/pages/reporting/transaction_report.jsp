@@ -7,6 +7,9 @@
 <%@ taglib uri="/tags/struts-html-el" prefix="html-el"%>
 <%@ taglib uri="/tags/nexus" prefix="nexus"%>
 
+
+<%@page import="java.util.Calendar"%>
+
 <style type="text/css" media="screen">
 <!--
 .fixedsize {
@@ -273,16 +276,17 @@
 			<td class="NEXUSValue" align="left"><html:select
 				onchange="javascript: scriptScope.disableLinks();"
 				property="startYear">
-                <html:option value="2012" />
-                <html:option value="2011" />
-                <html:option value="2010" />
-				<html:option value="2009" />
-				<html:option value="2008" />
-				<html:option value="2007" />
-				<html:option value="2006" />
-				<html:option value="2005" />
-				<html:option value="2004" />
-				<html:option value="2003" />
+				<%
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.YEAR, 2);
+				for (int i = 0; i < 10; i++) {
+					request.setAttribute("year", new Integer(cal.get(Calendar.YEAR)));
+					cal.add(Calendar.YEAR, -1);
+				%>
+                	<html-el:option value="${year}" />
+                <%
+				}
+                %>
 			</html:select> <html:select onchange="javascript: scriptScope.disableLinks();"
 				property="startMonth">
 				<html:option value="01">January</html:option>
@@ -373,16 +377,17 @@
 			<td class="NEXUSValue" align="left"><html:select
 				onchange="javascript: scriptScope.disableLinks();"
 				property="endYear">
-                <html:option value="2012" />
-                <html:option value="2011" />
-                <html:option value="2010" />
-				<html:option value="2009" />
-				<html:option value="2008" />
-				<html:option value="2007" />
-				<html:option value="2006" />
-				<html:option value="2005" />
-				<html:option value="2004" />
-				<html:option value="2003" />
+				<%
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.YEAR, 2);
+				for (int i = 0; i < 10; i++) {
+					request.setAttribute("year", new Integer(cal.get(Calendar.YEAR)));
+					cal.add(Calendar.YEAR, -1);
+				%>
+                	<html-el:option value="${year}" />
+                <%
+				}
+                %>
 			</html:select> <html:select onchange="javascript: scriptScope.disableLinks();"
 				property="endMonth">
 				<html:option value="01">January</html:option>
