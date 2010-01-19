@@ -808,6 +808,28 @@
              <goal>wsdl2java</goal>
            </goals>
          </execution>
+         
+         <execution>
+           <id>generate-info-ws</id>
+           <phase>generate-sources</phase>
+           <configuration>
+             <sourceRoot>${basedir}/src/main/java</sourceRoot>
+             <wsdlOptions>
+               <wsdlOption>
+                 <wsdl>${basedir}/src/main/resources/org/nexuse2e/integration/NEXUSe2eInfo.wsdl</wsdl>
+                 <extraargs>
+                   <extraarg>-p</extraarg>
+                   <extraarg>org.nexuse2e.integration.info.wsdl</extraarg>
+                   <extraarg>-wsdlLocation</extraarg>
+                   <extraarg>classpath:org/nexuse2e/integration/NEXUSe2eInfo.wsdl</extraarg>
+                 </extraargs>
+               </wsdlOption>
+             </wsdlOptions>
+           </configuration>
+           <goals>
+             <goal>wsdl2java</goal>
+           </goals>
+         </execution>
        </executions>
      </plugin>
 
