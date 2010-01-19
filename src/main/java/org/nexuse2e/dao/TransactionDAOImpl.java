@@ -20,18 +20,27 @@
 package org.nexuse2e.dao;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.Type;
 import org.nexuse2e.Constants;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.controller.StateTransitionException;
@@ -301,6 +310,40 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         }
         return ( (Number) sqlquery.uniqueResult() ).longValue();
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.nexuse2e.dao.TransactionDAO#getLogCount(java.util.Date, java.util.Date)
+     */
+    public Map<Level, Long> getLogCount( Date start, Date end, Level minLevel, Level maxLevel ) throws NexusException {
+
+        int min = (minLevel == null ? 0 : minLevel.toInt());
+        int max = (maxLevel == null ? 1000000 : maxLevel.toInt());
+        
+        Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
+        StringBuilder query = new StringBuilder( "select count(nx_log_id) as msg_count, severity from nx_log log " );
+        if (minLevel != null || maxLevel != null) {
+            query.append( "where severity >= " );
+            query.append( min );
+            query.append( " and severity <= " );
+            query.append( max );
+            query.append( " " );
+        }
+        Map<String, Timestamp> map = appendQueryDate( query, "log", start, end );
+        query.append( " group by severity" );
+        Query sqlquery = session.createSQLQuery( query.toString() );
+        for (String name : map.keySet()) {
+            sqlquery.setTimestamp( name, map.get( name ) );
+        }
+        List<?> l = sqlquery.list();
+        Map<Level, Long> result = new LinkedHashMap<Level, Long>( l.size() );
+        for (Object o : l) {
+            Object[] kv = (Object[]) o;
+            Long count = new Long( ((Number) kv[0]).longValue() );
+            Level level = Level.toLevel( ((Number) kv[1]).intValue() );
+            result.put( level, count );
+        }
+        return result;
     }
 
     /* (non-Javadoc)
@@ -1069,6 +1112,155 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         return getCountThroughSessionFind( dc );
     }
     
+    public List<int[]> getConversationStatesSince( Date since ) {
+        
+        DetachedCriteria dc = DetachedCriteria.forClass( ConversationPojo.class );
+        dc.add( Restrictions.ge( "createdDate", since ) );
+        ProjectionList pros = Projections.projectionList();
+        pros.add( Projections.groupProperty( "status" ) );
+        pros.add( Projections.count( "status" ) );
+        dc.setProjection( pros );
+        
+        List<?> l = getListThroughSessionFind( dc, 0, Integer.MAX_VALUE );
+        List<int[]> list = new ArrayList<int[]>( l.size() );
+        for (Object o : l) {
+            int[] kv = new int[] {
+                    ((Number) ((Object[]) o)[0]).intValue(),
+                    ((Number) ((Object[]) o)[1]).intValue()
+            };
+            list.add( kv );
+        }
+        
+        return list;
+    }
+    
+    public List<int[]> getMessageStatesSince( Date since ) {
+        
+        DetachedCriteria dc = DetachedCriteria.forClass( MessagePojo.class );
+        dc.add( Restrictions.ge( "createdDate", since ) );
+        dc.add( Restrictions.eq( "type", 1 ) );
+        ProjectionList pros = Projections.projectionList();
+        pros.add( Projections.groupProperty( "status" ) );
+        pros.add( Projections.count( "status" ) );
+        dc.setProjection( pros );
+        
+        List<?> l = getListThroughSessionFind( dc, 0, Integer.MAX_VALUE );
+        List<int[]> list = new ArrayList<int[]>( l.size() );
+        for (Object o : l) {
+            int[] kv = new int[] {
+                    ((Number) ((Object[]) o)[0]).intValue(),
+                    ((Number) ((Object[]) o)[1]).intValue()
+            };
+            list.add( kv );
+        }
+        
+        return list;
+    }
+    
+    public List<String[]> getMessagesPerConversationSince( Date since ) {
+        
+        DetachedCriteria dc = DetachedCriteria.forClass( MessagePojo.class );
+        dc.createAlias( "conversation", "theConversation", Criteria.INNER_JOIN );
+        dc.createAlias( "theConversation.choreography", "theChoreography", Criteria.INNER_JOIN );
+        ProjectionList pros = Projections.projectionList();
+        pros.add( Projections.groupProperty( "theChoreography.name" ) );
+        pros.add( Projections.count( "messageId" ) );
+        dc.setProjection( pros );
+        dc.add( Restrictions.ge( "createdDate", since ) );
+        dc.add( Restrictions.eq( "type", 1 ) );
+        
+
+        List<?> l = getListThroughSessionFind( dc, 0, Integer.MAX_VALUE );
+        List<String[]> list = new ArrayList<String[]>( l.size() );
+        for (Object o : l) {
+            String[] kv = new String[] {
+                    (((Object[]) o)[0]).toString(),
+                    ((Number) ((Object[]) o)[1]).toString()
+            };
+            list.add( kv );
+        }
+        
+        return list;
+    }
+    
+    public List<int[]> getMessagesPerHourLast24Hours() {
+
+        String hourFunction = "HOUR(created_date)";
+        DatabaseType t = getDatabaseType();
+        if (t == DatabaseType.MSSQL) {
+            hourFunction = "DATEPART(hour, created_date)";
+        } else if (t == DatabaseType.ORACLE) {
+            hourFunction = "EXTRACT(HOUR FROM created_date)";
+        }
+        
+        Calendar cal = Calendar.getInstance();
+        
+        cal.add( Calendar.DATE, -1 );
+        cal.set( Calendar.MINUTE, 0 );
+        cal.set( Calendar.SECOND, 0 );
+        cal.set( Calendar.MILLISECOND, 0 );
+        cal.add( Calendar.HOUR_OF_DAY, 1 );
+        int currentHourOfDay = cal.get( Calendar.HOUR_OF_DAY );
+        List<int[]> list = new ArrayList<int[]>( 24 );
+        
+        if (t == DatabaseType.DERBY) {
+            // derby doesn't like functional expressions in GRUP BY, so we create one query per hour
+            for (int i = 0; i < 24; i++) {
+                DetachedCriteria dc = DetachedCriteria.forClass( MessagePojo.class );
+                dc.setProjection( Projections.count( "nxMessageId" ) );
+                Date from = cal.getTime();
+                int hourOfDay = cal.get( Calendar.HOUR_OF_DAY );
+                cal.add( Calendar.HOUR_OF_DAY, 1 );
+                Date to = cal.getTime();
+                dc.add( Restrictions.eq( "type", 1 ) );
+                dc.add( Restrictions.ge( "createdDate", from ) );
+                dc.add( Restrictions.lt( "createdDate", to ) );
+        
+                List<?> l = getListThroughSessionFind( dc, 0, Integer.MAX_VALUE );
+                Object o = l.get( 0 );
+                int[] kv = new int[] {
+                        hourOfDay,
+                        ((Number) o).intValue()
+                };
+                list.add( kv );
+            }
+        } else {
+            // default implementation for "normal" DBMS
+            DetachedCriteria dc = DetachedCriteria.forClass( MessagePojo.class );
+            ProjectionList pros = Projections.projectionList();
+            pros.add( Projections.sqlGroupProjection(
+                    hourFunction + " AS messageHour, COUNT(nx_message_id) AS messageCount", "messageHour",
+                    new String[] { "messageHour", "messageCount" },
+                    new Type[] { new IntegerType(), new IntegerType() } ) );
+            dc.setProjection( pros );
+            dc.add( Restrictions.ge( "createdDate", cal.getTime() ) );
+            dc.add( Restrictions.eq( "type", 1 ) );
+            dc.addOrder( Order.asc( "createdDate" ) );
+    
+            List<?> l = getListThroughSessionFind( dc, 0, Integer.MAX_VALUE );
+    
+            
+            // create default 0-message entries
+            for (int i = currentHourOfDay; i < currentHourOfDay + 24; i++) {
+                list.add( new int[] { i % 24, 0 } );
+            }
+            
+            // put list entries to appropriate positions
+            for (Object o : l) {
+                int hour = ((Number) ((Object[]) o)[0]).intValue();
+                int value = ((Number) ((Object[]) o)[1]).intValue();
+                
+                int index = hour - currentHourOfDay;
+                if (index < 0) {
+                    index += 24;
+                }
+                list.set( index, new int[] { hour, value } );
+            }
+        }
+        
+        return list;
+    }
+
     public Session getDBSession() {
         return getHibernateTemplate().getSessionFactory().openSession();
     }
