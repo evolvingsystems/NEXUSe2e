@@ -101,6 +101,6 @@ public interface PersistentPropertyDAO {
      * otherwise rolled back. Shall not be <code>null</code>.
      */
     public void updatePersistentPropertyInTransaction(
-            String namespace, String version, String name, PersistenPropertyUpdateCallback callback);
+            String namespace, String version, String name, PersistentPropertyUpdateCallback callback);
 
 }

@@ -9,7 +9,7 @@ import org.nexuse2e.pojo.PersistentPropertyPojo;
  * @author Jonas Reese
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
-public interface PersistenPropertyUpdateCallback {
+public interface PersistentPropertyUpdateCallback {
 
     /**
      * Callback method that will be invoked by Hollywood.

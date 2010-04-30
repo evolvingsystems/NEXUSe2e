@@ -5,8 +5,8 @@ import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.Constants.ParameterType;
-import org.nexuse2e.dao.PersistenPropertyUpdateCallback;
 import org.nexuse2e.dao.PersistentPropertyDAO;
+import org.nexuse2e.dao.PersistentPropertyUpdateCallback;
 import org.nexuse2e.messaging.AbstractPipelet;
 import org.nexuse2e.messaging.MessageContext;
 import org.nexuse2e.pojo.MessagePayloadPojo;
@@ -93,7 +93,7 @@ public class IncrementingSequenceNumberGeneratorPipelet extends AbstractPipelet 
         final int[] seqRef = new int[1];
         
         dao.updatePersistentPropertyInTransaction(SEQUENCE_NAMESPACE, SEQUENCE_VERSION, key,
-                new PersistenPropertyUpdateCallback() {
+                new PersistentPropertyUpdateCallback() {
                     public boolean update(PersistentPropertyPojo property) {
                         int seq = 0;
                         if (property.getValue() != null) {

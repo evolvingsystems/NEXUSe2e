@@ -132,7 +132,7 @@ public class PersistentPropertyDAOImpl extends BasicDAOImpl implements Persisten
      */
     public void updatePersistentPropertyInTransaction(String namespace,
             String version, String name,
-            PersistenPropertyUpdateCallback callback) {
+            PersistentPropertyUpdateCallback callback) {
 
         if (callback != null) {
             DetachedCriteria dc = getQuery( namespace, version, false );
