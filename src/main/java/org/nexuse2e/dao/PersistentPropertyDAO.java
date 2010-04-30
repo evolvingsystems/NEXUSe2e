@@ -89,5 +89,18 @@ public interface PersistentPropertyDAO {
      * <code>transaction</code>) is <code>null</code>.
      */
     public abstract PersistentPropertyPojo getPersistentProperty( String namespace, String version, String name );
+    
+    /**
+     * Updates a persistent property in a transactional manner.
+     * @param namespace The namespace. Must not be <code>null</code>.
+     * @param version The version. Must not be <code>null</code>.
+     * @param name The name. Must not be <code>null</code>.
+     * @param callback The callback to be invoked. If the requested persistent property was not found,
+     * the callback will be invoked with a newly created <code>PersistenPropertyPojo</code> object.
+     * If the callback method returns <code>true</code>, persistent property changes will be committed,
+     * otherwise rolled back. Shall not be <code>null</code>.
+     */
+    public void updatePersistentPropertyInTransaction(
+            String namespace, String version, String name, PersistenPropertyUpdateCallback callback);
 
 }

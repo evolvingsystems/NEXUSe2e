@@ -126,4 +126,37 @@ public class PersistentPropertyDAOImpl extends BasicDAOImpl implements Persisten
         }
         return (PersistentPropertyPojo) l.get( 0 );
     }
+
+    /* (non-Javadoc)
+     * @see org.nexuse2e.dao.PersistentPropertyDAO#updatePersistentPropertyInTransaction(java.lang.String, java.lang.String, java.lang.String, org.nexuse2e.dao.PersistenPropertyUpdateCallback)
+     */
+    public void updatePersistentPropertyInTransaction(String namespace,
+            String version, String name,
+            PersistenPropertyUpdateCallback callback) {
+
+        if (callback != null) {
+            DetachedCriteria dc = getQuery( namespace, version, false );
+            dc.add( Restrictions.eq( "name", name ) );
+            Transaction t = getSession().beginTransaction();
+            try {
+                List<?> l = getListThroughSessionFind( dc,0,0 );
+                PersistentPropertyPojo property;
+                if (l != null && !l.isEmpty()) {
+                    property = (PersistentPropertyPojo) l.get(0);
+                } else {
+                    property = new PersistentPropertyPojo(0, namespace, version, name, null);
+                }
+                boolean commit = callback.update(property);
+    
+                if (commit) {
+                    saveOrUpdateRecord(property);
+                    t.commit();
+                } else {
+                    t.rollback();
+                }
+            } finally {
+                t.rollback();
+            }
+        }
+    }
 }
