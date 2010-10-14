@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://ws.testing.xioma.de/SimpleXMLDocService/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="SimpleXMLDocService"
+	targetNamespace="http://ws.testing.xioma.de/SimpleXMLDocService/">
+	<wsdl:types>
+		<xsd:schema
+			targetNamespace="http://ws.testing.xioma.de/SimpleXMLDocService/">
+			<xsd:element name="handleXMLDocResponse" type="xsd:anyType" />
+			<xsd:element name="handleXMLDocRequest" type="xsd:anyType" />
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="handleXMLDocResponse">
+		<wsdl:part element="tns:handleXMLDocResponse"
+			name="handleXMLDocResponse" />
+	</wsdl:message>
+	<wsdl:message name="handleXMLDocRequest">
+		<wsdl:part element="tns:handleXMLDocRequest"
+			name="handleXMLDocRequest" />
+	</wsdl:message>
+	<wsdl:portType name="SimpleXMLDocServicePortType">
+		<wsdl:operation name="handleXMLDoc">
+			<wsdl:input message="tns:handleXMLDocRequest" />
+			<wsdl:output message="tns:handleXMLDocResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="SimpleXMLDocServiceSOAP" type="tns:SimpleXMLDocServicePortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="handleXMLDoc">
+			<soap:operation
+				soapAction="handleXMLDoc" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="SimpleXMLDocService">
+		<wsdl:port binding="tns:SimpleXMLDocServiceSOAP" name="SimpleXMLDocServiceSOAP">
+			<soap:address location="http://roma:8080/NexusE2EServerNG/ngHandler/SimpleXMLDocService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

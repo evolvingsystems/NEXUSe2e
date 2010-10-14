@@ -1,0 +1,47 @@
+# Download necessary libraries
+#
+# Most libraries NEXUSe2e depends on are managed by Maven and will be
+# automatically downloaded later (see README.TXT for a explanation of the complete build process).
+# But there are some libraries that must be downloaded manually, because of license issues.
+#
+# 1. Go into the subfolder "lib" under the project root. There is one *.readme file for each needed
+# library. Each *.readme file contains a download URL and a library version number.
+#
+# 2 Copy all downloaded libraries into the "lib" folder and check whether their file names match the
+# names specified in this file.
+# Below there is one line for each library in the "lib" folder. Each line ends with a "-Dfile" parameter
+# (e.g. "-Dfile=lib/jta-1_0_1B-classes.zip"). # If the file name of a downloaded library does not match
+# the file name specified by the "-Dfile" parameter, rename the according file in the "lib" folder.
+#
+# 3. Afterwards execute the following Maven commands (in the project root).
+mvn install:install-file -DgroupId=bouncycastle -DartifactId=bcprov-jdk15 -Dversion=137 -Dpackaging=jar -Dfile=lib/bcprov-jdk15-137.jar
+mvn install:install-file -DgroupId=bouncycastle -DartifactId=bcmail-jdk15 -Dversion=137 -Dpackaging=jar -Dfile=lib/bcmail-jdk15-137.jar
+mvn install:install-file -DgroupId=json.org -DartifactId=json -Dversion=1.0 -Dpackaging=jar -Dfile=lib/json-1.0.jar
+mvn install:install-file -DgroupId=javamail -DartifactId=javamail -Dversion=1.4 -Dpackaging=jar -Dfile=lib/mail.jar
+mvn install:install-file -DgroupId=javax.transaction -DartifactId=jta -Dversion=1.0.1B -Dpackaging=jar -Dfile=lib/jta-1_0_1B-classes.zip
+mvn install:install-file -DgroupId=org.nexuse2e -DartifactId=nexuse2e_legacy -Dversion=3.6.5 -Dpackaging=jar -Dfile=lib/nexuse2e_legacy.jar
+mvn install:install-file -DgroupId=org.apache.incubator -DartifactId=ftpserver -Dversion=0.1 -Dpackaging=jar -Dfile=lib/ftpserver-dev.jar
+#mvn install:install-file -DgroupId=javax.xml.bind -DartifactId=jaxb-api -Dversion=2.0 -Dpackaging=jar -Dfile=lib/jaxb-api.jar
+mvn install:install-file -DgroupId=javax.xml.bind -DartifactId=jaxb-impl -Dversion=2.0.5 -Dpackaging=jar -Dfile=lib/jaxb-impl.jar
+mvn install:install-file -DgroupId=org.apache.cxf -DartifactId=apache-cxf -Dversion=2.0.4-incubator -Dpackaging=jar -Dfile=lib/cxf-2.0.4-incubator.jar
+
+mvn install:install-file -DgroupId=org.eclipse.birt -DartifactId=coreapi -Dversion=2.2.1 -Dpackaging=jar -Dfile=lib/coreapi.jar
+mvn install:install-file -DgroupId=org.eclipse.birt -DartifactId=engineapi -Dversion=2.2.1 -Dpackaging=jar -Dfile=lib/engineapi.jar
+mvn install:install-file -DgroupId=org.eclipse.birt -DartifactId=scriptapi -Dversion=2.2.1 -Dpackaging=jar -Dfile=lib/scriptapi.jar
+mvn install:install-file -DgroupId=org.eclipse.birt -DartifactId=modelapi -Dversion=2.2.1 -Dpackaging=jar -Dfile=lib/modelapi.jar
+
+# jgroups
+#mvn install:install-file -DgroupId=jgroups -DartifactId=jgroups-all -Dversion=2.6.2 -Dpackaging=jar -Dfile=lib/jgroups-all.jar
+mvn install:install-file -DgroupId=jgroups -DartifactId=jgroups-all -Dversion=2.6.6.GA -Dpackaging=jar -Dfile=lib/jgroups-all.jar
+
+# jsch
+mvn install:install-file -DgroupId=com.jcraft -DartifactId=jsch -Dversion=0.1.40 -Dpackaging=jar -Dfile=lib/jsch-0.1.40.jar
+
+
+
+
+#local added
+mvn install:install-file -DgroupId=javax.ws.rs -DartifactId=jsr311-api -Dversion=0.8 -Dpackaging=jar -Dfile=lib/jsr311-api-0.8.jar
+mvn install:install-file -DgroupId=org.apache.abdera -DartifactId=abdera-core -Dversion=0.4.0-incubating -Dpackaging=jar -Dfile=lib/abdera-core-0.4.0-incubating.jar
+mvn install:install-file -DgroupId=org.apache.abdera -DartifactId=abdera-parser -Dversion=0.4.0-incubating -Dpackaging=jar -Dfile=lib/abdera-parser-0.4.0-incubating.jar
+mvn install:install-file -DgroupId=org.apache.abdera -DartifactId=abdera-extensions-json -Dversion=0.4.0-incubating -Dpackaging=jar -Dfile=lib/abdera-extensions-json-0.4.0-incubating.jar

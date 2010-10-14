@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- The configuration format for the MultipleDirectoryScannerService in NEXUSe2e --> 
+    <xs:element name="DirectoryScannerConfig">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Configure one scanner -->
+                <xs:element name="Scanner" maxOccurs="unbounded" minOccurs="1">
+                    <xs:complexType>
+                        <!-- The directory to scan for files -->
+                        <xs:attribute name="dir" type="xs:string" use="required"/>
+                        <!-- The directory to backup files to (optional) -->
+                        <xs:attribute name="backupDir" type="xs:string" use="optional"/>
+                        <!-- Regular expression (java.util.regex.Pattern style) file pattern (optional) -->
+                        <xs:attribute name="filePattern" type="xs:string" use="optional"/>
+                        <!-- If true, assemble as single message from all files found in one scanning step, instead of one message per file (optional; default is false) -->
+                        <xs:attribute name="isMultiPayloadAssemblingEnabled" type="xs:boolean" use="optional"/>
+                        <!-- Interval inbetween directory scans (millseconds, optional) -->
+                        <xs:attribute name="interval" type="xs:long" use="optional"/>
+                        <!-- The partner to send the message -->
+                        <xs:attribute name="partnerId" type="xs:string" use="required"/>
+                        <!-- The choreography to use -->
+                        <xs:attribute name="choreographyId" type="xs:string" use="required"/>
+                        <!-- The action to trigger -->
+                        <xs:attribute name="actionId" type="xs:string" use="required"/>
+                        <!-- The XPATH statement to create the conversation ID to use (optional) -->
+                        <xs:attribute name="conversationXPath" type="xs:string" use="optional"/>
+                        <!-- The mapping and conversion service (optional) -->
+                        <xs:attribute name="mappingServiceName" type="xs:string" use="optional"/>
+                        <!-- The direction of new messages (optional; default is "outbound").
+                        		 If value is "outbound", the message will be dispatched to the outbound backend dispatcher.
+                        		 If value is "inbound", the message will be dispatched to a given instance of ReceiverAware interface. -->
+												<xs:attribute name="direction" use="optional" default="outbound">
+													<xs:simpleType>
+														<xs:restriction base="xs:string">
+															<xs:enumeration value="outbound" />
+															<xs:enumeration value="inbound" />
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

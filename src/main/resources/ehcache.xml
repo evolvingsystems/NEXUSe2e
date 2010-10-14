@@ -1,0 +1,81 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<ehcache>
+
+    <!-- Sets the path to the directory where cache .data files are created.
+
+         If the path is a Java System Property it is replaced by
+         its value in the running VM.
+
+         The following properties are translated:
+         user.home - User's home directory
+         user.dir - User's current working directory
+         java.io.tmpdir - Default temp file path -->
+  <diskStore path="java.io.tmpdir"/>
+
+
+    <!--Default Cache configuration. These will applied to caches programmatically created through
+        the CacheManager.
+
+        The following attributes are required for defaultCache:
+
+        maxInMemory       - Sets the maximum number of objects that will be created in memory
+        eternal           - Sets whether elements are eternal. If eternal,  timeouts are ignored and the element
+                            is never expired.
+        timeToIdleSeconds - Sets the time to idle for an element before it expires. Is only used
+                            if the element is not eternal. Idle time is now - last accessed time
+        timeToLiveSeconds - Sets the time to live for an element before it expires. Is only used
+                            if the element is not eternal. TTL is now - creation time
+        overflowToDisk    - Sets whether elements can overflow to disk when the in-memory cache
+                            has reached the maxInMemory limit.
+
+        -->
+  <cache name="org.nexuse2e.pojo.ConversationPojo"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="600"
+    overflowToDisk="true"
+    />
+  <cache name="org.nexuse2e.pojo.MessagePojo"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="600"
+    overflowToDisk="true"
+    />
+
+  <cache name="org.nexuse2e.pojo.MessagePayloadPojo"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="300"
+    timeToLiveSeconds="600"
+    overflowToDisk="true"
+    />
+  <defaultCache
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="6000"
+    timeToLiveSeconds="6000"
+    overflowToDisk="true"
+    />
+</ehcache>
