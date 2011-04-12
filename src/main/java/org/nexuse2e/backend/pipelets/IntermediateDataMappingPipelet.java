@@ -161,7 +161,7 @@ public class IntermediateDataMappingPipelet extends AbstractPipelet {
                     throw new NexusException( new LogMessage( "Error converting records: " + e, messageContext) );
                 }
             } else {
-                LOG.error( new LogMessage( "no records found", messageContext) );
+                LOG.warn( new LogMessage( "no records found", messageContext) );
             }
         } else {
             LOG.warn( new LogMessage("No configuration file specified - no mapping possible.",messageContext) );
