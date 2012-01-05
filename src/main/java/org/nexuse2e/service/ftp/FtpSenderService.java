@@ -275,7 +275,7 @@ public class FtpSenderService extends AbstractService implements SenderAware {
             }
 
         } catch ( Exception e ) {
-            LOG.error(new LogMessage("Error uploading to SFTP account (" + messageContext.getMessagePojo().getParticipant().getConnection().getUri() + ")", messageContext), e);
+            LOG.error(new LogMessage("Error uploading to SFTP account (" + messageContext.getMessagePojo().getParticipant().getConnection().getUri() + ")", messageContext.getMessagePojo()), e);
             // bugfix: #10
             if ( e instanceof NexusException ) {
                 throw (NexusException) e;
