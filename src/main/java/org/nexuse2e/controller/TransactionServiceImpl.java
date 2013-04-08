@@ -623,7 +623,7 @@ public class TransactionServiceImpl implements TransactionService {
         try {
             updateTransaction( messagePojo, true );
         } catch (StateTransitionException stex) {
-            LOG.error( new LogMessage( "Program error: Unexpected " + stex + " was thrown",messagePojo) );
+            LOG.error( new LogMessage( "Program error: Unexpected " + stex + " was thrown", messagePojo) );
             stex.printStackTrace();
         }
         deregisterProcessingMessage( id );
@@ -844,7 +844,7 @@ public class TransactionServiceImpl implements TransactionService {
     /* (non-Javadoc)
      * @see org.nexuse2e.Manageable#teardown()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void teardown() {
 
         LOG.trace( "Tearing down..." );
@@ -989,7 +989,6 @@ public class TransactionServiceImpl implements TransactionService {
         
         return getTransactionDao().getMessagesPerHourLast24Hours();
     }
-
 
     public long removeLogEntries( Date start, Date end ) throws NexusException {
 
