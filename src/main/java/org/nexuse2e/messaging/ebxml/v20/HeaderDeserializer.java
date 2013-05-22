@@ -327,7 +327,7 @@ public class HeaderDeserializer extends AbstractPipelet {
             messagePojo = Engine.getInstance().getTransactionService().initializeMessage( messagePojo, messageId,
                     conversationId, actionId, fromId, choreographyId );
         } catch ( NexusException ex ) {
-            LOG.error(new LogMessage(  "Error creating message: " + ex ,messagePojo));
+            LOG.error(new LogMessage(  "Error creating message: " + ex ,messagePojo), ex);
             LOG.info( new LogMessage( "Header received:\n" + new String( messagePojo.getHeaderData() ),messagePojo) );
             throw ex;
         }

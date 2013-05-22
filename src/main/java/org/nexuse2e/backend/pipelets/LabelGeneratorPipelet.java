@@ -21,7 +21,6 @@
 package org.nexuse2e.backend.pipelets;
 
 import java.io.ByteArrayInputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,11 +37,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.log4j.Logger;
-import org.nexuse2e.NexusException;
 import org.nexuse2e.Constants.BeanStatus;
+import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.Constants.ParameterType;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ParameterDescriptor;
-import org.nexuse2e.configuration.Constants.ParameterType;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.AbstractPipelet;
 import org.nexuse2e.messaging.MessageContext;
@@ -179,8 +178,7 @@ public class LabelGeneratorPipelet extends AbstractPipelet {
                 }
             }
         } catch ( Exception e ) {
-            LOG.error( new LogMessage( "Error parsing outbound document: " + e,messageContext.getMessagePojo()) );
-            e.printStackTrace();
+            LOG.error( new LogMessage( "Error parsing outbound document: " + e,messageContext.getMessagePojo()), e );
         }
 
         return messageContext;

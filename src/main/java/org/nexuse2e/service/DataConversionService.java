@@ -496,7 +496,7 @@ public class DataConversionService extends AbstractService {
                 return value;
             }
         } catch ( Exception e ) {
-            LOG.error( "Error while " + n + ": " + e );
+            LOG.error( "Error while " + n + ": " + e, e );
         }
         return null;
     }
@@ -546,7 +546,7 @@ public class DataConversionService extends AbstractService {
                 return sb.toString();
             }
         } catch ( Exception e ) {
-            LOG.error( "Error while replacing String: " + e );
+            LOG.error( "Error while replacing String: " + e, e );
         }
         return null;
     }
@@ -567,7 +567,7 @@ public class DataConversionService extends AbstractService {
             LOG.trace( "Executing XPATH: " + xPathStatement );
             xPathResult = xPathObj.evaluate( xPathStatement, document, XPathConstants.STRING );
         } catch ( XPathExpressionException e ) {
-            LOG.error( "Error executing XPath statement: " + e );
+            LOG.error( "Error executing XPath statement: " + e, e );
             e.printStackTrace();
         }
         if ( !( xPathResult instanceof String ) ) {
@@ -627,7 +627,7 @@ public class DataConversionService extends AbstractService {
             }
 
         } catch ( ParseException e ) {
-            LOG.error( "Error while parsing parameters: " + e );
+            LOG.error( "Error while parsing parameters: " + e, e );
         }
 
         return null;

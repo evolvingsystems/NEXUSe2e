@@ -164,9 +164,8 @@ public class XMLDataMappingPipelet extends AbstractPipelet {
                     }
                 }
             } catch ( Exception e ) {
-                e.printStackTrace();
-                LOG.error(new LogMessage(  "Error processing XML payload: " + e,messageContext ) );
-                throw new NexusException( "Error processing XML payload: " + e );
+                LOG.error(new LogMessage(  "Error processing XML payload: " + e,messageContext ), e );
+                throw new NexusException( "Error processing XML payload: " + e, e );
             }
 
         } else {
