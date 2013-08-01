@@ -1,0 +1,587 @@
+/**
+ *  NEXUSe2e Business Messaging Open Source
+ *  Copyright 2000-2009, Tamgroup and X-ioma GmbH
+ *
+ *  This is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation version 2.1 of
+ *  the License.
+ *
+ *  This software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this software; if not, write to the Free
+ *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+html,body {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	padding: 0px;
+	margin: 0px;
+	background-color: #FFFFFF;
+	text-align: center;
+	font-size: 10pt;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+a:link {
+	color: #000000;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #000000;
+	text-decoration: none
+}
+
+a:active {
+	color: #000000;
+	text-decoration: none
+}
+
+a:hover {
+	color: #000000;
+	text-decoration: none;
+}
+
+form {
+	margin: 0;
+}
+
+#header {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #666666;
+	height: 196px;
+	width: 100%;
+	text-align: left;
+	vertical-align: bottom;
+	color: #FFFFFF;
+	font-weight: bold;
+	background-image: url(../images/banner.jpg);
+	background-repeat: repeat;
+	background-position: 0px 0px;
+}
+
+#toolbar {
+	top: 196px;
+	left: 0px;
+	margin: 0px;
+	padding: 0px;
+	background-color: #666666;
+	height: 32px;
+	width: 100%;
+	text-align: left;
+	vertical-align: bottom;
+	color: #FFFFFF;
+	font-weight: bold;
+	background-image: url(../images/navigation.gif);
+	background-repeat: repeat;
+	background-position: 0px 0px;
+}
+
+#toolbar-left {
+	width: 235px;
+	top: 0px;
+	left: 0px;
+	padding: 0px;
+	margin: 0px;
+	background-image: url(../images/reflection.jpg);
+}
+
+#content {
+	height: 100%;
+	width: 100%;
+	left: 0%;
+	top: 0%;
+	position: relative;
+}
+
+a.apply_active:link {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #F37F36;
+    cursor: pointer;
+}
+
+a.apply_active:active {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #F37F36;
+    cursor: pointer;
+}
+
+a.apply_active:visited {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #F37F36;
+    cursor: pointer;
+}
+
+a.apply_active:hover {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #E56009;
+    cursor: pointer;
+}
+
+img.apply_active {
+    border-width: 0px;
+    border-style: none;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+a.apply_inactive:link {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #999999;
+    cursor: default;
+}
+
+a.apply_inactive:active {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #999999;
+    cursor: default;
+}
+
+a.apply_inactive:visited {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #999999;
+    cursor: default;
+}
+
+a.apply_inactive:hover {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: #444444;
+    cursor: default;
+}
+
+img.apply_inactive {
+    border-width: 0px;
+    border-style: none;
+    vertical-align: middle;
+    cursor: default;
+}
+
+a.navigationactive:link {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #EEEEEE;
+}
+
+a.navigationactive:active {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #EEEEEE;
+}
+
+a.navigationactive:visited {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #EEEEEE;
+}
+
+a.navigationactive:hover {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #444444;
+}
+
+img.navigationactive {
+	border-width: 0px;
+	border-style: none;
+	vertical-align: middle;
+}
+
+a.navigationnonactive:link {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #999999;
+}
+
+a.navigationnonactive:active {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #999999;
+}
+
+a.navigationnonactive:visited {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #999999;
+}
+
+a.navigationnonactive:hover {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #444444;
+}
+
+img.navigationnonactive {
+	border-width: 0px;
+	border-style: none;
+	vertical-align: middle;
+}
+
+#navigator {
+	text-align: left;
+	/*height: 100%;*/
+	width: 250px;
+	padding: 10px;
+	background-color: #FFFFFF;
+}
+
+#docpane {
+	padding: 10px;
+	background-color: #FFFFFF;
+}
+
+img.button {
+	border-width: 0px;
+	border-style: none;
+	vertical-align: middle;
+	padding: 5px;
+}
+
+a.button {
+	text-decoration: none;
+	color: #E56009;
+	font-weight: bold;
+	font-style: oblique;
+}
+
+.img {
+	border-width: 0px;
+	border-style: none;
+}
+
+
+
+/*
+ * ================
+ * OLD NEXUS styles
+ * ================
+ */
+TABLE {
+	background: white;
+	width: 100%;
+	padding: 0pt;
+	margin-bottom: 10pt;
+	border-width: 0pt;
+	border-style: none;
+}
+
+TABLE.NEXUS_TABLE {
+	background: #EEEEEE;
+}
+
+TABLE.NEXUS_BUTTON_TABLE {
+	background: #FFFFFF;
+	color: #E56009;
+}
+
+TD {
+	margin: 0;
+	border-width: 0pt;
+	border-style: none;
+	padding: 2pt;
+	font-family: verdana, garamond;
+	font-size: 10pt;
+}
+
+TABLE.NEXUS_TAB_TABLE {
+	width: 0;
+	padding: 0;
+	margin: 0;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+TD.NEXUS_TAB_UNSELECTED {
+	padding: 0;
+	background: #666666;
+	height: 20px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+A.NEXUS_TAB_UNSELECTED_LINK {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+A.NEXUS_TAB_UNSELECTED_LINK:visited {
+	color: #FFFFFF;
+}
+
+A.NEXUS_TAB_UNSELECTED_LINK:link {
+	color: #FFFFFF;
+}
+
+A.NEXUS_TAB_UNSELECTED_LINK:active {
+	color: #FFFFFF;
+}
+
+TD.NEXUS_TAB_LEFT_UNSELECTED {
+	padding: 0;
+	width: 20px;
+	height: 20px;
+}
+
+TD.NEXUS_TAB_RIGHT_UNSELECTED {
+	padding: 0;
+	width: 20px;
+	height: 20px;
+}
+
+TD.NEXUS_TAB_SELECTED {
+	padding: 0;
+	background: #CCCCCC;
+	height: 20px;
+	color: #000000;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+TD.NEXUS_TAB_LEFT_SELECTED {
+	padding: 0;
+	width: 20px;
+	height: 20px;
+}
+
+TD.NEXUS_TAB_RIGHT_SELECTED {
+	padding: 0;
+	width: 20px;
+	height: 20px;
+}
+
+TD.BUTTON_LEFT {
+	text-align: left;
+}
+
+TD.BUTTON_RIGHT {
+	text-align: right;
+	width: 95%;
+}
+
+.NEXUSLocation {
+	background: #EEEEEE;
+	font-size: 12pt;
+	white-space: nowrap;
+}
+
+.NEXUSScreenName {
+	background: #EEEEEE;
+	font-size: 12pt;
+	font-weight: bold;
+	font-family: arial;
+	color: #E56009;
+	font-style: oblique;
+	white-space: nowrap;
+}
+
+.NEXUSScreenPath {
+	background: #F8F8F8;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: arial;
+	color: #000000;
+	font-style: oblique;
+	white-space: nowrap;
+}
+
+.NEXUSScreenPathLink {
+	text-decoration: none;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: arial;
+	color: #000000;
+    background: #F0F0F0;
+	font-style: oblique;
+}
+
+.NEXUSScreenPathLinkInactive {
+	text-decoration: none;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: arial;
+	color: #888888;
+	font-style: oblique;
+}
+
+.NEXUSScreenPathLink:HOVER {
+	text-decoration: underline;
+	font-size: 10pt;
+	font-weight: bold;
+	font-family: arial;
+	color: #000000;
+	font-style: oblique;
+}
+
+.NEXUSSection {
+	background: #E0E0E0;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.NEXUSName {
+	background: #E8E8E8;
+	width: 25%;
+	white-space: nowrap;
+}
+
+.NEXUSNameNoWidth {
+	background: #E8E8E8;
+	white-space: nowrap;
+}
+
+.NEXUSIcon {
+	background: #E8E8E8;
+	white-space: nowrap;
+	width: 24px;
+}
+
+.NEXUSValue {
+	background: #E8E8E8;
+	color: #000000;
+	white-space: nowrap;
+}
+
+.NEXUSSelect {
+	background: #FFFFFF;
+	color: #000000;
+	white-space: nowrap;
+}
+
+.NEXUSValueDisabled {
+	background: #E8E8E8;
+	color: #aaaaaa;
+	white-space: nowrap;
+}
+
+.NexusHeaderLink {
+	text-decoration: none;
+	color: #E56009;
+	font-weight: bold;
+	font-style: normal;
+	width: 140px;
+}
+
+.NexusHeaderLink:hover {
+    font-style: oblique;
+}
+
+.NexusLink:link {
+	text-decoration: none;
+	border-width: 0pt;
+	font-family: verdana, garamond;
+	color: #E56009;
+	font-size: 10pt;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-right: 2px;
+	padding-left: 2px;
+}
+
+.NexusLink:visited {
+	text-decoration: none;
+	border-width: 0pt;
+	font-family: verdana, garamond;
+	color: #E56009;
+	font-size: 10pt;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-right: 2px;
+    padding-left: 2px;
+}
+
+.NexusLinkDisabled {
+	text-decoration: none;
+	border-width: 0pt;
+	font-family: verdana, garamond;
+	color: #E56009;
+	font-size: 10pt;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-right: 2px;
+    padding-left: 2px;
+}
+
+.NexusLink:hover {
+	text-decoration: none;
+	font-family: verdana, garamond;
+	font-style: italic;
+	font-size: 10pt;
+	color: #E56009;
+	border-width: 0pt;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-right: 0px;
+    padding-left: 4px;
+}
+
+.NexusDrillDownLink {
+	text-decoration: none;
+	color: #E56009;
+	font-style: oblique;
+	font-family: verdana, garamond;
+	font-size: 10pt;
+}
+
+.NexusDrillDownLink:HOVER {
+	text-decoration: underline;
+	color: #E56009;
+	font-family: verdana, garamond;
+	font-size: 10pt;
+	font-style: oblique;
+}
+
+.NexusError {
+	background-color: #FFCCCC;
+}
+
+.NexusMessage {
+	background-color: #CCFFCC;
+}
