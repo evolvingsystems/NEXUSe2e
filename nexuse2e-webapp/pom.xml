@@ -29,7 +29,7 @@
     <dependency>
       <groupId>org.nexuse2e</groupId>
       <artifactId>nexuse2e-core</artifactId>
-      <version>4.5.3</version>
+      <version>4.5.4</version>
     </dependency>
   </dependencies>
  <!-- build -->
