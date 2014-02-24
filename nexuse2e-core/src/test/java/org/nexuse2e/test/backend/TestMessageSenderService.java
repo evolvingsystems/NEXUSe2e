@@ -19,6 +19,7 @@
  */
 package org.nexuse2e.test.backend;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,6 +46,7 @@ public class TestMessageSenderService extends AbstractService implements Schedul
     public final static String  ACTION            = "action";
     public final static String  PARTNER           = "partner";
     public final static String  INTERVAL          = "interval";
+    public final static String  DAYTIME_DEPENDENT_INTERVAL = "daytimeinterval";
     private final static String DEFAULT_PAYLOAD   = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<test from=\"Xioma\"/>";
 
     private SchedulingService   schedulingService = null;
@@ -52,6 +54,8 @@ public class TestMessageSenderService extends AbstractService implements Schedul
     private String              action            = null;
     private String              partner           = null;
     private int                 interval          = 5000;
+    private boolean             daytimeDependentInterval = false;
+    private long                notifyCount       = 0;
 
     @Override
     public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
@@ -66,6 +70,8 @@ public class TestMessageSenderService extends AbstractService implements Schedul
                 "The Partner used for testing", "" ) );
         parameterMap.put( INTERVAL, new ParameterDescriptor( ParameterType.STRING, "Interval",
                 "Interval inbetween test messages (Millseconds)", "5000" ) );
+        parameterMap.put( DAYTIME_DEPENDENT_INTERVAL, new ParameterDescriptor( ParameterType.STRING, "Depend on daytime",
+                "Makes the interval depend on current daytime", false ) );
     }
 
     @Override
@@ -117,6 +123,7 @@ public class TestMessageSenderService extends AbstractService implements Schedul
         choreography = getParameter( CHOREOGRAPHY );
         partner = getParameter( PARTNER );
         interval = Integer.parseInt( (String) getParameter( INTERVAL ) );
+        daytimeDependentInterval = getParameter(DAYTIME_DEPENDENT_INTERVAL);
 
         if ( !StringUtils.isEmpty( schedulingServiceName ) ) {
 
@@ -154,6 +161,19 @@ public class TestMessageSenderService extends AbstractService implements Schedul
     }
 
     public void scheduleNotify() {
+        
+        // simulate business hours
+        if (daytimeDependentInterval) {
+            notifyCount++;
+            Calendar cal = Calendar.getInstance();
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            if (hour < 8 || hour > 16 && notifyCount % 3 == 0) {
+                return;
+            }
+            if (hour < 4 || hour > 20 && (notifyCount + 1) % 3 == 0) {
+                return;
+            }
+        }
 
         MessageContext messageContext;
         try {
