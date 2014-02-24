@@ -70,7 +70,7 @@ public class TestMessageSenderService extends AbstractService implements Schedul
                 "The Partner used for testing", "" ) );
         parameterMap.put( INTERVAL, new ParameterDescriptor( ParameterType.STRING, "Interval",
                 "Interval inbetween test messages (Millseconds)", "5000" ) );
-        parameterMap.put( DAYTIME_DEPENDENT_INTERVAL, new ParameterDescriptor( ParameterType.STRING, "Depend on daytime",
+        parameterMap.put( DAYTIME_DEPENDENT_INTERVAL, new ParameterDescriptor( ParameterType.BOOLEAN, "Depend on daytime",
                 "Makes the interval depend on current daytime", false ) );
     }
 
