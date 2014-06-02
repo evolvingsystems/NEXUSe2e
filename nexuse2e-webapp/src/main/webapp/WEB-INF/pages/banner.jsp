@@ -19,15 +19,19 @@
      02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="org.nexuse2e.Version"%>
 
-<div id="logo_div" style="margin-left: 76px; height: 164px; width: 159px; display: inline-block; background-image: url(images/logo.gif);">
+<div id="logo_div">
 </div>
-<div id="machine_div" style="position: absolute; top: 20px; right: 20px; height:28px; width:100%; text-align: right; display:inline;">
-	<div id="machine_div2" style="color:#ffffff;font-size:20pt;">
-		<%@ include file="../config/machine_name.txt" %>
-	</div>
-	<div  style="margin-top:10px; height:13px;" id="machine_div3">
+<div id="machine_div_1">
+	<%@ include file="../config/machine_name.txt" %>
+</div>
+<div id="machine_div_2">
 	<%= Version.getVersion() %>
-	</div>
+</div>
+<div id="logged_in_user">
+	<c:if test="${not empty nxUser}">
+		You're logged in as ${nxUser.firstName} ${nxUser.lastName}
+	</c:if>
 </div>
