@@ -1,4 +1,4 @@
-<%--
+<!--
 
      NEXUSe2e Business Messaging Open Source
      Copyright 2000-2009, Tamgroup and X-ioma GmbH
@@ -18,24 +18,26 @@
      Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
      02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
---%>
-<script type="text/javascript">
-	var djConfig = {
-		isDebug:false, parseOnLoad:true
-  };
-</script>
-  
-<script type="text/javascript" src="javascript/dojo/dojo.js"></script>
-
-<script language="JavaScript" type="text/javascript">
-	dojo.require("dijit.layout.BorderContainer");
-	dojo.require("dijit.layout.LinkPane");
-	dojo.require("dijit.layout.ContentPane");
-	dojo.require("dijit.Tree");
-	dojo.require("dijit.Dialog");
-	dojo.require("dijit.ProgressBar");
-	dojo.require("dijit.Tooltip");
-	dojo.require("dojo.fx");
-	dojo.require("dojox.layout.ContentPane");
-	dojo.require("dojo.io.iframe"); // Needed for file uploads
-</script>
+-->
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <script type="text/javascript">
+    	var djConfig = {
+    		isDebug:false, parseOnLoad:true
+      };
+    </script>
+      
+    <script type="text/javascript" src="javascript/dojo/dojo.js"><!-- COMMENT REQUIRED --></script>
+    
+    <script type="text/javascript">
+    	dojo.require("dijit.layout.BorderContainer");
+    	dojo.require("dijit.layout.LinkPane");
+    	dojo.require("dijit.layout.ContentPane");
+    	dojo.require("dijit.Tree");
+    	dojo.require("dijit.Dialog");
+    	dojo.require("dijit.ProgressBar");
+    	dojo.require("dijit.Tooltip");
+    	dojo.require("dojo.fx");
+    	dojo.require("dojox.layout.ContentPane");
+    	dojo.require("dojo.io.iframe"); // Needed for file uploads
+    </script>
+</jsp:root>

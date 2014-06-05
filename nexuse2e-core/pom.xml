@@ -433,12 +433,27 @@
      <version>1.3.5</version>
      <scope>compile</scope>
    </dependency>
-   <dependency>
-     <groupId>org.apache.struts</groupId>
-     <artifactId>struts-tiles</artifactId>
-     <version>1.3.5</version>
-     <scope>compile</scope>
-   </dependency>
+  <dependency>
+      <groupId>org.apache.tiles</groupId>
+      <artifactId>tiles-core</artifactId>
+      <version>2.2.2</version>
+      <classifier/>
+      <exclusions>
+          <exclusion>
+              <groupId>commons-logging</groupId>
+              <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <groupId>org.slf4j</groupId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  <dependency>
+      <groupId>org.apache.tiles</groupId>
+      <artifactId>tiles-jsp</artifactId>
+      <version>2.2.2</version>
+  </dependency>
    <dependency>
      <groupId>org.apache.xbean</groupId>
      <artifactId>xbean-kernel</artifactId>

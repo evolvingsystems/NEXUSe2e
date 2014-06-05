@@ -340,4 +340,33 @@
       <description>The parameter value</description>
     </attribute>
   </tag>
+  
+  <!-- Print NEXUSe2e version number -->
+  <tag>
+    <name>version</name>
+    <tag-class>org.nexuse2e.ui.taglib.Version</tag-class>
+    <description>Print version number.</description>
+  </tag>
+
+  <!-- Print NEXUSe2e machine name -->
+  <tag>
+    <name>machineName</name>
+    <tag-class>org.nexuse2e.ui.taglib.MachineName</tag-class>
+    <description>Print machine name.</description>
+  </tag>
+  <tag>
+    <name>jvmCharsetEncoding</name>
+    <tag-class>org.nexuse2e.ui.taglib.JvmCharsetEncoding</tag-class>
+    <description>Print JVM charset encoding.</description>
+  </tag>
+  <tag>
+    <name>nexusCharsetEncoding</name>
+    <tag-class>org.nexuse2e.ui.taglib.NexusCharsetEncoding</tag-class>
+    <description>Print NEXUSe2e charset encoding.</description>
+  </tag>
+  <tag>
+    <name>jceInstallationStatus</name>
+    <tag-class>org.nexuse2e.ui.taglib.JceInstallationStatus</tag-class>
+    <description>Print NEXUSe2e charset encoding.</description>
+  </tag>
 </taglib>

@@ -21,9 +21,10 @@
 
 -->
 
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
-            http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+  version="2.4">
 
   <display-name>NEXUSe2e</display-name>
 
@@ -93,28 +94,17 @@
     <url-pattern>/ajax/*</url-pattern>
   </servlet-mapping>
 
-  <!-- Struts: Standard Action Servlet Configuration (with debugging) -->
+  <!-- Spring MVC -->
   <servlet>
-    <servlet-name>action</servlet-name>
-    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+    <servlet-name>ControllerServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <init-param>
-      <param-name>config</param-name>
-      <param-value>/WEB-INF/struts/struts-config.xml</param-value>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:/org/nexuse2e/ui/config/webmvc-config.xml</param-value>
     </init-param>
-    <init-param>
-      <param-name>debug</param-name>
-      <param-value>3</param-value>
-    </init-param>
-    <init-param>
-      <param-name>detail</param-name>
-      <param-value>2</param-value>
-    </init-param>
-    <init-param>
-      <param-name>application</param-name>
-      <param-value>ApplicationResources</param-value>
-    </init-param>
-    <load-on-startup>4</load-on-startup>
+    <load-on-startup>1</load-on-startup>
   </servlet>
+
 
   <servlet-mapping>
     <servlet-name>NexusTransportDispatcher</servlet-name>
@@ -140,11 +130,11 @@
     <servlet-name>ReportImageHandlerServlet</servlet-name>
     <url-pattern>/reportimage/*</url-pattern>
   </servlet-mapping>
-  <!-- Struts: Standard Action Servlet Mapping -->
   <servlet-mapping>
-    <servlet-name>action</servlet-name>
-    <url-pattern>*.do</url-pattern>
+    <servlet-name>ControllerServlet</servlet-name>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
+  
   <session-config>
     <session-timeout>30</session-timeout><!-- 30 minutes -->
   </session-config>
@@ -198,56 +188,5 @@
       <taglib-uri>/tags/nexus</taglib-uri>
       <taglib-location>/WEB-INF/struts/taglibs/nexus.tld</taglib-location>
     </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-bean</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-bean.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-html</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-html.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-html-el</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-html-el.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-logic</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-logic.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-nested</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-nested.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-tiles</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-tiles.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-bean-el</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-bean-el.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-logic-el</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-logic-el.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/struts-tiles-el</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/struts-tiles-el.tld</taglib-location>
-    </taglib>
-
-    <taglib>
-      <taglib-uri>/tags/c</taglib-uri>
-      <taglib-location>/WEB-INF/struts/taglibs/c.tld</taglib-location>
-    </taglib>
-
   </jsp-config>
 </web-app>

@@ -1,4 +1,4 @@
-<%--
+<!--
 
      NEXUSe2e Business Messaging Open Source
      Copyright 2000-2009, Tamgroup and X-ioma GmbH
@@ -18,20 +18,27 @@
      Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
      02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
---%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="org.nexuse2e.Version"%>
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
 
-<div id="logo_div">
-</div>
-<div id="machine_div_1">
-	<%@ include file="../config/machine_name.txt" %>
-</div>
-<div id="machine_div_2">
-	<%= Version.getVersion() %>
-</div>
-<div id="logged_in_user">
-	<c:if test="${not empty nxUser}">
-		You're logged in as ${nxUser.firstName} ${nxUser.lastName}
-	</c:if>
-</div>
+    <div id="logo_div"><!-- COMMENT REQUIRED -->
+    </div>
+    <div id="machine_div_1">
+        <nexus:machineName/>
+    </div>
+    <div id="machine_div_2">
+        <nexus:version/>
+    </div>
+    <div id="logged_in_user">
+    	<c:if test="${not empty nxUser}">
+    		You're logged in as ${nxUser.firstName} ${nxUser.lastName}
+    	</c:if>
+    </div>
+</jsp:root>

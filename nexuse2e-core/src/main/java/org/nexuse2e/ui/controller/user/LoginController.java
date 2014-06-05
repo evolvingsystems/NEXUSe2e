@@ -17,78 +17,83 @@
  *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.nexuse2e.ui.action.user;
+package org.nexuse2e.ui.controller.user;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.UserPojo;
 import org.nexuse2e.ui.action.NexusE2EAction;
 import org.nexuse2e.ui.form.LoginForm;
 import org.nexuse2e.util.PasswordUtil;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Handles the user login.
- * @author Sebastian Schulze
- * @date 29.12.2006
+ * Controller for user login and logout operations.
+ *
+ * @author Jonas Reese
  */
-public class LoginAction extends Action {
+@Controller
+public class LoginController {
+    
+    private static Logger LOG = Logger.getLogger(LoginController.class);
+    
+    @RequestMapping("/Login.do")
+    public String login() {
+        return "login.page";
+    }
 
-    private static Logger LOG = Logger.getLogger( LoginAction.class );
+    @RequestMapping("/Logout.do")
+    public String logout(HttpSession session) {
 
-    /* (non-Javadoc)
-     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    public ActionForward execute( ActionMapping actionMapping, ActionForm form, HttpServletRequest request,
-            HttpServletResponse response ) throws Exception {
+        UserPojo userInstance = (UserPojo) session.getAttribute(NexusE2EAction.ATTRIBUTE_USER);
+        if (userInstance != null) {
+            session.removeAttribute(NexusE2EAction.ATTRIBUTE_USER);
+            session.removeAttribute("patchManagementForm"); // remove patches
+        }
 
-        ActionForward forward = actionMapping.findForward( NexusE2EAction.ACTION_FORWARD_FAILURE );
-        ActionMessages errors = new ActionErrors();
+        return "login.page";
+    }
+    
+    @RequestMapping("/LoginCheck.do")
+    public String checkLogin(
+            HttpSession session, LoginForm loginForm, BindingResult bindingResult)
+                    throws NoSuchAlgorithmException {
 
-        if ( form != null ) {
-            LoginForm loginForm = (LoginForm) form;
+        if (loginForm != null) {
             String user = loginForm.getUser();
             String pass = PasswordUtil.hashPassword( loginForm.getPass() );
             if ( user != null && user.length() > 0 ) {
                 EngineConfiguration engineConfig = Engine.getInstance().getCurrentConfiguration();
                 if (engineConfig == null) {
-                    ActionMessage errorMessage = new ActionMessage( "login.system.down" );
-                    errors.add( ActionMessages.GLOBAL_MESSAGE, errorMessage );
+                    bindingResult.addError(
+                            new ObjectError(
+                                    "login", new String[] { "login.system.down" }, null, "system down"));
                 } else {
                     UserPojo userInstance = engineConfig.getUserByLoginName( user );
                     if ( userInstance != null && userInstance.getPassword().equals( pass ) ) { // nx_user.password has a "not null" constraint
-                        HttpSession session = request.getSession();
                         session.setAttribute( NexusE2EAction.ATTRIBUTE_USER, userInstance );
-                        forward = actionMapping.findForward( NexusE2EAction.ACTION_FORWARD_SUCCESS );
                         LOG.trace( "Login for \"" + user + "\" successful." );
                     } else {
-                        ActionMessage errorMessage = new ActionMessage( "login.credentials.wrong" );
-                        errors.add( ActionMessages.GLOBAL_MESSAGE, errorMessage );
+                        bindingResult.addError(
+                                new ObjectError(
+                                        "login", new String[] { "login.credentials.wrong" }, null, "login failed"));
                         LOG.warn( "Login for \"" + user + "\" failed." );
                     }
                 }
             }
-
-            form.reset( actionMapping, request );
         }
 
-        if ( !errors.isEmpty() ) {
-            saveErrors( request, errors );
+        if (bindingResult.hasErrors()) {
+            return "login.page";
         }
-
-        return forward;
+        return "redirect:/NexusE2EAdmin.do";
     }
-
 }

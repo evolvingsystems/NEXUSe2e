@@ -17,51 +17,41 @@
  *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.nexuse2e.ui.form;
+package org.nexuse2e.ui.taglib;
 
-import java.io.Serializable;
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * Form bean for login action.
- * @author Sebastian Schulze
- * @date 29.12.2006
+ * Tag that allows to print the NEXUSe2e version and build number.
+ *
+ * @author Jonas Reese
  */
-public class LoginForm implements Serializable {
+public class Version extends BodyTagSupport {
 
-    private static final long serialVersionUID = 1880183009540485505L;
+    private static final long serialVersionUID = 4338460000631138498L;
+    
+    
+    @Override
+    public int doStartTag() throws JspException {
 
-    private String            user;
-    private String            pass;
-
-    /**
-     * @return the pass
-     */
-    public String getPass() {
-
-        return pass;
+        try {
+            pageContext.getOut().print(org.nexuse2e.Version.getVersion());
+        } catch (IOException e) {
+            throw new JspException(e);
+        }
+        
+        return EVAL_BODY_INCLUDE;
     }
 
-    /**
-     * @param pass the pass to set
+    /* (non-Javadoc)
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
-    public void setPass( String pass ) {
+    @Override
+    public int doEndTag() throws JspException {
 
-        this.pass = pass;
-    }
-
-    /**
-     * @return the user
-     */
-    public String getUser() {
-
-        return user;
-    }
-
-    /**
-     * @param user the user to set
-     */
-    public void setUser( String user ) {
-
-        this.user = user;
+        return EVAL_PAGE;
     }
 }
