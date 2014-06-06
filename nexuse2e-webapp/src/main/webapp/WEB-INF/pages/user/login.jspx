@@ -75,5 +75,9 @@
 			</table>
 		</form>
 	</div>
-	<form:errors path="loginForm" cssClass="NexusError"/>
+    <c:if test="${not empty loginError}">
+    	<div class="NexusError">
+            <spring:message code="${loginError}"/>
+        </div>
+    </c:if>
 </jsp:root>

@@ -49,62 +49,66 @@ public class PatchBundle {
      */
     public PatchBundle( InputStream jarData, ClassLoader parentClassLoader ) throws IOException {
         JarInputStream jarIs = new JarInputStream( jarData );
-        loader = new ClassLoaderImpl( parentClassLoader );
-        entries = new HashMap<String, Object>();
-        patches = new ArrayList<Patch>();
-        for (ZipEntry entry = jarIs.getNextEntry(); entry != null; entry = jarIs.getNextEntry()) {
-            if (!entry.isDirectory()) {
-                String name = entry.getName();
-                boolean eof = false;
-                int size = 0;
-                List<byte[]> data = new ArrayList<byte[]>();
-                while (!eof) {
-                    int offset = 0;
-                    byte[] b = new byte[1024];
-                    while (offset < b.length && !eof) {
-                        if (jarIs.available() > 0) {
-                            int read = jarIs.read( b, offset, b.length - offset );
-                            if (read >= 0) {
-                                offset += read;
+        try {
+            loader = new ClassLoaderImpl( parentClassLoader );
+            entries = new HashMap<String, Object>();
+            patches = new ArrayList<Patch>();
+            for (ZipEntry entry = jarIs.getNextEntry(); entry != null; entry = jarIs.getNextEntry()) {
+                if (!entry.isDirectory()) {
+                    String name = entry.getName();
+                    boolean eof = false;
+                    int size = 0;
+                    List<byte[]> data = new ArrayList<byte[]>();
+                    while (!eof) {
+                        int offset = 0;
+                        byte[] b = new byte[1024];
+                        while (offset < b.length && !eof) {
+                            if (jarIs.available() > 0) {
+                                int read = jarIs.read( b, offset, b.length - offset );
+                                if (read >= 0) {
+                                    offset += read;
+                                } else {
+                                    eof = true;
+                                }
                             } else {
                                 eof = true;
                             }
-                        } else {
-                            eof = true;
                         }
+                        size += offset;
+                        data.add( b );
                     }
-                    size += offset;
-                    data.add( b );
-                }
-                byte[] b = new byte[size];
-                int offset = 0;
-                for (byte[] part : data) {
-                    System.arraycopy( part, 0, b, offset, Math.min( size - offset, part.length ) );
-                    offset += part.length;
-                }
-                
-                boolean c = name.endsWith( ".class" );
-                name = name.replace( "/", "." ).substring( 0, name.length() - 6 );
-                if (c) {
-                    Class<?> clazz = loader.define( name, b );
-                    System.out.println( "ClassLoader: " + clazz.getClassLoader() );
-                    if (Patch.class.isAssignableFrom( clazz )) {
-                        try {
-                            patches.add( (Patch) clazz.newInstance() );
-                        } catch (InstantiationException e) {
-                            e.printStackTrace();
-                            throw new IOException( e.getMessage() );
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                            throw new IOException( e.getMessage() );
+                    byte[] b = new byte[size];
+                    int offset = 0;
+                    for (byte[] part : data) {
+                        System.arraycopy( part, 0, b, offset, Math.min( size - offset, part.length ) );
+                        offset += part.length;
+                    }
+                    
+                    boolean c = name.endsWith( ".class" );
+                    name = name.replace( "/", "." ).substring( 0, name.length() - 6 );
+                    if (c) {
+                        Class<?> clazz = loader.define( name, b );
+                        System.out.println( "ClassLoader: " + clazz.getClassLoader() );
+                        if (Patch.class.isAssignableFrom( clazz )) {
+                            try {
+                                patches.add( (Patch) clazz.newInstance() );
+                            } catch (InstantiationException e) {
+                                e.printStackTrace();
+                                throw new IOException( e.getMessage() );
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                                throw new IOException( e.getMessage() );
+                            }
                         }
+                        entries.put( name, clazz );
+                    } else {
+                        entries.put( name, b );
                     }
-                    entries.put( name, clazz );
-                } else {
-                    entries.put( name, b );
                 }
+                jarIs.closeEntry();
             }
-            jarIs.closeEntry();
+        } finally {
+            jarIs.close();
         }
     }
     

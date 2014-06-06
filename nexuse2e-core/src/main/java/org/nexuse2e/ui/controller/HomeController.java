@@ -68,6 +68,10 @@ public class HomeController {
         return "admin.page";
     }
 
+    @RequestMapping("/Home.do")
+    public String home() {
+        return "/WEB-INF/pages/home.jsp";
+    }
 
     private String formatUptime( long serviceUptime ) {
         long dayLength = 1000 * 60 * 60 * 24;

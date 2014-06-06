@@ -96,17 +96,20 @@
                     Label:
                 </td>
                 <td class="NEXUSSection">
-                    <!-- ${instance.label} -->
+                    ${instance.label}
                 </td>
             </tr>
-            <c:forEach var="command" items="${instance.commands}">
+            <c:set var="count" value="${fn:length(instance.commands)}"/>
+            <c:if test="${count lt 4}">
+                <c:set var="count" value="4"/>
+            </c:if>
+            <c:forEach var="command" varStatus="commandStatus" items="${instance.commands}">
                 <tr>
-                    <c:if test="${counter == 0}">
-                        <td style="text-align: center;background-color:white;" rowspan="${fn:length(instance.commands)}" class="NEXUSNameNoWidth">
+                    <c:if test="${commandStatus.index == 0}">
+                        <td style="text-align: center;background-color:white;" rowspan="${count}" class="NEXUSNameNoWidth">
                             <img src="images/icons/icon-lights-${instance.statusColor}.png" border="0" alt="" class="button"/>
                         </td>
                     </c:if>
-                    
                     <td class="NEXUSNameNoWidth">
                         <nexus:link href="InstanceController.do?instanceId=${instance.id}&amp;commandId=${command.name}" styleClass="NexusLink">
                             ${command.label}

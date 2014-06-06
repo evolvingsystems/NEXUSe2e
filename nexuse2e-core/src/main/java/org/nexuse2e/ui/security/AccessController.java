@@ -46,9 +46,6 @@ public class AccessController {
     protected static final String DEFAULT_FORWARD_ACTION = "NexusE2EAdmin.do";
     protected static final String LOGOUT_ACTION = "Logout.do";
     protected static final String WILDCARD = "*";
-//    private static final String QUERY_STRING_PREFIX = "?";
-//    private static final String QUERY_STRING_DELIMITER = "&";
-//    private static final String QUERY_STRING_ASSIGNMENT = "=";
     private static final String VARIABLE_START = "${";
     private static final String VARIABLE_END = "}";
     
@@ -58,7 +55,6 @@ public class AccessController {
      * @param request The request.
      * @return <code>true</code> if the access is granted. <code>false</code> if access is denied.
      */
-    @SuppressWarnings("unchecked")
     public static boolean hasAccess( UserPojo user, HttpServletRequest request ) {
         String requestUrl = request.getRequestURL().toString();
         boolean result = hasAccess( user.getRole().getAllowedRequests(), requestUrl, request.getParameterMap(), false );
@@ -231,7 +227,6 @@ public class AccessController {
         }
     }
     
-    @SuppressWarnings("unchecked")
     public static String getStringRepresentation( HttpServletRequest request ) {
 
         StringBuffer sb = new StringBuffer();
