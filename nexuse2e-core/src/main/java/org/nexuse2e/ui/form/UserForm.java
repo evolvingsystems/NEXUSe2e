@@ -19,28 +19,30 @@
  */
 package org.nexuse2e.ui.form;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
+import javax.validation.constraints.Size;
+
 import org.nexuse2e.pojo.UserPojo;
+import org.nexuse2e.ui.validation.NxId;
+import org.nexuse2e.ui.validation.PasswordNotEmpty;
+import org.nexuse2e.ui.validation.PasswordRepeat;
+import org.nexuse2e.ui.validation.RepeatedPassword;
 
 /**
  * Form for user data.
- * @author Sebastian Schulze
+ * @author Sebastian Schulze, Jonas Reese
  * @date 04.01.2007
  */
-public class UserForm extends ActionForm {
+@PasswordRepeat
+@PasswordNotEmpty
+public class UserForm implements Serializable, RepeatedPassword {
 
-    private static final long serialVersionUID = -5228133016676845655L;
-    
+    private static final long serialVersionUID = -1916148187783943985L;
+
     // the user instance
     private int nxUserId;
     private String password;
-    private String newPassword;
     private String passwordRepeat;
     private int    nxRoleId;
     private String firstName;
@@ -52,11 +54,10 @@ public class UserForm extends ActionForm {
     /**
      * @param user the user to set
      */
-    public void init( UserPojo user ) {
+    public void init(UserPojo user) {
         
         nxUserId = user.getNxUserId();
-        password = user.getPassword();
-        newPassword = null;
+        password = null;
         passwordRepeat = null;
         nxRoleId = user.getRole().getNxRoleId();
         firstName = user.getFirstName();
@@ -70,7 +71,6 @@ public class UserForm extends ActionForm {
 
         nxUserId = 0;
         password = null;
-        newPassword = null;
         passwordRepeat = null;
         nxRoleId = 0;
         firstName = null;
@@ -80,45 +80,7 @@ public class UserForm extends ActionForm {
         active = true;
     }
     
-    /* (non-Javadoc)
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
-     */
-    @Override
-    public ActionErrors validate( ActionMapping actionMapping, HttpServletRequest request ) {
-
-        ActionErrors errors = new ActionErrors();
-        // login must be not null and not empty
-        if ( loginName == null || loginName.length() == 0 ) {
-            errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.loginname.required" ) );
-        }
-        // first name must be not null and not empty
-        if ( firstName == null || firstName.length() == 0 ) {
-            errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.firstname.required" ) );
-        }
-        // last name must be not null and not empty
-        if ( lastName == null || lastName.length() == 0 ) {
-            errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.lastname.required" ) );
-        }
-        // password must be not null and not empty
-        if ( newPassword != null ) {
-            // new password must be not empty and match password repeat
-            if ( newPassword.length() == 0 ) {
-                errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.password.required" ) );
-            } else {
-                if ( passwordRepeat == null || !newPassword.equals( passwordRepeat ) ) {
-                    errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.password.confirmMismatch" ) );
-                }
-            }
-        } else if ( password == null || password.length() == 0 ) {
-            errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.password.required" ) );
-        }
-        // role must be selected
-        if( nxRoleId == 0 ) {
-            errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.role.required" ) );
-        }
-        return errors;
-    }
-
+    @Size(min = 1, message = "{nexususer.error.lastname.required}")
     public String getLastName() {
         return lastName;
     }
@@ -127,6 +89,7 @@ public class UserForm extends ActionForm {
         this.lastName = lastName;
     }
     
+    @Size(min = 1, message = "{nexususer.error.firstname.required}")
     public String getFirstName() {
         return firstName;
     }
@@ -142,7 +105,8 @@ public class UserForm extends ActionForm {
     public void setMiddleName( String middleName ) {
         this.middleName = middleName;
     }
-    
+
+    @Size(min = 1, message = "{nexususer.error.loginname.required}")
     public String getLoginName() {
         return loginName;
     }
@@ -151,20 +115,18 @@ public class UserForm extends ActionForm {
         this.loginName = loginName;
     }
     
+    @Override
     public String getPassword() {
         return password;
     }
     
-    public String getNewPassword() {
-        return newPassword;
-    }
-    
     public void setPassword( String password ) {
-        newPassword = password;
+        this.password = password;
     }
     
+    @Override
     public String getPasswordRepeat() {
-        return password;
+        return passwordRepeat;
     }
     
     public void setPasswordRepeat( String password ) {
@@ -179,6 +141,7 @@ public class UserForm extends ActionForm {
         this.active = active;
     }
     
+    @NxId(message = "{nexususer.error.role.required}")
     public int getNxRoleId() {
         return nxRoleId;
     }
@@ -193,5 +156,10 @@ public class UserForm extends ActionForm {
     
     public int getNxUserId() {
         return nxUserId;
+    }
+
+    @Override
+    public boolean isPasswordSet() {
+        return getNxUserId() != 0;
     }
 }

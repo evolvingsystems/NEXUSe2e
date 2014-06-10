@@ -17,26 +17,29 @@
  *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.nexuse2e.ui.controller.user;
+package org.nexuse2e.ui.validation;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
- * Controller for user login and logout operations.
- *
+ * Constraint validator implementation for "repeat password correctly" constraint.
+ * 
  * @author Jonas Reese
  */
-@Controller
-public class LoginController {
-    
-    @RequestMapping("/Login.do")
-    public String login() {
-        return "login.page";
-    }
-    
-    @RequestMapping("/LoginForward.do")
-    public String loginForward() {
-        return "pages/login_forward";
-    }
+public class PasswordRepeatValidator implements ConstraintValidator<PasswordRepeat, RepeatedPassword> {
+
+	@Override
+	public void initialize(PasswordRepeat constraintAnnotation) {
+	}
+
+	@Override
+	public boolean isValid(RepeatedPassword value, ConstraintValidatorContext context) {
+		if (value.getPassword() != null && value.getPasswordRepeat() != null) {
+			return value.getPassword().equals(value.getPasswordRepeat());
+		} else if (value.getPassword() == null && value.getPasswordRepeat() == null) {
+			return true;
+		}
+		return false;
+	}
 }

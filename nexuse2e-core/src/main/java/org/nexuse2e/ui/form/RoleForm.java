@@ -19,27 +19,23 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Size;
 
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.nexuse2e.pojo.RolePojo;
 import org.nexuse2e.ui.security.AccessController.ParsedRequest;
 
 
 /**
  * Form for role data.
- * @author Sebastian Schulze
+ * @author Sebastian Schulze, Jonas Reese
  * @date 28.01.2007
  */
-public class RoleForm extends ActionForm {
+public class RoleForm implements Serializable {
     
     private static final long serialVersionUID = -8893742272682115403L;
 
@@ -50,10 +46,10 @@ public class RoleForm extends ActionForm {
     private Map<String,Set<ParsedRequest>> allowedRequests;
 
     /**
+     * Initialize with given role.
      * @param role the role to set
      */
-    public void init( RolePojo role ) {
-        
+    public void init(RolePojo role) {
         nxRoleId = role.getNxRoleId();
         name = role.getName();
         description = role.getDescription();
@@ -61,33 +57,18 @@ public class RoleForm extends ActionForm {
     }
     
     public void reset() {
-
         nxRoleId = 0;
         name = null;
         description = null;
         allowedRequests = new HashMap<String,Set<ParsedRequest>>();
     }
     
-    /* (non-Javadoc)
-     * @see org.apache.struts.action.ActionForm#validate(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
-     */
-    @Override
-    public ActionErrors validate( ActionMapping actionMapping, HttpServletRequest request ) {
-
-        ActionErrors errors = new ActionErrors();
-        // name must be not null and not empty
-        if ( name == null || name.length() == 0 ) {
-            errors.add( ActionMessages.GLOBAL_MESSAGE, new ActionMessage( "nexususer.error.role.name.required" ) );
-        }
-        
-        return errors;
-    }
-
+    @Size(min = 1, message = "{nexususer.error.role.name.required}")
     public String getName() {
         return name;
     }
     
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
     
@@ -95,42 +76,23 @@ public class RoleForm extends ActionForm {
         return description;
     }
     
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    
-    /**
-     * @return the nxRoleId
-     */
     public int getNxRoleId() {
-    
         return nxRoleId;
     }
-    
-    
-    /**
-     * @param nxRoleId the nxRoleId to set
-     */
-    public void setNxRoleId( int nxRoleId ) {
-    
+
+    public void setNxRoleId(int nxRoleId) {
         this.nxRoleId = nxRoleId;
     }
 
-    
-    /**
-     * @return the allowed requests
-     */
     public Map<String, Set<ParsedRequest>> getAllowedRequests() {
-    
         return allowedRequests;
     }
-    
-    /**
-     * @param allowed requests
-     */
-    public void setAllowedRequests( Map<String, Set<ParsedRequest>> allowedRequests ) {
-    
+
+    public void setAllowedRequests(Map<String, Set<ParsedRequest>> allowedRequests) {
         this.allowedRequests = allowedRequests;
     }
 }

@@ -6,8 +6,13 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+    <beans:bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:constructor-arg value="/LoginForward.do"/>
+        <beans:property name="useForward" value="true"/>
+    </beans:bean>
+
     <!-- HTTP security configurations -->
-    <http auto-config="true" use-expressions="true">
+    <http auto-config="true" use-expressions="true" entry-point-ref="authenticationEntryPoint">
         <form-login
             login-processing-url="/LoginCheck.do"
             default-target-url="/NexusE2EAdmin.do"
@@ -17,9 +22,10 @@
             username-parameter="user"
             password-parameter="pass"/>
         <logout logout-url="/Logout.do"/>
-        
+
         <!-- Configure these elements to secure URIs in your application -->
         <intercept-url pattern="/Login.do" access="permitAll" />
+        <intercept-url pattern="/LoginForward.do" access="permitAll" />
         <intercept-url pattern="/LoginCheck.do" access="permitAll" />
         <intercept-url pattern="/favicon.ico" access="permitAll" />
         <intercept-url pattern="/javascript/**" access="permitAll" />

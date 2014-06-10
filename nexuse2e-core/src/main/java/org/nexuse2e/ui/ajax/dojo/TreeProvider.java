@@ -19,6 +19,8 @@
  */
 package org.nexuse2e.ui.ajax.dojo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,8 +44,6 @@ import org.nexuse2e.ui.structure.StructureService;
 import org.nexuse2e.ui.structure.impl.PageNode;
 import org.springframework.beans.factory.BeanFactory;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 /**
  * Converts the ui structure into a JSON format for the Tree widget of the Dojo Toolkit.
  * @author Sebastian Schulze
@@ -52,16 +52,6 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class TreeProvider implements AjaxRequestHandler {
 
     private static final Logger LOG                    = Logger.getLogger( TreeProvider.class );
-
-//    private static final String ACTION_GET_CHILDREN    = "getChildren";
-//
-//    private static final String DOJO_NODE              = "node";
-//
-//    private static final String DOJO_TREE              = "tree";
-//
-//    private static final String DOJO_WIDGET_ID         = "widgetId";
-//
-//    private static final String WIDGET_ID_TREE_MENU    = "menuTree";
 
     private static final String BEAN_STRUCTURE_SERVICE = "structureService";
 
@@ -82,13 +72,9 @@ public class TreeProvider implements AjaxRequestHandler {
         String action = ( params.containsKey( "action" ) ? ( (String[]) params.get( "action" ) )[0] : null );
         String parentId = ( params.containsKey( "parentId" ) ? ( (String[]) params.get( "parentId" ) )[0] : null );
         if ( action != null ) {
-//            // parse JSON request data
-//            JSONObject jsonData = null;//new JSONObject( data );
-//            if ( ACTION_GET_CHILDREN.equals( action ) ) {
                 result = "{ \"label\": \"title\"," +
                            "\"identifier\":\"objectId\"," +
                            "\"items\": " + getChildren( parentId, engineConfiguration ).toString() + " }";
-//            }
         } else {
             LOG.warn( "Missing request parameter: action=" + action );
         }
@@ -98,10 +84,36 @@ public class TreeProvider implements AjaxRequestHandler {
         return result;
     }
 
+    public List<StructureNode> getParentAndChildNodes(String parentId, EngineConfiguration engineConfiguration) throws StructureException {
+        BeanFactory beanFactory = Engine.getInstance().getBeanFactory();
+        StructureService strSrv = (StructureService) beanFactory.getBean( BEAN_STRUCTURE_SERVICE );
+
+        final List<StructureNode> nodes = strSrv.getMenuStructure( engineConfiguration );
+        Map<String, StructureNode> nodeMap = buildNodeCatalog( nodes );
+
+        StructureNode parentNode = ( parentId != null
+                ? nodeMap.get( parentId )
+                // the root is virtual and contains the root node of the ui structure
+                : new PageNode("","","") {
+                    public List<StructureNode> getChildren() {
+                        return Collections.singletonList( nodes.get( 0 ) );
+                    }
+                } );
+        if ( parentNode instanceof PageNode ) {
+            List<StructureNode> children = ( (ParentalStructureNode) parentNode ).getChildren();
+            List<StructureNode> result = new ArrayList<StructureNode>((children == null ? 0 : children.size()) + 1);
+            result.add(parentNode);
+
+            if (children != null) {
+                result.addAll(children);
+            }
+            return result;
+        }
+        return Collections.singletonList(parentNode);
+    }
+    
     protected JSONArray getChildren( String parentId, EngineConfiguration engineConfiguration ) throws JSONException {
 
-        //LOG.debug( "GET CHILDREN OF " + parentId );
-        
         JSONArray result = new JSONArray();
 
         BeanFactory beanFactory = Engine.getInstance().getBeanFactory();
@@ -109,21 +121,14 @@ public class TreeProvider implements AjaxRequestHandler {
         
         if ( strSrv != null ) {
             try {
-                //LOG.debug( "GET MENU STRUCTURE" );
                 final List<StructureNode> nodes = strSrv.getMenuStructure( engineConfiguration );
-                //LOG.debug( "GOT MENU STRUCTURE" );
                 Map<String, StructureNode> nodeMap = buildNodeCatalog( nodes );
-                //JSONObject parentJSONNode = data.getJSONObject( DOJO_NODE );
-                //String parentId = "Home.do";//parentJSONNode.getString( DOJO_WIDGET_ID );
-                //JSONObject jsonTree = data.getJSONObject( DOJO_TREE );
-                //String treeId = jsonTree.getString( DOJO_WIDGET_ID );
                 boolean ignoreCommands = true;//WIDGET_ID_TREE_MENU.equals( treeId );
                 // if no parent node is defined, return the root node
                 StructureNode parentNode = ( parentId != null
                                                 ? nodeMap.get( parentId )
                                                 // the root is virtual and contains the root node of the ui structure
                                                 : new PageNode("","","") {
-                                                    @SuppressWarnings("unchecked")
                                                     public List<StructureNode> getChildren() {
                                                         return Collections.singletonList( nodes.get( 0 ) );
                                                     }
@@ -131,8 +136,6 @@ public class TreeProvider implements AjaxRequestHandler {
                 if ( parentNode instanceof PageNode ) {
                     List<StructureNode> children = ( (ParentalStructureNode) parentNode ).getChildren();
                     for ( StructureNode currChild : children ) {
-//                    for ( int i = 0; i < children.size(); i++ ) {
-//                        StructureNode currChild = children.get( i );
                         if ( !currChild.isPattern() ) {
                             if ( !ignoreCommands || currChild instanceof PageNode ) {
                                 result.put( convert2DojoNode( currChild, ignoreCommands ) );
@@ -174,16 +177,13 @@ public class TreeProvider implements AjaxRequestHandler {
             }
         }
         // save in objectId whether node has dynamic children: "d" := dynamic, "s" := static 
-        //LOG.debug( "BUILD OBJECT ID" );
         dojoNode.put( "objectId", buildObjectId( node ) );
-        //LOG.debug( "OBJECT ID BUILT" );
+
         // save the other info
         dojoNode.put( "widgetId", node.getTarget() );
         dojoNode.put( "title", node.getLabel() );
         dojoNode.put( "childIconSrc", node.getIcon() );
 
-        //LOG.debug( "RETURN DOJO NODE" );
-        
         return dojoNode;
     }
 
@@ -195,30 +195,19 @@ public class TreeProvider implements AjaxRequestHandler {
 
     private Map<String, StructureNode> buildNodeCatalog( List<StructureNode> nodes ) {
 
-        //LOG.debug( "BUILD NODE CATALOG" );
-        
         Map<String, StructureNode> catalog = new HashMap<String, StructureNode>();
         addToMap( nodes, catalog );
-        
-        //LOG.debug( "RETURN NODE CATALOG" );
         
         return catalog;
     }
 
     private void addToMap( List<StructureNode> nodes, Map<String, StructureNode> map ) {
 
-        //LOG.debug( "ADD TO MAP" );
-        
-//        for ( int i = 0; i < nodes.size(); i++ ) {
-//            StructureNode currNode = nodes.get( i );
         for ( StructureNode currNode : nodes ) {
             map.put( currNode.getTarget(), currNode );
             if ( currNode instanceof PageNode && ( (ParentalStructureNode) currNode ).hasChildren() && !currNode.isPattern() ) {
                 addToMap( ( (ParentalStructureNode) currNode ).getChildren(), map );
             }
         }
-        
-        //LOG.debug( "ADDED TO MAP" );
     }
-
 }

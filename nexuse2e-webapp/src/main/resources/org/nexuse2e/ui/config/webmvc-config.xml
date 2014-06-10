@@ -15,6 +15,7 @@
   <mvc:annotation-driven conversion-service="applicationConversionService">
       <mvc:argument-resolvers>
           <bean class="org.nexuse2e.ui.resolver.EngineConfigurationResolver"/>
+          <bean class="org.nexuse2e.ui.resolver.LoggedInUserResolver"/>
       </mvc:argument-resolvers>
   </mvc:annotation-driven>
   
@@ -31,7 +32,7 @@
   </mvc:interceptors>
   
   <!-- Resolves localized *.properties files in the application to allow for internationalization. -->
-  <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource" p:basenames="classpath:/ApplicationResources" p:fallbackToSystemLocale="false"/>
+  <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource" p:basenames="classpath:/ApplicationResources classpath:/ValidationMessages" p:fallbackToSystemLocale="false"/>
   
   <!-- store preferred language configuration in a cookie -->
   <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver" p:cookieName="locale"/> 
@@ -52,8 +53,8 @@
     </property>
     <property name="jspResolver">
       <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/pages/"/>
-        <property name="suffix" value=".jsp"/>
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".jspx"/>
       </bean>
     </property>
   </bean>

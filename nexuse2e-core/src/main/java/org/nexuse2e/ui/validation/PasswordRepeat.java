@@ -17,26 +17,31 @@
  *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.nexuse2e.ui.controller.user;
+package org.nexuse2e.ui.validation;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
 
 /**
- * Controller for user login and logout operations.
- *
+ * Validation annotation for non-empty password constraint.
+ * 
  * @author Jonas Reese
  */
-@Controller
-public class LoginController {
-    
-    @RequestMapping("/Login.do")
-    public String login() {
-        return "login.page";
-    }
-    
-    @RequestMapping("/LoginForward.do")
-    public String loginForward() {
-        return "pages/login_forward";
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Constraint(validatedBy = PasswordRepeatValidator.class)
+public @interface PasswordRepeat {
+	String message() default "{nexususer.error.password.confirmMismatch}";
+
+	Class<?>[] groups() default { };
+
+	Class<? extends Payload>[] payload() default { };
 }

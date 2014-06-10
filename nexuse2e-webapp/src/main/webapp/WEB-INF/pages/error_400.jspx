@@ -1,4 +1,4 @@
-<%--
+<!--
 
      NEXUSe2e Business Messaging Open Source
      Copyright 2000-2009, Tamgroup and X-ioma GmbH
@@ -18,19 +18,18 @@
      Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
      02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
---%>
-<html>
-   <head>
-      <title>Login Forward</title>
-      <meta http-equiv="Refresh" content= "0;URL=Login.do">
-      <script language="text/javascript">
-      	if( dojo ) {
-      		dojo.addOnLoad( function() {
-      			window.location.href = "Login.do";
-      		});
-      	}
-      </script>
-   </head>
-   <body>
-   </body>
-</html>
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+<jsp:output omit-xml-declaration="true" />
+<jsp:directive.page contentType="text/plain;charset=UTF-8" />  
+Error processing request: ${requestScope['javax.servlet.error.message']}"
+
+</jsp:root>

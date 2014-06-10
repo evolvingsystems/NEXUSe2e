@@ -17,26 +17,30 @@
  *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.nexuse2e.ui.controller.user;
+package org.nexuse2e.ui.validation;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Controller for user login and logout operations.
- *
+ * Constraint validator implementation for "password not empty" constraint.
+ * 
  * @author Jonas Reese
  */
-@Controller
-public class LoginController {
-    
-    @RequestMapping("/Login.do")
-    public String login() {
-        return "login.page";
-    }
-    
-    @RequestMapping("/LoginForward.do")
-    public String loginForward() {
-        return "pages/login_forward";
-    }
+public class PasswordNotEmptyValidator implements ConstraintValidator<PasswordNotEmpty, RepeatedPassword> {
+
+	@Override
+	public void initialize(PasswordNotEmpty constraintAnnotation) {
+	}
+
+	@Override
+	public boolean isValid(RepeatedPassword value, ConstraintValidatorContext context) {
+		if (value.isPasswordSet() && StringUtils.isEmpty(value.getPassword()) && StringUtils.isEmpty(value.getPasswordRepeat())) {
+			return true;
+		}
+		return (StringUtils.isNotBlank(value.getPassword()) &&
+				StringUtils.isNotBlank(value.getPasswordRepeat()));
+	}
 }

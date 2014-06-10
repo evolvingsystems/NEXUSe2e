@@ -56,7 +56,11 @@ public class DelegatingViewResolver implements ViewResolver {
     public View resolveViewName(String viewName, Locale locale) throws Exception {
         if (jspResolver != null && tilesResolver != null) {
             try {
-                return tilesResolver.resolveViewName(viewName, locale);
+                View view = tilesResolver.resolveViewName(viewName, locale);
+                if (view == null) {
+                    return jspResolver.resolveViewName(viewName, locale);
+                }
+                return view;
             } catch (Exception e) {
                 return jspResolver.resolveViewName(viewName, locale);
             }

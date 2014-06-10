@@ -19,11 +19,17 @@
  */
 package org.nexuse2e.ui.controller;
 
-import javax.servlet.http.HttpSession;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.nexuse2e.AdvancedControllerInterface;
 import org.nexuse2e.Engine;
+import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.ui.ajax.dojo.TreeProvider;
+import org.nexuse2e.ui.structure.StructureException;
+import org.nexuse2e.ui.structure.StructureNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,13 +40,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Jonas Reese
  */
 @Controller
-public class HomeController {
+public class DefaultController {
 
-    protected static Logger LOG = Logger.getLogger(HomeController.class);
+    protected static Logger LOG = Logger.getLogger(DefaultController.class);
     
-    @RequestMapping("/NexusE2EAdmin.do")
-    public String home(HttpSession session, Model model) {
+    private static String formatUptime( long serviceUptime ) {
+        long dayLength = 1000 * 60 * 60 * 24;
+        long hourlength = 1000 * 60 * 60;
+        long minutelength = 1000 * 60;
+        long secondlength = 1000;
+         
+        long days = serviceUptime / dayLength;
+        long hours = (serviceUptime - (days * dayLength)) / hourlength;
+        long minutes = (serviceUptime - (days * dayLength) - (hours * hourlength)) / minutelength;
+        long seconds = (serviceUptime - (days * dayLength) - (hours * hourlength) - (minutes * minutelength)) / secondlength;
 
+        return days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds";
+    }
+
+    private static void fillHomeModel(Model model) {
         // Set version information to it is accessible by all JSPs
         model.addAttribute("java_version", System.getProperty("java.version"));
         model.addAttribute("java_classpath", System.getProperty("java.class.path"));
@@ -64,26 +82,49 @@ public class HomeController {
             model.addAttribute("instances", aci.getInstances());
             model.addAttribute("description", aci.getDescription());
         }
+    }
 
+
+    @RequestMapping("/NexusE2EAdmin.do")
+    public String nexuse2eAdmin(Model model) {
+        fillHomeModel(model);
         return "admin.page";
     }
 
     @RequestMapping("/Home.do")
-    public String home() {
-        return "/WEB-INF/pages/home.jsp";
+    public String home(Model model) {
+        fillHomeModel(model);
+        return "pages/home";
     }
+    
+    
+    
+    @RequestMapping({
+        "/ServerConfiguration.do",
+        "/UserMaintenance.do",
+        "/Tools.do"
+        })
+    public String childPages(Model model, HttpServletRequest request, EngineConfiguration engineConfiguration) throws StructureException {
 
-    private String formatUptime( long serviceUptime ) {
-        long dayLength = 1000 * 60 * 60 * 24;
-        long hourlength = 1000 * 60 * 60;
-        long minutelength = 1000 * 60;
-        long secondlength = 1000;
-         
-        long days = serviceUptime / dayLength;
-        long hours = (serviceUptime - (days * dayLength)) / hourlength;
-        long minutes = (serviceUptime - (days * dayLength) - (hours * hourlength)) / minutelength;
-        long seconds = (serviceUptime - (days * dayLength) - (hours * hourlength) - (minutes * minutelength)) / secondlength;
-
-        return days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds";
+        String parentId = null;
+        int index = request.getRequestURI().lastIndexOf('/');
+        if (index >= 0) {
+            parentId = request.getRequestURI().substring(index + 1, request.getRequestURI().length());
+        }
+        if (parentId == null) {
+            throw new IllegalArgumentException("Could not extract parent ID from request.");
+        }
+        
+        TreeProvider provider = new TreeProvider();
+        
+        List<StructureNode> nodes = provider.getParentAndChildNodes(parentId, engineConfiguration);
+        
+        model.addAttribute("parent", nodes.isEmpty() ? null : nodes.get(0));
+        model.addAttribute("children", nodes.isEmpty() ? null : nodes.subList(1, nodes.size()));
+        
+        return "pages/show_childpages";
     }
+    
+    
+    
 }
