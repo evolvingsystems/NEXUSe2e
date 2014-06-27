@@ -1,0 +1,147 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+    <table class="NEXUS_TABLE" width="100%">
+    	<tr>
+    		<td><nexus:crumbs styleClass="NEXUSScreenPathLink"></nexus:crumbs></td>
+    	</tr>
+    	<tr>
+    		<c:if test="${collaborationPartnerForm.type == 1}">
+    			<td class="NEXUSScreenName">Update Server Identity</td>
+    		</c:if>
+            <c:if test="${collaborationPartnerForm.type == 2}">
+    			<td class="NEXUSScreenName">Update Collaboration Partner</td>
+    		</c:if>
+    	</tr>
+    </table>
+    <form:form methodParam="post" modelAttribute="collaborationPartnerForm" action="UpdatePartnerInfo.do">
+    	<table class="NEXUS_TAB_TABLE">
+    		<tr>
+    			<td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif"/></td>
+    			<td class="NEXUS_TAB_SELECTED">Collaboration Partner</td>
+    			<td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif"/></td>
+    			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
+    			<td class="NEXUS_TAB_UNSELECTED"><nexus:link
+    				href="PartnerConnectionList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}"
+    				styleClass="NEXUS_TAB_UNSELECTED_LINK">Connections</nexus:link></td>
+    			<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
+    			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
+    			<td class="NEXUS_TAB_UNSELECTED"><nexus:link
+    				href="PartnerCertificateList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}"
+    				styleClass="NEXUS_TAB_UNSELECTED_LINK">Certificates</nexus:link></td>
+    			<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
+    		</tr>
+    	</table>
+    	<table class="NEXUS_TABLE" width="100%">
+    		<tr>
+    			<td class="NEXUSName">Partner Id</td>
+    			<td class="NEXUSValue"><form:input path="partnerId" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">Partner Id Type</td>
+    			<td class="NEXUSValue"><form:input path="partnerIdType" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">Name</td>
+    			<td class="NEXUSValue"><form:input path="name" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">Company</td>
+    			<td class="NEXUSValue"><form:input path="company" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">Address Line 1</td>
+    			<td class="NEXUSValue"><form:input path="address1" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">Address Line 2</td>
+    			<td class="NEXUSValue"><form:input path="address2" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">City</td>
+    			<td class="NEXUSValue"><form:input path="city" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">State</td>
+    			<td class="NEXUSValue"><form:input path="state" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">Zip Code</td>
+    			<td class="NEXUSValue"><form:input path="zip" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td class="NEXUSName">Country</td>
+    			<td class="NEXUSValue"><form:input path="country" size="50" cssErrorClass="NexusError"/></td>
+    		</tr>
+    		<tr>
+    			<td valign="top" class="NEXUSName">Choreographies</td>
+    			<td valign="top" class="NEXUSValue">
+    			<table>
+    				<c:forEach var="choreography" items="${collaborationPartnerForm.choreographies}">
+    					<tr>
+    						<td class="NEXUSIcon"><img src="images/icons/arrow_refresh_small.png" alts=""/></td>
+    						<td class="NEXUSNameNoWidth">
+                                <nexus:link href="ChoreographyView.do?choreographyName=${choreography}" styleClass="NexusLink">
+    							  ${choreography}
+    						    </nexus:link>
+                            </td>
+    					</tr>
+    				</c:forEach>
+    			</table>
+    			</td>
+    		</tr>
+    	</table>
+    
+        <form:errors element="div" cssClass="NexusError" path="*"/>
+
+    	<table class="NEXUS_BUTTON_TABLE">
+    		<tr>
+    			<td>&#160;</td>
+    			<td class="NexusHeaderLink" style="text-align: right;"><nexus:submit
+    				styleClass="button">
+    				<img src="images/icons/tick.png" class="button"/>Save</nexus:submit></td>
+            <c:if test="${collaborationPartnerForm.type == 1}">
+                <td class="NexusHeaderLink" style="text-align: right;"><nexus:link
+                    href="ServerIdentityDelete.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}"
+                    styleClass="button">
+                    <img src="images/icons/delete.png" class="button"/>Delete</nexus:link>
+                </td>
+            </c:if>
+            <c:if test="${collaborationPartnerForm.type != 1}">
+                <td class="NexusHeaderLink" style="text-align: right;"><nexus:link
+                    href="CollaborationPartnerDelete.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}"
+                    styleClass="button">
+                    <img src="images/icons/delete.png" class="button"/>Delete</nexus:link>
+                </td>
+            </c:if>
+    		</tr>
+    	</table>
+    </form:form>
+</jsp:root>
