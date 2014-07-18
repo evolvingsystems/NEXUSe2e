@@ -20,34 +20,59 @@
 package org.nexuse2e;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletContext;
+import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.nexuse2e.Constants.BeanStatus;
 import org.nexuse2e.StatusSummary.Status;
-import org.nexuse2e.dao.ConfigDAO;
-import org.nexuse2e.pojo.TRPPojo;
+import org.springframework.web.context.support.WebApplicationObjectSupport;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * @author gesch
  *
  */
-public class EngineMonitor {
+public class EngineMonitor extends WebApplicationObjectSupport {
 
     private static Logger               LOG                        = Logger.getLogger( EngineMonitor.class );
 
     private List<EngineMonitorListener> listeners;
     private Timer                       timer;
+    private String                      nexusE2ERoot               = null;
     private boolean                     shutdownInitiated          = false;
     private boolean                     autoStart                  = true;
-    
-    /**
-     * Database Timeout in seconds 
+    private DataSource					dataSource 				   = null;
+    private ExecutorService 			executor 				   = null;
+	
+    public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+
+	/**
+     * Database Timeout in miliseconds 
      */
-    private int                         timeout                    = 30; 
+    private int                         timeout                    = 10000; 
     
     /**
      * Monitor probe Interval in miliseconds
@@ -56,24 +81,66 @@ public class EngineMonitor {
     
     protected EngineStatusSummary       currentEngineStatusSummary = null;
 
-    
-    /**
-     * 
-     */
-    public void start() {
+    public void initialize() {
+    	
+    	
+    	// Set Derby home directory to determine where the DB will be created
+    	nexusE2ERoot = Engine.getInstance().getNexusE2ERoot();
+        try {
+            if (nexusE2ERoot == null) {
+                ServletContext currentContext = getServletContext();
+                String webAppPath = currentContext.getRealPath("");
+                webAppPath = webAppPath.replace('\\', '/');
+                if (!webAppPath.endsWith("/")) {
+                    webAppPath += "/";
+                }
+                nexusE2ERoot = webAppPath;
+            }
+        } catch (IllegalStateException isex) {
+            if (nexusE2ERoot == null) {
+                throw new IllegalStateException("nexusE2ERoot must be set if not running in a WebApplicationContext");
+            }
+        }
+        if (null == System.getProperty("derby.system.home") && null != nexusE2ERoot) {
+            LOG.trace("Setting derby root directory to: " + nexusE2ERoot + Constants.DERBYROOT);
+            System.setProperty("derby.system.home", nexusE2ERoot + Constants.DERBYROOT);
+        } else {
+            LOG.trace("Derby root directory already set: " + System.getProperty("derby.system.home"));
+        }
 
-        LOG.debug( "Engine monitor initalized" );
-        timer = new Timer();
-        TestSuite suite = new TestSuite();
-        timer.schedule( suite, 0, interval );
     }
 
     /**
      * 
      */
-    public void stop() {
+    public void start() {
+    	executor = Executors.newFixedThreadPool(1);
+    	
+        // Set Derby home directory to determine where the DB will be created
+        nexusE2ERoot = Engine.getInstance().getNexusE2ERoot();
+        if ( System.getProperty( "derby.system.home" ) == null ) {
+            LOG.trace( "Setting derby root directory to: " + nexusE2ERoot + Constants.DERBYROOT );
+            System.setProperty( "derby.system.home", nexusE2ERoot + Constants.DERBYROOT );
+        } else {
+            LOG.trace( "Derby root directory already set: " + System.getProperty( "derby.system.home" ) );
+        }
+    	if(dataSource == null){
+    		LOG.error("DataSouece not provided, the configuration is not valid. Please update beans.xml "
+    				+ "files engine monitor section. Also be aware of the unit change for timeout, its miliseconds now. Monitoring will be disabled");
+    	} else {
+    		LOG.debug( "Engine monitor initalized" );
+            timer = new Timer();
+            TestSuite suite = new TestSuite();
+            timer.schedule( suite, 30000, interval ); //delayed first schedule
+        }
+    }
 
-        timer.cancel();
+    /**
+     * shutdown probe timer and additional connection timeout guards
+     */
+    public void stop() {
+    	executor.shutdown();
+    	timer.cancel();
     }
 
     /**
@@ -116,65 +183,98 @@ public class EngineMonitor {
         }
     }
 
-    private synchronized EngineStatusSummary probe() {
+    /**
+     * be aware, LOG output might generate database queries because of the underlaying logging configuration. 
+     * By default error message are also logged as engine logged. 
+     * 
+     * @return
+     */
+	private synchronized EngineStatusSummary probe() {
 
-        EngineStatusSummary summary = new EngineStatusSummary();
+		final EngineStatusSummary summary = new EngineStatusSummary();
 
-        // LOG.debug( "EngineMonitor probing..." );
-        ConfigDAO configDao = null;
-        try {
-            configDao = Engine.getInstance().getConfigDao();
-        } catch ( Exception e ) {
-            summary.setCause( "Error while searching configDao: " + e );
-            summary.setStatus( Status.ERROR );
-            return summary;
-        }
-        
-//        String sql = "select count(nx_trp_id) from nx_trp";
-//        Session session = configDao.getDBSession();
-//        
-//        
-//        Query query = session.createSQLQuery( sql );
-//        
-//        query.setTimeout( timeout ); // interval seconds
-//        long count = -1;
-//        try {
-//            count = ((Number)query.uniqueResult()).longValue();
-//        } catch ( HibernateException e ) {
-//            e.printStackTrace();
-//        }
-//        
-//        configDao.releaseDBSession( session );
-        
-        
-        List<TRPPojo> trps = null;
-        try {
-            trps = configDao.getTrps( );
-        } catch ( Exception e ) {
-            summary.setCause( "Error while fetching testdata from database: " + e );
-            summary.setDatabaseStatus( Status.ERROR );
-            summary.setStatus( Status.ERROR );
-            return summary;
-        } catch ( Error e ) {
-            System.out.println( "Error: " + e );
-        }
-        summary.setDatabaseStatus( Status.ACTIVE );
-        if ( trps == null || trps.size() == 0 ) {
-        
-        
-        //if(count < 1) {
-            summary.setCause( "no TRP's found in database" );
-            summary.setStatus( Status.ERROR );
-            return summary;
-        }
-        if ( Engine.getInstance().getStatus() == BeanStatus.STARTED ) {
-            summary.setStatus( Status.ACTIVE );
-        } else {
-            summary.setStatus( Status.INACTIVE );
-        }
+		// statement query timeout doesn't work for mssql mirror database. Maybe
+		// its working for mssql standalone.
+		
+		Boolean successful = false;
+		Future<Boolean> future = null;
+		String causeMsg = null;
+		try {
+			final Connection con = dataSource.getConnection();
+			
+			try {
+				
+				future = executor.submit(new Callable<Boolean>() {
+					public Boolean call() throws Exception {
+						ResultSet result = null;
+						try {
+							PreparedStatement statement = con.prepareStatement("select count(*) from nx_trp");
+							result = statement.executeQuery();
+							result.next();
+							int count = result.getInt(1);
+							if(count == 0) {
+								throw new NexusException("no TRP's found in database");
+					        }
+							
+						} catch (Exception e) {
+							throw e;
+						} finally {
+							if(result != null) {
+								try {
+									result.close();
+								} catch (SQLException e) {
+									// force close in case the result is not closed yet. isClosed throws an unexpected exception with mssql drivers. 
+								}
+							}
+							if(con != null && !con.isClosed()){
+								try {
+									con.close();
+								} catch (SQLException e) {
+									// isClosed seems to work for connections and mssql
+								}
+							}
+						}
+						return true;
+					}
+				});
+				
+				successful = future.get(timeout, TimeUnit.MILLISECONDS);
+			} catch (Exception e) {
+				causeMsg = "Exception occured while probing database: " + e.getMessage();
+			} finally {
+				try {
+					if(con != null && !con.isClosed()) {
+						con.close();
+					}
+				} catch (SQLException e) {
+					//finally failed to close...
+				}
+				if(!future.isDone()){
+					future.cancel(true);
+				}
+			}
+		} catch (SQLException e) {
+			causeMsg = "failed to open connection";
+		}
 
-        return summary;
-    }
+		
+
+		if (!successful) {
+			summary.setCause(causeMsg);
+			summary.setDatabaseStatus(Status.ERROR);
+			summary.setStatus(Status.ERROR);
+			return summary;
+		}
+		summary.setDatabaseStatus(Status.ACTIVE);
+
+		if (Engine.getInstance().getStatus() == BeanStatus.STARTED) {
+			summary.setStatus(Status.ACTIVE);
+		} else {
+			summary.setStatus(Status.INACTIVE);
+		}
+
+		return summary;
+	}
 
     /**
      * @author gesch
@@ -196,9 +296,15 @@ public class EngineMonitor {
                 EngineStatusSummary summary = probe();
                 if ( summary.getStatus() == Status.ERROR ) {
                     try {
-                        shutdownInitiated = true;
-                        Engine.getInstance().changeStatus( BeanStatus.INSTANTIATED );
-                        LOG.info( "Engine shutdown triggered (cause: " + summary.getCause() + ")" );
+                    	if ( !shutdownInitiated ) {
+	                        Engine.getInstance().changeStatus( BeanStatus.INSTANTIATED );
+	                        LOG.info( "Engine shutdown triggered (cause: " + summary.getCause() + ")" );
+	                        shutdownInitiated = true;
+	                        // required to reset all pooled connections to make sure, the jdbc driver takes the failover node if available.
+	                        if(dataSource instanceof ComboPooledDataSource) { // will not work for external datasource pools. (DataSource interface doesn't provide reset methods)
+	                        	((ComboPooledDataSource)dataSource).resetPoolManager(true); 
+	                        }
+                    	}
                     } catch ( InstantiationException e ) {
                         LOG.error( "Error while handling error: (cause: " + summary.getCause() + "): " + e );
                     }
