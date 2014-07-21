@@ -20,6 +20,7 @@
 package org.nexuse2e.ui.form;
 
 import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.security.KeyStore;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -29,7 +30,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 
-import org.apache.struts.action.ActionForm;
+import javax.validation.constraints.Size;
+
 import org.bouncycastle.asn1.x509.X509Name;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
@@ -42,12 +44,8 @@ import org.nexuse2e.util.EncryptionUtil;
  * @author gesch
  * 
  */
-public class CollaborationPartnerForm extends ActionForm {
+public class CollaborationPartnerForm implements Serializable {
 
-    /**
-     * 
-     */
-    // private static final Logger LOG = Logger.getLogger( CollaborationPartnerForm.class );
     private static final long                 serialVersionUID = 6867989805361808373L;
     private String                            name;
     private String                            company;
@@ -378,6 +376,7 @@ public class CollaborationPartnerForm extends ActionForm {
         this.country = country;
     }
 
+    @Size(min = 1, message = "{partner.error.partnerid.required}")
     public String getPartnerId() {
 
         return partnerId;

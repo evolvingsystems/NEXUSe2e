@@ -48,9 +48,9 @@
     			<td class="NEXUS_TAB_SELECTED">Collaboration Partner</td>
     			<td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif"/></td>
     			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
-    			<td class="NEXUS_TAB_UNSELECTED"><nexus:link
-    				href="PartnerConnectionList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}"
-    				styleClass="NEXUS_TAB_UNSELECTED_LINK">Connections</nexus:link></td>
+    			<td class="NEXUS_TAB_UNSELECTED">
+                    <nexus:link href="PartnerConnectionList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="NEXUS_TAB_UNSELECTED_LINK">Connections</nexus:link>
+                </td>
     			<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
     			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
     			<td class="NEXUS_TAB_UNSELECTED"><nexus:link

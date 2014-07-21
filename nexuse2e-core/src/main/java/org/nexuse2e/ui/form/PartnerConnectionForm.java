@@ -19,23 +19,28 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Size;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.pojo.ConnectionPojo;
 import org.nexuse2e.pojo.TRPPojo;
 
-public class PartnerConnectionForm extends ActionForm {
 
-    /**
-     * 
-     */
+/**
+ * Form class for partner connections.
+ * 
+ * @author Jonas Reese
+ */
+public class PartnerConnectionForm implements Serializable {
+
     private static final long    serialVersionUID = 6252275396500984748L;
+
     private String               url;
     private String               description;
     private String               partnerId;
@@ -58,6 +63,7 @@ public class PartnerConnectionForm extends ActionForm {
     private String               name;
     private String               loginName;
     private String               password;
+
 
     public void cleanSettings() {
 
@@ -101,10 +107,16 @@ public class PartnerConnectionForm extends ActionForm {
         con.setLoginName( getLoginName() );
         con.setPassword( getPassword() );
         con.setCertificate( null );
+        if (certificates == null) {
+            certificates = new LinkedHashSet<CertificatePojo>();
+        }
         for ( CertificatePojo certificatePojo : certificates ) {
             if ( nxCertificateId == certificatePojo.getNxCertificateId() ) {
                 con.setCertificate( certificatePojo );
             }
+        }
+        if (trps == null) {
+            trps = new ArrayList<TRPPojo>();
         }
         for ( TRPPojo trpPojo : trps ) {
             if ( nxTrpId == trpPojo.getNxTRPId() ) {
@@ -134,9 +146,6 @@ public class PartnerConnectionForm extends ActionForm {
         this.url = url;
     }
 
-    /**
-     * @param con
-     */
     public void setProperties( ConnectionPojo con ) {
 
         setUrl( con.getUri() );
@@ -169,161 +178,102 @@ public class PartnerConnectionForm extends ActionForm {
         this.partnerId = partnerId;
     }
 
-    /**
-     * @return the nxConnectionId
-     */
     public int getNxConnectionId() {
 
         return nxConnectionId;
     }
 
-    /**
-     * @param nxConnectionId the nxConnectionId to set
-     */
     public void setNxConnectionId( int nxConnectionId ) {
 
         this.nxConnectionId = nxConnectionId;
     }
 
-    /**
-     * @return the certificates
-     */
     public Set<CertificatePojo> getCertificates() {
 
         return certificates;
     }
 
-    /**
-     * @param certificates the certificates to set
-     */
     public void setCertificates( Set<CertificatePojo> certificates ) {
 
         this.certificates = certificates;
     }
 
-    /**
-     * @return the messageInterval
-     */
     public int getMessageInterval() {
 
         return messageInterval;
     }
 
-    /**
-     * @param messageInterval the messageInterval to set
-     */
     public void setMessageInterval( int messageInterval ) {
 
         this.messageInterval = messageInterval;
     }
 
-    /**
-     * @return the name
-     */
+    @Size(min = 1, message = "{connection.error.connectionname.required}")
     public String getName() {
 
         return name;
     }
 
-    /**
-     * @param name the name to set
-     */
     public void setName( String name ) {
 
         this.name = name;
     }
 
-    /**
-     * @return the nxCertificateId
-     */
     public int getNxCertificateId() {
 
         return nxCertificateId;
     }
 
-    /**
-     * @param nxCertificateId the nxCertificateId to set
-     */
     public void setNxCertificateId( int nxCertificateId ) {
 
         this.nxCertificateId = nxCertificateId;
     }
 
-    /**
-     * @return the nxTrpId
-     */
     public int getNxTrpId() {
 
         return nxTrpId;
     }
 
-    /**
-     * @param nxTrpId the nxTrpId to set
-     */
     public void setNxTrpId( int nxTrpId ) {
 
         this.nxTrpId = nxTrpId;
     }
 
-    /**
-     * @return the reliable
-     */
     public boolean isReliable() {
 
         return reliable;
     }
 
-    /**
-     * @param reliable the reliable to set
-     */
     public void setReliable( boolean reliable ) {
 
         this.reliable = reliable;
     }
 
-    /**
-     * @return the retries
-     */
     public int getRetries() {
 
         return retries;
     }
 
-    /**
-     * @param retries the retries to set
-     */
     public void setRetries( int retries ) {
 
         this.retries = retries;
     }
 
-    /**
-     * @return the secure
-     */
     public boolean isSecure() {
 
         return secure;
     }
 
-    /**
-     * @param secure the secure to set
-     */
     public void setSecure( boolean secure ) {
 
         this.secure = secure;
     }
 
-    /**
-     * @return the synchronous
-     */
     public boolean isSynchronous() {
 
         return synchronous;
     }
 
-    /**
-     * @param synchronous the synchronous to set
-     */
     public void setSynchronous( boolean synchronous ) {
 
         this.synchronous = synchronous;
@@ -378,33 +328,21 @@ public class PartnerConnectionForm extends ActionForm {
         this.synchronousTimeout = synchronousTimeout;
     }
 
-    /**
-     * @return the timeout
-     */
     public int getTimeout() {
 
         return timeout;
     }
 
-    /**
-     * @param timeout the timeout to set
-     */
     public void setTimeout( int timeout ) {
 
         this.timeout = timeout;
     }
 
-    /**
-     * @return the trps
-     */
     public List<TRPPojo> getTrps() {
 
         return trps;
     }
 
-    /**
-     * @param trps the trps to set
-     */
     public void setTrps( List<TRPPojo> trps ) {
 
         this.trps = trps;
@@ -420,8 +358,7 @@ public class PartnerConnectionForm extends ActionForm {
         this.nxPartnerId = nxPartnerId;
     }
 
-    @Override
-    public void reset( ActionMapping arg0, HttpServletRequest arg1 ) {
+    public void reset() {
 
         secure = false;
         reliable = false;

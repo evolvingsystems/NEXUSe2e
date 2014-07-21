@@ -1,4 +1,4 @@
-<%--
+<!--
 
      NEXUSe2e Business Messaging Open Source
      Copyright 2000-2009, Tamgroup and X-ioma GmbH
@@ -18,16 +18,15 @@
      Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
      02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
---%>
-<%@ taglib uri="/tags/nexus" prefix="nexus" %>
-<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
-<%@ taglib uri="/tags/struts-html" prefix="html" %>
-<%@ taglib uri="/tags/struts-nested" prefix="nested" %>
-<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
-<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
-<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %> 
-
-<% /*<nexus:helpBar helpDoc="documentation/Collaboration_Partners.htm"/> */ %>
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
 
     <table class="NEXUS_TABLE" width="100%">
         <tr>
@@ -40,44 +39,39 @@
 
     <table class="NEXUS_TAB_TABLE">
         <tr>
-          <td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"></td>
+          <td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
             <td class="NEXUS_TAB_UNSELECTED"><nexus:link href="PartnerInfoView.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="NEXUS_TAB_UNSELECTED_LINK">
             Collaboration Partner</nexus:link></td>
-            <td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"></td>
-            <td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif"></td>
+            <td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
+            <td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif"/></td>
             <td class="NEXUS_TAB_SELECTED">Connections</td>
-            <td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif"></td>
-            <td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"></td>
+            <td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif"/></td>
+            <td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
             <td class="NEXUS_TAB_UNSELECTED"><nexus:link href="PartnerCertificateList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="NEXUS_TAB_UNSELECTED_LINK">Certificates</nexus:link></td>
-            <td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"></td>
+            <td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
         </tr>
     </table>
 
-    <table class="NEXUS_TABLE"
-           width="100%">
+    <table class="NEXUS_TABLE" width="100%">
         <tr>
             <td class="NEXUSSection">Name</td>
             <td class="NEXUSSection">URI</td>
         </tr>
-    <logic:iterate id="con" name="collaborationPartnerForm" property="connections"> 
-        <tr>
-            <td class="NEXUSValue"><nexus:link href="PartnerConnectionView.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}&nxConnectionId=${con.nxConnectionId}" styleClass="NexusLink"><bean:write name="con" property="name"/></nexus:link></td>
-            <td class="NEXUSValue"><bean:write name="con" property="url"/></td>
-        </tr>
-    </logic:iterate>
+        <c:forEach items="${collaborationPartnerForm.connections}" var="con"> 
+            <tr>
+                <td class="NEXUSValue"><nexus:link href="PartnerConnectionView.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}&amp;nxConnectionId=${con.nxConnectionId}" styleClass="NexusLink">${con.name}</nexus:link></td>
+                <td class="NEXUSValue">${con.url}</td>
+            </tr>
+        </c:forEach>
   </table>
-  <center> 
-      <logic:messagesPresent> 
-        <div class="NexusError"><html:errors/></div>
-        </logic:messagesPresent>
-    </center>
     <table class="NEXUS_BUTTON_TABLE">
       <tr>
          <td>
-          &nbsp;
+          &#160;
         </td>
         <td class="BUTTON_RIGHT" style="text-align: right;">
-          <nexus:link href="PartnerConnectionAdd.do?partnerId=${collaborationPartnerForm.partnerId}" styleClass="button"><img src="images/icons/add.png" class="button">Add Connection</nexus:link>
+          <nexus:link href="PartnerConnectionAdd.do?partnerId=${collaborationPartnerForm.partnerId}" styleClass="button"><img src="images/icons/add.png" class="button"/>Add Connection</nexus:link>
         </td>
       </tr>
     </table>
+</jsp:root>
