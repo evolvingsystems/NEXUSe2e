@@ -42,6 +42,7 @@
     	</tr>
     </table>
     <form:form methodParam="post" modelAttribute="collaborationPartnerForm" action="UpdatePartnerInfo.do">
+        <form:hidden path="nxPartnerId"/>
     	<table class="NEXUS_TAB_TABLE">
     		<tr>
     			<td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif"/></td>

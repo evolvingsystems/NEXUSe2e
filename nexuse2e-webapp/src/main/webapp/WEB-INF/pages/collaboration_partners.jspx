@@ -33,7 +33,7 @@
     		<td><nexus:crumbs /></td>
     	</tr>
     	<tr>
-    		<td class="NEXUSScreenName">${HEADLINE}</td>
+    		<td class="NEXUSScreenName">Partner Information</td>
     	</tr>
     </table>
     
@@ -64,7 +64,14 @@
         <td class="BUTTON_RIGHT">
           <nexus:link href="CollaborationPartnerAdd.do?type=${TYPE}" styleClass="button">
             <span style="white-space: nowrap;"><img src="images/icons/add.png" class="button"/>
-              ${BUTTONTEXT}
+                <c:choose>
+                    <c:when test="${TYPE eq '1'}">
+                        Add Server Identity
+                    </c:when>
+                    <c:otherwise>
+                        Add Collaboration Partner
+                    </c:otherwise>
+                </c:choose>
             </span>
           </nexus:link>
         </td>

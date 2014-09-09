@@ -1,0 +1,69 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+	<table class="NEXUS_TABLE" style="width:100%;">
+	    <tr>
+	        <td>
+	        	<nexus:crumbs/>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td class="NEXUSScreenName">Components</td>
+	    </tr>
+	</table>
+
+    <table class="NEXUS_TABLE" style="width:100%;">
+        <tr>
+            <td class="NEXUSSection">Component Name</td>
+            <td class="NEXUSSection">ClassName</td>
+            <td class="NEXUSSection">Description</td>
+        </tr>
+  
+        <c:forEach var="component" items="${collection}"> 
+        	<tr>
+                <td class="NEXUSName"><nexus:link href="ComponentView.do?nxComponentId=${component.nxComponentId}" styleClass="NexusLink">${component.name}</nexus:link></td>
+                <td class="NEXUSName">${component.className}</td>
+                <td class="NEXUSName">${component.description}</td>
+            </tr>
+        </c:forEach>
+
+    </table>
+
+    <table class="NEXUS_BUTTON_TABLE">
+        <tr>
+ 			<td>
+		    	&#160;
+			</td>
+	        <td class="BUTTON_RIGHT" style="text-align: right;">
+			    <nexus:link href="ComponentAdd.do?nxComponentId=0" styleClass="button"><img src="images/icons/add.png" class="button"/>Add Component</nexus:link>
+			</td>
+      	</tr>
+    </table>
+</jsp:root>

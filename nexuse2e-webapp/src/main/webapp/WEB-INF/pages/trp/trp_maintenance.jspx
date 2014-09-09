@@ -27,62 +27,63 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:tiles="http://tiles.apache.org/tags-tiles"
     version="2.0">
-	
-	<table class="NEXUS_TABLE" width="100%">
-		<tr>
-			<td><nexus:crumbs styleClass="NEXUSScreenPathLink"></nexus:crumbs></td>
-		</tr>
-		<tr>
-			<td class="NEXUSScreenName">Transport/Routing/Packaging Maintenance</td>
-		</tr>
-	</table>
+    
+    <table class="NEXUS_TABLE" width="100%">
+        <tr>
+            <td><nexus:crumbs styleClass="NEXUSScreenPathLink"></nexus:crumbs></td>
+        </tr>
+        <tr>
+            <td class="NEXUSScreenName">Transport/Routing/Packaging Maintenance</td>
+        </tr>
+    </table>
 
-	<form:form action="TrpMaintenance.do" method="POST" modelAttribute="trpMaintenanceForm">
+    <form:form action="TrpMaintenance.do" method="POST" modelAttribute="trpMaintenanceForm">
         <form:hidden path="nxTRPId" />
         <input type="hidden" name="submitAction" value="add"/>
-		<table width="100%">
-			<tr>
-				<td class="NEXUSName">Transport</td>
-				<td class="NEXUSName">Protocol</td>
-				<td class="NEXUSName">Version</td>
-				<td class="NEXUSName">Actions</td>
-			</tr>
-			<tr>
-				<td class="NEXUSName"><form:input size="20" path="transport" cssErrorClass="NexusError"/></td>
-				<td class="NEXUSName"><form:input size="20" path="protocol" cssErrorClass="NexusError"/></td>
-				<td class="NEXUSName"><form:input size="20" path="version" cssErrorClass="NexusError"/></td>
+        <table style="width:100%;">
+            <tr>
+                <td class="NEXUSName">Transport</td>
+                <td class="NEXUSName">Protocol</td>
+                <td class="NEXUSName">Version</td>
+                <td class="NEXUSName">Actions</td>
+            </tr>
+            <tr>
+                <td class="NEXUSName"><form:input size="20" path="transport" cssErrorClass="NexusError"/></td>
+                <td class="NEXUSName"><form:input size="20" path="protocol" cssErrorClass="NexusError"/></td>
+                <td class="NEXUSName"><form:input size="20" path="version" cssErrorClass="NexusError"/></td>
                 <td class="NEXUSName"><form:input size="20" path="adapterClassName" cssErrorClass="NexusError"/></td>
-				<td class="NEXUSName">
-    				<nexus:submit>
-    					<img src="images/icons/add.png" class="button" alt="Configure" id="addTrp" /><span dojoType="dijit.Tooltip" connectId="addTrp" toggle="explode">Add TRP Entry</span>
-    				</nexus:submit>
-				</td>
-			</tr>
-		</table>
+                <td class="NEXUSName">
+                    <nexus:submit>
+                        <img src="images/icons/add.png" class="button" alt="Configure" id="addTrp" /><span dojoType="dijit.Tooltip" connectId="addTrp" toggle="explode">Add TRP Entry</span>
+                    </nexus:submit>
+                </td>
+            </tr>
+        </table>
         <form:errors element="div" cssClass="NexusError" path="*"/>
     </form:form>
 
-	<table width="100%">
-		<c:forEach var="trp" items="${collection}" varStatus="status">
-            <form:form action="TrpMaintenance.do" method="POST" modelAttribute="collection[${status.index}]">
+    <c:forEach var="trp" items="${collection}" varStatus="status">
+        <form:form name="trp_form_${status.index}" action="TrpMaintenance.do" method="POST" modelAttribute="collection_${status.index}">
+            <table style="width:100%; margin-bottom:0;">
                 <input type="hidden" name="submitAction" value="update"/>
                 <form:hidden path="nxTRPId" />
-    			<tr> 
+                <tr> 
                     <td class="NEXUSName"><form:input size="20" path="transport" cssErrorClass="NexusError"/></td>
                     <td class="NEXUSName"><form:input size="20" path="protocol" cssErrorClass="NexusError"/></td>
                     <td class="NEXUSName"><form:input size="20" path="version" cssErrorClass="NexusError"/></td>
                     <td class="NEXUSName"><form:input size="20" path="adapterClassName" cssErrorClass="NexusError"/></td>
-    				<td class="NEXUSName">
-        				<nexus:submit>
-        					<img src="images/icons/delete.png" class="button" alt="Delete" id="deleteTrp" /><span dojoType="dijit.Tooltip" connectId="deleteTrp" toggle="explode">Delete TRP Entry</span>
-        				</nexus:submit> 
-        				<nexus:submit>
-        					<img src="images/icons/tick.png" class="button" alt="Configure" id="updateTrp"/><span dojoType="dijit.Tooltip" connectId="updateTrp" toggle="explode">Update TRP Entry</span>
-        				</nexus:submit>
-    				</td>
-    			</tr>
-            </form:form>
-		</c:forEach>
-	</table>
+                    <td class="NEXUSName">
+                        <nexus:submit onClick="document.forms['trp_form_${status.index}'].elements['submitAction'].value = 'delete';" form="document.forms['trp_form_${status.index}']">
+                            <img src="images/icons/delete.png" class="button" alt="Delete" id="deleteTrp" /><span dojoType="dijit.Tooltip" connectId="deleteTrp" toggle="explode">Delete TRP Entry</span>
+                        </nexus:submit> 
+                        <nexus:submit form="document.forms['trp_form_${status.index}']">
+                            <img src="images/icons/tick.png" class="button" alt="Configure" id="updateTrp"/><span dojoType="dijit.Tooltip" connectId="updateTrp" toggle="explode">Update TRP Entry</span>
+                        </nexus:submit>
+                    </td>
+                </tr>
+            </table>
+            <form:errors element="div" cssClass="NexusError" path="*"/>
+        </form:form>
+    </c:forEach>
 
 </jsp:root>

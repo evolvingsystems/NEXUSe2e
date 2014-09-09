@@ -9,7 +9,6 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.lang.StringUtils;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.TRPPojo;
@@ -28,51 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class TrpController {
 
-    @RequestMapping("/TrpMaintenance.do")
-    public String trpMaintenance(
-            Model model,
-            @RequestParam(value = "submitAction", defaultValue = "") String submitAction,
-            @Valid TrpMaintenanceForm form,
-            BindingResult bindingResult,
-            HttpServletRequest request,
-            EngineConfiguration engineConfiguration) throws NexusException {
-
-        if (submitAction.equals("add")) {
-            if (StringUtils.isNotEmpty(form.getProtocol())
-                    && StringUtils.isNotEmpty(form.getTransport())
-                    && StringUtils.isNotEmpty(form.getVersion())) {
-                TRPPojo trp = new TRPPojo();
-
-                trp.setProtocol(form.getProtocol());
-                trp.setTransport(form.getTransport());
-                trp.setVersion(form.getVersion());
-                trp.setAdapterClassName(form.getAdapterClassName());
-
-                engineConfiguration.updateTrp(trp);
-            }
-        } else if (submitAction.equals("update")) {
-            int nxId = form.getNxTRPId();
-            if (nxId != 0) {
-                TRPPojo trp = engineConfiguration.getTrpByNxTrpId(nxId);
-                
-                if (trp != null) {
-                    trp.setProtocol(form.getProtocol());
-                    trp.setTransport(form.getTransport());
-                    trp.setVersion(form.getVersion());
-                    trp.setAdapterClassName(form.getAdapterClassName());
-
-                    engineConfiguration.updateTrp(trp);
-                }
-            }
-        } else if (submitAction.equals("delete")) {
-            int nxId = form.getNxTRPId();
-            if (nxId != 0) {
-                TRPPojo trp = engineConfiguration.getTrpByNxTrpId(nxId);
-                if (trp != null) { 
-                    engineConfiguration.deleteTrp(trp);
-                }
-            }
-        }
+    private void addToTrpModel(Model model, List<TRPPojo> trps, int updateNxId, TrpMaintenanceForm form, BindingResult bindingResult) {
         Comparator<TRPPojo> comparator = new Comparator<TRPPojo>() {
             public int compare(TRPPojo trp1, TRPPojo trp2) {
                 if (trp1 == null) {
@@ -109,14 +64,75 @@ public class TrpController {
         };
 
         SortedSet<TRPPojo> set = new TreeSet<TRPPojo>(comparator);
-        set.addAll(engineConfiguration.getTrps());
+        set.addAll(trps);
 
         List<TrpMaintenanceForm> collection = new ArrayList<TrpMaintenanceForm>(set.size());
+        int i = 0;
         for (TRPPojo pojo : set) {
-            collection.add(new TrpMaintenanceForm(pojo));
+            TrpMaintenanceForm f;
+            if (updateNxId != 0 && form != null && pojo.getNxId() == updateNxId) {
+                f = form;
+                model.addAttribute("trpMaintenanceForm", new TrpMaintenanceForm());
+                model.addAttribute("org.springframework.validation.BindingResult.trpMaintenanceForm", null);
+                model.addAttribute("org.springframework.validation.BindingResult.collection_" + i, bindingResult);
+            } else {
+                f = new TrpMaintenanceForm(pojo);
+            }
+            collection.add(f);
+            model.addAttribute("collection_" + i, f);
+            i++;
         }
         
         model.addAttribute("collection", collection);
+    }
+    
+    @RequestMapping("/TrpMaintenance.do")
+    public String trpMaintenance(
+            Model model,
+            @RequestParam(value = "submitAction", defaultValue = "") String submitAction,
+            @Valid TrpMaintenanceForm form,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            EngineConfiguration engineConfiguration) throws NexusException {
+
+        int nxId = form.getNxTRPId();
+        if (submitAction.equals("add")) {
+            if (!bindingResult.hasErrors()) {
+                TRPPojo trp = new TRPPojo();
+
+                trp.setProtocol(form.getProtocol());
+                trp.setTransport(form.getTransport());
+                trp.setVersion(form.getVersion());
+                trp.setAdapterClassName(form.getAdapterClassName());
+
+                engineConfiguration.updateTrp(trp);
+            }
+        } else if (submitAction.equals("update")) {
+            if (!bindingResult.hasErrors()) {
+                if (nxId != 0) {
+                    TRPPojo trp = engineConfiguration.getTrpByNxTrpId(nxId);
+                    
+                    if (trp != null) {
+                        trp.setProtocol(form.getProtocol());
+                        trp.setTransport(form.getTransport());
+                        trp.setVersion(form.getVersion());
+                        trp.setAdapterClassName(form.getAdapterClassName());
+    
+                        engineConfiguration.updateTrp(trp);
+                    }
+                }
+            }
+        } else if (submitAction.equals("delete")) {
+            if (nxId != 0) {
+                TRPPojo trp = engineConfiguration.getTrpByNxTrpId(nxId);
+                if (trp != null) { 
+                    engineConfiguration.deleteTrp(trp);
+                }
+            }
+            nxId = 0;
+        }
+        
+        addToTrpModel(model, engineConfiguration.getTrps(), nxId, form, bindingResult);
 
         return "pages/trp/trp_maintenance";
     }

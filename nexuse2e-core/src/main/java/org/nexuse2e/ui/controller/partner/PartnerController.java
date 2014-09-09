@@ -73,13 +73,6 @@ public class PartnerController {
             partners.add( cpf );
         }
         request.setAttribute("TYPE", type);
-        if ("1".equals(type)) {
-            request.setAttribute("HEADLINE", "Server Identities");
-            request.setAttribute("BUTTONTEXT", "Add Server Identity");
-        } else {
-            request.setAttribute("HEADLINE", "Collaboration Partners");
-            request.setAttribute("BUTTONTEXT", "Add Collaboration Partner");
-        }
 
         model.addAttribute("collection", partners);
         
@@ -134,6 +127,7 @@ public class PartnerController {
                     throws NexusException {
 
         PartnerPojo partnerPojo = engineConfiguration.getPartnerByNxPartnerId(partnerForm.getNxPartnerId());
+        partnerForm.setType(partnerPojo.getType());
 
         if (partnerPojo != null) {
             partnerForm.setProperties(partnerPojo);
@@ -301,7 +295,6 @@ public class PartnerController {
         return partnerConnectionList(collaborationPartnerForm, engineConfiguration);
     }
 
-
     @RequestMapping("/PartnerCertificateList.do")
     public String partnerCertificateList(
             CollaborationPartnerForm form,
@@ -319,5 +312,25 @@ public class PartnerController {
         }
         
         return "pages/partners/partner_certificate_list";
+    }
+    
+    @RequestMapping("/UpdatePartnerInfo.do")
+    public String updatePartnerInfo(
+            @Valid CollaborationPartnerForm form,
+            EngineConfiguration engineConfiguration) throws NexusException {
+
+        int nxPartnerId = form.getNxPartnerId();
+
+        PartnerPojo partner = engineConfiguration.getPartnerByNxPartnerId(nxPartnerId);
+        if (partner == null) {
+            LOG.trace("Error, partner not found for id: " + nxPartnerId);
+        } else {
+            int partnerType = partner.getType();
+            form.getProperties(partner);
+            partner.setType(partnerType);
+            engineConfiguration.updatePartner(partner);
+        }
+        
+        return partnerInfoView(form, engineConfiguration);
     }
 }

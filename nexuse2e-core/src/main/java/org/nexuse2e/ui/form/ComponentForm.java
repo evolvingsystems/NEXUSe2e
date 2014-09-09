@@ -19,10 +19,8 @@
  */
 package org.nexuse2e.ui.form;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 import org.nexuse2e.configuration.ComponentType;
 import org.nexuse2e.pojo.ComponentPojo;
 
@@ -30,21 +28,16 @@ import org.nexuse2e.pojo.ComponentPojo;
  * @author gesch
  *
  */
-public class ComponentForm extends ActionForm {
+public class ComponentForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -217755396015512335L;
     private int               nxComponentId    = 0;
     private int               type             = 0;
     private String            name             = null;
     private String            className        = null;
-    private String            Description      = null;
+    private String            description      = null;
 
-    /**
-     * @param component
-     */
+    
     public void setProperties( ComponentPojo component ) {
 
         setNxComponentId( component.getNxComponentId() );
@@ -54,10 +47,6 @@ public class ComponentForm extends ActionForm {
         setDescription( component.getDescription() );
     }
 
-    /**
-     * @param component
-     * @return
-     */
     public ComponentPojo getProperties( ComponentPojo component ) {
 
         component.setNxComponentId( getNxComponentId() );
@@ -67,18 +56,6 @@ public class ComponentForm extends ActionForm {
         return component;
     }
 
-    /**
-     * @param mapping
-     * @param request
-     */
-    @Override
-    public void reset( ActionMapping mapping, HttpServletRequest request ) {
-
-    }
-
-    /**
-     * 
-     */
     public void cleanSettings() {
 
         setNxComponentId( 0 );
@@ -89,73 +66,46 @@ public class ComponentForm extends ActionForm {
 
     }
 
-    /**
-     * @return the className
-     */
     public String getClassName() {
 
         return className;
     }
 
-    /**
-     * @param className the className to set
-     */
     public void setClassName( String className ) {
 
         this.className = className;
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
 
-        return Description;
+        return description;
     }
 
-    /**
-     * @param description the description to set
-     */
     public void setDescription( String description ) {
 
-        Description = description;
+        this.description = description;
     }
 
-    /**
-     * @return the name
-     */
     public String getName() {
 
         return name;
     }
 
-    /**
-     * @param name the name to set
-     */
     public void setName( String name ) {
 
         this.name = name;
     }
 
-    /**
-     * @return the nxComponentId
-     */
     public int getNxComponentId() {
 
         return nxComponentId;
     }
 
-    /**
-     * @param nxComponentId the nxComponentId to set
-     */
     public void setNxComponentId( int nxComponentId ) {
 
         this.nxComponentId = nxComponentId;
     }
 
-    /**
-     * @return
-     */
     public String getTypeString() {
 
         if ( type == ComponentType.LOGGER.getValue() ) {
@@ -168,20 +118,13 @@ public class ComponentForm extends ActionForm {
         return "unknown Component";
     }
 
-    /**
-     * @return the type
-     */
     public int getType() {
 
         return type;
     }
 
-    /**
-     * @param type the type to set
-     */
     public void setType( int type ) {
 
         this.type = type;
     }
-
 }

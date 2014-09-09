@@ -1,0 +1,113 @@
+package org.nexuse2e.ui.controller.component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.apache.log4j.Logger;
+import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.ComponentType;
+import org.nexuse2e.configuration.Constants;
+import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.logging.LogAppender;
+import org.nexuse2e.messaging.Pipelet;
+import org.nexuse2e.pojo.ComponentPojo;
+import org.nexuse2e.service.Service;
+import org.nexuse2e.ui.form.ComponentForm;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * Component maintenance controller.
+ * 
+ * @author Jonas Reese
+ */
+@Controller
+public class ComponentController {
+
+    protected static Logger LOG = Logger.getLogger(ComponentController.class);
+
+    
+    @RequestMapping("/Components.do")
+    public String components(ComponentForm componentForm, Model model, EngineConfiguration engineConfiguration) throws NexusException {
+
+        List<ComponentForm> components = new ArrayList<ComponentForm>();
+        List<ComponentPojo> componentPojos = null;
+        componentPojos = engineConfiguration.getComponents(ComponentType.ALL, Constants.COMPONENT_NAME_COMPARATOR);
+
+        for (ComponentPojo component : componentPojos) {
+            ComponentForm cf = new ComponentForm();
+            cf.setProperties( component );
+            components.add( cf );
+        }
+        model.addAttribute("collection", components);
+        
+        return "pages/components/components";
+    }
+    
+    @RequestMapping("/ComponentView.do")
+    public String componentView(ComponentForm form, Model model, EngineConfiguration engineConfiguration) throws NexusException {
+
+        ComponentPojo component = engineConfiguration.getComponentByNxComponentId(form.getNxComponentId());
+        if (component != null) {
+            form.setProperties(component);
+        }
+
+        return "pages/components/component_view";
+    }
+    
+    @RequestMapping("/ComponentAdd.do")
+    public String componentAdd(ComponentForm componentForm) {
+        return "pages/components/component_view";
+    }
+    
+    @RequestMapping("/ComponentUpdate.do")
+    public String componentUpdate(
+            Model model, @Valid ComponentForm form, BindingResult bindingResult, EngineConfiguration engineConfiguration)
+                    throws NexusException {
+
+        ComponentPojo component = engineConfiguration.getComponentByNxComponentId(form.getNxComponentId());
+        int componentType = 0;
+        if (component != null) {
+            try {
+                Object o = Class.forName(form.getClassName()).newInstance();
+                if (o instanceof Service) {
+                    componentType = ComponentType.SERVICE.getValue();
+                } else if (o instanceof LogAppender) {
+                    componentType = ComponentType.LOGGER.getValue();
+                } else if (o instanceof Pipelet) {
+                    componentType = ComponentType.PIPELET.getValue();
+                } else {
+                    bindingResult.rejectValue(
+                            "className", "component.error.invalidclass", new Object[] { form.getClassName() }, "Class not a valid component");
+                }
+            } catch (ClassNotFoundException cnfex) {
+                LOG.error(cnfex);
+                bindingResult.rejectValue(
+                        "className", "component.error.classnotfound", new Object[] { form.getClassName() }, "Class not found");
+            } catch (IllegalAccessException iaex) {
+                LOG.error(iaex);
+                bindingResult.rejectValue(
+                        "className", "component.error.classnotaccessible", new Object[] { form.getClassName() }, "Class not accessible");
+            } catch (InstantiationException iaex) {
+                LOG.error(iaex);
+                bindingResult.rejectValue(
+                        "className", "component.error.classnotinstantiatable", new Object[] { form.getClassName() }, "Class not instantiatable");
+            }
+        }
+        
+        if (!bindingResult.hasErrors()) {
+            if (component != null) {
+                engineConfiguration.updateComponent(component);
+                form.getProperties(component);
+                component.setType(componentType);
+            }
+            return components(form, model, engineConfiguration);
+        }
+
+        return "pages/components/component_view";
+    }
+}
