@@ -19,7 +19,13 @@
  */
 package org.nexuse2e.ui.form;
 
-import org.apache.struts.action.ActionForm;
+import java.io.Serializable;
+import java.util.List;
+
+import javax.validation.constraints.Size;
+
+import org.nexuse2e.pojo.TRPPojo;
+
 
 /**
  * Web form for TRP maintenance.
@@ -27,17 +33,50 @@ import org.apache.struts.action.ActionForm;
  * @author Jonas Reese
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
-public class TrpMaintenanceForm extends ActionForm {
+public class TrpMaintenanceForm implements Serializable {
 
     private static final long serialVersionUID = -4659594397866558364L;
 
     private int               nxTRPId;
-    private String            submitaction;
     private String            protocol;
     private String            transport;
     private String            version;
     private String            adapterClassName;
+    
+    private List<TRPPojo> trpList;
 
+    /**
+     * Minimal constructor.
+     */
+    public TrpMaintenanceForm() {
+        
+    }
+    
+    /**
+     * Full constructor.
+     * @param nxTRPId The id.
+     * @param protocol The protocol string.
+     * @param transport The transport string.
+     * @param version The version string.
+     * @param adapterClassName The adapter class name.
+     */
+    public TrpMaintenanceForm(int nxTRPId, String protocol, String transport, String version, String adapterClassName) {
+        this.nxTRPId = nxTRPId;
+        this.protocol = protocol;
+        this.transport = transport;
+        this.version = version;
+        this.adapterClassName = adapterClassName;
+    }
+    
+    /**
+     * Full constructor with POJO.
+     * @param pojo The persistent object to initialize this form with. Must not be {@code null}.
+     */
+    public TrpMaintenanceForm(TRPPojo pojo) {
+        this(pojo.getNxId(), pojo.getProtocol(), pojo.getTransport(), pojo.getVersion(), pojo.getAdapterClassName());
+    }
+    
+    @Size(min = 1, message = "{trp.error.protocol.required}")
     public String getProtocol() {
 
         return protocol;
@@ -48,6 +87,7 @@ public class TrpMaintenanceForm extends ActionForm {
         this.protocol = protocol;
     }
 
+    @Size(min = 1, message = "{trp.error.transport.required}")
     public String getTransport() {
 
         return transport;
@@ -58,6 +98,7 @@ public class TrpMaintenanceForm extends ActionForm {
         this.transport = transport;
     }
 
+    @Size(min = 1, message = "{trp.error.version.required}")
     public String getVersion() {
 
         return version;
@@ -66,16 +107,6 @@ public class TrpMaintenanceForm extends ActionForm {
     public void setVersion( String version ) {
 
         this.version = version;
-    }
-
-    public String getSubmitaction() {
-
-        return submitaction;
-    }
-
-    public void setSubmitaction( String submitaction ) {
-
-        this.submitaction = submitaction;
     }
 
     public int getNxTRPId() {
@@ -98,4 +129,11 @@ public class TrpMaintenanceForm extends ActionForm {
         this.adapterClassName = adapterClassName;
     }
 
+    public List<TRPPojo> getTrpList() {
+        return trpList;
+    }
+
+    public void setTrpList(List<TRPPojo> trpList) {
+        this.trpList = trpList;
+    }
 }
