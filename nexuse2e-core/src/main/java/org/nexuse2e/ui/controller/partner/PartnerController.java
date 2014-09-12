@@ -116,8 +116,6 @@ public class PartnerController {
         engineConfiguration.getPartners(0, null).add(partner);
         engineConfiguration.updatePartner(partner);
 
-        model.addAttribute("refreshTree", "true");
-
         return "";
     }
     

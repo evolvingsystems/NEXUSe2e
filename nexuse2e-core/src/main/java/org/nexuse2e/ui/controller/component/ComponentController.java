@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Component maintenance controller.
@@ -32,7 +33,7 @@ public class ComponentController {
 
     
     @RequestMapping("/Components.do")
-    public String components(ComponentForm componentForm, Model model, EngineConfiguration engineConfiguration) throws NexusException {
+    public String components(Model model, EngineConfiguration engineConfiguration) throws NexusException {
 
         List<ComponentForm> components = new ArrayList<ComponentForm>();
         List<ComponentPojo> componentPojos = null;
@@ -64,50 +65,76 @@ public class ComponentController {
         return "pages/components/component_view";
     }
     
-    @RequestMapping("/ComponentUpdate.do")
+    private ComponentPojo saveComponent(
+            ComponentPojo component, BindingResult bindingResult, ComponentForm form, EngineConfiguration engineConfiguration)
+                    throws NexusException {
+        if (component == null) {
+            component = new ComponentPojo();
+        }
+        
+        int componentType = 0;
+        try {
+            Object o = Class.forName(form.getClassName()).newInstance();
+            if (o instanceof Service) {
+                componentType = ComponentType.SERVICE.getValue();
+            } else if (o instanceof LogAppender) {
+                componentType = ComponentType.LOGGER.getValue();
+            } else if (o instanceof Pipelet) {
+                componentType = ComponentType.PIPELET.getValue();
+            } else {
+                bindingResult.rejectValue(
+                        "className", "component.error.invalidclass", new Object[] { form.getClassName() }, "Class not a valid component");
+            }
+        } catch (ClassNotFoundException cnfex) {
+            LOG.error(cnfex);
+            bindingResult.rejectValue(
+                    "className", "component.error.classnotfound", new Object[] { form.getClassName() }, "Class not found");
+        } catch (IllegalAccessException iaex) {
+            LOG.error(iaex);
+            bindingResult.rejectValue(
+                    "className", "component.error.classnotaccessible", new Object[] { form.getClassName() }, "Class not accessible");
+        } catch (InstantiationException iaex) {
+            LOG.error(iaex);
+            bindingResult.rejectValue(
+                    "className", "component.error.classnotinstantiatable", new Object[] { form.getClassName() }, "Class not instantiatable");
+        }
+        
+        if (!bindingResult.hasErrors()) {
+            form.getProperties(component);
+            engineConfiguration.updateComponent(component);
+            component.setType(componentType);
+        }
+        return component;
+    }
+    
+    @RequestMapping( { "/ComponentUpdate.do", "/ComponentCreate.do" })
     public String componentUpdate(
             Model model, @Valid ComponentForm form, BindingResult bindingResult, EngineConfiguration engineConfiguration)
                     throws NexusException {
 
         ComponentPojo component = engineConfiguration.getComponentByNxComponentId(form.getNxComponentId());
-        int componentType = 0;
-        if (component != null) {
-            try {
-                Object o = Class.forName(form.getClassName()).newInstance();
-                if (o instanceof Service) {
-                    componentType = ComponentType.SERVICE.getValue();
-                } else if (o instanceof LogAppender) {
-                    componentType = ComponentType.LOGGER.getValue();
-                } else if (o instanceof Pipelet) {
-                    componentType = ComponentType.PIPELET.getValue();
-                } else {
-                    bindingResult.rejectValue(
-                            "className", "component.error.invalidclass", new Object[] { form.getClassName() }, "Class not a valid component");
-                }
-            } catch (ClassNotFoundException cnfex) {
-                LOG.error(cnfex);
-                bindingResult.rejectValue(
-                        "className", "component.error.classnotfound", new Object[] { form.getClassName() }, "Class not found");
-            } catch (IllegalAccessException iaex) {
-                LOG.error(iaex);
-                bindingResult.rejectValue(
-                        "className", "component.error.classnotaccessible", new Object[] { form.getClassName() }, "Class not accessible");
-            } catch (InstantiationException iaex) {
-                LOG.error(iaex);
-                bindingResult.rejectValue(
-                        "className", "component.error.classnotinstantiatable", new Object[] { form.getClassName() }, "Class not instantiatable");
-            }
-        }
+        component = saveComponent(component, bindingResult, form, engineConfiguration);
         
+        form.setNxComponentId(component.getNxId());
+
         if (!bindingResult.hasErrors()) {
-            if (component != null) {
-                engineConfiguration.updateComponent(component);
-                form.getProperties(component);
-                component.setType(componentType);
-            }
-            return components(form, model, engineConfiguration);
+            return components(model, engineConfiguration);
         }
 
-        return "pages/components/component_view";
+        return componentView(form, model, engineConfiguration);
+    }
+    
+    @RequestMapping("/ComponentDelete.do")
+    public String componentDelete(
+            @RequestParam(value = "nxComponentId", required = true) int nxComponentId,
+            Model model,
+            EngineConfiguration engineConfiguration) throws NexusException {
+
+        ComponentPojo component = engineConfiguration.getComponentByNxComponentId(nxComponentId);
+        if (component != null) {
+            engineConfiguration.deleteComponent(component);
+        }
+
+        return components(model, engineConfiguration);
     }
 }

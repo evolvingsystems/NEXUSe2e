@@ -29,7 +29,7 @@
     xmlns:tiles="http://tiles.apache.org/tags-tiles"
     version="2.0">
 
-      <c:set var="formAction" value="ComponentCreate"/>
+      <c:set var="formAction" value="ComponentCreate.do"/>
       <c:set var="titleText" value="Add Component"/>
 
       <c:if test="${componentForm.nxComponentId != 0}">
