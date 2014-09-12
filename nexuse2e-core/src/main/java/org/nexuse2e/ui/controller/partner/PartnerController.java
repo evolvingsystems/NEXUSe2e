@@ -79,6 +79,21 @@ public class PartnerController {
         return "pages/collaboration_partners";
     }
     
+    @RequestMapping("/ServerIdentityDelete.do")
+    public String serverIdentityDelete(
+            HttpServletRequest request,
+            Model model,
+            @RequestParam("nxPartnerId") int nxPartnerId,
+            EngineConfiguration engineConfiguration) throws NexusException {
+        
+        PartnerPojo partner = engineConfiguration.getPartnerByNxPartnerId(nxPartnerId);
+        if (partner != null && partner.getType() == Constants.PARTNER_TYPE_LOCAL) {
+            engineConfiguration.deletePartner(partner);
+        }
+        
+        return serverIdentities(model, Integer.toString(Constants.PARTNER_TYPE_LOCAL), request, engineConfiguration);
+    }
+    
     @RequestMapping("/CollaborationPartnerAdd.do")
     public String collaborationPartnerAdd(@RequestParam("type") int type, CollaborationPartnerForm form)
                     throws NexusException {
@@ -96,6 +111,7 @@ public class PartnerController {
 
     @RequestMapping("/CollaborationPartnerCreate.do")
     public String collaborationPartnerCreate(
+            HttpServletRequest request,
             @Valid CollaborationPartnerForm form,
             BindingResult bindingResult,
             Model model,
@@ -116,7 +132,7 @@ public class PartnerController {
         engineConfiguration.getPartners(0, null).add(partner);
         engineConfiguration.updatePartner(partner);
 
-        return "";
+        return serverIdentities(model, Integer.toString(partner.getType()), request, engineConfiguration);
     }
     
     @RequestMapping("/PartnerInfoView.do")
