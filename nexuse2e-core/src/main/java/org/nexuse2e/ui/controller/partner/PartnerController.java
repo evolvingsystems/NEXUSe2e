@@ -76,7 +76,7 @@ public class PartnerController {
 
         model.addAttribute("collection", partners);
         
-        return "pages/collaboration_partners";
+        return "pages/partners/partners";
     }
     
     @RequestMapping("/ServerIdentityDelete.do")

@@ -1,0 +1,280 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+    <table class="NEXUS_TABLE" width="100%">
+        <tr>
+            <td><nexus:crumbs styleClass="NEXUSScreenPathLink"></nexus:crumbs></td>
+        </tr>
+        <tr>
+            <td class="NEXUSScreenName">Add Pipeline</td>
+        </tr>
+    </table>
+
+    <form:form modelAttribute="pipelineForm" action="PipelineUpdate.do">
+        <form:hidden path="nxPipelineId"/>
+        <form:hidden path="submitaction"/>
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td class="NEXUSName">Name</td>
+                <td class="NEXUSValue"><form:input path="name" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Direction</td>
+                <td class="NEXUSValue">
+                    <form:select path="direction" cssErrorClass="NexusError">
+                        <form:option value="0">Inbound</form:option>
+                        <form:option value="1">Outbound</form:option>
+                    </form:select>
+                </td>
+            </tr>
+            <c:if test="${pipelineForm.frontend}">
+                <tr>
+                    <td class="NEXUSName">TRP</td>
+                    <td class="NEXUSValue">
+                        <form:select path="nxTrpId" items="trps" itemLabel="${trp.protocol}-${trp.version}-${trp.transport}">
+                        </form:select>
+                    </td>
+                </tr>
+            </c:if>
+
+            <tr>
+                <td class="NEXUSName">Description</td>
+                <td class="NEXUSValue"><form:input path="description" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <c:if test="${pipelineForm.frontend}">
+                <tr>
+                    <td class="NEXUSName">Bidirectional</td>
+                    <td class="NEXUSValue">
+                        <form:checkbox path="bidirectional" disabled="${pipelineForm.bidirectional}" onclick="var elem = document.getElementById('bidirectionalOnly'); if (document.forms['pipelineForm'].bidirectional.checked) { elem.style.visibility = 'visible' } else { elem.style.visibility = 'hidden' };"/>
+                    </td>
+                </tr>
+            </c:if>
+        </table>
+    
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td class="NEXUSSection">Name</td>
+                <td class="NEXUSSection">Description</td>
+                <td class="NEXUSSection"></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName" colspan="3">
+                    <c:if test="${pipelineForm.direction == 0}"> <!-- inbound -->
+                        <c:choose>
+                            <c:when test="${pipelineForm.frontend}">
+                                Partner system
+                            </c:when>
+                            <c:otherwise>
+                                NEXUSe2e frontend
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                    <c:if test="${pipelineForm.direction == 1}"> <!-- outbound -->
+                        <c:choose>
+                            <c:when test="${pipelineForm.frontend}">
+                                NEXUSe2e backend
+                            </c:when>
+                            <c:otherwise>
+                                Backend system
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                </td>
+            </tr>
+            <c:forEach var="pipelet" items="${pipelineForm.forwardPipelets}" varStatus="status">
+                <tr>
+                    <td class="NEXUSName">${status.index + 1}. ${pipelet.name}</td>
+                    <td class="NEXUSName">${pipelet.description}</td>
+                    <td class="NEXUSName">
+                        <c:choose>
+                            <c:when test="${status.index gt 0}">
+                                <nexus:submit
+                                    onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sort';document.forms['pipelineForm'].sortingDirection.value=1;">
+                                    <img src="images/icons/bullet_arrow_up.png" class="button" alt="Move up" id="moveUp"/><span dojoType="dijit.Tooltip" connectId="moveUp" toggle="explode">Move up</span>
+                                </nexus:submit>
+                            </c:when>
+                            <c:otherwise>
+                                <img src="images/icons/bullet_arrow_up.png" class="button"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:if test="${status.index lt pipelineForm.forwardPipeletCount - 1}">
+                            <nexus:submit
+                                onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sort';document.forms['pipelineForm'].sortingDirection.value=2;">
+                                <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDown"/><span dojoType="dijit.Tooltip" connectId="moveDown" toggle="explode">Move down</span>
+                            </nexus:submit>
+                        </c:if>
+                        <c:if test="${status.index ge pipelineForm.forwardPipeletCount - 1}">
+                            <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDown"/>
+                        </c:if>
+                        <nexus:submit
+                            onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='delete';">
+                            <img src="images/icons/delete.png" class="button" alt="Delete" id="deletePipelet"/><span dojoType="dijit.Tooltip" connectId="deletePipelet" toggle="explode">Delete Pipelet</span>
+                        </nexus:submit> 
+                        <c:if test="${pipelet.nxPipeletId != 0}">
+                            <nexus:submit
+                                onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='config';">
+                                <img src="images/icons/brick_edit.png" class="button" alt="Configure" id="configurePipelet" /><span dojoType="dijit.Tooltip" connectId="configurePipelet" toggle="explode">Configure Pipelet</span>
+                            </nexus:submit>
+                        </c:if>
+                    </td>
+                </tr>
+            </c:forEach>
+            <tr>
+                <td class="NEXUSSection" colspan="2">
+                    <form:select path="actionNxId" items="${pipelineForm.availableTemplates}" itemLabel="name" itemValue="nxId" cssErrorClass="NexusError"/>
+                    <nexus:submit onClick="document.forms['pipelineForm'].submitaction.value='add';" form="document.forms['pipelineForm']">
+                        <img src="images/icons/add.png" class="button"/>
+                    </nexus:submit>
+                </td>
+                <td class="NEXUSSection"></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName" colspan="3">
+                    <c:if test="${pipelineForm.direction == 0}"> <!-- inbound -->
+                        <c:choose>
+                            <c:when test="${pipelineForm.frontend}">
+                                NEXUSe2e backend
+                            </c:when>
+                            <c:otherwise>
+                                Backend system
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                    <c:if test="${pipelineForm.direction == 1}"> <!-- outbound -->
+                        <c:choose>
+                            <c:when test="${pipelineForm.frontend}">
+                                Partner system
+                            </c:when>
+                            <c:otherwise>
+                                NEXUSe2e frontend
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                </td>
+            </tr>
+        </table>
+            
+        <c:if test="${pipelineForm.frontend}">
+            <c:set var="visibility" value="hidden"/>
+            <c:if test="${pipelineForm.bidirectional}">
+                <c:set var="visibility" value="visible"/>
+            </c:if>
+            <div id="bidirectionalOnly" style="visibility: ${visibility};">
+                <table class="NEXUS_TABLE" width="100%">
+                    <tr>
+                        <td class="NEXUSName" colspan="3">
+                            <c:if test="${pipelineForm.direction == 0}"> <!-- inbound -->
+                                NEXUSe2e backend
+                            </c:if>
+                            <c:if test="${pipelineForm.direction == 1}"> <!-- outbound -->
+                                Partner system
+                            </c:if>
+                        </td>
+                    </tr>
+                    <c:forEach var="pipelet" items="${pipelineForm.returnPipelets}" varStatus="status">
+                        <tr>
+                            <td class="NEXUSName">${status.index + 1}. ${pipelet.name}</td>
+                            <td class="NEXUSName">${pipelet.description}</td>
+                            <td class="NEXUSName">
+                                <c:choose>
+                                    <c:when test="${status.index gt 0}">
+                                        <nexus:submit
+                                            onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sortReturn';document.forms['pipelineForm'].sortingDirection.value=1;">
+                                            <img src="images/icons/bullet_arrow_up.png" class="button" alt="Move up" id="moveUpReturn"/><span dojoType="dijit.Tooltip" connectId="moveUp" toggle="explode">Move up</span>
+                                        </nexus:submit>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="images/icons/bullet_arrow_up.png" class="button"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <c:choose>
+                                    <c:when test="${status.index lt pipelineForm.returnPipeletCount - 1}">
+                                        <nexus:submit
+                                            onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sortReturn';document.forms['pipelineForm'].sortingDirection.value=2;">
+                                            <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDown"/><span dojoType="dijit.Tooltip" connectId="moveDownReturn" toggle="explode">Move down</span>
+                                        </nexus:submit>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDownReturn"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <nexus:submit onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='deleteReturn';">
+                                    <img src="images/icons/delete.png" class="button" alt="Delete" id="deletePipelet"/><span dojoType="dijit.Tooltip" connectId="deletePipelet" toggle="explode">Delete Pipelet</span>
+                                </nexus:submit> 
+                                <c:if test="${pipelet.nxPipeletId != 0}">
+                                    <nexus:submit onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='configReturn';">
+                                       <img src="images/icons/brick_edit.png" class="button" alt="Configure" id="configurePipelet"/><span dojoType="dijit.Tooltip" connectId="configurePipelet" toggle="explode">Configure Pipelet</span>
+                                    </nexus:submit>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    <tr>
+                        <td class="NEXUSSection" colspan="2">
+                            <form:select path="actionNxIdReturn" items="${availableTemplates}" itemLabel="name" itemValue="nxComponentId"/>
+                            <nexus:submit onClick="document.forms['pipelineForm'].submitaction.value='addReturn';" form="document.forms['pipelineForm']">
+                                <img src="images/icons/add.png" class="button"/>
+                            </nexus:submit>
+                        </td>
+                        <td class="NEXUSSection"></td>
+                    </tr>
+                    <tr>
+                        <td class="NEXUSName" colspan="3">
+                            <c:if test="${pipelineForm.direction == 0}"> <!-- inbound -->
+                                Partner system
+                            </c:if>
+                            <c:if test="${pipelineForm.direction == 1}"> <!-- outbound -->
+                                NEXUSe2e backend
+                            </c:if>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </c:if>
+
+        <form:errors element="div" cssClass="NexusError" path="*"/>
+
+        <table class="NEXUS_BUTTON_TABLE">
+            <tr>
+                <td>&#160;</td>
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:submit onClick="document.forms['pipelineForm'].submitaction.value='update';" styleClass="button">
+                        <img src="images/icons/tick.png" class="button"/>Save
+                    </nexus:submit>
+                </td>
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:link href="PipelineDelete.do?nxPipelineId=${pipelineForm.nxPipelineId}" styleClass="button">
+                        <img src="images/icons/delete.png" class="button"/>Delete
+                    </nexus:link>
+                </td>
+            </tr>
+        </table>
+    </form:form>
+</jsp:root>

@@ -19,9 +19,12 @@
  */
 package org.nexuse2e.ui.resolver;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.ConfigurationAccessService;
 import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.pojo.UserPojo;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebArgumentResolver;
@@ -39,7 +42,12 @@ public class EngineConfigurationResolver implements WebArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter methodParameter, NativeWebRequest webRequest) throws Exception {
         if (ConfigurationAccessService.class.isAssignableFrom(methodParameter.getParameterType())) {
-            return Engine.getInstance().getCurrentConfiguration();
+            UserPojo user = (UserPojo) ((HttpServletRequest) webRequest.getNativeRequest()).getSession().getAttribute("nxUser");
+            if (user == null) {
+                return Engine.getInstance().getCurrentConfiguration();
+            } else {
+                return Engine.getInstance().getConfiguration(user.getNxId());
+            }
         }
         return UNRESOLVED;
     }

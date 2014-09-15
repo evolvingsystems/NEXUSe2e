@@ -19,16 +19,15 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Size;
 
 import org.apache.log4j.Logger;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 import org.nexuse2e.Configurable;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.ConfigurationUtil;
@@ -46,11 +45,8 @@ import org.nexuse2e.pojo.TRPPojo;
  * @author gesch
  *
  */
-public class PipelineForm extends ActionForm {
+public class PipelineForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long       serialVersionUID   = -2860731115832301190L;
 
     private static Logger           LOG                = Logger.getLogger( PipelineForm.class );
@@ -138,37 +134,38 @@ public class PipelineForm extends ActionForm {
 
     public PipelinePojo getProperties( PipelinePojo pipeline, EngineConfiguration config ) {
 
-        pipeline.setNxPipelineId( getNxPipelineId() );
-        pipeline.setName( getName() );
-        pipeline.setDescription( getDescription() );
-        if ( getDirection() == 0 ) {
-            pipeline.setOutbound( false );
+        pipeline.setNxPipelineId(getNxPipelineId());
+        pipeline.setName(getName());
+        pipeline.setDescription(getDescription());
+        pipeline.setFrontend(isFrontend());
+        if (getDirection() == 0) {
+            pipeline.setOutbound(false);
         } else {
-            pipeline.setOutbound( true );
+            pipeline.setOutbound(true);
         }
-        if ( pipeline.getPipelets() == null ) {
-            pipeline.setPipelets( new ArrayList<PipeletPojo>() );
+        if (pipeline.getPipelets() == null) {
+            pipeline.setPipelets(new ArrayList<PipeletPojo>());
         } else {
             pipeline.getPipelets().clear();
         }
 
-        if ( getPipelets() != null ) {
-            List<PipeletPojo> pipeletList = new ArrayList<PipeletPojo>( getPipelets() );
+        if (getPipelets() != null) {
+            List<PipeletPojo> pipeletList = new ArrayList<PipeletPojo>(getPipelets());
             if ((pipeline.isBackendInbound()) && pipeletList.size() > 1) {
-                pipeletList.add( 0, pipeletList.remove( pipeletList.size() - 1 ) );
+                pipeletList.add(0, pipeletList.remove(pipeletList.size() - 1));
             }
             for (int i = 0; i < pipeletList.size(); i++) {
-                PipeletPojo pipelet = pipeletList.get( i );
-                pipelet.setPosition( i );
-                pipeline.getPipelets().add( pipelet );
+                PipeletPojo pipelet = pipeletList.get(i);
+                pipelet.setPosition(i);
+                pipeline.getPipelets().add(pipelet);
             }
         }
 
-        TRPPojo trpPojo = config.getTrpByNxTrpId( nxTrpId );
-        if ( trpPojo != null ) {
-            pipeline.setTrp( trpPojo );
-        } else if ( pipeline.isFrontend() ) {
-            LOG.error( "No valid TRP found!" );
+        TRPPojo trpPojo = config.getTrpByNxTrpId(nxTrpId);
+        if (trpPojo != null) {
+            pipeline.setTrp(trpPojo);
+        } else if (pipeline.isFrontend()) {
+            LOG.error("No valid TRP found!");
         }
 
         return pipeline;
@@ -211,40 +208,6 @@ public class PipelineForm extends ActionForm {
         }
     }
 
-    /**
-     * @param mapping
-     * @param request
-     */
-    @Override
-    public void reset( ActionMapping mapping, HttpServletRequest request ) {
-
-//        System.out.println("mapping.name: "+mapping.getName());
-//        System.out.println("request: "+request.getParameterNames());
-//        Enumeration e = request.getParameterNames();
-//        while(e.hasMoreElements() ) {
-//            System.out.println("param:"+e.nextElement());
-//        }
-        String action = request.getParameter( "submitaction" );
-        
-        if(mapping.getPath().indexOf( "PipelineView" ) != -1 &&(action == null)) {
-            this.pipelets = new ArrayList<PipeletPojo>();
-            this.parameters = new ArrayList<PipeletParamPojo>();
-            this.currentPipelet = null;
-        } else if(mapping.getPath().indexOf( "PipeletParamsUpdate" ) != -1) {
-            for ( PipeletParamPojo pipeletParamPojo : parameters ) {
-                if ( pipeletParamPojo.getParameterDescriptor().getParameterType() == ParameterType.BOOLEAN ) {
-                    pipeletParamPojo.setValue( null );
-                }
-            }
-        } else {
-        }
-        pipeletParamValues = new HashMap<String, String>();
-        bidirectional = false;
-    }
-
-    /**
-     * 
-     */
     public void cleanSettings() {
 
         setNxPipelineId( 0 );
@@ -275,6 +238,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @return the name
      */
+    @Size(min = 1, message = "{pipeline.error.name.required}")
     public String getName() {
 
         return name;
