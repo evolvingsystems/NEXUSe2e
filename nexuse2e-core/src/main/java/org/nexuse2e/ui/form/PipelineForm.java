@@ -118,11 +118,9 @@ public class PipelineForm implements Serializable {
 
         setFrontend( pipeline.isFrontend() );
 
-        List<PipeletPojo> pipeletList = null;
-
         setTrps( Engine.getInstance().getActiveConfigurationAccessService().getTrps() );
 
-        pipeletList = new ArrayList<PipeletPojo>( pipeline.getPipelets() );
+        List<PipeletPojo> pipeletList = new ArrayList<PipeletPojo>( pipeline.getPipelets() );
         if ( pipeline.getPipelets() != null ) {
             Collections.sort( pipeletList, Constants.PIPELETCOMPARATOR );
             if ((pipeline.isBackendInbound()) && pipeletList.size() > 1) {

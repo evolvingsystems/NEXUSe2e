@@ -166,8 +166,9 @@ public class PipelineController {
                     ActionMessage errorMessage = new ActionMessage( "generic.error",
                             "Referenced Component is no pipelet: " + component.getClassName() );
                 }
-
-                pipelineForm.getPipelets().add( pipelet );
+                pipeline.getPipelets().add(pipelet);
+                engineConfiguration.updatePipeline(pipeline);
+                pipelineForm.setProperties(pipeline);
             }
         } else if ("delete".equals(action)) {
             int deletePosition = pipelineForm.getSortaction();
