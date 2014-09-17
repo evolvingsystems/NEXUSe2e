@@ -8,7 +8,6 @@ import java.util.TreeSet;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.apache.struts.action.ActionMessage;
 import org.nexuse2e.Configurable;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ConfigurationUtil;
@@ -160,15 +159,13 @@ public class PipelineController {
                     LOG.error(ex);
                 }
                 if ( ( newComponent instanceof Pipelet ) || ( newComponent instanceof TransportReceiver ) ) {
-                    pipelet.getPipeletParams().addAll(
-                            ConfigurationUtil.getConfiguration( (Configurable) newComponent, pipelet ) );
+                    pipelet.getPipeletParams().addAll(ConfigurationUtil.getConfiguration((Configurable) newComponent, pipelet));
+                    pipeline.getPipelets().add(pipelet);
+                    engineConfiguration.updatePipeline(pipeline);
+                    pipelineForm.setProperties(pipeline);
                 } else {
-                    ActionMessage errorMessage = new ActionMessage( "generic.error",
-                            "Referenced Component is no pipelet: " + component.getClassName() );
+                    bindingResult.rejectValue(add ? "actionNxId" : "actionNxIdReturn", "pipeline.error.component.notapipelet", "Not a pipelet");
                 }
-                pipeline.getPipelets().add(pipelet);
-                engineConfiguration.updatePipeline(pipeline);
-                pipelineForm.setProperties(pipeline);
             }
         } else if ("delete".equals(action)) {
             int deletePosition = pipelineForm.getSortaction();
