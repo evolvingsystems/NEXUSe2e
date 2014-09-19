@@ -52,6 +52,7 @@ public class PipelineForm implements Serializable {
     private static Logger           LOG                = Logger.getLogger( PipelineForm.class );
 
     private int                     nxPipelineId       = 0;
+    private int                     nxPipeletId        = 0;
     private int                     nxTrpId            = 0;
     private String                  name               = null;
     private String                  Description        = null;
@@ -64,8 +65,6 @@ public class PipelineForm implements Serializable {
     private List<TRPPojo>           trps               = null;
 
     private boolean                 frontend           = false;
-    private PipeletPojo             currentPipelet     = null;
-    private Configurable            configurable       = null;
 
     private HashMap<String, String> pipeletParamValues = null;
     /**
@@ -96,9 +95,17 @@ public class PipelineForm implements Serializable {
     
     private boolean                 bidirectional      = false;
     
-    /**
-     * @param component
-     */
+    public void setPipeletsFromPipeline(PipelinePojo pipeline) {
+        List<PipeletPojo> pipeletList = new ArrayList<PipeletPojo>(pipeline.getPipelets());
+        if (pipeline.getPipelets() != null) {
+            Collections.sort(pipeletList, Constants.PIPELETCOMPARATOR);
+            if ((pipeline.isBackendInbound()) && pipeletList.size() > 1) {
+                pipeletList.add(pipeletList.remove(0));
+            }
+        }
+        setPipelets(pipeletList);
+    }
+    
     public void setProperties( PipelinePojo pipeline ) {
 
         if ( pipeline == null ) {
@@ -120,14 +127,7 @@ public class PipelineForm implements Serializable {
 
         setTrps( Engine.getInstance().getActiveConfigurationAccessService().getTrps() );
 
-        List<PipeletPojo> pipeletList = new ArrayList<PipeletPojo>( pipeline.getPipelets() );
-        if ( pipeline.getPipelets() != null ) {
-            Collections.sort( pipeletList, Constants.PIPELETCOMPARATOR );
-            if ((pipeline.isBackendInbound()) && pipeletList.size() > 1) {
-                pipeletList.add( pipeletList.remove( 0 ) );
-            }
-        }
-        setPipelets( pipeletList );
+        setPipeletsFromPipeline(pipeline);
     }
 
     public PipelinePojo getProperties( PipelinePojo pipeline, EngineConfiguration config ) {
@@ -177,30 +177,27 @@ public class PipelineForm implements Serializable {
         }
     }
 
-    public void fillPojosFromParameterMap() {
+    public void fillPojosFromParameterMap(Configurable configurable) {
 
-        if ( pipeletParamValues == null ) {
-            return;
-        }
-        if ( getParameters() != null ) {
-            for ( PipeletParamPojo param : getParameters() ) {
-                ParameterDescriptor pd = configurable.getParameterMap().get( param.getParamName() );
-                if ( pd != null ) {
+        if (pipeletParamValues != null && getParameters() != null) {
+            for (PipeletParamPojo param : getParameters()) {
+                ParameterDescriptor pd = configurable.getParameterMap().get(param.getParamName());
+                if (pd != null) {
                     String value;
                     if (pd.getParameterType() == ParameterType.ENUMERATION) {
                         value = param.getValue();
                     } else {
-                        value = pipeletParamValues.get( param.getParamName() );
+                        value = pipeletParamValues.get(param.getParamName());
                     }
-                    if ( pd.getParameterType() == ParameterType.BOOLEAN ) {
-                        if ( "on".equalsIgnoreCase( value ) ) {
+                    if (pd.getParameterType() == ParameterType.BOOLEAN) {
+                        if ("on".equalsIgnoreCase(value)) {
                             value = Boolean.TRUE.toString();
                         }
                     }
-                    if ( value == null ) {
+                    if (value == null) {
                         value = Boolean.FALSE.toString();
                     }
-                    ConfigurationUtil.setParameterStringValue( param, value );
+                    ConfigurationUtil.setParameterStringValue(param, value);
                 }
             }
         }
@@ -217,74 +214,55 @@ public class PipelineForm implements Serializable {
 
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
 
         return Description;
     }
 
-    /**
-     * @param description the description to set
-     */
     public void setDescription( String description ) {
 
         Description = description;
     }
 
-    /**
-     * @return the name
-     */
     @Size(min = 1, message = "{pipeline.error.name.required}")
     public String getName() {
 
         return name;
     }
 
-    /**
-     * @param name the name to set
-     */
     public void setName( String name ) {
 
         this.name = name;
     }
 
-    /**
-     * @return the nxPipelineId
-     */
     public int getNxPipelineId() {
 
         return nxPipelineId;
     }
 
-    /**
-     * @param nxPipelineId the nxPipelineId to set
-     */
     public void setNxPipelineId( int nxPipelineId ) {
 
         this.nxPipelineId = nxPipelineId;
     }
 
-    /**
-     * @return the direction
-     */
+    public int getNxPipeletId() {
+        return nxPipeletId;
+    }
+
+    public void setNxPipeletId(int nxPipeletId) {
+        this.nxPipeletId = nxPipeletId;
+    }
+
     public int getDirection() {
 
         return direction;
     }
 
-    /**
-     * @param direction the direction to set
-     */
     public void setDirection( int direction ) {
 
         this.direction = direction;
     }
 
-    /**
-     * @return the pipelets
-     */
     public List<PipeletPojo> getPipelets() {
 
         return pipelets;
@@ -324,9 +302,6 @@ public class PipelineForm implements Serializable {
         return returnPipelets;
     }
     
-    /**
-     * @param pipelets the pipelets to set
-     */
     public void setPipelets( List<PipeletPojo> pipelets ) {
 
         this.pipelets = pipelets;
@@ -358,33 +333,21 @@ public class PipelineForm implements Serializable {
         return c;
     }
     
-    /**
-     * @return the availableTemplates
-     */
     public List<ComponentPojo> getAvailableTemplates() {
 
         return availableTemplates;
     }
 
-    /**
-     * @param availableTemplates the availableTemplates to set
-     */
     public void setAvailableTemplates( List<ComponentPojo> availableTemplates ) {
 
         this.availableTemplates = availableTemplates;
     }
 
-    /**
-     * @return the actionNxId
-     */
     public int getActionNxId() {
 
         return actionNxId;
     }
 
-    /**
-     * @param actionNxId the actionNxId to set
-     */
     public void setActionNxId( int actionNxId ) {
 
         this.actionNxId = actionNxId;
@@ -400,49 +363,31 @@ public class PipelineForm implements Serializable {
         this.actionNxIdReturn = actionNxIdReturn;
     }
 
-    /**
-     * @return the sortingDirection
-     */
     public int getSortingDirection() {
 
         return sortingDirection;
     }
 
-    /**
-     * @param sortingDirection the sortingDirection to set
-     */
     public void setSortingDirection( int sortingDirection ) {
 
         this.sortingDirection = sortingDirection;
     }
 
-    /**
-     * @return the submitaction
-     */
     public String getSubmitaction() {
 
         return submitaction;
     }
 
-    /**
-     * @param submitaction the submitaction to set
-     */
     public void setSubmitaction( String submitaction ) {
 
         this.submitaction = submitaction;
     }
 
-    /**
-     * @return the sortaction
-     */
     public int getSortaction() {
 
         return sortaction;
     }
 
-    /**
-     * @param sortaction the sortaction to set
-     */
     public void setSortaction( int sortaction ) {
 
         this.sortaction = sortaction;
@@ -464,33 +409,11 @@ public class PipelineForm implements Serializable {
         this.key = key;
     }
 
-    /**
-     * @return the currentPipelet
-     */
-    public PipeletPojo getCurrentPipelet() {
-
-        return currentPipelet;
-    }
-
-    /**
-     * @param currentPipelet the currentPipelet to set
-     */
-    public void setCurrentPipelet( PipeletPojo currentPipelet ) {
-
-        this.currentPipelet = currentPipelet;
-    }
-
-    /**
-     * @return the pipeletParamValues
-     */
     public HashMap<String, String> getPipeletParamValues() {
 
         return pipeletParamValues;
     }
 
-    /**
-     * @param pipeletParamValues the pipeletParamValues to set
-     */
     public void setPipeletParamValues( HashMap<String, String> pipeletParamValues ) {
 
         this.pipeletParamValues = pipeletParamValues;
@@ -506,33 +429,21 @@ public class PipelineForm implements Serializable {
         pipeletParamValues.put( key, (String) value );
     }
 
-    /**
-     * @return the paramName
-     */
     public String getParamName() {
 
         return paramName;
     }
 
-    /**
-     * @param paramName the paramName to set
-     */
     public void setParamName( String paramName ) {
 
         this.paramName = paramName;
     }
 
-    /**
-     * @return the parameters
-     */
     public List<PipeletParamPojo> getParameters() {
 
         return parameters;
     }
 
-    /**
-     * @param parameters the parameters to set
-     */
     public void setParameters( List<PipeletParamPojo> parameters ) {
 
         this.parameters = parameters;
@@ -577,16 +488,6 @@ public class PipelineForm implements Serializable {
         this.trps = trps;
     }
 
-    public Configurable getConfigurable() {
-
-        return configurable;
-    }
-
-    public void setConfigurable( Configurable configurable ) {
-
-        this.configurable = configurable;
-    }
-
     public boolean isBidirectional() {
 
         return bidirectional || getReturnPipelets().size() > 0;
@@ -596,5 +497,4 @@ public class PipelineForm implements Serializable {
 
         this.bidirectional = bidirectional;
     }
-
 }

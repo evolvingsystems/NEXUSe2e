@@ -267,33 +267,30 @@
             //debug(form);
             // alert( 'Action: ' + form.action );
              dojo.xhrPost({
-                    handleAs: "text",
-                    form: form,
-                    load: function(data){
-                        //console.log(data);
-                            getDocPane().attr("content", data);
-                            hideInProgress();
-                    },
-                    error: function(t, e) {
-                         displayError(e.message);
-                     }
-                });
+                handleAs: "text",
+                form: form,
+                load: function(data){
+                    //console.log(data);
+                        getDocPane().attr("content", data);
+                        hideInProgress();
+                },
+                error: function(t, e) {
+                     displayError(e.message);
+                 }
+            });
         }
     
         /*
          * Special submit method for forms that contain a file to upload.
          */
         function submitFileForm(form){
-          //dojo.connect(form, "onSubmit", myFileSubmit(form) );
           submitFileFormData(form);
-          //form.submit();
         }
     
         /*
          * Called by submitFileForm(form).
          */
         function submitFileFormData(form) {
-            //console.log(form.name);
             showInProgress();
     
             dojo.io.iframe.send( {
@@ -302,19 +299,17 @@
                          // indicate in the request that this is a file upload
                   "X-Ne2e-File-Upload": "true"
                 },
-                load: function(data, ioArgs) {
-                    //console.log(data);
-                    //console.log(ioArgs);
-                        getDocPane().attr("content", data);
-                        hideInProgress();
-                },
-                error: function(t, e) {
+                load: function(response, ioArgs) {
+                    //displayError("response = " + JSON.stringify(response) + ", ioArgs = " + JSON.stringify(ioArgs));
+                    getDocPane().attr("content", response);
                     hideInProgress();
-                    //console.log("error");
-                    //console.log(t);
-                    //console.log(e);
-                        displayError(e.message);
-                     }
+                    return response;
+                },
+                error: function(response, ioArgs) {
+                    displayError("response = " + JSON.stringify(response) + ", ioArgs = " + JSON.stringify(ioArgs));
+                    hideInProgress();
+                    return response;
+                }
             } );
         }
     ]]>

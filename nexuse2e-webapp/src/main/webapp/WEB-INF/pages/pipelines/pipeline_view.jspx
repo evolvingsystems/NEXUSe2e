@@ -39,7 +39,10 @@
 
     <form:form modelAttribute="pipelineForm" action="PipelineUpdate.do">
         <form:hidden path="nxPipelineId"/>
+        <form:hidden path="nxPipeletId"/>
         <form:hidden path="submitaction"/>
+        <form:hidden path="sortaction"/>
+        <form:hidden path="sortingDirection"/>
         <table class="NEXUS_TABLE" width="100%">
             <tr>
                 <td class="NEXUSName">Name</td>
@@ -58,8 +61,7 @@
                 <tr>
                     <td class="NEXUSName">TRP</td>
                     <td class="NEXUSValue">
-                        <form:select path="nxTrpId" items="trps" itemLabel="${trp.protocol}-${trp.version}-${trp.transport}">
-                        </form:select>
+                        <form:select path="nxTrpId" items="${pipelineForm.trps}" itemValue="nxId" itemLabel="label"/>
                     </td>
                 </tr>
             </c:if>
@@ -77,7 +79,23 @@
                 </tr>
             </c:if>
         </table>
-    
+
+        <table class="NEXUS_BUTTON_TABLE">
+            <tr>
+                <td>&#160;</td>
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:submit onClick="document.forms['pipelineForm'].submitaction.value='update';" styleClass="button">
+                        <img src="images/icons/tick.png" class="button"/>Save
+                    </nexus:submit>
+                </td>
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:link href="PipelineDelete.do?nxPipelineId=${pipelineForm.nxPipelineId}" styleClass="button">
+                        <img src="images/icons/delete.png" class="button"/>Delete
+                    </nexus:link>
+                </td>
+            </tr>
+        </table>
+
         <table class="NEXUS_TABLE" width="100%">
             <tr>
                 <td class="NEXUSSection">Name</td>
@@ -116,7 +134,7 @@
                         <c:choose>
                             <c:when test="${status.index gt 0}">
                                 <nexus:submit
-                                    onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sort';document.forms['pipelineForm'].sortingDirection.value=1;">
+                                    onClick="document.forms[0].sortaction.value=${status.index};document.forms[0].submitaction.value='sort';document.forms['pipelineForm'].sortingDirection.value=1;">
                                     <img src="images/icons/bullet_arrow_up.png" class="button" alt="Move up" id="moveUp"/><span dojoType="dijit.Tooltip" connectId="moveUp" toggle="explode">Move up</span>
                                 </nexus:submit>
                             </c:when>
@@ -126,7 +144,7 @@
                         </c:choose>
                         <c:if test="${status.index lt pipelineForm.forwardPipeletCount - 1}">
                             <nexus:submit
-                                onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sort';document.forms['pipelineForm'].sortingDirection.value=2;">
+                                onClick="document.forms[0].sortaction.value=${status.index};document.forms[0].submitaction.value='sort';document.forms['pipelineForm'].sortingDirection.value=2;">
                                 <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDown"/><span dojoType="dijit.Tooltip" connectId="moveDown" toggle="explode">Move down</span>
                             </nexus:submit>
                         </c:if>
@@ -134,12 +152,12 @@
                             <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDown"/>
                         </c:if>
                         <nexus:submit
-                            onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='delete';">
+                            onClick="document.forms[0].sortaction.value=${status.index};document.forms[0].submitaction.value='delete';">
                             <img src="images/icons/delete.png" class="button" alt="Delete" id="deletePipelet"/><span dojoType="dijit.Tooltip" connectId="deletePipelet" toggle="explode">Delete Pipelet</span>
                         </nexus:submit> 
                         <c:if test="${pipelet.nxPipeletId != 0}">
                             <nexus:submit
-                                onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='config';">
+                                onClick="document.forms[0].nxPipeletId.value=${pipelet.nxPipeletId};document.forms[0].submitaction.value='config';">
                                 <img src="images/icons/brick_edit.png" class="button" alt="Configure" id="configurePipelet" /><span dojoType="dijit.Tooltip" connectId="configurePipelet" toggle="explode">Configure Pipelet</span>
                             </nexus:submit>
                         </c:if>
@@ -206,7 +224,7 @@
                                 <c:choose>
                                     <c:when test="${status.index gt 0}">
                                         <nexus:submit
-                                            onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sortReturn';document.forms['pipelineForm'].sortingDirection.value=1;">
+                                            onClick="document.forms[0].sortaction.value=${status.index};document.forms[0].submitaction.value='sortReturn';document.forms['pipelineForm'].sortingDirection.value=1;">
                                             <img src="images/icons/bullet_arrow_up.png" class="button" alt="Move up" id="moveUpReturn"/><span dojoType="dijit.Tooltip" connectId="moveUp" toggle="explode">Move up</span>
                                         </nexus:submit>
                                     </c:when>
@@ -217,7 +235,7 @@
                                 <c:choose>
                                     <c:when test="${status.index lt pipelineForm.returnPipeletCount - 1}">
                                         <nexus:submit
-                                            onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='sortReturn';document.forms['pipelineForm'].sortingDirection.value=2;">
+                                            onClick="document.forms[0].sortaction.value=${status.index};document.forms[0].submitaction.value='sortReturn';document.forms['pipelineForm'].sortingDirection.value=2;">
                                             <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDown"/><span dojoType="dijit.Tooltip" connectId="moveDownReturn" toggle="explode">Move down</span>
                                         </nexus:submit>
                                     </c:when>
@@ -225,11 +243,11 @@
                                         <img src="images/icons/bullet_arrow_down.png" class="button" value="Submit" alt="Move down" id="moveDownReturn"/>
                                     </c:otherwise>
                                 </c:choose>
-                                <nexus:submit onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='deleteReturn';">
+                                <nexus:submit onClick="document.forms[0].sortaction.value=${status.index};document.forms[0].submitaction.value='deleteReturn';">
                                     <img src="images/icons/delete.png" class="button" alt="Delete" id="deletePipelet"/><span dojoType="dijit.Tooltip" connectId="deletePipelet" toggle="explode">Delete Pipelet</span>
                                 </nexus:submit> 
                                 <c:if test="${pipelet.nxPipeletId != 0}">
-                                    <nexus:submit onClick="document.forms[0].sortaction.value=${index};document.forms[0].submitaction.value='configReturn';">
+                                    <nexus:submit onClick="document.forms[0].nxPipeletId.value=${pipelet.nxPipeletId};document.forms[0].submitaction.value='configReturn';">
                                        <img src="images/icons/brick_edit.png" class="button" alt="Configure" id="configurePipelet"/><span dojoType="dijit.Tooltip" connectId="configurePipelet" toggle="explode">Configure Pipelet</span>
                                     </nexus:submit>
                                 </c:if>
@@ -260,21 +278,5 @@
         </c:if>
 
         <form:errors element="div" cssClass="NexusError" path="*"/>
-
-        <table class="NEXUS_BUTTON_TABLE">
-            <tr>
-                <td>&#160;</td>
-                <td class="NexusHeaderLink" style="text-align: right;">
-                    <nexus:submit onClick="document.forms['pipelineForm'].submitaction.value='update';" styleClass="button">
-                        <img src="images/icons/tick.png" class="button"/>Save
-                    </nexus:submit>
-                </td>
-                <td class="NexusHeaderLink" style="text-align: right;">
-                    <nexus:link href="PipelineDelete.do?nxPipelineId=${pipelineForm.nxPipelineId}" styleClass="button">
-                        <img src="images/icons/delete.png" class="button"/>Delete
-                    </nexus:link>
-                </td>
-            </tr>
-        </table>
     </form:form>
 </jsp:root>

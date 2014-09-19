@@ -247,4 +247,7 @@ public class TRPPojo implements NEXUSe2ePojo {
         this.adapterClassName = adapterClassName;
     }
     
+    public String getLabel() {
+        return getProtocol() + " " + getVersion() + " - " + getTransport();
+    }
 }

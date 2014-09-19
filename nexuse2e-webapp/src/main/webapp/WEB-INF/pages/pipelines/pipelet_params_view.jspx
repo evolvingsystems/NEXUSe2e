@@ -1,0 +1,159 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+    <table class="NEXUS_TABLE" width="100%">
+        <tr>
+            <td><nexus:crumbs styleClass="NEXUSScreenPathLink"></nexus:crumbs></td>
+        </tr>
+        <tr>
+            <td class="NEXUSScreenName">Pipelet Parameters</td>
+        </tr>
+    </table>
+    
+    <form:form modelAttribute="pipelineForm" action="PipeletParamsUpdate.do">
+        <form:hidden path="nxPipelineId"/>
+        <form:hidden path="nxPipeletId"/>
+        <form:hidden path="submitaction"/>
+        <form:hidden path="actionNxId"/>
+        <form:hidden path="paramName"/>
+
+        <c:if test="${empty pipelineForm.parameters}">
+            <i>No Parameters</i>
+        </c:if>
+        <if test="${not empty pipelineForm.parameters}">
+            <table class="NEXUS_TABLE" width="100%">
+                <tr>
+                    <td class="NEXUSSection">Name</td>
+                    <td class="NEXUSSection">Value</td>
+                    <td class="NEXUSSection">Description</td>
+    
+                </tr>
+                <c:forEach items="${pipelineForm.parameters}" var="parameter">
+                    <c:set var="key" value="pipeletParamValues['${parameter.paramName}']" />
+                    <c:if test="${parameter.parameterDescriptor.parameterType eq 'STRING'}">
+                        <tr>
+                            <td class="NEXUSValue">${parameter.label}</td>
+                            <td class="NEXUSValue"><form:input path="${key}" size="50" /></td>
+                            <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${parameter.parameterDescriptor.parameterType eq 'TEXT'}">
+                        <tr>
+                            <td class="NEXUSValue" style="vertical-align: top;">${parameter.label}</td>
+                            <td class="NEXUSValue"><form:textarea path="${key}" cols="50" rows="100" /></td>
+                            <td class="NEXUSValue" style="vertical-align: top;">${parameter.parameterDescriptor.description}</td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${parameter.parameterDescriptor.parameterType eq 'PASSWORD'}">
+                        <tr>
+                            <td class="NEXUSValue">${parameter.label}</td>
+                            <td class="NEXUSValue"><form:password path="${key}"
+                                size="50" /></td>
+                            <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${parameter.parameterDescriptor.parameterType eq 'ENUMERATION'}">
+                        <tr>
+                            <td class="NEXUSValue">
+                                <form:input path="key" size="20" disabled="${parameter.label != null}"/>
+                            </td>
+                            <td class="NEXUSValue">
+                                <form:input path="value" size="35" disabled="${parameter.label != null}"/>
+                            </td>
+                            <td class="NEXUSValue">
+                                <c:choose>
+                                    <c:when test="${parameter.label != null}">
+                                        <nexus:submit onClick="javascript:document.forms['pipelineForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].actionNxId.value=${parameter.sequenceNumber};document.forms['pipelineForm'].submitaction.value='delete';">
+                                            <img src="images/icons/delete.png" name="delete" class="button"/>
+                                        </nexus:submit>
+                                     </c:when>
+                                     <c:otherwise>
+                                         <nexus:submit onClick="javascript:document.forms['pipelineForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].submitaction.value='add';">
+                                            <img src="images/icons/tick.png" name="add" class="button"/>
+                                        </nexus:submit>${parameter.parameterDescriptor.description}
+                                     </c:otherwise>
+                                </c:choose>
+                            </td>
+                        </tr>
+                    </c:if>
+    
+                    <c:if test="${parameter.parameterDescriptor.parameterType eq 'LIST'}">
+                        <tr>
+                            <td class="NEXUSValue">${parameter.label}</td>
+                            <td class="NEXUSValue">
+                                <form:select path="${key}">
+                                    <c:forEach items="${parameter.parameterDescriptor.defaultValue.elements}" var="element">
+                                        <form:option value="${element.value}">${element.label}</form:option>
+                                    </c:forEach>
+                                </form:select>
+                            </td>
+                            <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${parameter.parameterDescriptor.parameterType eq 'BOOLEAN'}">
+                        <tr>
+                            <td class="NEXUSValue">${parameter.label}</td>
+                            <td class="NEXUSValue"><form:checkbox path="${key}" value="true"/></td>
+                            <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
+                        </tr>
+                    </c:if>
+                    <c:if test="${parameter.parameterDescriptor.parameterType eq 'SERVICE'}">
+                        <tr>
+                            <td class="NEXUSValue">${parameter.label}</td>
+                            <td class="NEXUSValue">
+                                <nexus:select name="${key}">
+                                    <c:forEach items="${collection}" var="service">
+                                        <c:if test="${empty parameter.parameterDescriptor.defaultValue.simpleName || service.component.isSubtypeOf(parameter.parameterDescriptor.defaultValue)}">
+                                            <nexus:option name="service" value="${parameter.value}" property="name" labelProperty="name" />
+                                        </c:if>
+                                    </c:forEach>
+                                </nexus:select></td>
+                            <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
+                        </tr>
+                    </c:if>
+                </c:forEach>
+            </table>
+        </if>
+    
+        <table class="NEXUS_BUTTON_TABLE">
+            <tr>
+                <td>&#160;</td>
+                <td class="BUTTON_RIGHT" style="text-align: right;">
+                    <nexus:submit onClick="javascript:document.forms['pipelineForm'].submitaction.value='update';" styleClass="button">
+                        <nobr><img src="images/icons/tick.png" class="button"/>Save</nobr>
+                    </nexus:submit>
+                    <nexus:link href="PipelineView.do?nxPipelineId=${pipelineForm.nxPipelineId}" styleClass="button">
+                        <nobr><img src="images/icons/delete.png" class="button"/>Cancel</nobr>
+                    </nexus:link>
+                </td>
+            </tr>
+        </table>
+    </form:form>
+</jsp:root>
