@@ -147,8 +147,11 @@ public class PipelineController {
         boolean deleteReturn = "deleteReturn".equals(action);
 
         if (add || addReturn) {
-            ComponentPojo component = engineConfiguration.getComponentByNxComponentId((
-                    add ? pipelineForm.getActionNxId() : pipelineForm.getActionNxIdReturn()));
+            Integer actionNxId = (add ? pipelineForm.getActionNxId() : pipelineForm.getActionNxIdReturn());
+            if (actionNxId == null) {
+                actionNxId = 0;
+            }
+            ComponentPojo component = engineConfiguration.getComponentByNxComponentId(actionNxId);
             if (component != null) {
                 PipeletPojo pipelet = new PipeletPojo();
                 pipelineForm.setProperties(pipeline);
@@ -265,9 +268,6 @@ public class PipelineController {
             PipeletPojo pipeletPojo = findPipelet(pipeline, pipelineForm.getNxPipeletId());
             pipelineForm.setProperties(pipeline);
 
-            if (pipeletPojo != null) {
-                pipelineForm.getObsoleteParameters().clear();
-            }
             List<ServicePojo> services = engineConfiguration.getServices();
             List<ServicePojo> sortedServices = new ArrayList<ServicePojo>(services.size());
             sortedServices.addAll(engineConfiguration.getServices());
@@ -338,8 +338,9 @@ public class PipelineController {
 
         if (pipeletPojo != null) {
             if ("add".equals(action)) {
+                Configurable configurable = initPipeletParameters(pipeletPojo, pipelineForm);
                 String paramName = pipelineForm.getParamName();
-                LOG.trace( "paramName: " + paramName );
+                initPipeletParameters(pipeletPojo, pipelineForm);
                 int maxsqn = 0;
                 PipeletParamPojo headerLine = null;
                 for (PipeletParamPojo param : pipelineForm.getParameters()) {
@@ -364,7 +365,6 @@ public class PipelineController {
                 } else {
                     alreadyIn = true;
                 }
-                Configurable configurable = initPipeletParameters(pipeletPojo, pipelineForm);
                 if (headerLine != null && !alreadyIn && configurable != null) {
                     PipeletParamPojo newParam = new PipeletParamPojo();
                     newParam.setParamName(headerLine.getParamName());
@@ -382,42 +382,39 @@ public class PipelineController {
                     enumeration.putElement(pipelineForm.getKey(), pipelineForm.getValue());
                     newParam.setSequenceNumber(maxsqn + 1);
                     newParam.setParameterDescriptor(pd);
-                    pipelineForm.getParameters().add(pipelineForm.getParameters().size() - 1, newParam);
+                    pipeletPojo.getPipeletParams().add(newParam);
                 }
+                
+                engineConfiguration.updatePipeline(pipelinePojo);
+                
                 pipelineForm.setKey("");
                 pipelineForm.setValue("");
     
-                return "pages/pipelines/pipelet_params_view";
+                return pipeletParamsView(model, pipelineForm, engineConfiguration, !pipeletPojo.isForward());
             } else if ("delete".equals(action)) {
                 Configurable configurable = initPipeletParameters(pipeletPojo, pipelineForm);
                 if (configurable != null) {
                     pipelineForm.fillPojosFromParameterMap(configurable);
                     String paramName = pipelineForm.getParamName();
-                    LOG.trace( "paramName: " + paramName );
-                    int sqn = pipelineForm.getActionNxId();
-                    LOG.trace( "sqn: " + sqn );
-        
-                    PipeletParamPojo obsoleteParam = null;
-                    for (PipeletParamPojo param : pipelineForm.getParameters()) {
-                        if (param.getParamName().equals(paramName) && param.getSequenceNumber() == sqn) {
-                            obsoleteParam = param;
+                    Integer sqnValue = pipelineForm.getActionNxId();
+                    
+                    if (sqnValue != null) {
+                        PipeletParamPojo obsoleteParam = null;
+                        for (PipeletParamPojo param : pipelineForm.getParameters()) {
+                            if (param.getParamName().equals(paramName) && param.getSequenceNumber() == sqnValue.intValue()) {
+                                obsoleteParam = param;
+                            }
+                            if (param.getParamName().equals(paramName) && param.getSequenceNumber() > sqnValue.intValue()) {
+                                param.setSequenceNumber(param.getSequenceNumber() - 1);
+                            }
                         }
-                        if (param.getParamName().equals(paramName) && param.getSequenceNumber() > sqn) {
-                            param.setSequenceNumber(param.getSequenceNumber() - 1);
-                        }
-                    }
-                    if (obsoleteParam != null) {
-                        pipelineForm.getParameters().remove(obsoleteParam);
-                        EnumerationParameter enumeration = configurable.getParameter(obsoleteParam.getParamName());
-                        if (enumeration != null) {
-                            enumeration.removeElement(obsoleteParam.getLabel());
-                        }
-                        if (obsoleteParam.getNxPipeletParamId() != 0) {
-                            pipelineForm.getObsoleteParameters().add(obsoleteParam);
+                        if (obsoleteParam != null) {
+                            pipeletPojo.getPipeletParams().remove(obsoleteParam);
+                            engineConfiguration.updatePipeline(pipelinePojo);
                         }
                     }
                 }
-                return "pages/pipelines/pipelet_params_view";
+                return pipeletParamsView(model, pipelineForm, engineConfiguration, !pipeletPojo.isForward());
             } else if ("update".equals(action)) {
                 Configurable configurable = getConfigurable(pipeletPojo);
                 if (configurable != null) {
@@ -430,10 +427,6 @@ public class PipelineController {
                             param.setPipelet(pipeletPojo);
                             pipeletPojo.getPipeletParams().add(param);
                         }
-                    }
-                    for (PipeletParamPojo param : pipelineForm.getObsoleteParameters()) {
-                        pipeletPojo.getPipeletParams().remove(param);
-                        param.setPipelet(null);
                     }
     
                     if (pipeletPojo.getNxPipeletId() != 0) {

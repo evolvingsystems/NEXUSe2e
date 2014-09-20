@@ -1991,6 +1991,11 @@ public class EngineConfiguration implements ConfigurationAccessService {
         pt.add(pipeline);
         addToUpdateList(pipeline);
         addToImplicitUpdateList(pipeline, pipeline.getPipelets());
+        if (pipeline.getPipelets() != null) {
+            for (PipeletPojo pipelet : pipeline.getPipelets()) {
+                addToImplicitUpdateList(pipelet, pipelet.getPipeletParams());
+            }
+        }
     }
 
     /*

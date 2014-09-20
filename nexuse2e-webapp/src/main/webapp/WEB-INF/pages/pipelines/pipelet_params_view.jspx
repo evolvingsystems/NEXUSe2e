@@ -82,10 +82,24 @@
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'ENUMERATION'}">
                         <tr>
                             <td class="NEXUSValue">
-                                <form:input path="key" size="20" disabled="${parameter.label != null}"/>
+                                <c:choose>
+                                    <c:when test="${parameter.label != null}">
+                                        <input type="text" size="20" value="${fn:escapeXml(parameter.label)}" disabled="disabled"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <form:input path="key" size="20"/>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                             <td class="NEXUSValue">
-                                <form:input path="value" size="35" disabled="${parameter.label != null}"/>
+                                <c:choose>
+                                    <c:when test="${parameter.label != null}">
+                                        <input type="text" size="20" value="${fn:escapeXml(parameter.value)}" disabled="disabled"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <form:input path="value" size="35"/>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                             <td class="NEXUSValue">
                                 <c:choose>

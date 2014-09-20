@@ -61,7 +61,6 @@ public class PipelineForm implements Serializable {
     private List<ComponentPojo>     availableTemplates = null;
 
     private List<PipeletParamPojo>  parameters         = new ArrayList<PipeletParamPojo>();
-    private List<PipeletParamPojo>  obsoleteParameters = new ArrayList<PipeletParamPojo>();
     private List<TRPPojo>           trps               = null;
 
     private boolean                 frontend           = false;
@@ -70,8 +69,8 @@ public class PipelineForm implements Serializable {
     /**
      * may contain different nexusIds, depends on submitaction 
      */
-    private int                     actionNxId         = 0;
-    private int                     actionNxIdReturn   = 0;
+    private Integer                 actionNxId;
+    private Integer                 actionNxIdReturn;
 
     private String                  paramName          = null;
 
@@ -343,22 +342,22 @@ public class PipelineForm implements Serializable {
         this.availableTemplates = availableTemplates;
     }
 
-    public int getActionNxId() {
+    public Integer getActionNxId() {
 
         return actionNxId;
     }
 
-    public void setActionNxId( int actionNxId ) {
+    public void setActionNxId( Integer actionNxId ) {
 
         this.actionNxId = actionNxId;
     }
 
-    public int getActionNxIdReturn() {
+    public Integer getActionNxIdReturn() {
 
         return actionNxIdReturn;
     }
 
-    public void setActionNxIdReturn( int actionNxIdReturn ) {
+    public void setActionNxIdReturn( Integer actionNxIdReturn ) {
 
         this.actionNxIdReturn = actionNxIdReturn;
     }
@@ -449,15 +448,6 @@ public class PipelineForm implements Serializable {
         this.parameters = parameters;
     }
 
-    public List<PipeletParamPojo> getObsoleteParameters() {
-        return obsoleteParameters;
-    }
-    
-    public void setObsoleteParameters( List<PipeletParamPojo> obsoleteParameters ) {
-        this.obsoleteParameters = obsoleteParameters;
-    }
-
-    
     public boolean isFrontend() {
 
         return frontend;
