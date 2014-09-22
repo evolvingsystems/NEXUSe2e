@@ -155,6 +155,8 @@
                 </c:forEach>
             </table>
         </if>
+        
+        <form:errors element="div" cssClass="NexusError" path="*"/>
     
         <table class="NEXUS_BUTTON_TABLE">
             <tr>

@@ -33,7 +33,7 @@
   </mvc:interceptors>
   
   <!-- Resolves localized *.properties files in the application to allow for internationalization. -->
-  <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource" p:basenames="classpath:/ApplicationResources classpath:/ValidationMessages" p:fallbackToSystemLocale="false"/>
+  <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource" id="messageSource" p:basenames="classpath:/ValidationMessages" p:fallbackToSystemLocale="false"/>
   
   <!-- store preferred language configuration in a cookie -->
   <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver" p:cookieName="locale"/> 
