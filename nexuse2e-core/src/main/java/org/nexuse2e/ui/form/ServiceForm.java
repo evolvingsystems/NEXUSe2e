@@ -51,7 +51,6 @@ public class ServiceForm implements Serializable {
 
     private boolean                 autostart           = false;
     
-    private String                  submitted           = "false";
     private Map<String, String>     logFilterValues     = null;
     private Map<String, String>     pipeletParamValues  = new HashMap<String, String>();
     private List<ServiceParamPojo>  parameters          = new ArrayList<ServiceParamPojo>();
@@ -60,7 +59,6 @@ public class ServiceForm implements Serializable {
 
     public void reset() {
 
-        submitted = "false";
         componentName = null;
         nxServiceId = 0;
         if (logFilterValues != null) {
@@ -199,16 +197,6 @@ public class ServiceForm implements Serializable {
     public void setParameters(List<ServiceParamPojo> parameters) {
 
         this.parameters = parameters;
-    }
-
-    public String getSubmitted() {
-
-        return submitted;
-    }
-
-    public void setSubmitted(String submitted) {
-
-        this.submitted = submitted;
     }
 
     public Map<String, String> getLogFilterValues() {

@@ -47,7 +47,7 @@ public class Options extends BodyTagSupport {
         return collection;
     }
 
-    public void setCollection( String collection ) {
+    public void setCollection(String collection) {
 
         this.collection = collection;
     }
@@ -57,7 +57,7 @@ public class Options extends BodyTagSupport {
         return labelProperty;
     }
 
-    public void setLabelProperty( String labelProperty ) {
+    public void setLabelProperty(String labelProperty) {
 
         this.labelProperty = labelProperty;
     }
@@ -67,7 +67,7 @@ public class Options extends BodyTagSupport {
         return property;
     }
 
-    public void setProperty( String property ) {
+    public void setProperty(String property) {
 
         this.property = property;
     }
@@ -77,9 +77,8 @@ public class Options extends BodyTagSupport {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(String value) {
 
-        // LOG.trace( "value = " + value );
         this.value = value;
     }
 
@@ -87,28 +86,30 @@ public class Options extends BodyTagSupport {
     public int doStartTag() throws JspException {
 
         JspWriter out = pageContext.getOut();
-        Collection<?> collectionBean = (Collection<?>) pageContext.getAttribute( collection );
+        Collection<?> collectionBean = (Collection<?>) pageContext.getAttribute(collection);
         if (collectionBean == null) {
-            collectionBean = (Collection<?>) pageContext.getRequest().getAttribute( collection );
+            collectionBean = (Collection<?>) pageContext.getRequest().getAttribute(collection);
         }
-        for ( Object bean : collectionBean ) {
-            try {
-                Object valObj = BeanUtils.getProperty( bean, property );
-                out.print( "<option value=\"" );
-                out.print( valObj );
-                out.print( "\"" );
-                if ( value.equals( valObj.toString() ) ) {
-                    out.print( " selected" );
+        if (collectionBean != null) {
+            for (Object bean : collectionBean) {
+                try {
+                    Object valObj = BeanUtils.getProperty(bean, property);
+                    out.print("<option value=\"");
+                    out.print(valObj);
+                    out.print("\"");
+                    if (value.equals(valObj.toString())) {
+                        out.print(" selected");
+                    }
+                    out.print(">");
+                    if (labelProperty != null) {
+                        out.print(BeanUtils.getProperty(bean, labelProperty));
+                    } else {
+                        out.print(bean);
+                    }
+                    out.println("</option>");
+                } catch (Exception e) {
+                    throw new JspException(e);
                 }
-                out.print( ">" );
-                if ( labelProperty != null ) {
-                    out.print( BeanUtils.getProperty( bean, labelProperty ) );
-                } else {
-                    out.print( bean );
-                }
-                out.println( "</option>" );
-            } catch ( Exception e ) {
-                throw new JspException( e );
             }
         }
 

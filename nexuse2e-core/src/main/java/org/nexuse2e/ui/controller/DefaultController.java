@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.nexuse2e.AdvancedControllerInterface;
 import org.nexuse2e.Engine;
@@ -33,6 +34,7 @@ import org.nexuse2e.ui.structure.StructureNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Home screen controller.
@@ -97,7 +99,14 @@ public class DefaultController {
         return "pages/home";
     }
     
-    
+    @RequestMapping("/InstanceController.do")
+    public String instanceController(@RequestParam("instanceId") String instanceId, @RequestParam("commandId") String commandId) {
+
+        if (StringUtils.isNotEmpty(instanceId) && StringUtils.isNotEmpty(commandId)) {
+            Engine.getInstance().getEngineController().getAdvancedController().executeCommand(instanceId, commandId);
+        }
+        return "redirect:/Home.do";
+    }
     
     @RequestMapping({
         "/ServerConfiguration.do",

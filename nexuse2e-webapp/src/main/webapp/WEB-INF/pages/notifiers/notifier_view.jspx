@@ -19,6 +19,7 @@
      02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 -->
+
 <jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:nexus="/tags/nexus"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -27,29 +28,29 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:tiles="http://tiles.apache.org/tags-tiles"
     version="2.0">
-    
+
     <table class="NEXUS_TABLE" width="100%">
         <tr>
             <td><nexus:crumbs /></td>
         </tr>
         <tr>
-            <td class="NEXUSScreenName">Service</td>
+            <td class="NEXUSScreenName">Logger</td>
         </tr>
     </table>
-
-    <form:form modelAttribute="serviceForm" action="ServiceUpdate.do" method="POST">
-        <form:hidden path="nxServiceId" />
-        <form:hidden path="paramsNxComponentId" />
     
+    <form:form modelAttribute="loggerForm" action="NotifierUpdate.do" method="POST">
+        <form:hidden path="choreographyId" />
+        <form:hidden path="nxLoggerId" />
+        <form:hidden path="paramsNxComponentId" />
+
         <table class="NEXUS_TABLE" width="100%">
             <tr>
-                <td colspan="4" class="NEXUSSection">Service</td>
+                <td colspan="2" class="NEXUSSection">Logger</td>
             </tr>
             <tr>
                 <td class="NEXUSName">Name</td>
-    
-                <td colspan="3" class="NEXUSValue">
-                    <form:input path="name" size="80" cssErrorClass="NexusError" />
+                <td class="NEXUSValue">
+                    <form:input path="name" size="60" cssErrorClass="NexusError"/>
                 </td>
             </tr>
             <tr>
@@ -57,103 +58,85 @@
     
                 <td class="NEXUSValue">
                     <c:choose>
-                        <c:when test="${serviceForm.nxServiceId eq 0}">
-                            <nexus:select name="nxComponentId" form="serviceForm" onSubmit="document.forms['serviceForm'].action='ServiceAdd.do';" submitOnChange="true">
-                                <nexus:options collection="collection" value="${serviceForm.nxComponentId}" property="nxComponentId" labelProperty="name" />
+                        <c:when test="${loggerForm.nxLoggerId eq 0}">
+                            <nexus:select name="nxComponentId" form="loggerForm" onSubmit="document.forms['loggerForm'].action='NotifierAdd.do';" submitOnChange="true">
+                                <nexus:options collection="collection" value="${loggerForm.nxComponentId}" property="nxComponentId" labelProperty="name" />
                             </nexus:select>
                         </c:when>
                         <c:otherwise>
-                            ${serviceForm.componentName}
+                            ${loggerForm.componentName}
                         </c:otherwise>
                     </c:choose>
                 </td>
             </tr>
             <tr>
-                <td class="NEXUSName">Autostart</td>
-                <td colspan="3" class="NEXUSValue"><form:checkbox path="autostart"/></td>
+                <td class="NEXUSName">Threshold</td>
+                <td class="NEXUSValue">
+                    <form:select path="threshold">
+                        <form:option value="5000">Trace</form:option>
+                        <form:option value="10000">Debug</form:option>
+                        <form:option value="20000">Info</form:option>
+                        <form:option value="30000">Warning</form:option>
+                        <form:option value="40000">Error</form:option>
+                        <form:option value="50000">Fatal</form:option>
+                    </form:select>
+                </td>
             </tr>
-            <c:if test="${serviceForm.nxServiceId ne 0}">
+            <c:forEach items="${loggerForm.groupNames}" var="groupName">
+                <c:set var="key" value="logFilterValues['group_${groupName}']"/>
                 <tr>
-                    <td class="NEXUSName">Current status</td>
-                    <td colspan="3" class="NEXUSValue">
-                        <c:choose>
-                            <c:when test="${serviceStatus eq 'UNDEFINED'}">
-                                <i>Please save your configuration</i>
-                            </c:when>
-                            <c:otherwise>
-                                ${serviceStatus}
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
+                    <td class="NEXUSValue">${groupName}</td>
+                    <td class="NEXUSValue"><form:checkbox path="${key}" value="true" /></td>
                 </tr>
-            </c:if>
-        </table>
-        <table class="NEXUS_BUTTON_TABLE">
+            </c:forEach>
             <tr>
-                <td>&#160;</td>
-                <c:if test="${serviceForm.nxServiceId ne 0 and  serviceStatus != 'UNDEFINED'}">
-                    <td class="NexusHeaderLink" style="text-align: right;">
-                        <c:choose>
-                            <c:when test="${serviceStatus != 'STARTED'}">
-                                <nexus:link href="ServiceStart.do?nxServiceId=${serviceForm.nxServiceId}&amp;viewService=true" styleClass="button">
-                                    <img src="images/icons/resultset_next.png" class="button"/>Start
-                                </nexus:link>
-                            </c:when>
-                            <c:otherwise>
-                                <nexus:link href="ServiceStop.do?nxServiceId=${serviceForm.nxServiceId}&amp;viewService=true" styleClass="button">
-                                    <img src="images/icons/stop.png" class="button"/>Stop
-                                </nexus:link>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </c:if>
+                <td class="NEXUSName">JavaPackagePattern</td>
+                <td colspan="3" class="NEXUSValue"><form:input path="filterJavaPackagePattern" size="60" /></td>
             </tr>
         </table>
-    
-        <c:if test="${not empty serviceForm.parameters}">
+        <c:if test="${not empty loggerForm.parameters}">
             <table class="NEXUS_TABLE" width="100%">
                 <tr>
                     <td class="NEXUSSection">Name</td>
                     <td class="NEXUSSection">Value</td>
                     <td class="NEXUSSection">Description</td>
-    
                 </tr>
-                <c:forEach var="parameter" items="${serviceForm.parameters}">
-                    <c:set var="key" value="pipeletParamValues['${parameter.paramName}']" />
+                <c:forEach items="${loggerForm.parameters}" var="parameter">
+                    <c:set var="key" value="paramValues['${parameter.paramName}']" />
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'STRING'}">
                         <tr>
                             <td class="NEXUSValue">${parameter.label}</td>
-                            <td class="NEXUSValue"><form:input path="${key}" size="50" /></td>
+                            <td class="NEXUSValue"><form:input path="${key}" size="30" /></td>
                             <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
                         </tr>
                     </c:if>
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'PASSWORD'}">
                         <tr>
                             <td class="NEXUSValue">${parameter.label}</td>
-                            <td class="NEXUSValue"><form:password path="${key}" size="50" /></td>
+                            <td class="NEXUSValue"><form:password path="${key}" size="30" /></td>
                             <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
                         </tr>
                     </c:if>
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'ENUMERATION'}">
                         <c:choose>
-                            <c:when test="${parameter.sequenceNumber eq 0}">
+                            <c:when  test="${parameter.sequenceNumber eq 0}">
                                 <tr>
                                     <td class="NEXUSValue" colspan="2">
                                         <nexus:submit onClick="javascript:document.forms['pipelineForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].submitaction.value='add';">
                                             <img src="images/icons/tick.png" name="add"/>
-                                        </nexus:submit>
-                                        ${parameter.name}
+                                        </nexus:submit>${parameter.name}
                                     </td>
                                     <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
                                 </tr>
                             </c:when>
                             <c:otherwise>
-                                <c:set var="valueKey" value="pipeletParamValues['${parameter.paramName}']" />
+                                <c:set var="valueKey" value="paramValues['${parameter.paramName}']" />
                                 <tr>
                                     <td class="NEXUSValue">
                                         <nexus:submit onClick="javascript:document.forms['pipelineForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].actionNxId.value=${parameter.sequenceNumber};document.forms['pipelineForm'].submitaction.value='delete';">
                                             <img src="images/icons/tick.png" name="delete"/>
-                                        </nexus:submit> ${parameter.label}
+                                        </nexus:submit>
+                                        ${parameter.label}
                                     </td>
                                     <td class="NEXUSValue"><form:input path="${valueKey}" size="30" /></td>
                                     <td class="NEXUSValue"></td>
@@ -161,11 +144,16 @@
                             </c:otherwise>
                         </c:choose>
                     </c:if>
+    
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'LIST'}">
                         <tr>
                             <td class="NEXUSValue">${parameter.label}</td>
                             <td class="NEXUSValue">
-                                <form:select path="${key}" items="${parameter.parameterDescriptor.defaultValue.elements}" itemLabel="label" itemValue="value" />
+                                <form:select path="${key}">
+                                    <c:forEach var="element" items="${parameter.parameterDescriptor.defaultValue.elements}">
+                                        <form:option value="${element.value}">${element.label}</form:option>
+                                    </c:forEach>
+                                </form:select>
                             </td>
                             <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
                         </tr>
@@ -173,7 +161,7 @@
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'BOOLEAN'}">
                         <tr>
                             <td class="NEXUSValue">${parameter.label}</td>
-                            <td class="NEXUSValue"><form:checkbox path="${key}" value="true"/></td>
+                            <td class="NEXUSValue"><form:checkbox path="${key}" value="true" /></td>
                             <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
                         </tr>
                     </c:if>
@@ -181,7 +169,7 @@
                         <tr>
                             <td class="NEXUSValue">${parameter.label}</td>
                             <td class="NEXUSValue">
-                                <nexus:select name="${key}" form="serviceForm">
+                                <nexus:select name="${key}" form="loggerForm">
                                     <c:forEach var="service" items="${services}">
                                         <c:if test="${empty parameter.parameterDescriptor.defaultValue.simpleName || service.component.isSubtypeOf(parameter.parameterDescriptor.defaultValue)}">
                                             <nexus:option name="service" value="${parameter.value}" property="name" labelProperty="name" />
@@ -195,9 +183,6 @@
                 </c:forEach>
             </table>
         </c:if>
-    
-        <form:errors element="div" cssClass="NexusError" path="*"/>
-    
         <table class="NEXUS_BUTTON_TABLE">
             <tr>
                 <td>&#160;</td>
@@ -206,9 +191,9 @@
                         <img src="images/icons/tick.png" class="button"/>Save
                     </nexus:submit>
                 </td>
-                <c:if test="${serviceForm.nxServiceId ne 0}">
+                <c:if test="${loggerForm.nxLoggerId ne 0}">
                     <td class="NexusHeaderLink" style="text-align: right;">
-                        <nexus:link href="ServiceDelete.do?nxServiceId=${serviceForm.nxServiceId}" styleClass="button">
+                        <nexus:link href="NotifierDelete.do?nxLoggerId=${loggerForm.nxLoggerId}" styleClass="button">
                             <img src="images/icons/delete.png" class="button"/>Delete
                         </nexus:link>
                     </td>
@@ -216,4 +201,4 @@
             </tr>
         </table>
     </form:form>
-</jsp:root>    
+</jsp:root>
