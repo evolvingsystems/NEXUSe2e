@@ -59,7 +59,7 @@ public class DBIntegrationPipelet extends AbstractPipelet {
     public DBIntegrationPipelet() {
 
         parameterMap.put( DATABASESERVICE, new ParameterDescriptor( ParameterType.SERVICE, "Database Service",
-                "The name of the service that shall be used for database connection pooling", "" ) );
+                "The name of the service that shall be used for database connection pooling", DatabaseService.class ) );
         parameterMap.put( TABLENAME, new ParameterDescriptor( ParameterType.STRING, "Table name",
                 "The name of the table used for backend integration", "" ) );
 

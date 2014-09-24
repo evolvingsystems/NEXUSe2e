@@ -57,7 +57,7 @@ public class TestMessageSenderService extends AbstractService implements Schedul
     public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
 
         parameterMap.put( SCHEDULINGSERVICE, new ParameterDescriptor( ParameterType.SERVICE, "Scheduling Service",
-                "The name of the service that shall be used for time schedule", "" ) );
+                "The name of the service that shall be used for time schedule", SchedulingService.class ) );
         parameterMap.put( CHOREOGRAPHY, new ParameterDescriptor( ParameterType.STRING, "Choreography",
                 "The name of the Choreography used for testing", "" ) );
         parameterMap.put( ACTION, new ParameterDescriptor( ParameterType.STRING, "Action",

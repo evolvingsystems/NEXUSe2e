@@ -268,7 +268,7 @@ public class ServiceController {
     }
 
     @RequestMapping("/ServiceDelete.do")
-    public String serviceUpdate(@RequestParam("nxServiceId") int nxServiceId, Model model, EngineConfiguration engineConfiguration)
+    public String serviceDelete(@RequestParam("nxServiceId") int nxServiceId, Model model, EngineConfiguration engineConfiguration)
             throws NexusException {
 
         ServicePojo service = engineConfiguration.getServicePojoByNxServiceId(nxServiceId);
@@ -276,6 +276,6 @@ public class ServiceController {
             engineConfiguration.deleteService(service);
         }
 
-        return serviceList(model, engineConfiguration);
+        return "redirect:/ServiceList.do";
     }
 }

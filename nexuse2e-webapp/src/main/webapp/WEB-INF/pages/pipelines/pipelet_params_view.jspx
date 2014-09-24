@@ -144,7 +144,7 @@
                             <td class="NEXUSValue">
                                 <nexus:select name="${key}">
                                     <c:forEach items="${collection}" var="service">
-                                        <c:if test="${empty parameter.parameterDescriptor.defaultValue.simpleName || service.component.isSubtypeOf(parameter.parameterDescriptor.defaultValue)}">
+                                        <c:if test="${empty parameter.parameterDescriptor.defaultValue || empty parameter.parameterDescriptor.defaultValue.simpleName || service.component.isSubtypeOf(parameter.parameterDescriptor.defaultValue)}">
                                             <nexus:option name="service" value="${parameter.value}" property="name" labelProperty="name" />
                                         </c:if>
                                     </c:forEach>

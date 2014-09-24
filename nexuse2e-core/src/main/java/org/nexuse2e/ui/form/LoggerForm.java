@@ -21,15 +21,15 @@ package org.nexuse2e.ui.form;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+
+import javax.validation.constraints.Size;
 
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
 import org.nexuse2e.logging.LogAppender;
-import org.nexuse2e.pojo.ComponentPojo;
 import org.nexuse2e.pojo.LoggerParamPojo;
 import org.nexuse2e.pojo.LoggerPojo;
 
@@ -43,22 +43,17 @@ public class LoggerForm implements Serializable {
 
     private int                            nxLoggerId               = 0;
     private int                            nxComponentId            = 0;
-    private int                            nxChoreographyId         = 0;
-    private int                            paramsNxComponentId      = 0;
     private String                         name                     = null;
     private String                         choreographyId           = null;
-    private String                         componentId              = null;
     private int                            threshold                = 0;
     private boolean                        autostart;
     private boolean                        running;
 
     private Map<String, String>            logFilterValues          = null;
     private Map<String, String>            loggerParamValues        = new HashMap<String, String>();
-    private List<LoggerParamPojo>          parameters               = new ArrayList<LoggerParamPojo>();
-    private List<String>                   groupNames               = new ArrayList<String>();
-    private List<ComponentPojo>            availableTemplates       = new ArrayList<ComponentPojo>();
+    private Collection<LoggerParamPojo>    parameters               = new ArrayList<LoggerParamPojo>();
 
-    private String                         filterJavaPackagePattern = "";
+    private String                         filter                   = "";
     private String                         componentName;
 
     private LoggerPojo                     logger                   = null;
@@ -68,12 +63,11 @@ public class LoggerForm implements Serializable {
 
     public void reset() {
 
-        componentId = null;
         nxLoggerId = 0;
         if (logFilterValues != null) {
             logFilterValues.clear();
         }
-        filterJavaPackagePattern = "";
+        filter = "";
     } // reset
 
     /**
@@ -86,8 +80,10 @@ public class LoggerForm implements Serializable {
         name = logger.getName();
         running = logger.isRunning();
         autostart = logger.isAutostart();
-        
-        filterJavaPackagePattern = logger.getFilter();
+        threshold = logger.getThreshold();
+        nxComponentId = logger.getComponent() == null ? 0 : logger.getNxComponentId();
+        componentName = logger.getComponent() == null ? "<unknown>" : logger.getComponent().getName();
+        filter = logger.getFilter();
     }
 
     /**
@@ -105,10 +101,12 @@ public class LoggerForm implements Serializable {
 
     public void createParameterMapFromPojos() {
         loggerParamValues = new HashMap<String, String>();
-        for (LoggerParamPojo param : getParameters()) {
-            loggerParamValues.put(param.getParamName(), param.getValue());
+        Collection<LoggerParamPojo> l = getParameters();
+        if (l != null) {
+            for (LoggerParamPojo param : l) {
+                loggerParamValues.put(param.getParamName(), param.getValue());
+            }
         }
-
     }
 
     public void fillPojosFromParameterMap() {
@@ -131,6 +129,14 @@ public class LoggerForm implements Serializable {
             }
         }
     }
+    
+    public Map<String, String> getLoggerParamValues() {
+        return loggerParamValues;
+    }
+
+    public void setLoggerParamValues(Map<String, String> loggerParamValues) {
+        this.loggerParamValues = loggerParamValues;
+    }
 
     public boolean isAutostart() {
 
@@ -152,26 +158,17 @@ public class LoggerForm implements Serializable {
         return running ? "Running" : "Stopped";
     }
 
-    public String getComponentId() {
+    public String getFilter() {
 
-        return componentId;
+        return filter;
     }
 
-    public void setComponentId(String componentName) {
+    public void setFilter(String filter) {
 
-        this.componentId = componentName;
+        this.filter = filter;
     }
 
-    public String getFilterJavaPackagePattern() {
-
-        return filterJavaPackagePattern;
-    }
-
-    public void setFilterJavaPackagePattern(String filterJavaPackagePattern) {
-
-        this.filterJavaPackagePattern = filterJavaPackagePattern;
-    }
-
+    @Size(min = 1, message = "{logger.error.name.required}")
     public String getName() {
 
         return name;
@@ -212,11 +209,6 @@ public class LoggerForm implements Serializable {
         this.nxLoggerId = nxLoggerId;
     }
 
-    public String getFilterString() {
-
-        return filterJavaPackagePattern;
-    }
-
     public int getNxComponentId() {
 
         return nxComponentId;
@@ -227,12 +219,12 @@ public class LoggerForm implements Serializable {
         this.nxComponentId = nxComponentId;
     }
 
-    public List<LoggerParamPojo> getParameters() {
+    public Collection<LoggerParamPojo> getParameters() {
 
         return parameters;
     }
 
-    public void setParameters(List<LoggerParamPojo> parameters) {
+    public void setParameters(Collection<LoggerParamPojo> parameters) {
 
         this.parameters = parameters;
     }
@@ -263,19 +255,6 @@ public class LoggerForm implements Serializable {
         logFilterValues.put(key, (String) value);
     }
 
-    public List<String> getGroupNames() {
-
-        if (groupNames == null) {
-            groupNames = new Vector<String>();
-        }
-        return groupNames;
-    }
-
-    public void setGroupNames(List<String> groupNames) {
-
-        this.groupNames = groupNames;
-    }
-
     public int getThreshold() {
 
         return threshold;
@@ -296,26 +275,6 @@ public class LoggerForm implements Serializable {
         this.logger = logger;
     }
 
-    public int getParamsNxComponentId() {
-
-        return paramsNxComponentId;
-    }
-
-    public void setParamsNxComponentId(int paramsNxComponentId) {
-
-        this.paramsNxComponentId = paramsNxComponentId;
-    }
-
-    public int getNxChoreographyId() {
-
-        return nxChoreographyId;
-    }
-
-    public void setNxChoreographyId(int nxChoreographyId) {
-
-        this.nxChoreographyId = nxChoreographyId;
-    }
-
     public String getComponentName() {
 
         return componentName;
@@ -334,16 +293,6 @@ public class LoggerForm implements Serializable {
     public void setLoggerInstance(LogAppender loggerInstance) {
 
         this.loggerInstance = loggerInstance;
-    }
-
-    public List<ComponentPojo> getAvailableTemplates() {
-    
-        return availableTemplates;
-    }
-
-    public void setAvailableTemplates(List<ComponentPojo> availableTemplates) {
-    
-        this.availableTemplates = availableTemplates;
     }
 
 } // NotifierForm

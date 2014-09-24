@@ -39,9 +39,7 @@
     </table>
     
     <form:form modelAttribute="loggerForm" action="NotifierUpdate.do" method="POST">
-        <form:hidden path="choreographyId" />
         <form:hidden path="nxLoggerId" />
-        <form:hidden path="paramsNxComponentId" />
 
         <table class="NEXUS_TABLE" width="100%">
             <tr>
@@ -55,7 +53,6 @@
             </tr>
             <tr>
                 <td class="NEXUSName">Component</td>
-    
                 <td class="NEXUSValue">
                     <c:choose>
                         <c:when test="${loggerForm.nxLoggerId eq 0}">
@@ -64,6 +61,7 @@
                             </nexus:select>
                         </c:when>
                         <c:otherwise>
+                    <form:hidden path="nxComponentId" />
                             ${loggerForm.componentName}
                         </c:otherwise>
                     </c:choose>
@@ -82,16 +80,9 @@
                     </form:select>
                 </td>
             </tr>
-            <c:forEach items="${loggerForm.groupNames}" var="groupName">
-                <c:set var="key" value="logFilterValues['group_${groupName}']"/>
-                <tr>
-                    <td class="NEXUSValue">${groupName}</td>
-                    <td class="NEXUSValue"><form:checkbox path="${key}" value="true" /></td>
-                </tr>
-            </c:forEach>
             <tr>
-                <td class="NEXUSName">JavaPackagePattern</td>
-                <td colspan="3" class="NEXUSValue"><form:input path="filterJavaPackagePattern" size="60" /></td>
+                <td class="NEXUSName">Filter (package names)</td>
+                <td colspan="3" class="NEXUSValue"><form:input path="filter" size="60" cssErrorClass="NexusError" /></td>
             </tr>
         </table>
         <c:if test="${not empty loggerForm.parameters}">
@@ -102,7 +93,7 @@
                     <td class="NEXUSSection">Description</td>
                 </tr>
                 <c:forEach items="${loggerForm.parameters}" var="parameter">
-                    <c:set var="key" value="paramValues['${parameter.paramName}']" />
+                    <c:set var="key" value="loggerParamValues['${parameter.paramName}']" />
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'STRING'}">
                         <tr>
                             <td class="NEXUSValue">${parameter.label}</td>
@@ -122,7 +113,7 @@
                             <c:when  test="${parameter.sequenceNumber eq 0}">
                                 <tr>
                                     <td class="NEXUSValue" colspan="2">
-                                        <nexus:submit onClick="javascript:document.forms['pipelineForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].submitaction.value='add';">
+                                        <nexus:submit onClick="javascript:document.forms['loggerForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].submitaction.value='add';">
                                             <img src="images/icons/tick.png" name="add"/>
                                         </nexus:submit>${parameter.name}
                                     </td>
@@ -130,10 +121,10 @@
                                 </tr>
                             </c:when>
                             <c:otherwise>
-                                <c:set var="valueKey" value="paramValues['${parameter.paramName}']" />
+                                <c:set var="valueKey" value="loggerParamValues['${parameter.paramName}']" />
                                 <tr>
                                     <td class="NEXUSValue">
-                                        <nexus:submit onClick="javascript:document.forms['pipelineForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].actionNxId.value=${parameter.sequenceNumber};document.forms['pipelineForm'].submitaction.value='delete';">
+                                        <nexus:submit onClick="javascript:document.forms['loggerForm'].paramName.value='${parameter.paramName}';document.forms['pipelineForm'].actionNxId.value=${parameter.sequenceNumber};document.forms['pipelineForm'].submitaction.value='delete';">
                                             <img src="images/icons/tick.png" name="delete"/>
                                         </nexus:submit>
                                         ${parameter.label}
@@ -171,7 +162,7 @@
                             <td class="NEXUSValue">
                                 <nexus:select name="${key}" form="loggerForm">
                                     <c:forEach var="service" items="${services}">
-                                        <c:if test="${empty parameter.parameterDescriptor.defaultValue.simpleName || service.component.isSubtypeOf(parameter.parameterDescriptor.defaultValue)}">
+                                        <c:if test="${empty parameter.parameterDescriptor.defaultValue || empty parameter.parameterDescriptor.defaultValue.simpleName || service.component.isSubtypeOf(parameter.parameterDescriptor.defaultValue)}">
                                             <nexus:option name="service" value="${parameter.value}" property="name" labelProperty="name" />
                                         </c:if>
                                     </c:forEach>
@@ -183,6 +174,9 @@
                 </c:forEach>
             </table>
         </c:if>
+        
+        <form:errors element="div" cssClass="NexusError" path="*"/>
+        
         <table class="NEXUS_BUTTON_TABLE">
             <tr>
                 <td>&#160;</td>

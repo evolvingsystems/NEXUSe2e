@@ -111,6 +111,7 @@ public class DefaultController {
     @RequestMapping({
         "/ServerConfiguration.do",
         "/UserMaintenance.do",
+        "/Certificates.do",
         "/Tools.do"
         })
     public String childPages(Model model, HttpServletRequest request, EngineConfiguration engineConfiguration) throws StructureException {
@@ -133,7 +134,4 @@ public class DefaultController {
         
         return "pages/show_childpages";
     }
-    
-    
-    
 }
