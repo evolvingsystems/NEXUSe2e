@@ -87,7 +87,7 @@ public class StagingStoreExportedAction extends NexusE2EAction {
         String idStr = form.getId();
         if (status == 1) {
             // Save with path
-            String path = form.getCertficatePath();
+            String path = form.getCertificatePath();
 
             if (path == null || path.equals("")) {
                 ActionMessage errorMessage = new ActionMessage("generic.error", "no destination specified!");

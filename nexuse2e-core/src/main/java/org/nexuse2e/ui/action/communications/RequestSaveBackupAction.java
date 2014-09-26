@@ -70,9 +70,9 @@ public class RequestSaveBackupAction extends NexusE2EAction {
 
         final String pwd = form.getPassword();
 
-        byte[] data = form.getCertficate().getFileData();
+        byte[] data = form.getCertificate().getFileData();
 
-        if ((form.getCertficate() == null) || (form.getCertficate().getFileData() == null)) {
+        if ((form.getCertificate() == null) || (form.getCertificate().getFileData() == null)) {
             ActionMessage errormessage = new ActionMessage("cacerts.certfilenotfound", "No data for certificate file submitted!");
             errors.add(ActionMessages.GLOBAL_MESSAGE, errormessage);
             addRedirect(request, URL, TIMEOUT);

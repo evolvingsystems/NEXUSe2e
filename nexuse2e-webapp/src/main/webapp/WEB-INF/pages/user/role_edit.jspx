@@ -63,25 +63,18 @@
                     <script language="text/javascript">
                     <![CDATA[
                     this.grantAll = function () {
-                         //debug("checkAll");
                          for(var i = 0; i < roleForm.elements.length; i++) {
                              var currElement = roleForm.elements[i];
                              if(currElement.type == "checkbox") {
-                                 //debug(currElement.name + " " + currElement.checked);
                                  currElement.checked = true;
-                                 //debug(currElement.name + " " + currElement.checked);
                              }
                          }
                     }
                     this.grantNone = function () {
-                         //debug("checkNone");
                          for(var i = 0; i < roleForm.elements.length; i++) {
                              var currElement = roleForm.elements[i];
                              if(currElement.type == "checkbox") {
-                                 //debug(currElement.name + " " + currElement.checked);
-                                 //currElement.checked = true;
                                  currElement.checked = false;
-                                 //debug(currElement.name + " " + currElement.checked);
                              }
                          }
                     }

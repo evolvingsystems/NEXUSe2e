@@ -67,7 +67,7 @@ public class CACertFinishExportAction extends NexusE2EAction {
             String path = Engine.getInstance().getCacertsPath();
             if (form.getStatus() == 2) {
 
-                path = form.getCertficatePath();
+                path = form.getCertificatePath();
             }
 
             LOG.debug("CA certificate export path: " + path);

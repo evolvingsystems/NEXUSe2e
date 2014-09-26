@@ -427,7 +427,7 @@ public interface ConfigurationAccessService {
 
     /**
      * Removes the given certificate from the configuration.
-     * @param certificate The certificate to be removed.
+     * @param certificate The certificate to be removed, not {@code null}.
      * @throws ReferencedCertificateException if the certificate is being referenced by
      * one or more connections.
      * @throws NexusException if something else went wrong.

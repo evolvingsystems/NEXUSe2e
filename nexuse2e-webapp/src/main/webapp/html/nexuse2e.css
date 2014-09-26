@@ -74,7 +74,7 @@ form {
 	margin-left: 10px;
 	height: 164px;
 	width: 200px;
-	display: inline-block;
+	display: block;
 	background-image: url(../images/logo.png);
 }
 

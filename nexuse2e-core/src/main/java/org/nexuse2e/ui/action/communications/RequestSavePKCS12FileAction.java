@@ -66,7 +66,7 @@ public class RequestSavePKCS12FileAction extends NexusE2EAction {
         if (form.getStatus() == 1) {
 
             try {
-                LOG.debug("path:" + form.getCertficatePath());
+                LOG.debug("path:" + form.getCertificatePath());
 
                 CertificatePojo requestPojo = engineConfiguration.getFirstCertificateByType(CertificateType.REQUEST.getOrdinal(), true);
                 if (requestPojo == null) {
@@ -86,7 +86,7 @@ public class RequestSavePKCS12FileAction extends NexusE2EAction {
                 sb.append("\n");
                 sb.append(CertificateUtil.getPemData(keyPair, EncryptionUtil.decryptString(privKeyPojo.getPassword())));
 
-                File certFile = new File(form.getCertficatePath());
+                File certFile = new File(form.getCertificatePath());
                 FileOutputStream fos = new FileOutputStream(certFile);
                 fos.write(sb.toString().getBytes());
                 fos.flush();

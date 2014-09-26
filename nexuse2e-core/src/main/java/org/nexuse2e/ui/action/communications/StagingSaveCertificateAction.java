@@ -65,7 +65,7 @@ public class StagingSaveCertificateAction extends NexusE2EAction {
         ActionForward error = actionMapping.findForward(ACTION_FORWARD_FAILURE);
 
         ProtectedFileAccessForm form = (ProtectedFileAccessForm) actionForm;
-        if ((form.getCertficate() == null) || (form.getCertficate().getFileData() == null)) {
+        if ((form.getCertificate() == null) || (form.getCertificate().getFileData() == null)) {
             ActionMessage errormessage = new ActionMessage("cacerts.certfilenotfound", "No data for certificate file submitted!");
             errors.add(ActionMessages.GLOBAL_MESSAGE, errormessage);
             addRedirect(request, URL, TIMEOUT);
@@ -73,7 +73,7 @@ public class StagingSaveCertificateAction extends NexusE2EAction {
         }
         KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
         try {
-            jks.load(form.getCertficate().getInputStream(), form.getPassword().toCharArray());
+            jks.load(form.getCertificate().getInputStream(), form.getPassword().toCharArray());
         } catch (Exception e) {
             ActionMessage errorMessage = new ActionMessage("generic.error", e.getMessage());
             errors.add(ActionMessages.GLOBAL_MESSAGE, errorMessage);

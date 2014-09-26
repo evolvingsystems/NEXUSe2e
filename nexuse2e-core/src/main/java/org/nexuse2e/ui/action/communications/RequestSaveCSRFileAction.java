@@ -62,7 +62,7 @@ public class RequestSaveCSRFileAction extends NexusE2EAction {
 
         if (form.getStatus() == 1) {
 
-            String path = form.getCertficatePath();
+            String path = form.getCertificatePath();
             File certFile = new File(path);
             FileOutputStream fos = new FileOutputStream(certFile);
 

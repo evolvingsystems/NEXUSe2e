@@ -19,23 +19,18 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 import org.nexuse2e.util.CertificateUtil;
 
 /**
  * @author guido.esch
  */
-public class CertificateRequestForm extends ActionForm {
+public class CertificateRequestForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 205631836185559481L;
+
     private String            commonName       = null;
     private String            organisation     = null;
     private String            organisationUnit = null;
@@ -51,43 +46,26 @@ public class CertificateRequestForm extends ActionForm {
     
     private int               keyLength        = CertificateUtil.DEFAULT_RSA_KEY_LENGTH;
 
-    @Override
-    public void reset( ActionMapping arg0, HttpServletRequest arg1 ) {
-
-        setCommonName( null );
-        setOrganisation( null );
-        setOrganisationUnit( null );
-        setLocation( null );
-        setState( null );
-        setCountryCode( null );
-        setEmail( null );
-        setPassword( null );
-        setVerifyPWD( null );
-        setSubject( null );
-        setPemCSR( null );
-        setKeyLength( CertificateUtil.DEFAULT_RSA_KEY_LENGTH );
-    }
-
-    public void setRequestProperties( String subject ) {
+    public void setRequestProperties(String subject) {
 
         String token;
-        StringTokenizer st = new StringTokenizer( subject, "," );
-        while ( st.hasMoreTokens() ) {
+        StringTokenizer st = new StringTokenizer(subject, ",");
+        while (st.hasMoreTokens()) {
             token = st.nextToken();
-            if ( token.startsWith( "C=" ) ) {
-                setCountryCode( token.substring( 2 ) );
-            } else if ( token.startsWith( "CN=" ) ) {
-                setCommonName( token.substring( 3 ) );
-            } else if ( token.startsWith( "O=" ) ) {
-                setOrganisation( token.substring( 2 ) );
-            } else if ( token.startsWith( "OU=" ) ) {
-                setOrganisationUnit( token.substring( 3 ) );
-            } else if ( token.startsWith( "ST=" ) ) {
-                setState( token.substring( 3 ) );
-            } else if ( token.startsWith( "L=" ) ) {
-                setLocation( token.substring( 2 ) );
-            } else if ( token.startsWith( "E=" ) ) {
-                setEmail( token.substring( 2 ) );
+            if (token.startsWith("C=")) {
+                setCountryCode(token.substring(2));
+            } else if (token.startsWith("CN=")) {
+                setCommonName(token.substring(3));
+            } else if (token.startsWith("O=")) {
+                setOrganisation(token.substring(2));
+            } else if (token.startsWith("OU=")) {
+                setOrganisationUnit(token.substring(3));
+            } else if (token.startsWith("ST=")) {
+                setState(token.substring(3));
+            } else if (token.startsWith("L=")) {
+                setLocation(token.substring(2));
+            } else if (token.startsWith("E=")) {
+                setEmail(token.substring(2));
             }
         }
     }
@@ -97,7 +75,7 @@ public class CertificateRequestForm extends ActionForm {
         return commonName;
     }
 
-    public void setCommonName( String commonName ) {
+    public void setCommonName(String commonName) {
 
         this.commonName = commonName;
     }
@@ -107,7 +85,7 @@ public class CertificateRequestForm extends ActionForm {
         return countryCode;
     }
 
-    public void setCountryCode( String countryCode ) {
+    public void setCountryCode(String countryCode) {
 
         this.countryCode = countryCode;
     }
@@ -117,7 +95,7 @@ public class CertificateRequestForm extends ActionForm {
         return location;
     }
 
-    public void setLocation( String location ) {
+    public void setLocation(String location) {
 
         this.location = location;
     }
@@ -127,7 +105,7 @@ public class CertificateRequestForm extends ActionForm {
         return organisation;
     }
 
-    public void setOrganisation( String organisation ) {
+    public void setOrganisation(String organisation) {
 
         this.organisation = organisation;
     }
@@ -137,7 +115,7 @@ public class CertificateRequestForm extends ActionForm {
         return organisationUnit;
     }
 
-    public void setOrganisationUnit( String organisationUnit ) {
+    public void setOrganisationUnit(String organisationUnit) {
 
         this.organisationUnit = organisationUnit;
     }
@@ -147,7 +125,7 @@ public class CertificateRequestForm extends ActionForm {
         return password;
     }
 
-    public void setPassword( String password ) {
+    public void setPassword(String password) {
 
         this.password = password;
     }
@@ -157,7 +135,7 @@ public class CertificateRequestForm extends ActionForm {
         return state;
     }
 
-    public void setState( String state ) {
+    public void setState(String state) {
 
         this.state = state;
     }
@@ -167,7 +145,7 @@ public class CertificateRequestForm extends ActionForm {
         return verifyPWD;
     }
 
-    public void setVerifyPWD( String verifyPWD ) {
+    public void setVerifyPWD(String verifyPWD) {
 
         this.verifyPWD = verifyPWD;
     }
@@ -177,7 +155,7 @@ public class CertificateRequestForm extends ActionForm {
         return email;
     }
 
-    public void setEmail( String email ) {
+    public void setEmail(String email) {
 
         this.email = email;
     }
@@ -187,7 +165,7 @@ public class CertificateRequestForm extends ActionForm {
         return pemCSR;
     }
 
-    public void setPemCSR( String pemCSR ) {
+    public void setPemCSR(String pemCSR) {
 
         this.pemCSR = pemCSR;
     }
@@ -197,7 +175,7 @@ public class CertificateRequestForm extends ActionForm {
         return subject;
     }
 
-    public void setSubject( String subject ) {
+    public void setSubject(String subject) {
 
         this.subject = subject;
     }

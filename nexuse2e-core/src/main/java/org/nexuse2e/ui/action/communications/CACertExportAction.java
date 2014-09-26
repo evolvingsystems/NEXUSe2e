@@ -54,7 +54,7 @@ public class CACertExportAction extends NexusE2EAction {
         //request.getSession().setAttribute( Crumbs.CURRENT_LOCATION, Crumbs.CA_EXPORT );
 
         form.reset( actionMapping, request );
-        form.setCertficatePath( Engine.getInstance().getCacertsPath() );
+        form.setCertificatePath( Engine.getInstance().getCacertsPath() );
         return success;
     }
 

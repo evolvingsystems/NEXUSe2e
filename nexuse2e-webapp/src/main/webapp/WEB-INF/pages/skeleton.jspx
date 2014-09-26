@@ -54,47 +54,10 @@
 			/* container for automatically generated style classes */
 		</style>
 		<script src="javascript/Generic.js" type="text/javascript"><!-- required for FF and Opera --></script>
+		<script src="javascript/Navigator.js" type="text/javascript"><!-- required for FF and Opera --></script>
 		<script src="javascript/Choreography.js" type="text/javascript"><!-- required for FF and Opera --></script>
-		<script>
-	    	/*
-			 * Allows display of debug messages.
-			 */
-			function debug(message) {
-				var logDisplay = document.getElementById('logDisplay');
-				var logArea = document.getElementById('logArea');
-				if(logDisplay.style.display != "block") {
-					logDisplay.style.display = "block";
-				}
-				logArea.value = logArea.value + "\n" + message;
-			}
-			
-			/*
-			 * Clears the log area.
-			 */
-			function clearLog() {
-				var logArea = document.getElementById('logArea');
-				logArea.value = "";
-			}
-			
-			/*
-			 * Hides the log.
-			 */
-			 function hideLog() {
-			 		var logDisplay = document.getElementById('logDisplay');
-			 		logDisplay.style.display = "none";
-			 }
-	    </script>
 	</head>
 	<body class="tundra">
-		<div id="logDisplay" style="position: fixed; top: 10%; left: 10%; height: 80%; width: 80%; display: none; margin: 10px; color: #FFFFFF; background-color: #900000; font-weight: bold; font-family: courier; padding: 10px; text-align: left; z-index: 1000; filter: Alpha(opacity=80); -moz-opacity: 0.80;">
-			<div style="position: relative; width: 100%; height: 5%;">DEBUG
-			LOG [<a href="javascript: clearLog();"
-				style="color: #FFFFFF; font-weight: bold;">clear</a>] [<a
-				href="javascript: hideLog();"
-				style="color: #FFFFFF; font-weight: bold;">hide</a>]</div>
-			<textarea id="logArea" style="position: relative; width: 100%; height: 95%;"><!-- COMMENT REQUIRED -->
-			</textarea>
-		</div>
 		<tiles:insertAttribute name="content" ignore="true"/>
     </body>
 </html>

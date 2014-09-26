@@ -74,15 +74,15 @@ public class PartnerCertificateCreateAction extends NexusE2EAction {
             addRedirect(request, URL, TIMEOUT);
             return error;
         }
-        if ((form.getCertficate() == null) || (form.getCertficate().getFileData() == null)) {
+        if ((form.getCertificate() == null) || (form.getCertificate().getFileData() == null)) {
             ActionMessage errormessage = new ActionMessage("cacerts.certfilenotfound", "No data for certificate file submitted!");
             errors.add(ActionMessages.GLOBAL_MESSAGE, errormessage);
             addRedirect(request, URL, TIMEOUT);
             return error;
         }
-        byte[] data = form.getCertficate().getFileData();
-        if (form.getCertficate().getFileName() != null) {
-            fileName = form.getCertficate().getFileName();
+        byte[] data = form.getCertificate().getFileData();
+        if (form.getCertificate().getFileName() != null) {
+            fileName = form.getCertificate().getFileName();
         }
         try {
             // only for validation.

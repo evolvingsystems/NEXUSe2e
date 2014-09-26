@@ -74,7 +74,7 @@ public class RequestVerifyCertChainAction extends NexusE2EAction {
         ActionForward moreCerts = actionMapping.findForward("moreCerts");
 
         ProtectedFileAccessForm form = (ProtectedFileAccessForm) actionForm;
-        ByteArrayInputStream bais = new ByteArrayInputStream(form.getCertficate().getFileData());
+        ByteArrayInputStream bais = new ByteArrayInputStream(form.getCertificate().getFileData());
         BigInteger requestModulus;
         BigInteger requestExponent;
         List<X509Certificate> certs;
@@ -127,7 +127,7 @@ public class RequestVerifyCertChainAction extends NexusE2EAction {
             return incomplete;
         }
         if (certs.size() == 0) { // no zipfile?
-            X509Certificate cert = CertificateUtil.getX509Certificate(form.getCertficate().getFileData());
+            X509Certificate cert = CertificateUtil.getX509Certificate(form.getCertificate().getFileData());
             if (cert != null) {
                 certs.add(cert);
             } else {
