@@ -317,7 +317,6 @@ public class CertificateController {
             EngineConfiguration engineConfiguration)
                     throws IOException, CertificateEncodingException, NexusException {
 
-
         if (form.getStatus() == 1) {
             LOG.debug("path:" + form.getCertificatePath());
 

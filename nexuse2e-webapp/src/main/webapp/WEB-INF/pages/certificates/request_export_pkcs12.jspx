@@ -39,7 +39,7 @@
         </tr>
     </table>
         
-    <form:form modelAttribute="protectedFileAccessForm" action="/RequestSavePKCS12File.do" method="POST"> 
+    <form:form modelAttribute="protectedFileAccessForm" action="RequestSavePKCS12File.do" method="POST"> 
         <table class="NEXUS_TABLE">
             <tr>
                 <td colspan="100%" class="NEXUSSection">Certificates</td>
