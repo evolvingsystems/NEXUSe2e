@@ -22,12 +22,17 @@ package org.nexuse2e.ui.form;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
+import org.nexuse2e.ui.validation.PasswordNotEmpty;
+import org.nexuse2e.ui.validation.PasswordRepeat;
+import org.nexuse2e.ui.validation.RepeatedPassword;
 import org.nexuse2e.util.CertificateUtil;
 
 /**
  * @author guido.esch
  */
-public class CertificateRequestForm implements Serializable {
+@PasswordRepeat
+@PasswordNotEmpty
+public class CertificateRequestForm implements RepeatedPassword, Serializable {
 
     private static final long serialVersionUID = 205631836185559481L;
 
@@ -39,15 +44,15 @@ public class CertificateRequestForm implements Serializable {
     private String            countryCode      = null;
     private String            email            = null;
     private String            password         = null;
-    private String            verifyPWD        = null;
+    private String            passwordRepeat   = null;
 
     private String            subject          = null;
     private String            pemCSR           = null;
     
     private int               keyLength        = CertificateUtil.DEFAULT_RSA_KEY_LENGTH;
 
-    public void setRequestProperties(String subject) {
 
+    public void setRequestProperties(String subject) {
         String token;
         StringTokenizer st = new StringTokenizer(subject, ",");
         while (st.hasMoreTokens()) {
@@ -71,112 +76,74 @@ public class CertificateRequestForm implements Serializable {
     }
 
     public String getCommonName() {
-
         return commonName;
     }
 
     public void setCommonName(String commonName) {
-
         this.commonName = commonName;
     }
 
     public String getCountryCode() {
-
         return countryCode;
     }
 
     public void setCountryCode(String countryCode) {
-
         this.countryCode = countryCode;
     }
 
     public String getLocation() {
-
         return location;
     }
 
     public void setLocation(String location) {
-
         this.location = location;
     }
 
     public String getOrganisation() {
-
         return organisation;
     }
 
     public void setOrganisation(String organisation) {
-
         this.organisation = organisation;
     }
 
     public String getOrganisationUnit() {
-
         return organisationUnit;
     }
 
     public void setOrganisationUnit(String organisationUnit) {
-
         this.organisationUnit = organisationUnit;
     }
 
-    public String getPassword() {
-
-        return password;
-    }
-
-    public void setPassword(String password) {
-
-        this.password = password;
-    }
-
     public String getState() {
-
         return state;
     }
 
     public void setState(String state) {
-
         this.state = state;
     }
 
-    public String getVerifyPWD() {
-
-        return verifyPWD;
-    }
-
-    public void setVerifyPWD(String verifyPWD) {
-
-        this.verifyPWD = verifyPWD;
-    }
-
     public String getEmail() {
-
         return email;
     }
 
     public void setEmail(String email) {
-
         this.email = email;
     }
 
     public String getPemCSR() {
-
         return pemCSR;
     }
 
     public void setPemCSR(String pemCSR) {
-
         this.pemCSR = pemCSR;
     }
 
     public String getSubject() {
-
         return subject;
     }
 
     public void setSubject(String subject) {
-
         this.subject = subject;
     }
 
@@ -186,5 +153,28 @@ public class CertificateRequestForm implements Serializable {
 
     public void setKeyLength(int keyLength) {
         this.keyLength = keyLength;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getPasswordRepeat() {
+        return passwordRepeat;
+    }
+    
+    public void setPasswordRepeat(String passwordRepeat) {
+        this.passwordRepeat = passwordRepeat;
+    }
+
+    @Override
+    public boolean isPasswordSet() {
+        return false;
     }
 }

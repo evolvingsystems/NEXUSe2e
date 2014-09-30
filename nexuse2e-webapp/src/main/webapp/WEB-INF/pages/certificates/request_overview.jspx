@@ -72,7 +72,7 @@
             <table class="NEXUS_BUTTON_TABLE" width="100%">
                 <tr>
                     <td class="BUTTON_LEFT">
-                        <nobr><nexus:link href="RequestOverview.do" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back to Certificate Request</nexus:link></nobr>
+                        <nobr><nexus:link href="RequestOverview.do" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back</nexus:link></nobr>
                     </td>
                     <td class="BUTTON_RIGHT"><a href="${downloadUrl}" target="_blank" id="save_button" class="button"><img src="images/icons/tick.png" class="button"/>Download</a></td>
                 </tr>
@@ -208,7 +208,7 @@
                         <c:otherwise>
                             <td class="NEXUSValue">
                                 <font class="NEXUSScreenPathLinkInactive">
-                                    <img src="images/icons/disk.png" class="button" />Export Request(CSR)
+                                    <img src="images/icons/disk.png" class="button" />Export Request (CSR)
                                 </font>
                             </td>
                         </c:otherwise>

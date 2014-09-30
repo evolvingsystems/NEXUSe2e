@@ -36,10 +36,14 @@ public class PasswordRepeatValidator implements ConstraintValidator<PasswordRepe
 	@Override
 	public boolean isValid(RepeatedPassword value, ConstraintValidatorContext context) {
 		if (value.getPassword() != null && value.getPasswordRepeat() != null) {
-			return value.getPassword().equals(value.getPasswordRepeat());
+			if (value.getPassword().equals(value.getPasswordRepeat())) {
+			    return true;
+			}
 		} else if (value.getPassword() == null && value.getPasswordRepeat() == null) {
 			return true;
 		}
+		context.buildConstraintViolationWithTemplate(
+		        context.getDefaultConstraintMessageTemplate()).addNode("passwordRepeat").addConstraintViolation();
 		return false;
 	}
 }

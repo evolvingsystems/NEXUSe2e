@@ -39,7 +39,8 @@ import javax.validation.Payload;
 @Documented
 @Constraint(validatedBy = PasswordNotEmptyValidator.class)
 public @interface PasswordNotEmpty {
-	String message() default "{nexususer.error.password.required}";
+    String message() default "{error.password.required}";
+    String repeatedMessage() default "{error.password.repeatRequired}";
 
 	Class<?>[] groups() default { };
 

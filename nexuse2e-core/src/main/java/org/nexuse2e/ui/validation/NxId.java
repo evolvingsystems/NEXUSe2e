@@ -30,7 +30,7 @@ import javax.validation.Payload;
 
 
 /**
- * Validation annotation for non-empty password constraint.
+ * Validation annotation for nx-ID constraint.
  * 
  * @author Jonas Reese
  */

@@ -8,21 +8,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.PKIXCertPathBuilderResult;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipInputStream;
 
 import javax.validation.Valid;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
+import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -61,6 +67,8 @@ public class CertificateController {
         model.addAttribute("createRequest", true);
         model.addAttribute("importCert", false);
         model.addAttribute("showRequest", false);
+        model.addAttribute("exportRequest", false);
+        model.addAttribute("exportPKCS12", false);
         model.addAttribute("deleteRequest", true);
         if (certificateRequest != null && certificateKey != null) {
             try {
@@ -68,6 +76,8 @@ public class CertificateController {
                 model.addAttribute("createRequest", false);
                 model.addAttribute("importCert", true);
                 model.addAttribute("showRequest", true);
+                model.addAttribute("exportRequest", true);
+                model.addAttribute("exportPKCS12", true);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
@@ -77,8 +87,6 @@ public class CertificateController {
         }
 
         model.addAttribute("importBackup", true);
-        model.addAttribute("exportPKCS12", true);
-        model.addAttribute("exportRequest", true);
 
         return "pages/certificates/request_overview";
     }
@@ -349,5 +357,123 @@ public class CertificateController {
 
         return requestOverview(model, engineConfiguration);
     
+    }
+    
+    @RequestMapping("/RequestCreate.do")
+    public String requestCreate(
+            Model model,
+            CertificateRequestForm form,
+            EngineConfiguration engineConfiguration)
+                    throws NexusException {
+        
+        List<CertificatePojo> list = engineConfiguration.getCertificates(CertificateType.PRIVATE_KEY.getOrdinal(), null);
+        if (list != null && list.size() > 0) {
+            return requestOverview(model, engineConfiguration);
+        }
+        list = engineConfiguration.getCertificates(CertificateType.REQUEST.getOrdinal(), null);
+        if (list != null && list.size() > 0) {
+            return requestOverview(model, engineConfiguration);
+        }
+
+        return "pages/certificates/request_create";
+    }
+
+    @RequestMapping("/RequestSaveRequest.do")
+    public String requestSaveRequest(
+            Model model,
+            @Valid CertificateRequestForm form,
+            BindingResult bindingResult,
+            EngineConfiguration engineConfiguration)
+                    throws NexusException,
+                    NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    CertificateEncodingException,
+                    IOException {
+
+        if (bindingResult.hasErrors()) {
+            return requestCreate(model, form, engineConfiguration);
+        }
+
+        String cn = form.getCommonName();
+        String o = form.getOrganisation();
+        String ou = form.getOrganisationUnit();
+        String l = form.getLocation();
+        String s = form.getState();
+        String c = form.getCountryCode();
+        String e = form.getEmail();
+        String pwd = form.getPassword();
+
+        KeyPair keyPair = CertificateUtil.generateKeyPair(form.getKeyLength());
+
+        PKCS10CertificationRequest pkcs10Request = CertificateUtil.generatePKCS10CertificateRequest(keyPair, cn, o, ou, l, c, s, e);
+
+        // Request
+        CertificatePojo certificate = CertificateUtil.createPojoFromPKCS10(pkcs10Request);
+        CertificatePojo privateKeyPojo = CertificateUtil.createPojoFromKeyPair(keyPair, certificate.getName(), pwd);
+        
+        List<CertificatePojo> certs = new ArrayList<CertificatePojo>();
+        certs.add(certificate);
+        certs.add(privateKeyPojo);
+        
+        File certbackup = new File(Engine.getInstance().getNexusE2ERoot(), "WEB-INF");
+        certbackup = new File(certbackup, "backup");
+        if (!certbackup.exists()) {
+            certbackup.mkdirs();
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+        String date = sdf.format(new Date());
+        
+        File currentDir = new File(certbackup,"requestCreate_" + date);
+        if (!currentDir.exists()) {
+            currentDir.mkdirs();
+        }
+        FileUtils.writeByteArrayToFile(new File(currentDir,"privKey.pem"), privateKeyPojo.getBinaryData());
+        FileUtils.write(new File(currentDir,"request.pem"), CertificateUtil.getPemData(pkcs10Request));
+
+        engineConfiguration.updateCertificates(certs);
+
+        return requestOverview(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/RequestShowCSR.do")
+    public String requestShowCsr(
+            Model model, CertificateRequestForm form, EngineConfiguration engineConfiguration)
+                    throws NexusException, CertificateEncodingException {
+
+        CertificatePojo certificate = engineConfiguration.getFirstCertificateByType(CertificateType.REQUEST.getOrdinal(), true);
+        PKCS10CertificationRequest certRequest = CertificateUtil.getPKCS10Request(certificate);
+        String pemCSR = CertificateUtil.getPemData(certRequest);
+        if (certRequest == null) {
+            return requestOverview(model, engineConfiguration);
+        }
+        String subject = certRequest.getCertificationRequestInfo().getSubject().toString();
+        form.setSubject(subject);
+        form.setPemCSR(pemCSR);
+        form.setRequestProperties(subject);
+
+        return "pages/certificates/request_show_csr";
+    }
+    
+    @RequestMapping("/RequestImportBackup.do")
+    public String requestImportBackup(
+            ProtectedFileAccessForm form, Model model, EngineConfiguration engineConfiguration)
+                    throws NexusException {
+        
+        return "pages/certificates/request_import_backup";
+    }
+    
+    @RequestMapping("/RequestDelete.do")
+    public String requestDelete(Model model, EngineConfiguration engineConfiguration) throws NexusException {
+
+        List<CertificatePojo> requests = engineConfiguration.getCertificates(CertificateType.REQUEST.getOrdinal(), null);
+        if (requests.size() > 1) {
+            LOG.warn("there is more than one request in database!");
+        }
+        List<CertificatePojo> privateKeys = engineConfiguration.getCertificates(CertificateType.PRIVATE_KEY.getOrdinal(), null);
+
+        requests.addAll(privateKeys);
+        engineConfiguration.deleteCertificates(requests);
+        
+        return requestOverview(model, engineConfiguration);
     }
 }

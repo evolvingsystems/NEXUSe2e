@@ -112,6 +112,9 @@
 
         <table class="NEXUS_BUTTON_TABLE" width="100%">
             <tr>
+                <td class="BUTTON_LEFT">
+                    <nobr><nexus:link href="RequestOverview.do" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back</nexus:link></nobr>
+                </td>
                 <td class="BUTTON_RIGHT">
                     <nexus:submit styleClass="button">
                         <img src="images/icons/tick.png" name="SUBMIT" class="button"/>Save

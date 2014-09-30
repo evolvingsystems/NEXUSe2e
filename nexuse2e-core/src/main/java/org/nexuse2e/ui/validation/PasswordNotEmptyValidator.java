@@ -31,8 +31,11 @@ import org.apache.commons.lang.StringUtils;
  */
 public class PasswordNotEmptyValidator implements ConstraintValidator<PasswordNotEmpty, RepeatedPassword> {
 
+    private PasswordNotEmpty constraintAnnotation;
+    
 	@Override
 	public void initialize(PasswordNotEmpty constraintAnnotation) {
+	    this.constraintAnnotation = constraintAnnotation;
 	}
 
 	@Override
@@ -40,7 +43,17 @@ public class PasswordNotEmptyValidator implements ConstraintValidator<PasswordNo
 		if (value.isPasswordSet() && StringUtils.isEmpty(value.getPassword()) && StringUtils.isEmpty(value.getPasswordRepeat())) {
 			return true;
 		}
-		return (StringUtils.isNotBlank(value.getPassword()) &&
-				StringUtils.isNotBlank(value.getPasswordRepeat()));
+		
+		boolean valid = true;
+		if (StringUtils.isBlank(value.getPassword())) {
+		    context.buildConstraintViolationWithTemplate(constraintAnnotation.message()).addNode("password").addConstraintViolation();
+		    valid = false;
+		}
+		if (StringUtils.isBlank(value.getPasswordRepeat())) {
+            context.buildConstraintViolationWithTemplate(
+                    constraintAnnotation.repeatedMessage()).addNode("passwordRepeat").addConstraintViolation();
+            valid = false;
+		}
+		return valid;
 	}
 }

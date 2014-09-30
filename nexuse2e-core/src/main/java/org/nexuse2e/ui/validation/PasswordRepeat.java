@@ -39,7 +39,7 @@ import javax.validation.Payload;
 @Documented
 @Constraint(validatedBy = PasswordRepeatValidator.class)
 public @interface PasswordRepeat {
-	String message() default "{nexususer.error.password.confirmMismatch}";
+	String message() default "{error.password.repeatMismatch}";
 
 	Class<?>[] groups() default { };
 

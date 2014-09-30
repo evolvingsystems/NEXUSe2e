@@ -1,0 +1,108 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+    <table class="NEXUS_TABLE" width="100%">
+        <tr>
+            <td>
+                <nexus:crumbs/>
+            </td>
+        </tr>
+        <tr>
+            <td class="NEXUSScreenName">Certificate Request</td>
+        </tr>
+    </table>
+        
+    <form:form modelAttribute="certificateRequestForm" action="RequestSaveRequest.do" method="POST"> 
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>            
+                <td colspan="2" class="NEXUSSection">Certificate Properties</td>            
+            </tr>
+            <tr>
+                <td class="NEXUSName">RSA Key Length</td>
+                <td class="NEXUSValue">
+                    <form:select path="keyLength">
+                        <form:option value="1024">1024 Bit</form:option>
+                        <form:option value="2048">2048 Bit (default)</form:option>
+                        <form:option value="4096">4096 Bit</form:option>
+                   </form:select>
+                 </td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Common Name</td>
+                <td class="NEXUSValue"><form:input path="commonName" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Organisation</td>
+                <td class="NEXUSValue"><form:input path="organisation" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Organisation Unit</td>
+                <td class="NEXUSValue"><form:input path="organisationUnit" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Country</td>
+                <td class="NEXUSValue"><form:input path="countryCode" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">State</td>
+                <td class="NEXUSValue"><form:input path="state" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Location</td>
+                <td class="NEXUSValue"><form:input path="location" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">E-Mail</td>
+                <td class="NEXUSValue"><form:input path="email" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Password</td>
+                <td class="NEXUSValue"><form:password path="password" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Password (verify)</td>
+                <td class="NEXUSValue"><form:password path="passwordRepeat" size="50" cssErrorClass="NexusError"/></td>
+            </tr>
+        </table>
+
+        <form:errors element="div" cssClass="NexusError" path="*"/>
+            
+        <table class="NEXUS_BUTTON_TABLE" width="100%">
+            <tr>
+                <td>
+                    <nobr><nexus:link href="RequestOverview.do" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back</nexus:link></nobr>
+                </td>
+                <td class="BUTTON_RIGHT" style="text-align: right;">
+                    <nobr><nexus:submit styleClass="button"><img src="images/icons/tick.png" class="button"/>Create Request</nexus:submit></nobr>
+                </td>
+            </tr>
+        </table>
+    </form:form>
+</jsp:root>
