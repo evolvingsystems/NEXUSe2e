@@ -28,6 +28,8 @@
     xmlns:tiles="http://tiles.apache.org/tags-tiles"
     version="2.0">
 
+    <jsp:directive.page contentType="text/html" />
+
     <nexus:fileUploadResponse>
         <table class="NEXUS_TABLE" width="100%">
             <tr>
@@ -48,7 +50,7 @@
                 <tr>
                     <td class="NEXUSName">KeyStore Filename</td>
                     <td class="NEXUSValue">
-                        <input size="50" type="file" name="certficate" onkeypress="return checkKey(event);"/>
+                        <input size="50" type="file" name="certificate" onkeypress="return checkKey(event);"/>
                     </td>
                 </tr>
                 <tr>

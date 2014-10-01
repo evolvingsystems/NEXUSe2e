@@ -54,7 +54,7 @@
             </tr>
             <tr>
                 <td class="NEXUSName">FileName</td>
-                <td class="NEXUSValue"><html:file size="50" property="certficate" onkeypress="return checkKey(event);"/><br>
+                <td class="NEXUSValue"><html:file size="50" property="certificate" onkeypress="return checkKey(event);"/><br>
                 <font size="1">browse to select X509 compatible certificate</font></td>
             </tr>
         </table>

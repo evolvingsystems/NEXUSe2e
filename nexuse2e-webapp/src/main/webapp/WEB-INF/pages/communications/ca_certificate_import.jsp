@@ -46,7 +46,7 @@
 		</tr>
 		<tr>
 			<td class="NEXUSName">KeyStore Filename</td>
-			<td class="NEXUSValue"><html:file property="certficate" size="20" onkeypress="return checkKey(event);" /> <br>
+			<td class="NEXUSValue"><html:file property="certificate" size="20" onkeypress="return checkKey(event);" /> <br>
 			<font size="1">Select valid KeyStore File</font></td>
 		</tr>
 		<tr>

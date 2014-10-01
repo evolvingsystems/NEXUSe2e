@@ -52,7 +52,7 @@
                 </td>
                 <td class="NEXUSName">Predefined Path:
                 </td>
-        <td class="NEXUSName"><bean:write name="protectedFileAccessForm" property="certficatePath"/>
+        <td class="NEXUSName"><bean:write name="protectedFileAccessForm" property="certificatePath"/>
                 </td>                
             </tr>
             <tr>
@@ -60,7 +60,7 @@
                 </td>
                 <td class="NEXUSName">different Position:
                 </td>
-        <td class="NEXUSName"><html:text property="certficatePath" size="80" onkeypress="return checkKey(event);"/>
+        <td class="NEXUSName"><html:text property="certificatePath" size="80" onkeypress="return checkKey(event);"/>
                 </td>                
             </tr>
             <tr>

@@ -291,10 +291,10 @@ public class DataSaveAsAction extends NexusE2EAction {
                 PKCS10CertificationRequest pkcs10request = CertificateUtil.getPKCS10Request(certificate);
                 byte[] data = new byte[0];
                 if (format.toLowerCase().equals("pem")) {
-                    response.setHeader("Content-Disposition", "attachment; filename=\"CertficateRequest.pem\"");
+                    response.setHeader("Content-Disposition", "attachment; filename=\"CertificateRequest.pem\"");
                     data = ((String) CertificateUtil.getPemData(pkcs10request)).getBytes();
                 } else {
-                    response.setHeader("Content-Disposition", "attachment; filename=\"CertficateRequest.der\"");
+                    response.setHeader("Content-Disposition", "attachment; filename=\"CertificateRequest.der\"");
                     data = pkcs10request.getEncoded();
                 }
 

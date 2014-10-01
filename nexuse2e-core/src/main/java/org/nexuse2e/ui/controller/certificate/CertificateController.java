@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -28,6 +29,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
+import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PasswordFinder;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
@@ -65,7 +68,8 @@ public class CertificateController {
             certificateKey = engineConfiguration.getFirstCertificateByType(CertificateType.PRIVATE_KEY.getOrdinal(), true);
         }
         model.addAttribute("createRequest", true);
-        model.addAttribute("importCert", false);
+        model.addAttribute("importCert", true);
+        model.addAttribute("importBackup", true);
         model.addAttribute("showRequest", false);
         model.addAttribute("exportRequest", false);
         model.addAttribute("exportPKCS12", false);
@@ -74,7 +78,8 @@ public class CertificateController {
             try {
                 CertificateUtil.getPKCS10Request(certificateRequest);
                 model.addAttribute("createRequest", false);
-                model.addAttribute("importCert", true);
+                model.addAttribute("importCert", false);
+                model.addAttribute("importBackup", false);
                 model.addAttribute("showRequest", true);
                 model.addAttribute("exportRequest", true);
                 model.addAttribute("exportPKCS12", true);
@@ -86,7 +91,6 @@ public class CertificateController {
             model.addAttribute("deleteRequest", false);
         }
 
-        model.addAttribute("importBackup", true);
 
         return "pages/certificates/request_overview";
     }
@@ -460,6 +464,106 @@ public class CertificateController {
                     throws NexusException {
         
         return "pages/certificates/request_import_backup";
+    }
+    
+    
+    private CertificatePojo createPojo(Object o, String password) {
+        if (o == null) {
+            return null;
+        }
+
+        if (o instanceof KeyPair) {
+            CertificatePojo key = CertificateUtil.createPojoFromKeyPair((KeyPair) o, "import", password);
+            if (key == null) {
+                LOG.error("unable to create certificate pojo from keypair!");
+                return null;
+            }
+            return key;
+        } else if (o instanceof PKCS10CertificationRequest) {
+            CertificatePojo request = CertificateUtil.createPojoFromPKCS10((PKCS10CertificationRequest) o);
+            if (request == null) {
+                LOG.error("unable to create certificate pojo from pkcs10 request!");
+                return null;
+            }
+            return request;
+        }
+
+        return null;
+    }
+    
+    @RequestMapping("/RequestSaveBackup.do")
+    public String requestSaveBackup(
+            @Valid ProtectedFileAccessForm form,
+            BindingResult bindingResult,
+            Model model,
+            EngineConfiguration engineConfiguration) throws NexusException, IOException {
+        
+        if (bindingResult.hasErrors()) {
+            return requestImportBackup(form, model, engineConfiguration);
+        }
+        
+        final String pwd = form.getPassword() == null ? "" : form.getPassword();
+        final byte[] data = form.getCertificate().getBytes();
+
+        StringReader sr = new StringReader(new String(data));
+
+        PasswordFinder passwordFinder = new PasswordFinder() {
+            public char[] getPassword() {
+                return pwd.toCharArray();
+            }
+        };
+        
+        try (PEMReader reader = new PEMReader(sr, passwordFinder)) {
+    
+            Object o = null;
+            try {
+                o = reader.readObject();
+            } catch (IOException ioex) {
+                LOG.debug(ioex);
+            }
+            CertificatePojo pojo1 = createPojo(o, pwd);
+            if (pojo1 == null) {
+                bindingResult.rejectValue("certificate", "request.import.backup.invalid", "Invalid input file");
+                return requestImportBackup(form, model, engineConfiguration);
+            }
+            o = null;
+            try {
+                o = reader.readObject();
+            } catch (IOException ioex) {
+                LOG.debug(ioex);
+            }
+            CertificatePojo pojo2 = createPojo(o, pwd);
+            if (pojo2 == null) {
+                bindingResult.rejectValue("certificate", "request.import.backup.invalid", "Invalid input file");
+                return requestImportBackup(form, model, engineConfiguration);
+            }
+
+            if ((pojo1.getType() == CertificateType.PRIVATE_KEY.getOrdinal() && pojo2.getType() == CertificateType.REQUEST.getOrdinal())
+                    || (pojo2.getType() == CertificateType.PRIVATE_KEY.getOrdinal() && pojo1.getType() == CertificateType.REQUEST.getOrdinal())) {
+                List<CertificatePojo> pojos = engineConfiguration.getCertificates(CertificateType.PRIVATE_KEY.getOrdinal(), null);
+                if (pojos != null && pojos.size() > 0) {
+                    bindingResult.reject(null, "There are already one or more private keys in database.");
+                    return requestImportBackup(form, model, engineConfiguration);
+                }
+                pojos = engineConfiguration.getCertificates(CertificateType.REQUEST.getOrdinal(), null);
+                if (pojos != null && pojos.size() > 0) {
+                    bindingResult.reject(null, "There are already one or more private keys in database.");
+                    return requestImportBackup(form, model, engineConfiguration);
+                }
+    
+                pojos = new ArrayList<CertificatePojo>();
+                pojos.add(pojo1);
+                pojos.add(pojo2);
+    
+                engineConfiguration.updateCertificates(pojos);
+    
+            } else {
+                bindingResult.reject(null, "no valid request and private key object found!");
+                return requestImportBackup(form, model, engineConfiguration);
+            }
+        }
+
+        return requestOverview(model, engineConfiguration);
     }
     
     @RequestMapping("/RequestDelete.do")

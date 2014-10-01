@@ -102,7 +102,7 @@
             </center>
         <html:form action="CACertificateSaveSingleCert.do" method="POST"> 
         <html:hidden property="alias"/>
-        <html:hidden property="certficatePath"/>
+        <html:hidden property="certificatePath"/>
         <center>
             <table class="NEXUS_BUTTON_TABLE" width="100%">
                 <tr>

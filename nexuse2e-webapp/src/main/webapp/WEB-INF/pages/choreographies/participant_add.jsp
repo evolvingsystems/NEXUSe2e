@@ -88,9 +88,9 @@
 			<td class="NEXUSValue"><html:select
 				property="nxLocalCertificateId">
 				<html-el:option value="0">none</html-el:option>
-				<logic:iterate id="localCertficate" property="localCertificates"
+				<logic:iterate id="localCertificate" property="localCertificates"
 					name="participantForm">
-					<html-el:option value="${localCertficate.nxCertificateId}">${localCertficate.name}</html-el:option>
+					<html-el:option value="${localCertificate.nxCertificateId}">${localCertificate.name}</html-el:option>
 				</logic:iterate>
 			</html:select></td>
 		</tr>

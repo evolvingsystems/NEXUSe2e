@@ -48,7 +48,7 @@
                 <tr>
                     <td class="NEXUSName">Certificate Filename</td>
                     <td class="NEXUSValue">
-                    <html:file property="certficate" size="20" onkeypress="return checkKey(event);"/>
+                    <html:file property="certificate" size="20" onkeypress="return checkKey(event);"/>
                     <br>
                     <font size="1">browse to select a <i>.pfx</i>
                     or <i>.p12</i> file</font></td>

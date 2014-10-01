@@ -27,6 +27,8 @@
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:tiles="http://tiles.apache.org/tags-tiles"
     version="2.0">
+    
+    <jsp:directive.page contentType="text/html" />
 
     <nexus:fileUploadResponse>
         <table class="NEXUS_TABLE" width="100%">
@@ -51,7 +53,7 @@
                 <tr>
                     <td class="NEXUSName">Certificate Filename</td>
                     <td class="NEXUSValue">
-                        <input type="file" name="certficate" size="20" onkeypress="return checkKey(event);"/>
+                        <input type="file" name="certificate" size="20" onkeypress="return checkKey(event);"/>
                         <br/>
                         <font size="1">browse to select a valid certificate</font>
                     </td>

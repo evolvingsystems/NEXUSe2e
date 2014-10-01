@@ -28,6 +28,8 @@
     xmlns:tiles="http://tiles.apache.org/tags-tiles"
     version="2.0">
 
+    <jsp:directive.page contentType="text/html" />
+
     <nexus:fileUploadResponse>
         <c:set var="downloadMode" value="${false}"/>
         <c:if test="${type eq 'csr'}">

@@ -153,7 +153,7 @@
             </tr>
             <tr>
                 <td class="NEXUSName"><html:radio name="protectedFileAccessForm" property="status" value="1"/> Target File (on the Server)</td>
-                <td class="NEXUSValue"><html:text name="protectedFileAccessForm" property="certficatePath" size="60"/></td>
+                <td class="NEXUSValue"><html:text name="protectedFileAccessForm" property="certificatePath" size="60"/></td>
             </tr>
             <tr>
                 <td class="NEXUSName"><html:radio name="protectedFileAccessForm" property="status" value="2"/> Save as...</td>
