@@ -19,20 +19,17 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
 import java.util.List;
 
-import org.apache.struts.action.ActionForm;
 import org.nexuse2e.pojo.PartnerPojo;
 
 /**
  * @author gesch
  *
  */
-public class CertificatePromotionForm extends ActionForm {
+public class CertificatePromotionForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long               serialVersionUID = 536952753723321140L;
 
     private List<PartnerPojo>               localPartners;
@@ -42,61 +39,35 @@ public class CertificatePromotionForm extends ActionForm {
     private String                          actionName;
     private int                             replaceNxCertificateId;
 
-    /**
-     * @return the localNxPartnerId
-     */
     public int getLocalNxPartnerId() {
-
         return localNxPartnerId;
     }
 
-    /**
-     * @param localNxPartnerId the localNxPartnerId to set
-     */
     public void setLocalNxPartnerId( int localNxPartnerId ) {
-
         this.localNxPartnerId = localNxPartnerId;
     }
 
-    /**
-     * @return the localPartners
-     */
     public List<PartnerPojo> getLocalPartners() {
-
         return localPartners;
     }
 
-    /**
-     * @param localPartners the localPartners to set
-     */
     public void setLocalPartners( List<PartnerPojo> localPartners ) {
-
         this.localPartners = localPartners;
     }
 
-    /**
-     * @return the certificateParts
-     */
     public List<CertificatePropertiesForm> getCertificateParts() {
-
         return certificateParts;
     }
 
-    /**
-     * @param certificateParts the certificateParts to set
-     */
     public void setCertificateParts( List<CertificatePropertiesForm> certificateParts ) {
-
         this.certificateParts = certificateParts;
     }
 
     public int getNxCertificateId() {
-
         return nxCertificateId;
     }
 
     public void setNxCertificateId( int nxCertificateId ) {
-
         this.nxCertificateId = nxCertificateId;
     }
 

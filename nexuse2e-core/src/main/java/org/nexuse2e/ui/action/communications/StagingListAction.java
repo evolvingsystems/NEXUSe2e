@@ -96,7 +96,7 @@ public class StagingListAction extends NexusE2EAction {
                                 SimpleDateFormat databaseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 form.setCreated(databaseDateFormat.format(date));
                                 String issuerCN = CertificateUtil.getIssuer((X509Certificate) certsArray[certsArray.length - 1], X509Name.CN);
-                                form.setIssuerCN(issuerCN);
+                                form.setIssuer(issuerCN);
                                 certs.addElement(form);
 
                                 break;

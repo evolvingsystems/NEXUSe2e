@@ -1,3 +1,22 @@
+/**
+ *  NEXUSe2e Business Messaging Open Source
+ *  Copyright 2000-2009, Tamgroup and X-ioma GmbH
+ *
+ *  This is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation version 2.1 of
+ *  the License.
+ *
+ *  This software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this software; if not, write to the Free
+ *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.nexuse2e.ui.controller.certificate;
 
 import java.io.ByteArrayInputStream;
@@ -9,16 +28,20 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.PKIXCertPathBuilderResult;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 import java.util.zip.ZipInputStream;
@@ -28,14 +51,18 @@ import javax.validation.Valid;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PasswordFinder;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
+import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.CertificatePojo;
+import org.nexuse2e.pojo.PartnerPojo;
+import org.nexuse2e.ui.form.CertificatePromotionForm;
 import org.nexuse2e.ui.form.CertificatePropertiesForm;
 import org.nexuse2e.ui.form.CertificateRequestForm;
 import org.nexuse2e.ui.form.ProtectedFileAccessForm;
@@ -68,24 +95,18 @@ public class CertificateController {
             certificateKey = engineConfiguration.getFirstCertificateByType(CertificateType.PRIVATE_KEY.getOrdinal(), true);
         }
         model.addAttribute("createRequest", true);
-        model.addAttribute("importCert", true);
         model.addAttribute("importBackup", true);
         model.addAttribute("showRequest", false);
         model.addAttribute("exportRequest", false);
         model.addAttribute("exportPKCS12", false);
         model.addAttribute("deleteRequest", true);
         if (certificateRequest != null && certificateKey != null) {
-            try {
-                CertificateUtil.getPKCS10Request(certificateRequest);
-                model.addAttribute("createRequest", false);
-                model.addAttribute("importCert", false);
-                model.addAttribute("importBackup", false);
-                model.addAttribute("showRequest", true);
-                model.addAttribute("exportRequest", true);
-                model.addAttribute("exportPKCS12", true);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
+            CertificateUtil.getPKCS10Request(certificateRequest);
+            model.addAttribute("createRequest", false);
+            model.addAttribute("importBackup", false);
+            model.addAttribute("showRequest", true);
+            model.addAttribute("exportRequest", true);
+            model.addAttribute("exportPKCS12", true);
         }
         if (certificateRequest == null && certificateKey == null) {
             model.addAttribute("deleteRequest", false);
@@ -579,5 +600,103 @@ public class CertificateController {
         engineConfiguration.deleteCertificates(requests);
         
         return requestOverview(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/StagingList.do")
+    public String stagingList(Model model, EngineConfiguration engineConfiguration)
+            throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException, NoSuchProviderException, NexusException {
+
+        List<CertificatePropertiesForm> certs = new ArrayList<CertificatePropertiesForm>();
+        List<CertificatePojo> certPojos = engineConfiguration.getCertificates(CertificateType.STAGING.getOrdinal(), Constants.CERTIFICATECOMPARATOR);
+        if (certPojos != null) {
+            for (CertificatePojo certificate : certPojos) {
+                byte[] data = certificate.getBinaryData();
+                if (data != null) {
+
+                    KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+                    jks.load(new ByteArrayInputStream(data), EncryptionUtil.decryptString(certificate.getPassword()).toCharArray());
+
+                    Enumeration<String> aliases = jks.aliases();
+                    if (!aliases.hasMoreElements()) {
+                        LOG.info("No certificate aliases found!");
+                        continue;
+                    }
+
+                    while (aliases.hasMoreElements()) {
+                        String alias = aliases.nextElement();
+                        if (jks.isKeyEntry(alias)) {
+                            Certificate[] certsArray = jks.getCertificateChain(alias);
+
+                            if ((certsArray != null) && (certsArray.length != 0)) {
+                                CertificatePropertiesForm form = new CertificatePropertiesForm();
+                                form.setCertificateProperties((X509Certificate) certsArray[0]);
+                                form.setNxCertificateId(certificate.getNxCertificateId());
+                                Date date = certificate.getCreatedDate();
+                                SimpleDateFormat databaseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                form.setCreated(databaseDateFormat.format(date));
+                                String issuerCN = CertificateUtil.getIssuer((X509Certificate) certsArray[certsArray.length - 1], X509Name.CN);
+                                form.setIssuer(issuerCN);
+                                certs.add(form);
+
+                                break;
+                            }
+                        }
+                    } // while
+                } else {
+                    LOG.error("Certificate entry does not contain any binary data: " + certificate.getName());
+                }
+            } // while
+        } else {
+            LOG.info("no certs found");
+        }
+
+        model.addAttribute("collection", certs);
+        
+        return "pages/certificates/staging_list";
+    }
+    
+    @RequestMapping("/StagingCertificateView.do")
+    public String stagingCertificateView(
+            Model model, CertificatePromotionForm form, EngineConfiguration engineConfiguration)
+                    throws NexusException,
+                    KeyStoreException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    IOException,
+                    NoSuchProviderException {
+
+        int nxCertificateId = form.getNxCertificateId();
+        if (nxCertificateId == 0) {
+            return stagingList(model, engineConfiguration);
+        }
+        List<CertificatePropertiesForm> certificateParts = new ArrayList<CertificatePropertiesForm>();
+        List<PartnerPojo> localPartners = new ArrayList<PartnerPojo>();
+
+        CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), nxCertificateId);
+
+        KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+        jks.load(new ByteArrayInputStream(cPojo.getBinaryData()), EncryptionUtil.decryptString(cPojo.getPassword()).toCharArray());
+        if (jks != null) {
+            Enumeration<String> aliases = jks.aliases();
+            while (aliases.hasMoreElements()) {
+                String tempAlias = (String) aliases.nextElement();
+                if (jks.isKeyEntry(tempAlias)) {
+                    Certificate[] certArray = jks.getCertificateChain(tempAlias);
+                    if (certArray != null) {
+                        for (int i = 0; i < certArray.length; i++) {
+                            CertificatePropertiesForm certForm = new CertificatePropertiesForm();
+                            X509Certificate x509 = (X509Certificate) certArray[i];
+                            certForm.setCertificateProperties(x509);
+                            certificateParts.add(certForm);
+                        }
+                    }
+                }
+            }
+            localPartners = engineConfiguration.getPartners(Constants.PARTNER_TYPE_LOCAL, Constants.PARTNERCOMPARATOR);
+        }
+        form.setCertificateParts(certificateParts);
+        form.setLocalPartners(localPartners);
+
+        return "pages/certificates/staging_certificate_view";
     }
 }

@@ -49,7 +49,7 @@
                     <td><nexus:crumbs /></td>
                 </tr>
             </table>
-              <table class="NEXUS_TABLE" width="100%">
+            <table class="NEXUS_TABLE" width="100%">
                 <tr>            
                 <td colspan="2" class="NEXUSSection">CSR Export</td>            
                 </tr>
@@ -90,7 +90,7 @@
                     <td colspan="2" class="NEXUSScreenName">Request Handling</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="NEXUSSection">Create Request</td>
+                    <td colspan="2" class="NEXUSSection">New Certificate Signing Request (CSR)</td>
                 </tr>
                 <tr>
                     <c:choose>
@@ -100,6 +100,11 @@
                                     <img src="images/icons/add.png" class="button" />Create Request
                                 </nexus:link>
                             </td>
+                            <td class="NEXUSValue">
+                                <font class="NEXUSScreenPathLinkInactive">
+                                    <img src="images/icons/key_add.png" class="button" />Import Signed Certificate
+                                </font>
+                            </td>
                         </c:when>
                         <c:otherwise>
                             <td class="NEXUSValue">
@@ -107,9 +112,13 @@
                                     <img src="images/icons/add.png" class="button" />Create Request
                                 </font>
                             </td>
+                            <td class="NEXUSValue">
+                                <nexus:link href="RequestImportCert.do" styleClass="button">
+                                    <img src="images/icons/key_add.png" class="button" />Import Signed Certificate
+                                </nexus:link>
+                            </td>
                         </c:otherwise>
                     </c:choose>
-                    <td class="NEXUSValue">&#160;</td>
                 </tr>
                 <tr>
                     <td colspan="2" class="NEXUSSpacing">&#160;</td>
@@ -118,22 +127,6 @@
                     <td colspan="2" class="NEXUSSection">Import Certificate Data</td>
                 </tr>
                 <tr>
-                    <c:choose>
-                        <c:when test="${importCert}">
-                            <td class="NEXUSValue">
-                                <nexus:link href="RequestImportCert.do" styleClass="button">
-                                    <img src="images/icons/key_add.png" class="button" />Import Certificate
-                                </nexus:link>
-                            </td>
-                        </c:when>
-                        <c:otherwise>
-                            <td class="NEXUSValue">
-                                <font class="NEXUSScreenPathLinkInactive">
-                                    <img src="images/icons/key_add.png" class="button" />Import Certificate
-                                </font>
-                            </td>
-                        </c:otherwise>
-                    </c:choose>
                     <c:choose>
                         <c:when test="${importBackup}">
                             <td class="NEXUSValue">
@@ -149,13 +142,14 @@
                                 </font>
                             </td>
                         </c:otherwise>
-                    </c:choose>        
+                    </c:choose>
+                    <td class="NEXUSValue">&#160;</td>        
                 </tr>
                 <tr>
                     <td colspan="2" class="NEXUSSpacing">&#160;</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="NEXUSSection">Show Certificate Request</td>
+                    <td colspan="2" class="NEXUSSection">Existing Certificate Signing Request (CSR)</td>
                 </tr>
                 <tr>
                     <c:choose>
@@ -174,7 +168,22 @@
                             </td>
                         </c:otherwise>
                     </c:choose>
-                    <td class="NEXUSValue">&#160;</td>
+                    <c:choose>
+                        <c:when test="${exportRequest}">
+                            <td class="NEXUSValue">
+                                <nexus:link href="RequestExportCSR.do" styleClass="button">
+                                    <img src="images/icons/disk.png" class="button" />Export Request (CSR)
+                                </nexus:link>
+                            </td>
+                        </c:when>
+                        <c:otherwise>
+                            <td class="NEXUSValue">
+                                <font class="NEXUSScreenPathLinkInactive">
+                                    <img src="images/icons/disk.png" class="button" />Export Request (CSR)
+                                </font>
+                            </td>
+                        </c:otherwise>
+                    </c:choose>
                 </tr>
                 <tr>
                     <td colspan="2" class="NEXUSSpacing">&#160;</td>
@@ -199,22 +208,7 @@
                             </td>
                         </c:otherwise>
                     </c:choose>
-                    <c:choose>
-                        <c:when test="${exportRequest}">
-                            <td class="NEXUSValue">
-                                <nexus:link href="RequestExportCSR.do" styleClass="button">
-                                    <img src="images/icons/disk.png" class="button" />Export Request (CSR)
-                                </nexus:link>
-                            </td>
-                        </c:when>
-                        <c:otherwise>
-                            <td class="NEXUSValue">
-                                <font class="NEXUSScreenPathLinkInactive">
-                                    <img src="images/icons/disk.png" class="button" />Export Request (CSR)
-                                </font>
-                            </td>
-                        </c:otherwise>
-                    </c:choose>
+                    <td class="NEXUSValue"></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="NEXUSSpacing">&#160;</td>

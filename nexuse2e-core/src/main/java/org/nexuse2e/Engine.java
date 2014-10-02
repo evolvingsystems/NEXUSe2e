@@ -19,6 +19,7 @@
  */
 package org.nexuse2e;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -162,9 +163,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         return instance;
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-     */
     public void afterPropertiesSet() throws Exception {
 
         if ( getBeanFactory() == null ) {
@@ -173,11 +171,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         LOG.debug( "EngineId: " + getBeanId() );
     }
 
-    /**
-     * @param targetStatus
-     * @throws InstantiationException 
-     */
-    //public synchronized void changeStatus( BeanStatus targetStatus ) throws InstantiationException {
     public void changeStatus( BeanStatus targetStatus ) throws InstantiationException {
 
         while ( getStatus() != targetStatus && getStatus() != BeanStatus.ERROR ) {
@@ -284,15 +277,10 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     public void initialize() throws InstantiationException {
 
         try {
-            // undefined - no db connection, spring not configured.
-            // instanciated - db connected, string config loaded.
-            // initialized - engineconfig loaded
-            // started - transports and connectors are running.
-
             try {
                 initializeMime();
-            } catch ( NexusException nEx ) {
-                LOG.error( "No MIME mappings found: " + nEx );
+            } catch ( IOException ioex ) {
+                LOG.error( "No MIME mappings found", ioex );
             }
 
             try {
@@ -300,9 +288,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
                 localSessionFactoryBean = (LocalSessionFactoryBean) getBeanFactory().getBean(
                         "&hibernateSessionFactory" );
                 if ( localSessionFactoryBean != null ) {
-                    // localSessionFactoryBean.createDatabaseSchema();
-//                    localSessionFactoryBean.updateDatabaseSchema();
-
                     Configuration configuration = localSessionFactoryBean.getConfiguration();
                     String dialect = configuration.getProperty( "hibernate.dialect" );
                     if ( ( dialect != null ) && ( dialect.length() != 0 ) ) {
@@ -386,10 +371,11 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     /**
      * Initialze the mime mappings/setup.  This setup is based on the MimeConfig.xml document found in config/mim.
      * @param home Home directory.
+     * @throws IOException 
      * @throws InitializationException
      */
 
-    private void initializeMime() throws NexusException {
+    private void initializeMime() throws IOException  {
 
         Document doc = null;
 
@@ -610,128 +596,54 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
      * @param rootDir Location directory relative to the home directory.
      * @param co
      * @return Document object of configuration.
+     * @throws IOException 
      */
-    private Document retreiveNexusConfig( String home, String rootDir, String configFile ) throws NexusException {
+    private Document retreiveNexusConfig( String home, String rootDir, String configFile ) throws IOException {
 
         Document doc = null;
         String xmlFileName = null;
 
-        try {
-            if ( home.startsWith( "file:///" ) ) {
-                xmlFileName = home + rootDir + configFile;
-            } else if ( getNexusE2ERoot().startsWith( "file:///" ) ) {
-                xmlFileName = "file:///" + home.substring( 6 ) + rootDir + configFile;
-            } else if ( getNexusE2ERoot().startsWith( "file://" ) ) {
-                xmlFileName = "file:///" + home.substring( 7 ) + rootDir + configFile;
-            } else {
-                xmlFileName = "file:///" + home + rootDir + configFile;
-            }
-
-            doc = XMLUtil.loadXMLFileFromFile( xmlFileName, false );
-        } catch ( Exception ex ) {
-            throw new NexusException( ex.toString() );
+        if ( home.startsWith( "file:///" ) ) {
+            xmlFileName = home + rootDir + configFile;
+        } else if ( getNexusE2ERoot().startsWith( "file:///" ) ) {
+            xmlFileName = "file:///" + home.substring( 6 ) + rootDir + configFile;
+        } else if ( getNexusE2ERoot().startsWith( "file://" ) ) {
+            xmlFileName = "file:///" + home.substring( 7 ) + rootDir + configFile;
+        } else {
+            xmlFileName = "file:///" + home + rootDir + configFile;
         }
+
+        doc = XMLUtil.loadXMLFileFromFile( xmlFileName, false );
 
         return doc;
     } // retreiveNexusConfig
 
     /**
-     * @param type
-     * @return
-     * @throws NexusException
+     * Gets the {@code IdGenerator} for the given type if available.
+     * @param type The type identifier.
+     * @return An {@code IdGenerator}, or {@code null} if none was found.
      */
-    public IdGenerator getIdGenerator( String type ) throws NexusException {
+    public IdGenerator getIdGenerator( String type ) {
 
         if ( idGenrators != null ) {
-            IdGenerator idGenerator = idGenrators.get( type );
-            if ( idGenerator == null ) {
-                throw new NexusException( "no generator found for type:" + type );
-            } else {
-                return idGenerator;
-            }
+            return idGenrators.get( type );
         }
-        throw new NexusException( "no id generators found" );
+        return null;
     }
 
     /**
-     * @param type
-     * @return
-     * @throws NexusException
+     * Gets the {@code TimestampFormatter} for the given type if available.
+     * @param type The type identifier.
+     * @return A {@code TimestampFormatter}, or {@code null} if none was found.
      */
-    public TimestampFormatter getTimestampFormatter( String type ) throws NexusException {
+    public TimestampFormatter getTimestampFormatter( String type ) {
 
         if ( timestampFormatters != null ) {
-            TimestampFormatter formatter = timestampFormatters.get( type );
-            if ( formatter == null ) {
-                throw new NexusException( "no formatter found for type:" + type );
-            } else {
-                return formatter;
-            }
+            return timestampFormatters.get( type );
         }
-        throw new NexusException( "no id formatter found" );
+        return null;
     }
 
-    /**
-     * Gets the data access object with the given bean name.
-     * @param daoName The bean name.
-     * @return The <code>BasicDAO</code> implementation instance, or <code>null</code>
-     * if <code>daoName</code> is <code>null</code>.
-     * @throws NexusException if the given bean name does not exist or has an invalid type.
-     */
-//    public BasicDAO getDao( String daoName ) throws NexusException {
-//
-//        if ( daoName != null ) {
-//            if ( getBeanFactory().containsBean( daoName ) ) {
-//                Object daoBean = null;
-//                daoBean = getBeanFactory().getBean( daoName );
-//
-//                if ( daoBean instanceof BasicDAO ) {
-//                    return (BasicDAO) daoBean;
-//                } else {
-//                    throw new NexusException( "invalid Object Type:" + daoBean.getClass().getName() );
-//                }
-//            } else {
-//                throw new NexusException( "Requested daoBean: " + daoName + " not found!" );
-//            }
-//        }
-//        return null;
-//    }
-
-    /**
-     * Convenience method to get the configuration DAO.
-     * @return The configuration DAO.
-     * @throws NexusException If the configuration DAO is not available.
-     */
-//    public ConfigDAO getConfigDAO() throws NexusException {
-//
-//        return (ConfigDAO) getDao( "configDao" );
-//    }
-
-    /**
-     * Convenience method to get the transaction DAO.
-     * @return The transaction DAO.
-     * @throws NexusException If the transaction DAO is not available.
-     */
-//    public TransactionDAO getTransactionDAO() throws NexusException {
-//
-//        return (TransactionDAO) getDao( "transactionDao" );
-//    }
-
-    /**
-     * Convenience method to get the log DAO.
-     * @return The log DAO.
-     * @throws NexusException If the log DAO is not available.
-     */
-//    public LogDAO getLogDAO() throws NexusException {
-//
-//        return (LogDAO) getDao( "logDao" );
-//    }
-
-//    public PersistentPropertyDAO getPersistentPropertyDAO() throws NexusException {
-//
-//        return (PersistentPropertyDAO) getDao( "persistentPropertyDao" );
-//    }
-    
     private void createEngineConfiguration() throws InstantiationException {
 
         try {
@@ -787,20 +699,13 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
         BaseConfigurationProvider provider = new XmlBaseConfigurationProvider( xmlInput );
 
-        try {
-            ConfigDAO configDao = getConfigDao();
-            configDao.deleteAll();
-            EngineConfiguration newConfig = new EngineConfiguration();
-            newConfig.createBaseConfiguration( provider );
-            configDao.saveConfigurationToDB( newConfig );
-            newConfig.init();
-            setCurrentConfiguration( newConfig );
-        } catch ( Exception ex ) {
-            if ( ex instanceof NexusException ) {
-                throw (NexusException) ex;
-            }
-            throw new NexusException( ex );
-        }
+        ConfigDAO configDao = getConfigDao();
+        configDao.deleteAll();
+        EngineConfiguration newConfig = new EngineConfiguration();
+        newConfig.createBaseConfiguration( provider );
+        configDao.saveConfigurationToDB( newConfig );
+        newConfig.init();
+        setCurrentConfiguration( newConfig );
     }
 
     /**
@@ -835,28 +740,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
                 }
                 LOG.debug( "Saving configuration..." );
                 getConfigDao().saveDelta( newConfiguration );
-                //                if ( oldServicePojo != null ) {
-                //                    service = getService( oldServicePojo.getName() );
-                //                    services.remove( oldServicePojo );
-                //                    // service has been renamed
-                //                    if ( !oldServicePojo.getName().equals( servicePojo.getName() ) ) {
-                //                        renameService( oldServicePojo.getName(), servicePojo.getName() );
-                //                    }
-                //                    if ( servicePojo.getServiceParams() != null ) {
-                //                        ConfigurationUtil.configureService( service, servicePojo.getServiceParams() );
-                //                    }
-                //                } else {
-                //                    service = (Service) Class.forName( servicePojo.getComponent().getClassName() ).newInstance();
-                //                    if ( servicePojo.getServiceParams() != null ) {
-                //                        ConfigurationUtil.configureService( service, servicePojo.getServiceParams() );
-                //                    }
-                //                    service.initialize( this );
-                //                    service.activate();
-                //                    if ( service.isAutostart() ) {
-                //                        service.start();
-                //                    }
-                //                    getStaticBeanContainer().getManagableBeans().put( servicePojo.getName(), service );
-                //                }
             } catch ( Exception e ) {
                 LOG.error( "Error saving configuration: " + e );
                 e.printStackTrace();
@@ -889,37 +772,24 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         if ( configurations != null ) {
             configurations.clear();
         }
-        // LOG.debug( "3partners: " + this.currentConfiguration.getPartners().size() );
     }
 
-    /**
-     * @return
-     */
     public BeanFactory getBeanFactory() {
 
         return getWebApplicationContext();
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.beans.factory.BeanNameAware#setBeanName(java.lang.String)
-     */
     public void setBeanName( String beanId ) {
 
         this.beanId = beanId;
 
     }
 
-    /**
-     * @return
-     */
     public String getBeanId() {
 
         return beanId;
     }
 
-    /**
-     * @param beanId
-     */
     public void setBeanId( String beanId ) {
 
         this.beanId = beanId;
@@ -933,17 +803,11 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         return status;
     }
 
-    /* (non-Javadoc)
-     * @see org.nexuse2e.Manageable#getRunLevel()
-     */
     public Layer getActivationLayer() {
 
         return Layer.CORE;
     }
 
-    /* (non-Javadoc)
-     * @see org.nexuse2e.Manageable#start()
-     */
     public void start() {
         
         LOG.info( "*** NEXUSe2e Server Version: " + Version.getVersion() + " ***" );
@@ -982,9 +846,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.nexuse2e.Manageable#start()
-     */
     public void activate() {
 
         LOG.info( "*** NEXUSe2e Server Version: " + Version.getVersion() + " ***" );
@@ -1016,9 +877,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         }
     }
 
-    /**
-     * 
-     */
     public void stop() {
 
         LOG.debug( "Engine.stop..." );
@@ -1044,9 +902,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     } // deactivate
 
-    /**
-     * 
-     */
     public void deactivate() {
 
         LOG.debug( "Engine.deactivate..." );
@@ -1070,8 +925,8 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     } // deactivate
 
-    /* (non-Javadoc)
-     * @see org.nexuse2e.Manageable#teardown()
+    /**
+     * Tears down the engine and all of it's dependencies.
      */
     public void teardown() {
 
@@ -1089,7 +944,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         currentConfiguration = null;
         invalidateConfigurations();
 
-    } // deactivate
+    }
 
     /**
      * Completely shuts down the engine. It shall not be restarted after
@@ -1117,41 +972,26 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         LOG.info( "***** Nexus E2E engine deactivated. *****" );
     }
 
-    /**
-     * @return the timestampFormaters
-     */
     public Map<String, TimestampFormatter> getTimestampFormaters() {
 
         return timestampFormatters;
     }
 
-    /**
-     * @param timestampFormaters the timestampFormaters to set
-     */
     public void setTimestampFormatters( Map<String, TimestampFormatter> timestampFormaters ) {
 
         this.timestampFormatters = timestampFormaters;
     }
 
-    /**
-     * @return the idGenrators
-     */
     public Map<String, IdGenerator> getIdGenrators() {
 
         return idGenrators;
     }
 
-    /**
-     * @param idGenrators the idGenrators to set
-     */
     public void setIdGenrators( Map<String, IdGenerator> idGenrators ) {
 
         this.idGenrators = idGenrators;
     }
 
-    /**
-     * @return the configAccessService
-     */
     public ConfigurationAccessService getActiveConfigurationAccessService() {
 
         return currentConfiguration;
@@ -1174,6 +1014,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         }
         return configuration;
     }
+    
     /**
      * Detaches all configurations.
      * @param key The key.
@@ -1184,6 +1025,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
             configurations.clear();
         }
     }
+    
     /**
      * Detaches the engine configuration that is associated with the given key.
      * @param key The key.
@@ -1195,33 +1037,21 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         }
     }
 
-    /**
-     * @return the localSessionFactoryBean
-     */
     public LocalSessionFactoryBean getLocalSessionFactoryBean() {
 
         return localSessionFactoryBean;
     }
 
-    /**
-     * @param localSessionFactoryBean the localSessionFactoryBean to set
-     */
     public void setLocalSessionFactoryBean( LocalSessionFactoryBean localSessionFactoryBean ) {
 
         this.localSessionFactoryBean = localSessionFactoryBean;
     }
 
-    /**
-     * @return the inProcessNEXUSe2eInterface
-     */
     public NEXUSe2eInterface getInProcessNEXUSe2eInterface() {
 
         return inProcessNEXUSe2eInterface;
     }
 
-    /**
-     * @param inProcessNEXUSe2eInterface the inProcessNEXUSe2eInterface to set
-     */
     public void setInProcessNEXUSe2eInterface( NEXUSe2eInterface inProcessNEXUSe2eInterface ) {
 
         this.inProcessNEXUSe2eInterface = inProcessNEXUSe2eInterface;
@@ -1237,49 +1067,31 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         this.baseConfigurationProvider = baseConfigurationProvider;
     }
 
-    /**
-     * @return the cacertsPath
-     */
     public String getCacertsPath() {
 
         return cacertsPath;
     }
 
-    /**
-     * @param cacertsPath the cacertsPath to set
-     */
     public void setCacertsPath( String cacertsPath ) {
 
         this.cacertsPath = cacertsPath;
     }
 
-    /**
-     * @return the certificatePath
-     */
     public String getCertificatePath() {
 
         return certificatePath;
     }
 
-    /**
-     * @param certificatePath the certificatePath to set
-     */
     public void setCertificatePath( String certificatePath ) {
 
         this.certificatePath = certificatePath;
     }
 
-    /**
-     * @return
-     */
     public String getNexusE2ERoot() {
 
         return nexusE2ERoot;
     }
 
-    /**
-     * @param webApplicationRoot
-     */
     public void setNexusE2ERoot( String webApplicationRoot ) {
 
         nexusE2ERoot = webApplicationRoot;
@@ -1295,33 +1107,21 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         this.baseConfigurationProviderClass = baseConfigurationProviderClass;
     }
 
-    /**
-     * @return
-     */
     public EngineController getEngineController() {
 
         return engineController;
     }
 
-    /**
-     * @param engineController
-     */
     public void setEngineController( EngineController engineController ) {
 
         this.engineController = engineController;
     }
 
-    /**
-     * @return the timestampPattern
-     */
     public String getTimestampPattern() {
 
         return timestampPattern;
     }
 
-    /**
-     * @param timestampPattern the timestampPattern to set
-     */
     public void setTimestampPattern( String timestampPattern ) {
 
         this.timestampPattern = timestampPattern;
@@ -1345,64 +1145,38 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         this.databaseDialect = databaseDialect;
     }
 
-    
-    /**
-     * @return the engineStartTime
-     */
     public long getEngineStartTime() {
     
         return engineStartTime;
     }
 
-    
-    /**
-     * @param engineStartTime the engineStartTime to set
-     */
     public void setEngineStartTime( long engineStartTime ) {
     
         this.engineStartTime = engineStartTime;
     }
 
-    
-    /**
-     * @return the serviceStartTime
-     */
     public long getServiceStartTime() {
     
         return serviceStartTime;
     }
 
-    
-    /**
-     * @param serviceStartTime the serviceStartTime to set
-     */
     public void setServiceStartTime( long serviceStartTime ) {
     
         this.serviceStartTime = serviceStartTime;
     }
 
     
-    /**
-     * @return the configDao
-     */
     public ConfigDAO getConfigDao() {
     
         return configDao;
     }
 
     
-    /**
-     * @param configDao the configDao to set
-     */
     public void setConfigDao( ConfigDAO configDao ) {
     
         this.configDao = configDao;
     }
 
-    
-    /**
-     * @param transactionService the transactionService to set
-     */
     public void setTransactionService( TransactionService transactionService ) {
     
         this.transactionService = transactionService;
@@ -1427,9 +1201,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         this.messageWorker = messageWorker;
     }
 
-	/**
-	 * @return the defaultCharEncoding
-	 */
 	public String getDefaultCharEncoding() {
 		if(StringUtils.isEmpty(defaultCharEncoding)) {
 			defaultCharEncoding = java.nio.charset.Charset.defaultCharset().name();
@@ -1437,17 +1208,12 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 		return defaultCharEncoding;
 	}
 
-	/**
-	 * @param defaultCharEncoding the defaultCharEncoding to set
-	 */
 	public void setDefaultCharEncoding(String defaultCharEncoding) {
 		this.defaultCharEncoding = defaultCharEncoding;
 	}
 
     /**
      * Returns true iff the allowed cipher length is unlimited, i.e., the Java Cryptographic Extension is installed in the current JVM.
-     * 
-     * @return
      */
     public String getJCEInstalledStatus() {
         if (Engine.cipherMax == Integer.MAX_VALUE) {

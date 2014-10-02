@@ -19,24 +19,32 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
 
-import org.apache.struts.action.ActionForm;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.X509Principal;
+import org.nexuse2e.configuration.CertificateType;
+import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.util.CertificateUtil;
+import org.nexuse2e.util.EncryptionUtil;
 
 /**
  * @author guido.esch
  */
-public class CertificatePropertiesForm extends ActionForm {
+public class CertificatePropertiesForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8526202214940679659L;
     private String            alias            = null;                // alias
     private String            commonName       = null;                // cn
@@ -48,14 +56,14 @@ public class CertificatePropertiesForm extends ActionForm {
     private String            country          = null;                // c
     private String            domain           = null;                // dc
     private String            surname          = null;                // sn
-    //    private String t = null; // t
-    private String            notAfter         = null;
-    private String            notBefore        = null;
-    private String            valid            = null;
-    private String            timeRemaining    = null;
-    private String            fingerprint      = null;
-    private String            created          = null;
-    private String            issuerCN         = null;
+    private String            notAfter;
+    private String            notBefore;
+    private boolean           valid;
+    private String            timeRemaining;
+    private String            fingerprint;
+    private String            created;
+    private String            issuer;
+    private String            name;
 
     private X509Certificate   cert             = null;
 
@@ -67,15 +75,14 @@ public class CertificatePropertiesForm extends ActionForm {
         setPrincipal( CertificateUtil.getPrincipalFromCertificate( x509, true ) );
         setNotAfter( "" + x509.getNotAfter() );
         setNotBefore( "" + x509.getNotBefore() );
-        String valid = "Okay";
+        valid = true;
         try {
             x509.checkValidity();
         } catch ( CertificateExpiredException e ) {
-            valid = "Certificate has expired";
+            valid = false;
         } catch ( CertificateNotYetValidException e ) {
-            valid = "Certificate not valid yet";
+            valid = false;
         }
-        setValid( valid );
 
         String remaining = CertificateUtil.getRemainingValidity( x509 );
         setTimeRemaining( remaining );
@@ -86,6 +93,39 @@ public class CertificatePropertiesForm extends ActionForm {
             setFingerprint( "not available" );
         }
     }
+    
+    public void setCertificateProperties(CertificatePojo cert) throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+
+        byte[] data = cert.getBinaryData();
+        X509Certificate x509 = null;
+
+        if (cert.getType() == CertificateType.PARTNER.getOrdinal()) {
+            x509 = CertificateUtil.getX509Certificate(data);
+        } else if (cert.getType() == CertificateType.LOCAL.getOrdinal()) {
+            KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+            jks.load(new ByteArrayInputStream(cert.getBinaryData()), EncryptionUtil.decryptString(cert.getPassword()).toCharArray());
+            if (jks != null) {
+
+                Enumeration<String> aliases = jks.aliases();
+                while (aliases.hasMoreElements()) {
+                    String tempAlias = aliases.nextElement();
+                    if (jks.isKeyEntry(tempAlias)) {
+                        java.security.cert.Certificate[] certArray = jks.getCertificateChain(tempAlias);
+                        if (certArray != null) {
+                            x509 = (X509Certificate) certArray[0];
+                        }
+                    }
+                }
+            }
+            if (x509 != null) {
+                setCertificateProperties(x509);
+            }
+        }
+        
+        setName(cert.getName());
+        setNxCertificateId(cert.getNxCertificateId());
+    }
+    
     
     public void setPrincipal( X509Principal principal ) {
         setCommonName( CertificateUtil.getCertificateInfo( principal, X509Name.CN ) );
@@ -207,12 +247,12 @@ public class CertificatePropertiesForm extends ActionForm {
         this.surname = surname;
     }
 
-    public String getValid() {
+    public boolean isValid() {
 
         return valid;
     }
 
-    public void setValid( String valid ) {
+    public void setValid( boolean valid ) {
 
         this.valid = valid;
     }
@@ -257,47 +297,43 @@ public class CertificatePropertiesForm extends ActionForm {
         this.created = created;
     }
 
-    public String getIssuerCN() {
+    public String getIssuer() {
 
-        return issuerCN;
+        return issuer;
     }
 
-    public void setIssuerCN( String issuerCN ) {
+    public void setIssuer( String issuerCN ) {
 
-        this.issuerCN = issuerCN;
+        this.issuer = issuerCN;
     }
 
-    /**
-     * @return the nxCertificateId
-     */
     public int getNxCertificateId() {
 
         return nxCertificateId;
     }
 
-    /**
-     * @param nxCertificateId the nxCertificateId to set
-     */
     public void setNxCertificateId( int nxCertificateId ) {
 
         this.nxCertificateId = nxCertificateId;
     }
 
     
-    /**
-     * @return the cert
-     */
     public X509Certificate getCert() {
     
         return cert;
     }
 
-    
-    /**
-     * @param cert the cert to set
-     */
+
     public void setCert( X509Certificate cert ) {
     
         this.cert = cert;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

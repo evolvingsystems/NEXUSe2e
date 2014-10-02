@@ -42,15 +42,15 @@
         
         <table class="NEXUS_TAB_TABLE">
         	<tr>
-        		<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
+        		<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif" style="display:block;"/></td>
         		<td class="NEXUS_TAB_UNSELECTED"><nexus:link href="PartnerInfoView.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="NEXUS_TAB_UNSELECTED_LINK">Collaboration Partner</nexus:link></td>
-        		<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
-        		<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
+        		<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif" style="display:block;"/></td>
+        		<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif" style="display:block;"/></td>
         		<td class="NEXUS_TAB_UNSELECTED"><nexus:link href="PartnerConnectionList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="NEXUS_TAB_UNSELECTED_LINK">Connections</nexus:link></td>
-        		<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
-        		<td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif"/></td>
+        		<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif" style="display:block;"/></td>
+        		<td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif" style="display:block;"/></td>
         		<td class="NEXUS_TAB_SELECTED">Certificates</td>
-        		<td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif"/></td>
+        		<td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif" style="display:block;"/></td>
         	</tr>
         </table>
         <table class="NEXUS_TABLE" width="100%">
@@ -66,9 +66,9 @@
         			<td class="NEXUSValue">
                         <nexus:link href="PartnerCertificateView.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}&amp;nxCertificateId=${cert.nxCertificateId}" styleClass="NexusLink">
                             <c:choose>
-                				<c:when test="${empty cert.id}">n/a</c:when>
-                				<c:otherwise>${cert.id} (${cert.nxCertificateId})</c:otherwise>
-                            </c:choose>				
+                				<c:when test="${empty cert.name}">n/a</c:when>
+                				<c:otherwise>${cert.name} (${cert.nxCertificateId})</c:otherwise>
+                            </c:choose>
         			    </nexus:link>
                     </td>
         			<td class="NEXUSValue">${cert.commonName}</td>
@@ -76,12 +76,18 @@
         			<td class="NEXUSValue">${cert.issuer}</td>
         			<td class="NEXUSValue">
                         <c:choose>
-                            <c:when test="${cert.validity == 'Okay'}">
-            				    <font color="green"><b>${cert.validity}</b></font>
-            				    ${cert.remaining}
-            			    </c:when>
+                            <c:when test="${cert.valid}">
+                                <span class="DataRowOk">OK ${cert.timeRemaining}.</span>
+                            </c:when>
                             <c:otherwise>
-                                <font color="red"><b>${cert.validity}</b></font>
+                                <c:choose>
+                                    <c:when test="${empty cert.timeRemaining}">
+                                        <span class="DataRowAlert">Certificate has expired.</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="DataRowAlert">Certificate is not yet valid.</span>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:otherwise>
                         </c:choose>
         			</td>

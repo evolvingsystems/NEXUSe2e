@@ -19,26 +19,14 @@
  */
 package org.nexuse2e.ui.form;
 
-import java.io.ByteArrayInputStream;
 import java.io.Serializable;
-import java.security.KeyStore;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 
 import javax.validation.constraints.Size;
 
-import org.bouncycastle.asn1.x509.X509Name;
-import org.nexuse2e.NexusException;
-import org.nexuse2e.configuration.CertificateType;
-import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.pojo.PartnerPojo;
-import org.nexuse2e.util.CertificateUtil;
-import org.nexuse2e.util.EncryptionUtil;
 
 /**
  * @author gesch
@@ -64,151 +52,7 @@ public class CollaborationPartnerForm implements Serializable {
     private Collection<String>                choreographies   = new ArrayList<String>();
     private Collection<PartnerPojo>           contacts         = new ArrayList<PartnerPojo>();
     private Collection<PartnerConnectionForm> connections      = new ArrayList<PartnerConnectionForm>();
-    private Collection<Certificate>           certificates     = new ArrayList<Certificate>();
-
-    public class Certificate {
-
-        private String id;
-        private int    nxCertificateId;
-        private String commonName;
-        private String organisation;
-        private String validity;
-        private String issuer;
-        private String remaining;
-
-        public void setProperties(CertificatePojo cert) {
-
-            try {
-                byte[] data = cert.getBinaryData();
-                X509Certificate x509 = null;
-
-                if (cert.getType() == CertificateType.PARTNER.getOrdinal()) {
-                    x509 = CertificateUtil.getX509Certificate(data);
-                } else if (cert.getType() == CertificateType.LOCAL.getOrdinal()) {
-
-                    try {
-                        KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
-                        jks.load(new ByteArrayInputStream(cert.getBinaryData()), EncryptionUtil.decryptString(cert.getPassword()).toCharArray());
-                        if (jks != null) {
-
-                            Enumeration<String> aliases = jks.aliases();
-                            if (!aliases.hasMoreElements()) {
-                                throw new NexusException("no certificate aliases found");
-                            }
-                            while (aliases.hasMoreElements()) {
-                                String tempAlias = aliases.nextElement();
-                                if (jks.isKeyEntry(tempAlias)) {
-                                    java.security.cert.Certificate[] certArray = jks.getCertificateChain(tempAlias);
-                                    if (certArray != null) {
-
-                                        x509 = (X509Certificate) certArray[0];
-
-                                    }
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        throw new NexusException(e);
-                    }
-                }
-                if (x509 == null) {
-                    throw new NexusException("X509Certificate is null");
-                }
-
-                setCommonName(CertificateUtil.getSubject(x509, X509Name.CN));
-                setOrganisation(CertificateUtil.getSubject(x509, X509Name.O));
-                setIssuer(CertificateUtil.getIssuer(x509, X509Name.O));
-
-                String valid = "Okay";
-                try {
-                    x509.checkValidity();
-                } catch (CertificateExpiredException e) {
-                    valid = "Certificate has expired";
-                } catch (CertificateNotYetValidException e) {
-                    valid = "Certificate not valid yet";
-                }
-                setValidity(valid);
-
-                setRemaining(CertificateUtil.getRemainingValidity(x509));
-
-            } catch (NexusException e) {
-                e.printStackTrace();
-            }
-
-            setId(cert.getName());
-            setNxCertificateId(cert.getNxCertificateId());
-        }
-
-        public String getId() {
-
-            return id;
-        }
-
-        public void setId(String id) {
-
-            this.id = id;
-        }
-
-        public int getNxCertificateId() {
-
-            return nxCertificateId;
-        }
-
-        public void setNxCertificateId(int seqNo) {
-
-            this.nxCertificateId = seqNo;
-        }
-
-        public String getCommonName() {
-
-            return commonName;
-        }
-
-        public void setCommonName(String commonName) {
-
-            this.commonName = commonName;
-        }
-
-        public String getIssuer() {
-
-            return issuer;
-        }
-
-        public void setIssuer(String issuer) {
-
-            this.issuer = issuer;
-        }
-
-        public String getOrganisation() {
-
-            return organisation;
-        }
-
-        public void setOrganisation(String organisation) {
-
-            this.organisation = organisation;
-        }
-
-        public String getValidity() {
-
-            return validity;
-        }
-
-        public void setValidity(String validity) {
-
-            this.validity = validity;
-        }
-
-        public String getRemaining() {
-
-            return remaining;
-        }
-
-        public void setRemaining(String remaining) {
-
-            this.remaining = remaining;
-        }
-    }
+    private Collection<CertificatePropertiesForm> certificates = new ArrayList<CertificatePropertiesForm>();
 
     public void cleanSettings() {
 
@@ -262,10 +106,10 @@ public class CollaborationPartnerForm implements Serializable {
         return pojo;
     }
 
-    public void addCertificate(Certificate cert) {
+    public void addCertificate(CertificatePropertiesForm cert) {
 
         if (certificates == null) {
-            certificates = new ArrayList<Certificate>();
+            certificates = new ArrayList<CertificatePropertiesForm>();
         }
         certificates.add(cert);
     }
@@ -306,12 +150,12 @@ public class CollaborationPartnerForm implements Serializable {
         this.address2 = address2;
     }
 
-    public Collection<Certificate> getCertificates() {
+    public Collection<CertificatePropertiesForm> getCertificates() {
 
         return certificates;
     }
 
-    public void setCertificates(Collection<Certificate> certificates) {
+    public void setCertificates(Collection<CertificatePropertiesForm> certificates) {
 
         this.certificates = certificates;
     }

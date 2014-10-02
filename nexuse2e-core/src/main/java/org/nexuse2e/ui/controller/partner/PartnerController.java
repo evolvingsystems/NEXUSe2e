@@ -19,6 +19,11 @@
  */
 package org.nexuse2e.ui.controller.partner;
 
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -42,8 +47,8 @@ import org.nexuse2e.pojo.ConnectionPojo;
 import org.nexuse2e.pojo.ParticipantPojo;
 import org.nexuse2e.pojo.PartnerPojo;
 import org.nexuse2e.pojo.TRPPojo;
+import org.nexuse2e.ui.form.CertificatePropertiesForm;
 import org.nexuse2e.ui.form.CollaborationPartnerForm;
-import org.nexuse2e.ui.form.CollaborationPartnerForm.Certificate;
 import org.nexuse2e.ui.form.PartnerConnectionForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -331,16 +336,21 @@ public class PartnerController {
     @RequestMapping("/PartnerCertificateList.do")
     public String partnerCertificateList(
             CollaborationPartnerForm form,
-            EngineConfiguration engineConfiguration) throws NexusException {
+            EngineConfiguration engineConfiguration)
+                    throws NexusException,
+                    KeyStoreException,
+                    NoSuchProviderException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    IOException {
 
         PartnerPojo partnerPojo = engineConfiguration.getPartnerByNxPartnerId(form.getNxPartnerId());
         form.setProperties(partnerPojo);
 
         Set<CertificatePojo> certs = partnerPojo.getCertificates();
-        form.setCertificates( new ArrayList<Certificate>() );
         for (CertificatePojo cert : certs) {
-            CollaborationPartnerForm.Certificate formCert = form.new Certificate();
-            formCert.setProperties( cert );
+            CertificatePropertiesForm formCert = new CertificatePropertiesForm();
+            formCert.setCertificateProperties( cert );
             form.addCertificate( formCert );
         }
         

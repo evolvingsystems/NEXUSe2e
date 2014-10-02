@@ -45,19 +45,17 @@
         <form:hidden path="nxPartnerId"/>
     	<table class="NEXUS_TAB_TABLE">
     		<tr>
-    			<td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif"/></td>
+    			<td class="NEXUS_TAB_LEFT_SELECTED"><img src="images/leftcccccc.gif" style="display:block;"/></td>
     			<td class="NEXUS_TAB_SELECTED">Collaboration Partner</td>
-    			<td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif"/></td>
-    			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
+    			<td class="NEXUS_TAB_RIGHT_SELECTED"><img src="images/rightcccccc.gif" style="display:block;"/></td>
+    			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif" style="display:block;"/></td>
     			<td class="NEXUS_TAB_UNSELECTED">
                     <nexus:link href="PartnerConnectionList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="NEXUS_TAB_UNSELECTED_LINK">Connections</nexus:link>
                 </td>
-    			<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
-    			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif"/></td>
-    			<td class="NEXUS_TAB_UNSELECTED"><nexus:link
-    				href="PartnerCertificateList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}"
-    				styleClass="NEXUS_TAB_UNSELECTED_LINK">Certificates</nexus:link></td>
-    			<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif"/></td>
+    			<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif" style="display:block;"/></td>
+    			<td class="NEXUS_TAB_LEFT_UNSELECTED"><img src="images/left666666.gif" style="display:block;"/></td>
+    			<td class="NEXUS_TAB_UNSELECTED"><nexus:link href="PartnerCertificateList.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="NEXUS_TAB_UNSELECTED_LINK">Certificates</nexus:link></td>
+    			<td class="NEXUS_TAB_RIGHT_UNSELECTED"><img src="images/right666666.gif" style="display:block;"/></td>
     		</tr>
     	</table>
     	<table class="NEXUS_TABLE" width="100%">
