@@ -42,7 +42,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipInputStream;
 
@@ -698,5 +700,79 @@ public class CertificateController {
         form.setLocalPartners(localPartners);
 
         return "pages/certificates/staging_certificate_view";
+    }
+    
+    @RequestMapping("/StagingImportCertificate.do")
+    public String stagingImportCertificate(
+            Model model, ProtectedFileAccessForm form, EngineConfiguration engineConfiguration) {
+        
+        return "pages/certificates/staging_import_certificate";
+    }
+    
+    @RequestMapping("/StagingSaveCertificate.do")
+    public String stagingSaveCertificate(
+            Model model,
+            @Valid ProtectedFileAccessForm form,
+            BindingResult bindingResult,
+            CertificatePromotionForm promotionForm,
+            EngineConfiguration engineConfiguration)
+                    throws KeyStoreException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    NoSuchProviderException,
+                    NexusException,
+                    IOException {
+
+        if (bindingResult.hasErrors()) {
+            return stagingImportCertificate(model, form, engineConfiguration);
+        }
+        KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+        try {
+            jks.load(form.getCertificate().getInputStream(), (form.getPassword() == null ? "" : form.getPassword()).toCharArray());
+        } catch (CertificateException | IOException ex) {
+            LOG.warn(ex);
+            bindingResult.reject("certificates.import.invalidfile", "Invalid file");
+        }
+        if (bindingResult.hasErrors()) {
+            return stagingImportCertificate(model, form, engineConfiguration);
+        }
+
+        List<CertificatePojo> certificates = new ArrayList<CertificatePojo>();
+        CertificatePojo certificate = CertificateUtil.createPojoFromPKCS12(CertificateType.STAGING.getOrdinal(), jks, form.getPassword());
+        certificates.add(certificate);
+
+        // get installed CA cert's fingerprints
+        Set<String> installedCaFingerPrints = new HashSet<String>();
+        for (CertificatePojo cert : engineConfiguration.getCertificates(CertificateType.CA.getOrdinal(), null)) {
+            byte[] data = cert.getBinaryData();
+            if (data != null) {
+                X509Certificate x509Certificate = CertificateUtil.getX509Certificate(data);
+                if (x509Certificate != null) {
+                    String fp = CertificateUtil.getMD5Fingerprint(x509Certificate);
+                    if (fp != null) {
+                        installedCaFingerPrints.add(fp);
+                    }
+                }
+            }
+        }
+
+        // check if root certificate is in the CA cert list
+        // if not, add it to the CA list
+        Certificate[] chain = CertificateUtil.getCertificateChain(jks);
+        if (chain != null && chain.length > 0) {
+            for (int i = 0; i < chain.length; i++) {
+                X509Certificate signer = (X509Certificate) chain[i];
+
+                if (i > 0 || CertificateUtil.isSelfSigned(signer)) {
+                    String fingerprint = CertificateUtil.getMD5Fingerprint(signer);
+                    if (!installedCaFingerPrints.contains(fingerprint)) {
+                        certificates.add(CertificateUtil.createPojoFromX509(signer, CertificateType.CA.getOrdinal()));
+                    }
+                }
+            }
+        }
+        engineConfiguration.updateCertificates(certificates);
+
+        return stagingCertificateView(model, promotionForm, engineConfiguration);
     }
 }
