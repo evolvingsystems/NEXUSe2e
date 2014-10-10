@@ -79,7 +79,7 @@ public class CACertSaveSingleCertAction extends NexusE2EAction {
             try {
                 CertificateUtil.getX509Certificate(data);
             } catch (Exception e1) {
-                ActionMessage errormessage = new ActionMessage("cacerts.invalidcert", fileName);
+                ActionMessage errormessage = new ActionMessage("certificates.import.invalidfile", fileName);
                 errors.add(ActionMessages.GLOBAL_MESSAGE, errormessage);
                 addRedirect(request, URL, TIMEOUT);
                 return error;

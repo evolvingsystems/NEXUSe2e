@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -46,7 +47,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.validation.Valid;
 
@@ -54,14 +57,18 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.openssl.PEMReader;
 import org.bouncycastle.openssl.PasswordFinder;
+import org.bouncycastle.util.encoders.Hex;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.configuration.ReferencedCertificateException;
 import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.pojo.PartnerPojo;
 import org.nexuse2e.ui.form.CertificatePromotionForm;
@@ -774,5 +781,209 @@ public class CertificateController {
         engineConfiguration.updateCertificates(certificates);
 
         return stagingCertificateView(model, promotionForm, engineConfiguration);
+    }
+    
+    @RequestMapping("/StagingExportCertificate.do")
+    public String stagingExportCertificate(ProtectedFileAccessForm form, EngineConfiguration engineConfiguration) throws NexusException {
+        int nxCertificateId = form.getNxCertificateId();
+        
+        CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), nxCertificateId);
+        if (cPojo != null) {
+            form.setAlias(cPojo.getName());
+        }
+        return "pages/certificates/staging_export_certificate";
+    }
+    
+    @RequestMapping("/StagingStoreExported.do")
+    public String stagingStoreExported(
+            Model model, EngineConfiguration engineConfiguration, ProtectedFileAccessForm form, BindingResult bindingResult)
+                    throws NexusException, NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException, NoSuchProviderException {
+
+        int status = form.getStatus();
+        int format = form.getFormat();
+        int content = form.getContent();
+        int nxCertificateId = form.getNxCertificateId();
+        if (status == 1) {
+            // Save with path
+            String path = form.getCertificatePath();
+
+            if (StringUtils.isBlank(path)) {
+                bindingResult.rejectValue("certificatePath", "error.path.required");
+                return stagingExportCertificate(form, engineConfiguration);
+            }
+            CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), nxCertificateId);
+            if (cPojo == null) {
+                LOG.error("Certificate with nxId " + nxCertificateId + " not found.");
+                return stagingExportCertificate(form, engineConfiguration);
+            }
+            KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+            jks.load(new ByteArrayInputStream(cPojo.getBinaryData()), EncryptionUtil.decryptString(cPojo.getPassword()).toCharArray());
+
+            Certificate[] certs = CertificateUtil.getCertificateChain(jks);
+            if (certs == null) {
+                LOG.error("Certificate chain for certificate with nxId " + nxCertificateId + " not found.");
+                return stagingExportCertificate(form, engineConfiguration);
+            }
+
+            File destFile = new File(path);
+            if (content == 1) {
+                X509Certificate cert = (X509Certificate) certs[0];
+                byte[] data = null;
+                if (format == ProtectedFileAccessForm.PEM) {
+                    data = CertificateUtil.getPemData(cert).getBytes();
+                } else if (format == ProtectedFileAccessForm.DER) {
+                    data = cert.getEncoded();
+                }
+                FileOutputStream fos = new FileOutputStream(destFile);
+                fos.write(data);
+                fos.flush();
+                fos.close();
+                // ZIP
+            } else if (content == 2) {
+                FileOutputStream fos = new FileOutputStream(destFile);
+                ZipOutputStream zos = new ZipOutputStream(fos);
+                String ext = "";
+
+                if (format == ProtectedFileAccessForm.PEM) {
+                    ext = ".pem";
+                } else {
+                    ext = ".der";
+                }
+                ByteArrayOutputStream indexStream = new ByteArrayOutputStream();
+                PrintWriter pw = new PrintWriter(indexStream);
+
+                for (int i = 0; i < certs.length; i++) {
+                    String certName = CertificateUtil.createCertificateId((X509Certificate) certs[i]);
+                    String cn = CertificateUtil.getSubject((X509Certificate) certs[i], X509Name.CN);
+                    String o = CertificateUtil.getSubject((X509Certificate) certs[i], X509Name.O);
+                    String fingerprint = "NA";
+                    byte[] resBuf;
+                    try {
+                        Digest digest = new MD5Digest();
+                        resBuf = new byte[digest.getDigestSize()];
+                        digest.update(certs[i].getEncoded(), 0, certs[i].getEncoded().length);
+                        digest.doFinal(resBuf, 0);
+                        fingerprint = new String(Hex.encode(resBuf));
+                    } catch (CertificateEncodingException e1) {
+                    }
+
+                    ZipEntry ze = new ZipEntry(certName + ext);
+                    zos.putNextEntry(ze);
+                    pw.println("CommonName: " + cn);
+                    pw.println("Organisation: " + o);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    pw.println("expires: " + sdf.format(((X509Certificate) certs[i]).getNotAfter()) + " - "
+                            + CertificateUtil.getRemainingValidity((X509Certificate) certs[i]));
+                    pw.println("FingerPrint: " + fingerprint);
+
+                    if (i < certs.length - 1) {
+                        pw.println("---------------------------------------------------------");
+                    }
+
+                    byte[] data = new byte[0];
+                    if (format == ProtectedFileAccessForm.PEM) {
+                        data = CertificateUtil.getPemData((X509Certificate) certs[i]).getBytes();
+                    } else {
+                        data = certs[i].getEncoded();
+                    }
+                    zos.write(data);
+                }
+                pw.flush();
+                pw.close();
+
+                ZipEntry index = new ZipEntry("index.txt");
+                zos.putNextEntry(index);
+                zos.write(indexStream.toByteArray());
+                zos.flush();
+                zos.close();
+                fos.flush();
+                fos.close();
+
+                // PKCS 12 - full
+            } else if (content == 3) {
+                FileOutputStream fos = new FileOutputStream(destFile);
+                fos.write(cPojo.getBinaryData());
+                fos.flush();
+                fos.close();
+            }
+        } else {
+            if (content == 3) {
+                if (StringUtils.isBlank(form.getPassword())) {
+                    bindingResult.rejectValue("password", "error.password.required");
+                    return stagingExportCertificate(form, engineConfiguration);
+                } else if (StringUtils.isBlank(form.getPasswordRepeat())) {
+                    bindingResult.rejectValue("passwordRepeat", "error.password.repeatRequired");
+                    return stagingExportCertificate(form, engineConfiguration);
+                } else if (!form.getPassword().equals(form.getPasswordRepeat())) {
+                    bindingResult.rejectValue("passwordRepeat", "error.password.repeatMismatch");
+                    return stagingExportCertificate(form, engineConfiguration);
+                }
+            }
+            // Save as...
+            model.addAttribute("downloadLinkUrl", "DataSaveAs.do?type=staging");
+        }
+
+        return stagingExportCertificate(form, engineConfiguration);
+    }
+    
+    @RequestMapping("/StagingPromoteCertificate.do")
+    public String stagingPromoteCertificate(CertificatePromotionForm form, Model model, EngineConfiguration engineConfiguration)
+            throws NexusException, KeyStoreException, NoSuchAlgorithmException, CertificateException, NoSuchProviderException, IOException {
+
+        if ("changeServerIdentity".equals(form.getActionName())) {
+            form.setActionName("promote");
+            return stagingCertificateView(model, form, engineConfiguration);
+        } else {
+            int certificateId = form.getNxCertificateId();
+            if (certificateId != 0) {
+                PartnerPojo localPartner = engineConfiguration.getPartnerByNxPartnerId(form.getLocalNxPartnerId());
+                CertificatePojo stagedCert = engineConfiguration.getCertificateByNxCertificateId(
+                        CertificateType.STAGING.getOrdinal(), certificateId);
+
+                if (localPartner != null && stagedCert != null) {
+                    CertificatePojo certificate;
+                    if (form.getReplaceNxCertificateId() == 0) {
+                        certificate = new CertificatePojo();
+                    } else {
+                        certificate = engineConfiguration.getCertificateByNxCertificateId(
+                                CertificateType.ALL.getOrdinal(), form.getReplaceNxCertificateId());
+                    }
+                    if (certificate != null) {
+                        certificate.setType(CertificateType.LOCAL.getOrdinal());
+                        certificate.setName(stagedCert.getName());
+                        certificate.setModifiedDate(new Date());
+                        certificate.setCreatedDate(new Date());
+                        certificate.setBinaryData(stagedCert.getBinaryData());
+                        certificate.setPassword(stagedCert.getPassword());
+                        certificate.setPartner(localPartner);
+                        localPartner.getCertificates().add(certificate);
+                        engineConfiguration.updateCertificate(certificate);
+                    }
+                }
+            }
+        }
+
+        return stagingList(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/StagingDeleteCertificate.do")
+    public String stagingDeleteCertificate(Model model, CertificatePromotionForm form, EngineConfiguration engineConfiguration)
+            throws ReferencedCertificateException,
+            NexusException,
+            NoSuchAlgorithmException,
+            CertificateException,
+            KeyStoreException,
+            NoSuchProviderException,
+            IOException {
+
+        int nxCertificateId = form.getNxCertificateId();
+        if (nxCertificateId != 0) {
+            CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), nxCertificateId);
+            if (cPojo != null) {
+                engineConfiguration.deleteCertificate(cPojo);
+            }
+        }
+    
+        return stagingList(model, engineConfiguration);
     }
 }

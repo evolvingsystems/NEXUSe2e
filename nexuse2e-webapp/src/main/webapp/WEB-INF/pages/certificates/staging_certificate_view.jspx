@@ -116,7 +116,8 @@
         </table>
     </c:forEach>
 
-    <form:form modelAttribute="certificatePromotionForm" action="StagingPromoteCertificate.do" method="POST"> 
+    <form:form modelAttribute="certificatePromotionForm" action="StagingPromoteCertificate.do" method="POST">
+        <form:hidden path="nxCertificateId"/> 
         <table class="NEXUS_TABLE" width="100%">
             <tr>
                 <td class="NEXUSName">

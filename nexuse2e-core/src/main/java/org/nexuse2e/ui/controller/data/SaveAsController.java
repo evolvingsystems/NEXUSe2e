@@ -50,6 +50,7 @@ public class SaveAsController {
 
     @RequestMapping("/DataSaveAs.do")
     public void dataSaveAs(
+            ProtectedFileAccessForm form,
             @RequestParam("type") String type,
             HttpServletRequest request,
             HttpServletResponse response,
@@ -89,8 +90,6 @@ public class SaveAsController {
                 os.flush();
             } else if (type.equals("staging")) {
                 byte[] data = new byte[0];
-    
-                ProtectedFileAccessForm form = (ProtectedFileAccessForm) request.getSession().getAttribute("protectedFileAccessForm");
     
                 int format = form.getFormat();
                 int content = form.getContent();
@@ -202,7 +201,7 @@ public class SaveAsController {
                     } else if (content == 3) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         String password = "nexus";
-                        if (form.getPassword() != null && form.getPassword().equals(form.getVerifyPwd())) {
+                        if (form.getPassword() != null && form.getPassword().equals(form.getPasswordRepeat())) {
                             password = form.getPassword();
                         }
                         jks.store(baos, password.toCharArray());

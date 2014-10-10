@@ -19,14 +19,19 @@
  */
 package org.nexuse2e.ui.controller.partner;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -37,9 +42,11 @@ import javax.validation.Valid;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.GenericComparator;
+import org.nexuse2e.configuration.ReferencedCertificateException;
 import org.nexuse2e.configuration.ReferencedConnectionException;
 import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.pojo.ChoreographyPojo;
@@ -47,9 +54,13 @@ import org.nexuse2e.pojo.ConnectionPojo;
 import org.nexuse2e.pojo.ParticipantPojo;
 import org.nexuse2e.pojo.PartnerPojo;
 import org.nexuse2e.pojo.TRPPojo;
+import org.nexuse2e.ui.form.CertificatePromotionForm;
 import org.nexuse2e.ui.form.CertificatePropertiesForm;
 import org.nexuse2e.ui.form.CollaborationPartnerForm;
+import org.nexuse2e.ui.form.PartnerCertificateForm;
 import org.nexuse2e.ui.form.PartnerConnectionForm;
+import org.nexuse2e.util.CertificateUtil;
+import org.nexuse2e.util.EncryptionUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -375,5 +386,156 @@ public class PartnerController {
         }
         
         return partnerInfoView(form, engineConfiguration);
+    }
+
+    @RequestMapping("/PartnerCertificateView.do")
+    public String partnerCertificateView(Model model, PartnerCertificateForm form, EngineConfiguration engineConfiguration)
+            throws NexusException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+
+        int nxCertificateId = form.getNxCertificateId();
+        int nxPartnerId = form.getNxPartnerId();
+
+        PartnerPojo partner = engineConfiguration.getPartnerByNxPartnerId(nxPartnerId);
+        CertificatePojo cert = engineConfiguration.getCertificateFromPartnerByNxCertificateId(partner, nxCertificateId);
+
+        if (cert != null) {
+            byte[] data = cert.getBinaryData();
+            X509Certificate x509Certificate = null;
+            List<X509Certificate> allCertificates = new ArrayList<X509Certificate>();
+    
+            if (cert.getType() == CertificateType.PARTNER.getOrdinal()) {
+                x509Certificate = CertificateUtil.getX509Certificate(data);
+            } else if (cert.getType() == CertificateType.LOCAL.getOrdinal()) {
+    
+                KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+                jks.load(new ByteArrayInputStream(cert.getBinaryData()), EncryptionUtil.decryptString(cert.getPassword()).toCharArray());
+                if (jks != null) {
+
+                    Enumeration<String> aliases = jks.aliases();
+                    if (!aliases.hasMoreElements()) {
+                        throw new NexusException("no certificate aliases found");
+                    }
+                    while (aliases.hasMoreElements()) {
+                        String tempAlias = aliases.nextElement();
+                        if (jks.isKeyEntry(tempAlias)) {
+                            java.security.cert.Certificate[] certArray = jks.getCertificateChain(tempAlias);
+                            if (certArray != null) {
+                                x509Certificate = (X509Certificate) certArray[0];
+                                for (int i = 0; i < certArray.length; i++) {
+                                    allCertificates.add((X509Certificate) certArray[i]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+    
+            List<CertificatePropertiesForm> certificateList = new ArrayList<CertificatePropertiesForm>();
+            if (x509Certificate != null) {
+                form.setCertificateProperties(x509Certificate);
+            }
+    
+            form.setNxCertificateId(cert.getNxCertificateId());
+            form.setNxPartnerId(nxPartnerId);
+            form.setCertificateId(cert.getName());
+            CertificatePromotionForm certs = new CertificatePromotionForm();
+    
+            for (CertificatePojo certificate : engineConfiguration.getCertificates(CertificateType.CA.getOrdinal(), null)) {
+                byte[] b = certificate.getBinaryData();
+                if (b != null && b.length > 0) {
+                    try {
+                        X509Certificate cacert = CertificateUtil.getX509Certificate(b);
+                        if (cacert != null) { // #39
+                            allCertificates.add(cacert);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+    
+            Certificate[] chain = CertificateUtil.getCertificateChain(x509Certificate, allCertificates);
+            for (int i = 0; i < chain.length; i++) {
+                CertificatePropertiesForm f = new CertificatePropertiesForm();
+                X509Certificate certificate = (X509Certificate) chain[i];
+                f.setCertificateProperties(certificate);
+                certificateList.add(f);
+    
+                if (i + 1 == chain.length && !certificate.getSubjectX500Principal().getName().equals(certificate.getIssuerX500Principal().getName())) {
+                    f = new CertificatePropertiesForm();
+                    f.setPrincipal(CertificateUtil.getPrincipalFromCertificate(certificate, false));
+                    f.setNxCertificateId(-1); // indicate "missing"
+                    f.setFingerprint(CertificateUtil.getPrincipalFromCertificate(certificate, false).getName());
+                    certificateList.add(f);
+                }
+            }
+    
+            certs.setCertificateParts(certificateList);
+            model.addAttribute("certs", certificateList);
+        }
+
+        return "pages/partners/partner_certificate_view";
+    }
+    
+    @RequestMapping("/PartnerCertificateDelete.do")
+    public String partnerCertificateDelete(
+            Model model,
+            CollaborationPartnerForm partnerForm,
+            PartnerCertificateForm form,
+            BindingResult bindingResult,
+            EngineConfiguration engineConfiguration)
+                    throws KeyStoreException,
+                    NoSuchProviderException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    NexusException,
+                    IOException {
+
+        int nxPartnerId = form.getNxPartnerId();
+        int nxCertificateId = form.getNxCertificateId();
+
+        try {
+            PartnerPojo partner = engineConfiguration.getPartnerByNxPartnerId(nxPartnerId);
+            CertificatePojo certificate = engineConfiguration.getCertificateFromPartnerByNxCertificateId(
+                    partner, nxCertificateId);
+            if (certificate != null) {
+                engineConfiguration.deleteCertificate(certificate);
+            }
+        } catch (ReferencedCertificateException e) {
+            for (ConnectionPojo connection : e.getReferringObjects()) {
+                bindingResult.reject(
+                        "error.referenced.object.certificate",
+                        new Object[]{ connection.getName() },
+                        "Certificate still used by connection " + connection.getName());
+            }
+            return partnerCertificateView(model, form, engineConfiguration);
+        }
+        return partnerCertificateList(partnerForm, engineConfiguration);
+    }
+    
+    @RequestMapping("/PartnerCertificateSave.do")
+    public String partnerCertificateSave(
+            Model model, CollaborationPartnerForm collaborationPartnerForm, PartnerCertificateForm form, EngineConfiguration engineConfiguration)
+                    throws NexusException, KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException {
+
+        int nxPartnerId = form.getNxPartnerId();
+        int nxCertificateId = form.getNxCertificateId();
+
+        LOG.debug("nxCertficateId: " + nxCertificateId);
+        LOG.debug("nxPartnerId: " + nxPartnerId);
+        PartnerPojo partner = engineConfiguration.getPartnerByNxPartnerId(nxPartnerId);
+        CertificatePojo cPojo = engineConfiguration.getCertificateFromPartnerByNxCertificateId(partner, nxCertificateId);
+
+        if (cPojo != null) {
+            cPojo.setName(form.getCertificateId());
+            engineConfiguration.updateCertificate(cPojo);
+    
+            if (cPojo.getType() == CertificateType.LOCAL.getOrdinal()) {
+                model.addAttribute("type", "1");
+            } else {
+                model.addAttribute("type", "2");
+            }
+        }
+
+        return partnerCertificateList(collaborationPartnerForm, engineConfiguration);
     }
 }

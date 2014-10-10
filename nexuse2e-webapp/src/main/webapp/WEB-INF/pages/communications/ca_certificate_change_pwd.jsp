@@ -51,7 +51,7 @@
                 </tr>
                 <tr>
                     <td class="NEXUSName">Verify Password</td>
-                    <td class="NEXUSValue"><html:password property="verifyPwd" size="20"/>
+                    <td class="NEXUSValue"><html:password property="passwordRepeat" size="20"/>
                     </td>
                 </tr>                
             </table>

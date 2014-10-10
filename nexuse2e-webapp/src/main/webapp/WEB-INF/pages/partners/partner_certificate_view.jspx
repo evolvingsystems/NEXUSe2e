@@ -36,8 +36,10 @@
             <td class="NEXUSScreenName">Update Certificate</td>
         </tr>
     </table>
-    <form:form action="PartnerCertificateSave">
+    <form:form action="PartnerCertificateSave.do" modelAttribute="partnerCertificateForm">
         <form:hidden path="seqNo"/>
+        <form:hidden path="nxCertificateId"/>
+        <form:hidden path="nxPartnerId"/>
         <c:forEach items="${certs}" var="cert" varStatus="status">
             <table class="NEXUS_TABLE" width="100%">
                 <c:if test="${status.index == 0}">
@@ -59,7 +61,7 @@
                         <td class="NEXUSValue" style="white-space: normal;">${cert.fingerprint}</td>
                     </tr>
                 </c:if>
-                <c:if test="${cert.nxCertificateId gte 0}">
+                <c:if test="${cert.nxCertificateId ge 0}">
                     <tr>
                         <td class="NEXUSName">Common Name</td>
                         <td class="NEXUSValue">${cert.commonName}</td>
@@ -73,7 +75,7 @@
                     <td class="NEXUSName">Organization Unit</td>
                     <td class="NEXUSValue">${cert.organisationUnit}</td>
                 </tr>
-                <c:if test="${cert.nxCertificateId gte 0}">
+                <c:if test="${cert.nxCertificateId ge 0}">
                     <tr>
                         <td class="NEXUSName">Country</td>
                         <td class="NEXUSValue">${cert.country}</td>
@@ -118,7 +120,6 @@
                 </c:if>
             </table>
         </c:forEach>
-    	<input value="${partnerCertificateForm.nxCertificateId}" type="hidden" name="nxCertificateId">
         
         <form:errors element="div" cssClass="NexusError" path="*"/>
 
@@ -126,7 +127,7 @@
             <tr>
                 <td>&#160;</td>
                 <td class="NexusHeaderLink"><nexus:submit><img src="images/icons/tick.png" class="button" name="SUBMIT"/>Update</nexus:submit></td>
-                <td class="NexusHeaderLink"><nexus:link href="PartnerCertificateDelete.do?nxPartnerId=${partnerCertificateForm.nxPartnerId}&nxCertificateId=${partnerCertificateForm.nxCertificateId}" precondition="confirmDelete('Are you sure you want to delete this Certificate?')" styleClass="button"><img src="images/icons/delete.png" class="button"/>Delete</nexus:link></td>
+                <td class="NexusHeaderLink"><nexus:link href="PartnerCertificateDelete.do?nxPartnerId=${partnerCertificateForm.nxPartnerId}&amp;nxCertificateId=${partnerCertificateForm.nxCertificateId}" precondition="confirmDelete('Are you sure you want to delete this Certificate?')" styleClass="button"><img src="images/icons/delete.png" class="button"/>Delete</nexus:link></td>
             </tr>
         </table>
     </form:form>

@@ -29,64 +29,68 @@
     version="2.0">
 
     <jsp:directive.page contentType="text/html" />
+
     <nexus:fileUploadResponse>
+        <c:if test="$protectedFileAccessForm.status eq 3}">
+            <script type="text/javascript">
+                window.open('DataSaveAs.do?type=cacerts','Save as...')
+            </script>
+        </c:if>
+
         <table class="NEXUS_TABLE" width="100%">
             <tr>
-                <td><nexus:crumbs styleClass="NEXUSScreenPathLink" /></td>
+                <td><nexus:crumbs /></td>
             </tr>
             <tr>
-                <td class="NEXUSScreenName">Staged Certificates</td>
+                <td class="NEXUSScreenName">CA Certificates</td>
             </tr>
         </table>
-    
+        
         <table class="NEXUS_TABLE">
             <tr>
-                <td class="NEXUSSection">Common Name</td>
-                <td class="NEXUSSection">Issuer</td>
-                <td class="NEXUSSection">Valid from</td>
-                <td class="NEXUSSection">Valid until</td>
-                <td class="NEXUSSection">Validity</td>
+                <td colspan="100%" class="NEXUSSection">Certificates</td>
             </tr>
         
             <c:forEach var="cert" items="${collection}">
                 <tr>
                     <td class="NEXUSName">
-                        <nexus:link styleClass="NexusLink" href="StagingCertificateView.do?nxCertificateId=${cert.nxCertificateId}">
-                            ${cert.commonName}
+                        <nexus:link styleClass="NexusLink" href="CACertificateView.do?alias=${cert.alias}">
+                            ${cert.alias}
+                            <c:if test="${empty cert.alias}">n/a</c:if>
                         </nexus:link>
                     </td>
-                    <td class="NEXUSName">
-                        ${cert.issuer}
-                    </td>
-                    <td class="NEXUSName">${cert.notBefore}</td>
-                    <td class="NEXUSName">${cert.notAfter}</td>
+                    <td class="NEXUSName">${cert.commonName}</td>
                     <td class="NEXUSValue">
                         <c:choose>
                             <c:when test="${cert.valid}">
-                                <span class="DataRowOk">OK ${cert.timeRemaining}.</span>
+                                <font color="green">OK</font>
+                                ${cert.timeRemaining}
                             </c:when>
                             <c:otherwise>
-                                <c:choose>
-                                    <c:when test="${empty cert.timeRemaining}">
-                                        <span class="DataRowAlert">Certificate has expired.</span>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="DataRowAlert">Certificate is not yet valid.</span>
-                                    </c:otherwise>
-                                </c:choose>
+                                <font color="red">Certificate has expired.</font>
                             </c:otherwise>
                         </c:choose>
                     </td>
+                    <td class="NEXUSValue">${cert.fingerprint}</td>
                 </tr>
             </c:forEach>
         </table>
-    
-        <table class="NEXUS_BUTTON_TABLE" width="100%">
+        
+        <table class="NEXUS_BUTTON_TABLE">
             <tr>
-                <td>&#160;</td>
-                <td class="BUTTON_RIGHT" style="text-align: right;">
-                    <nexus:link href="StagingImportCertificate.do" styleClass="button">
-                        <img src="images/icons/tick.png" class="button" />Import Certificate
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:link href="CACertificateAddSingleCert.do" styleClass="button">
+                        <img src="images/icons/medal_gold_add.png" class="button"/>Add CA Certificate
+                    </nexus:link>
+                </td>
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:link href="CACertificateImportKeyStore.do" styleClass="button">
+                        <img src="images/icons/server_key.png" class="button"/>Import CA KeyStore
+                    </nexus:link>
+                </td>
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:link href="CACertificateExportKeyStore.do" styleClass="button">
+                        <img src="images/icons/disk.png" class="button"/>Export CA KeyStore to Filesystem
                     </nexus:link>
                 </td>
             </tr>

@@ -23,26 +23,27 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
+import org.nexuse2e.ui.validation.RepeatedPassword;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author guido.esch
  */
-public class ProtectedFileAccessForm implements Serializable {
+public class ProtectedFileAccessForm implements RepeatedPassword, Serializable {
 
     private static final long serialVersionUID = -5681743313841088090L;
 
     public final static int   PEM              = 1;
     public final static int   DER              = 2;
 
-    String                    certificatePath   = null;
-    CommonsMultipartFile      certificate       = null;
-    String                    password         = null;
-    String                    verifyPwd        = null;
+    String                    certificatePath  = null;
+    CommonsMultipartFile      certificate      = null;
+    String                    password         = "nexus";
+    String                    passwordRepeat   = "nexus";
     String                    alias            = null;
-    int                       status           = 0;
-    int                       format           = 0;
-    int                       content          = 0;
+    int                       status           = 2;
+    int                       format           = DER;
+    int                       content          = 3;
     String                    id               = null;
     int                       nxCertificateId  = 0;
 
@@ -54,6 +55,7 @@ public class ProtectedFileAccessForm implements Serializable {
         this.certificatePath = certificatePath;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -62,14 +64,20 @@ public class ProtectedFileAccessForm implements Serializable {
         this.password = password;
     }
 
-    public String getVerifyPwd() {
-        return verifyPwd;
+    @Override
+    public String getPasswordRepeat() {
+        return passwordRepeat;
     }
 
-    public void setVerifyPwd(String verifyPwd) {
-        this.verifyPwd = verifyPwd;
+    public void setPasswordRepeat(String passwordRepeat) {
+        this.passwordRepeat = passwordRepeat;
     }
 
+    @Override
+    public boolean isPasswordSet() {
+        return false;
+    }
+    
     public String getAlias() {
         return alias;
     }
