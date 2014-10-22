@@ -34,47 +34,44 @@
         <table class="NEXUS_TABLE" width="100%">
             <tr>
                 <td>
-                    <nexus:crumbs/>
+                    <nexus:crumbs />
                 </td>
             </tr>
             <tr>
-                <td class="NEXUSScreenName">Import Certificate</td>
+                <td class="NEXUSScreenName">Add CA Certificate</td>
             </tr>
         </table>
 
-        <form:form modelAttribute="protectedFileAccessForm" action="RequestSaveBackup.do" method="POST" enctype="multipart/form-data"> 
+        <form:form modelAttribute="protectedFileAccessForm" action="CACertificateVerifyAddCert.do" method="POST" enctype="multipart/form-data"> 
             <table class="NEXUS_TABLE" width="100%">
                 <tr>
-                    <td colspan="2" class="NEXUSSection">Import Keystore Backup</td>
+                    <td colspan="2" class="NEXUSSection">Add CA Certificate</td>
                 </tr>
                 <tr>
-                    <td class="NEXUSName">KeyStore Filename</td>
+                    <td class="NEXUSName">Certificate File</td>
                     <td class="NEXUSValue">
-                        <input size="50" type="file" name="certificate" onkeypress="return checkKey(event);"/>
+                        <input type="file" name="certificate" size="20" onkeypress="return checkKey(event);"/>
+                        <br/>
+                        <font size="1">browse to select a valid certificate</font>
                     </td>
                 </tr>
                 <tr>
-                    <td class="NEXUSName">KeyStore Password</td>
+                    <td class="NEXUSName">Certificate Alias</td>
                     <td class="NEXUSValue">
-                        <form:password autocomplete="off" path="password" size="60" onkeypress="return checkKey(event);"/>
+                        <form:input path="alias" size="20" onkeypress="return checkKey(event);" cssErrorClass="NexusError"/>
                     </td>
                 </tr>                
             </table>
 
             <form:errors element="div" cssClass="NexusError" path="*"/>
-    
+
             <table class="NEXUS_BUTTON_TABLE" width="100%">
                 <tr>
                     <td class="BUTTON_LEFT">
-                        <nobr><nexus:link href="RequestOverview.do" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back</nexus:link></nobr>
+                        <nobr><nexus:link href="CACertificatesList.do" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back</nexus:link></nobr>
                     </td>
                     <td class="BUTTON_RIGHT">
-                        <nexus:submit sendFileForm="true">
-                            <img src="images/icons/tick.png" name="SUBMIT"/>
-                        </nexus:submit>
-                    </td>
-                    <td class="NexusHeaderLink">
-                        <nexus:submit sendFileForm="true">Import</nexus:submit>
+                        <nexus:submit styleClass="button" sendFileForm="true"><img src="images/icons/tick.png" class="button"/>Import</nexus:submit>
                     </td>
                 </tr>
             </table>

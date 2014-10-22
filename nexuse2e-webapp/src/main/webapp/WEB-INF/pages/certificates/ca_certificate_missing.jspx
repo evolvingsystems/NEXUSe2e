@@ -51,7 +51,7 @@
                     <td colspan="2" class="NEXUSSection">Add CA Certificate</td>
                 </tr>
                 <tr>
-                    <td class="NEXUSName">Certificate Filename</td>
+                    <td class="NEXUSName">Certificate File</td>
                     <td class="NEXUSValue">
                         <input type="file" name="certificate" size="20" onkeypress="return checkKey(event);"/>
                         <br/>

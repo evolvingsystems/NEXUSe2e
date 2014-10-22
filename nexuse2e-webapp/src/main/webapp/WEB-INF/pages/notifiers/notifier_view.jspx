@@ -104,7 +104,7 @@
                     <c:if test="${parameter.parameterDescriptor.parameterType eq 'PASSWORD'}">
                         <tr>
                             <td class="NEXUSValue">${parameter.label}</td>
-                            <td class="NEXUSValue"><form:password path="${key}" size="30" /></td>
+                            <td class="NEXUSValue"><form:password autocomplete="off" path="${key}" size="30" /></td>
                             <td class="NEXUSValue">${parameter.parameterDescriptor.description}</td>
                         </tr>
                     </c:if>

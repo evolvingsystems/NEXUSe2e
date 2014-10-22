@@ -34,8 +34,6 @@ public class Link extends BodyTagSupport {
 
     private static final long     serialVersionUID  = 8745028952283187452L;
 
-    // private static final Logger LOG = Logger.getLogger( Link.class );
-
     /**
      * The default widget id is <code>docpane</code>.
      */
@@ -43,18 +41,15 @@ public class Link extends BodyTagSupport {
 
     private String                href;
     private String                styleClass;
-//    private String                widgetId          = DEFAULT_WIDGET_ID;
     private String                precondition;
     private String                onClick;
     private String                id;
 
-    /* (non-Javadoc)
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
-     */
     @Override
     public int doStartTag() throws JspException {
 
         JspWriter writer = pageContext.getOut();
+        
         try {
             writer.print( "<a" + ( id != null ? " id=" + id : "" ) + " href=\"javascript: "
                     + ( precondition != null && precondition.length() > 0 ? "if(" + precondition + ") { " : "" )
@@ -98,14 +93,6 @@ public class Link extends BodyTagSupport {
         this.href = href;
     }
 
-//    /**
-//     * @return the widgetId
-//     */
-//    public String getWidgetId() {
-//
-//        return widgetId;
-//    }
-
     /**
      * @return the styleClass
      */
@@ -122,14 +109,6 @@ public class Link extends BodyTagSupport {
         this.styleClass = styleClass;
     }
 
-//    /**
-//     * @param widgetId the widgetId to set
-//     */
-//    public void setWidgetId( String widgetId ) {
-//
-//        this.widgetId = widgetId;
-//    }
-    
     /**
      * @return the precondition
      */

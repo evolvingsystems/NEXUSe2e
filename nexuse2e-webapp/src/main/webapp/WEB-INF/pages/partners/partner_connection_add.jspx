@@ -119,7 +119,7 @@
             </tr>
             <tr>
                 <td class="NEXUSName">Password</td>
-                <td class="NEXUSValue"><form:password size="50" path="password" cssErrorClass="NexusError"/></td>
+                <td class="NEXUSValue"><form:password autocomplete="off" size="50" path="password" cssErrorClass="NexusError"/></td>
             </tr>
         </table>
 

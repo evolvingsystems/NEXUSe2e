@@ -31,7 +31,7 @@
     <jsp:directive.page contentType="text/html" />
 
     <nexus:fileUploadResponse>
-        <c:if test="$protectedFileAccessForm.status eq 3}">
+        <c:if test="${protectedFileAccessForm.status eq 3}">
             <script type="text/javascript">
                 window.open('DataSaveAs.do?type=cacerts','Save as...')
             </script>
@@ -54,7 +54,7 @@
             <c:forEach var="cert" items="${collection}">
                 <tr>
                     <td class="NEXUSName">
-                        <nexus:link styleClass="NexusLink" href="CACertificateView.do?alias=${cert.alias}">
+                        <nexus:link styleClass="NexusLink" href="CACertificateView.do?nxCertificateId=${cert.nxCertificateId}">
                             ${cert.alias}
                             <c:if test="${empty cert.alias}">n/a</c:if>
                         </nexus:link>
@@ -85,12 +85,12 @@
                 </td>
                 <td class="NexusHeaderLink" style="text-align: right;">
                     <nexus:link href="CACertificateImportKeyStore.do" styleClass="button">
-                        <img src="images/icons/server_key.png" class="button"/>Import CA KeyStore
+                        <img src="images/icons/server_key.png" class="button"/>Import CA Keystore
                     </nexus:link>
                 </td>
                 <td class="NexusHeaderLink" style="text-align: right;">
                     <nexus:link href="CACertificateExportKeyStore.do" styleClass="button">
-                        <img src="images/icons/disk.png" class="button"/>Export CA KeyStore to Filesystem
+                        <img src="images/icons/disk.png" class="button"/>Export CA Keystore
                     </nexus:link>
                 </td>
             </tr>

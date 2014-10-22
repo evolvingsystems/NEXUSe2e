@@ -52,7 +52,7 @@
         		</tr>
         		<tr>
         			<td class="NEXUSName">KeyStore Password</td>
-        			<td class="NEXUSValue"><form:password path="password" size="20" onkeypress="return checkKey(event);" cssErrorClass="NexusError" /></td>
+        			<td class="NEXUSValue"><form:password autocomplete="off" path="password" size="20" onkeypress="return checkKey(event);" cssErrorClass="NexusError" /></td>
         		</tr>
         	</table>
         

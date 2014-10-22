@@ -84,11 +84,11 @@
             </tr>
             <tr>
                 <td class="NEXUSName">Password</td>
-                <td class="NEXUSValue"><form:password path="password" size="50" cssErrorClass="NexusError"/></td>
+                <td class="NEXUSValue"><form:password autocomplete="off" path="password" size="50" cssErrorClass="NexusError"/></td>
             </tr>
             <tr>
                 <td class="NEXUSName">Password (verify)</td>
-                <td class="NEXUSValue"><form:password path="passwordRepeat" size="50" cssErrorClass="NexusError"/></td>
+                <td class="NEXUSValue"><form:password autocomplete="off" path="passwordRepeat" size="50" cssErrorClass="NexusError"/></td>
             </tr>
         </table>
 

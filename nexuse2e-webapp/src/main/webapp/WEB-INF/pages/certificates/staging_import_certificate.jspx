@@ -47,7 +47,7 @@
                 </tr>
                 <tr>
                     <td class="NEXUSName">
-                        Certificate Filename
+                        Certificate File
                     </td>
                     <td class="NEXUSValue">
                         <input size="50" type="file" name="certificate" onkeypress="return checkKey(event);"/>
@@ -63,7 +63,7 @@
                         Certificate Password
                     </td>
                     <td class="NEXUSValue">
-                        <form:password path="password" size="20" onkeypress="return checkKey(event);" />
+                        <form:password autocomplete="off" path="password" size="20" onkeypress="return checkKey(event);" />
                     </td>
                 </tr>
             </table>

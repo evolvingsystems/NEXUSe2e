@@ -131,11 +131,11 @@
                             <table class="NEXUS_TABLE">
                                 <tr>
                                     <td><nobr>Password (default is 'nexus'): </nobr></td>
-                                    <td width="100%"><form:password path="password" cssErrorClass="NexusError"/></td>
+                                    <td width="100%"><form:password autocomplete="off" path="password" cssErrorClass="NexusError"/></td>
                                 </tr>
                                 <tr>
                                     <td><nobr>Confirm password:</nobr></td>
-                                    <td width="100%"><form:password path="passwordRepeat" cssErrorClass="NexusError"/></td>
+                                    <td width="100%"><form:password autocomplete="off" path="passwordRepeat" cssErrorClass="NexusError"/></td>
                                    </tr>
                             </table>
                         </td>

@@ -78,7 +78,7 @@
                      Password
                  </td>
                  <td class="NEXUSValue">
-                     <form:password path="password" cssErrorClass="NexusError"/>
+                     <form:password autocomplete="off" path="password" cssErrorClass="NexusError"/>
                  </td>
              </tr>
              <tr>
@@ -86,7 +86,7 @@
                      Repeat Password
                  </td>
                  <td class="NEXUSValue">
-                     <form:password path="passwordRepeat" cssErrorClass="NexusError"/>
+                     <form:password autocomplete="off" path="passwordRepeat" cssErrorClass="NexusError"/>
                  </td>
              </tr>
              <tr>

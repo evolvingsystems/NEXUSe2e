@@ -138,6 +138,10 @@ public class CertificateController {
             BindingResult bindingResult,
             EngineConfiguration engineConfiguration) throws NexusException, FileNotFoundException, IOException {
 
+        if (form.getCertificate() == null || form.getCertificate().getFileItem() == null || form.getCertificate().getFileItem().get() == null) {
+            bindingResult.rejectValue("certificate", "certificates.import.nofile");
+        }
+        
         if (bindingResult.hasErrors()) {
             return requestImportCert(form, engineConfiguration);
         }
@@ -527,7 +531,11 @@ public class CertificateController {
             BindingResult bindingResult,
             Model model,
             EngineConfiguration engineConfiguration) throws NexusException, IOException {
-        
+
+        if (form.getCertificate() == null || form.getCertificate().getFileItem() == null || form.getCertificate().getFileItem().get() == null) {
+            bindingResult.rejectValue("certificate", "certificates.import.nofile");
+        }
+
         if (bindingResult.hasErrors()) {
             return requestImportBackup(form, model, engineConfiguration);
         }
@@ -729,6 +737,10 @@ public class CertificateController {
                     NoSuchProviderException,
                     NexusException,
                     IOException {
+
+        if (form.getCertificate() == null || form.getCertificate().getFileItem() == null || form.getCertificate().getFileItem().get() == null) {
+            bindingResult.rejectValue("certificate", "certificates.import.nofile");
+        }
 
         if (bindingResult.hasErrors()) {
             return stagingImportCertificate(model, form, engineConfiguration);

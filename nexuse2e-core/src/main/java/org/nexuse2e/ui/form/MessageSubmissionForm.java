@@ -19,24 +19,18 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
 import org.nexuse2e.pojo.PartnerPojo;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author markus.breilmann
  */
-public class MessageSubmissionForm extends ActionForm {
+public class MessageSubmissionForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 9066165869803142603L;
 
     private String            choreographyId   = null;
@@ -46,9 +40,9 @@ public class MessageSubmissionForm extends ActionForm {
     private String            conversationId   = null;
     private boolean           sendFollowUp     = false;
     private int               repeat           = 1;
-    private FormFile          payloadFile1     = null;
-    private FormFile          payloadFile2     = null;
-    private FormFile          payloadFile3     = null;
+    private CommonsMultipartFile payloadFile1     = null;
+    private CommonsMultipartFile payloadFile2     = null;
+    private CommonsMultipartFile payloadFile3     = null;
 
     private Collection<String>       choreographies   = null;
     private Collection<String>       actions          = null;
@@ -56,49 +50,31 @@ public class MessageSubmissionForm extends ActionForm {
     private List<String>             encodings        = null;
     
 
-    /**
-     * @return Returns the actionId.
-     */
     public String getActionId() {
 
         return actionId;
     }
 
-    /**
-     * @param actionId The actionId to set.
-     */
     public void setActionId( String action ) {
 
         this.actionId = action;
     }
 
-    /**
-     * @return Returns the choreographyId.
-     */
     public String getChoreographyId() {
 
         return choreographyId;
     }
 
-    /**
-     * @param choreographyId The choreographyId to set.
-     */
     public void setChoreographyId( String choreographyId ) {
 
         this.choreographyId = choreographyId;
     }
 
-    /**
-     * @return Returns the conversationId.
-     */
     public String getConversationId() {
 
         return conversationId;
     }
 
-    /**
-     * @param conversationId The conversationId to set.
-     */
     public void setConversationId( String conversationId ) {
 
         this.conversationId = conversationId;
@@ -114,172 +90,104 @@ public class MessageSubmissionForm extends ActionForm {
         this.sendFollowUp = sendFollowUp;
     }
 
-    /**
-     * @return Returns the primaryKey.
-     */
     public String getPrimaryKey() {
 
         return primaryKey;
     }
 
-    /**
-     * @param primaryKey The primaryKey to set.
-     */
     public void setPrimaryKey( String primaryKey ) {
 
         this.primaryKey = primaryKey;
     }
 
-    /**
-     * @return Returns the receiver.
-     */
     public int getReceiver() {
 
         return receiver;
     }
 
-    /**
-     * @param receiver The receiver to set.
-     */
     public void setReceiver( int receiver ) {
 
         this.receiver = receiver;
     }
 
-    /**
-     * @return Returns the repeat.
-     */
     public int getRepeat() {
 
         return repeat;
     }
 
-    /**
-     * @param repeat The repeat to set.
-     */
     public void setRepeat( int repeat ) {
 
         this.repeat = repeat;
     }
 
-    /**
-     * @return Returns the actions.
-     */
     public Collection<String> getActions() {
 
         return actions;
     }
 
-    /**
-     * @param actions The actions to set.
-     */
     public void setActions( Collection<String> actions ) {
 
         this.actions = actions;
     }
 
-    /**
-     * @return Returns the choreographies.
-     */
     public Collection<String> getChoreographies() {
 
         return choreographies;
     }
 
-    /**
-     * @param choreographies The choreographies to set.
-     */
     public void setChoreographies( Collection<String> choreographies ) {
 
         this.choreographies = choreographies;
     }
 
-    /**
-     * @return Returns the receivers.
-     */
     public Collection<PartnerPojo> getReceivers() {
 
         return receivers;
     }
 
-    /**
-     * @param receivers The receivers to set.
-     */
     public void setReceivers( Collection<PartnerPojo> receivers ) {
 
         this.receivers = receivers;
     }
 
-    /**
-     * @return Returns the payloadFile1.
-     */
-    public FormFile getPayloadFile1() {
+    public CommonsMultipartFile getPayloadFile1() {
 
         return payloadFile1;
     }
 
-    /**
-     * @param payloadFile1 The payloadFile1 to set.
-     */
-    public void setPayloadFile1( FormFile payloadFile1 ) {
+    public void setPayloadFile1( CommonsMultipartFile payloadFile1 ) {
 
         this.payloadFile1 = payloadFile1;
     }
 
-    /**
-     * @return Returns the payloadFile2.
-     */
-    public FormFile getPayloadFile2() {
+    public CommonsMultipartFile getPayloadFile2() {
 
         return payloadFile2;
     }
 
-    /**
-     * @param payloadFile2 The payloadFile2 to set.
-     */
-    public void setPayloadFile2( FormFile payloadFile2 ) {
+    public void setPayloadFile2( CommonsMultipartFile payloadFile2 ) {
 
         this.payloadFile2 = payloadFile2;
     }
 
-    /**
-     * @return Returns the payloadFile3.
-     */
-    public FormFile getPayloadFile3() {
+    public CommonsMultipartFile getPayloadFile3() {
 
         return payloadFile3;
     }
 
-    /**
-     * @param payloadFile3 The payloadFile3 to set.
-     */
-    public void setPayloadFile3( FormFile payloadFile3 ) {
+    public void setPayloadFile3( CommonsMultipartFile payloadFile3 ) {
 
         this.payloadFile3 = payloadFile3;
     }
 
-    /**
-     * @return
-     */
     public List<String> getEncodings() {
 
         return encodings;
     }
 
-    /**
-     * @param encodings
-     */
     public void setEncodings( List<String> encodings ) {
 
         this.encodings = encodings;
     }
     
-    /* (non-Javadoc)
-     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
-     */
-    public void reset( ActionMapping mapping, HttpServletRequest request ) {
-        super.reset( mapping, request );
-        setSendFollowUp( false );
-    }
-    
-} // MessageSubmissionForm
+}

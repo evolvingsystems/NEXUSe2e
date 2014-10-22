@@ -20,6 +20,8 @@
 package org.nexuse2e.ui.controller.certificate;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.UnrecoverableKeyException;
@@ -29,11 +31,16 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.configuration.ReferencedCertificateException;
 import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.ui.form.CertificatePropertiesForm;
 import org.nexuse2e.ui.form.ProtectedFileAccessForm;
@@ -68,6 +75,7 @@ public class CaCertificateController {
                         CertificatePropertiesForm form = new CertificatePropertiesForm();
                         form.setCertificateProperties(x509Certificate);
                         form.setAlias(certificate.getName());
+                        form.setNxCertificateId(certificate.getNxCertificateId());
                         certs.add(form);
                     }
                 }
@@ -155,6 +163,163 @@ public class CaCertificateController {
             }
             return caCertificateImportKeyStore(form);
         }
+
+        return caCertificatesList(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/CACertificateView.do")
+    public String caCertificateView(
+            Model model, CertificatePropertiesForm form, EngineConfiguration engineConfiguration)
+                    throws NexusException {
+
+        CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.CA.getOrdinal(), form.getNxCertificateId());
+        if (cPojo != null) {
+            byte[] data = cPojo.getBinaryData();
+            X509Certificate x509Certificate = CertificateUtil.getX509Certificate(data);
+            form.setCertificateProperties(x509Certificate);
+            form.setAlias(cPojo.getName());
+            form.setNxCertificateId(cPojo.getNxCertificateId());
+            return "pages/certificates/ca_certificate_view";
+        }
+
+        return caCertificatesList(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/CACertificateDelete.do")
+    public String caCertificateDelete(Model model, CertificatePropertiesForm form, EngineConfiguration engineConfiguration)
+            throws ReferencedCertificateException, NexusException {
+
+        CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.CA.getOrdinal(), form.getNxCertificateId());
+
+        if (cPojo != null) {
+            engineConfiguration.deleteCertificate(cPojo);
+        }
+        
+        return caCertificatesList(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/CACertificateAddSingleCert.do")
+    public String caCertificateAddSingleCert(ProtectedFileAccessForm form) {
+        
+        return "pages/certificates/ca_certificate_add";
+    }
+    
+    @RequestMapping("/CACertificateVerifyAddCert.do")
+    public String caCertificateVerifyAddCert(
+            Model model, @Valid ProtectedFileAccessForm form, BindingResult result, EngineConfiguration engineConfiguration)
+                    throws NexusException {
+        
+        if (form.getCertificate() == null || form.getCertificate() == null || form.getCertificate().getFileItem() == null) {
+            result.rejectValue("certificate", "certificates.import.nofile", "No data for certificate file submitted!");
+            return caCertificateAddSingleCert(form);
+        }
+        
+        byte[] data = form.getCertificate().getFileItem().get();
+
+        if (data == null || data.length == 0) {
+            result.rejectValue("certificate", "certificates.import.nofile", "No data for certificate file submitted!");
+            return caCertificateAddSingleCert(form);
+        }
+
+        if (CertificateUtil.getX509Certificate(data) == null) {
+            result.rejectValue("certificate", "certificates.import.invalidfile");
+            return caCertificateAddSingleCert(form);
+        }
+        
+        if (StringUtils.isBlank(form.getAlias())) {
+            result.rejectValue("alias", "certificates.import.alias.required");
+            return caCertificateAddSingleCert(form);
+        }
+
+        CertificatePojo certificate = new CertificatePojo();
+        certificate.setName(form.getAlias());
+        certificate.setType(CertificateType.CA.getOrdinal());
+        certificate.setPassword("");
+        certificate.setCreatedDate(new Date());
+
+        certificate.setModifiedDate(new Date());
+        certificate.setBinaryData(data);
+        engineConfiguration.updateCertificate(certificate);
+
+        return caCertificatesList(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/CACertificateExportKeyStore.do")
+    public String caCertificateExportKeyStore(ProtectedFileAccessForm form) {
+
+        form.setCertificatePath(Engine.getInstance().getCacertsPath());
+        return "pages/certificates/ca_certificate_export";
+    }
+    
+    @RequestMapping("/CACertificateFinishExport.do")
+    public String caCertificateFinishExport(
+            Model model, @Valid ProtectedFileAccessForm form, BindingResult result, EngineConfiguration engineConfiguration)
+                    throws NexusException {
+
+        if (form.getStatus() != 3) {
+            String path = Engine.getInstance().getCacertsPath();
+            if (form.getStatus() == 2) {
+                path = form.getCertificatePath();
+            }
+
+            LOG.debug("CA certificate export path: " + path);
+
+            CertificatePojo cPojo = engineConfiguration.getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(), true);
+            String password = "changeit";
+            if (cPojo == null) {
+                LOG.error("Error retrieving CA meta data!");
+            } else {
+                password = EncryptionUtil.decryptString(cPojo.getPassword());
+            }
+            LOG.trace("Using password: " + password);
+
+            File certFile = new File(path);
+            try (FileOutputStream fos = new FileOutputStream(certFile)) {
+                List<CertificatePojo> caCertificates = engineConfiguration.getCertificates(CertificateType.CA.getOrdinal(), null);
+                KeyStore jks = CertificateUtil.generateKeyStoreFromPojos(caCertificates);
+                jks.store(fos, new String(password).toCharArray());
+            } catch (Exception e) {
+                LOG.warn("Exception saving keystore", e);
+                result.reject("generic.error", new Object[] { e.getMessage() }, null);
+                return caCertificateExportKeyStore(form);
+            }
+        }
+
+        return caCertificatesList(model, engineConfiguration);
+    }
+    
+    @RequestMapping("/CACertificateChangePWD.do")
+    public String caCertificateChangePwd(ProtectedFileAccessForm form) {
+        
+        return "pages/certificates/ca_certificate_change_pwd";
+    }
+    
+    @RequestMapping("/CACertificateSavePWD.do")
+    public String caCertificateSavePwd(
+            Model model, @Valid ProtectedFileAccessForm form, BindingResult result, EngineConfiguration engineConfiguration)
+                    throws NexusException {
+
+        if (result.hasErrors()) {
+            return caCertificateChangePwd(form);
+        }
+        
+        List<CertificatePojo> certificates = engineConfiguration.getCertificates(CertificateType.CACERT_METADATA.getOrdinal(), null);
+
+        String encPwd = EncryptionUtil.encryptString(form.getPassword());
+        CertificatePojo certificate = null;
+        if (certificates != null && certificates.size() > 0) {
+            certificate = certificates.get(0);
+        } else {
+            certificate = new CertificatePojo();
+            certificate.setType(CertificateType.CACERT_METADATA.getOrdinal());
+            certificate.setCreatedDate(new Date());
+            certificate.setModifiedDate(new Date());
+            certificate.setName("CaKeyStoreData");
+        }
+
+        certificate.setPassword(encPwd);
+        certificate.setBinaryData(new byte[0]);
+        engineConfiguration.updateCertificate(certificate);
 
         return caCertificatesList(model, engineConfiguration);
     }

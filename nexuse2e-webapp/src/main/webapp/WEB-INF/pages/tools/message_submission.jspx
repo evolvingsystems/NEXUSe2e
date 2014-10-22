@@ -1,0 +1,139 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+    <jsp:directive.page contentType="text/html" />
+
+    <nexus:fileUploadResponse>
+        <script language="JavaScript" type="text/javascript">
+            this.clearConvId = function () {
+                document.messageSubmissionForm.conversationId.value='';
+            }
+        
+            this.checkFollowUpMode = function() {
+                document.messageSubmissionForm.conversationId.disabled = document.messageSubmissionForm.sendFollowUp.checked;
+            }
+            checkFollowUpMode();
+        </script>
+        
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td><nexus:crumbs styleClass="NEXUSScreenPathLink"></nexus:crumbs></td>
+            </tr>
+            <tr>
+                <td class="NEXUSScreenName">Message Submission</td>
+            </tr>
+        </table>
+        
+        <form:form modelAttribute="messageSubmissionForm" name="messageSubmissionForm" action="MessageSubmission.do" method="post" enctype="multipart/form-data">
+            <table width="100%">
+                <tr>
+                    <td colspan="2" class="NEXUSSection">Parameters for submitting a Message</td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">Choreography ID</td>
+                    <td class="NEXUSValue">
+                        <nexus:select name="choreographyId" submitOnChange="true" form="messageSubmissionForm" sendFileForm="true">
+                            <c:forEach var="choreography" items="${messageSubmissionForm.choreographies}">
+                                <c:choose>
+                                    <c:when test="${messageSubmissionForm.choreographyId eq choreography}">
+                                        <option value="${choreography}" selected="selected">${choreography}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${choreography}">${choreography}</option>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </nexus:select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">Action</td>
+                    <td class="NEXUSValue">
+                        <form:select path="actionId" items="${messageSubmissionForm.actions}" cssErrorClass="NexusError"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">Receiver</td>
+                    <td class="NEXUSValue">
+                        <form:select path="receiver" cssErrorClass="NexusError">
+                            <c:forEach var="partner" items="${messageSubmissionForm.receivers}">
+                                <form:option value="${partner.nxPartnerId}">${partner.partnerId} (${partner.name})</form:option>
+                            </c:forEach>
+                        </form:select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">
+                        File (XML/text)<br />
+                        - or -<br />
+                        Primary Key
+                    </td>
+                    <td class="NEXUSValue">
+                        <input type="file" size="50" name="payloadFile1" onkeypress="return checkKey(event);" /><br />
+                        &#160;<br />
+                        <form:input path="primaryKey" size="50" cssErrorClass="NexusError"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">Follow-up mode</td>
+                    <td class="NEXUSValue">
+                        <form:checkbox path="sendFollowUp" onclick="javascript:checkFollowUpMode()"/> Try to retrieve IDs from existing conversations
+                    </td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">Conversation ID</td>
+                    <td class="NEXUSValue">
+                        <form:input path="conversationId" size="50" onkeypress="return checkKey(event);" cssErrorClass="NexusError" /> <a href="#" onClick="javascript:clearConvId()" class="button">Clear</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">Repeat</td>
+                    <td class="NEXUSValue"><form:input path="repeat" size="5" onkeypress="return checkKey(event);" cssErrorClass="NexusError"/></td>
+                </tr>
+            </table>
+
+            <form:errors element="div" cssClass="NexusError" path="*"/>
+            <c:if test="${not empty primaryKey}">
+                <div class="NexusMessage">Message for key '${primaryKey}' submitted!</div>
+            </c:if>
+
+            <table class="NEXUS_BUTTON_TABLE" width="100%">
+                <tr>
+                    <td class="BUTTON_RIGHT">
+                        <input name="Submit" value="blank" type="hidden"/>
+                        <nexus:submit onClick="document.messageSubmissionForm.Submit.value='Submit';" sendFileForm="true" styleClass="button">
+                            <img src="images/icons/tick.png" name="SubmitButton" class="button"/>Execute
+                        </nexus:submit>
+                    </td>
+                </tr>
+            </table>
+        </form:form>
+    </nexus:fileUploadResponse>
+</jsp:root>

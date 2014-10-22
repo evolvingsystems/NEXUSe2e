@@ -21,14 +21,14 @@ package org.nexuse2e.ui.form;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotNull;
-
+import org.nexuse2e.ui.validation.PasswordRepeat;
 import org.nexuse2e.ui.validation.RepeatedPassword;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author guido.esch
  */
+@PasswordRepeat
 public class ProtectedFileAccessForm implements RepeatedPassword, Serializable {
 
     private static final long serialVersionUID = -5681743313841088090L;
@@ -118,7 +118,6 @@ public class ProtectedFileAccessForm implements RepeatedPassword, Serializable {
         this.id = id;
     }
 
-    @NotNull(message = "{certificates.import.nofile}")
     public CommonsMultipartFile getCertificate() {
         return certificate;
     }
