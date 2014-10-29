@@ -97,37 +97,12 @@ public class ProcessConversationReportAction extends ReportingAction {
         }
 
         boolean purge = false;
-        String type = request.getParameter("type");
+        String type = StringUtils.isNotBlank(request.getParameter("type")) ? request.getParameter("type") : form.getType();
         if (StringUtils.isNotBlank(type) && "purge".equals(type)) {
             purge = true;
-            form.setType("purge");
-        } else {
-            purge = false;
-            form.setType("report");
         }
+        
         String searchFor = form.getSearchFor();
-
-        if ("conversation".equals(searchFor) && StringUtils.isNotBlank(command) && "purge".equals(command) && purge) {
-            String[] values = form.getSelected();
-            for (String oneString : values) {
-                StringTokenizer st = new StringTokenizer(oneString, "|");
-                if (3 != st.countTokens()) {
-                    ActionMessage errorMessage = new ActionMessage("generic.error", "Can't purge conversation: >" + oneString + "<");
-                    errors.add(ActionMessages.GLOBAL_MESSAGE, errorMessage);
-                    addRedirect(request, URL, TIMEOUT);
-                    continue;
-                }
-                String participantId = st.nextToken();
-                String choreographyId = st.nextToken();
-                String conversationId = st.nextToken();
-
-                ConversationPojo toDelete = Engine.getInstance().getTransactionService().getConversation(conversationId);
-                if (null != toDelete) {
-                    LOG.debug("Purging conversation " + conversationId + " for choreography " + choreographyId + " and participant " + participantId);
-                    Engine.getInstance().getTransactionService().deleteConversation(toDelete);
-                }
-            }
-        }
 
         if (searchFor != null && searchFor.equals("message") && command != null && command.equals("requeue")) {
             String[] values = form.getSelected();
@@ -282,6 +257,15 @@ public class ProcessConversationReportAction extends ReportingAction {
 
             form.setAllItemsCount(items);
             List<MessagePojo> reportMessages = null;
+            if (StringUtils.isNotBlank(command) && "purge".equals(command) && purge) {
+                reportMessages = Engine.getInstance().getTransactionService()
+                    .getMessagesForReport(status, nxChoreographyId, nxPartnerId, conversationId, messageId, null, getStartDate(form), getEndDate(form),
+                                          Integer.MAX_VALUE, 0, TransactionDAO.SORT_CREATED, false);
+                for (MessagePojo message : reportMessages) {
+                    Engine.getInstance().getTransactionService().deleteMessage(message);
+                }
+                command = "first";
+            }
             if (command == null || command.equals("") || command.equals("first") || command.equals("transaction")) {
                 int pos = form.getStartCount();
                 if (pos == 0 || !command.equals("transaction")) {
@@ -365,7 +349,6 @@ public class ProcessConversationReportAction extends ReportingAction {
                     ReportMessageEntryForm entry = new ReportMessageEntryForm();
                     entry.setMessageProperties(pojo);
                     logItems.add(entry);
-
                 }
             }
 
@@ -377,6 +360,15 @@ public class ProcessConversationReportAction extends ReportingAction {
 
             form.setAllItemsCount(items);
             List<ConversationPojo> conversations = null;
+            if (StringUtils.isNotBlank(command) && "purge".equals(command) && purge) {
+                conversations = Engine.getInstance().getTransactionService()
+                    .getConversationsForReport(status, nxChoreographyId, nxPartnerId, conversationId, getStartDate(form), getEndDate(form),
+                                               Integer.MAX_VALUE, 0, TransactionDAO.SORT_CREATED, false);
+                for (ConversationPojo conv : conversations) {
+                    Engine.getInstance().getTransactionService().deleteConversation(conv);
+                }
+                command = "first";
+            }
             if (command == null || command.equals("") || command.equals("first") || command.equals("transaction")) {
                 int pos = form.getStartCount();
                 if (pos == 0 || !"transaction".equals(command)) {
@@ -472,7 +464,6 @@ public class ProcessConversationReportAction extends ReportingAction {
                     entry.setValues(pojo);
                     entry.setTimezone(timezone);
                     logItems.add(entry);
-
                 }
             }
         }

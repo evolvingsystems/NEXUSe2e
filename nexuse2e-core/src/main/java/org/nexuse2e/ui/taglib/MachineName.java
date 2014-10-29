@@ -40,9 +40,13 @@ public class MachineName extends BodyTagSupport {
     public int doStartTag() throws JspException {
 
         try {
-            pageContext.getOut().print(
-                    FileUtils.readFileToString(
-                            new File(pageContext.getServletContext().getRealPath("/WEB-INF/config/machine_name.txt"))));
+            String configPath = System.getProperty("externalconfig");
+            File file = new File(configPath, "machine_name.txt");
+            if (!file.exists()) {
+                file = new File(pageContext.getServletContext().getRealPath("/WEB-INF/config/machine_name.txt"));
+            }
+            
+            pageContext.getOut().print(FileUtils.readFileToString(file));
         } catch (IOException e) {
             throw new JspException(e);
         }
