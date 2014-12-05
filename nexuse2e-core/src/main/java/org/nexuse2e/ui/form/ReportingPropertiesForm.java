@@ -19,24 +19,23 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 /**
  * @author guido.esch
  */
-public class ReportingPropertiesForm extends ActionForm {
+public class ReportingPropertiesForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long                       serialVersionUID                  = 3017346285374318341L;
+
     private String                                  status                            = null;
     private String            backendStatus             = null;
     private String                                  choreographyId                    = null;
@@ -86,9 +85,6 @@ public class ReportingPropertiesForm extends ActionForm {
     private String[]                                selected                          = new String[0];
 
 
-    /**
-     * 
-     */
     public ReportingPropertiesForm() {
 
         super();
@@ -170,11 +166,6 @@ public class ReportingPropertiesForm extends ActionForm {
 
         reset();
         return null;
-    }
-    
-    @Override
-    public void reset( ActionMapping mapping, HttpServletRequest request ) {
-        reset();
     }
     
     public void reset() {
@@ -317,6 +308,17 @@ public class ReportingPropertiesForm extends ActionForm {
         this.startYear = startYear;
     }
 
+    public List<Integer> getYearList() {
+        List<Integer> yearList = new ArrayList<Integer>();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 2);
+        for (int i = 0; i < 10; i++) {
+            yearList.add(cal.get(Calendar.YEAR));
+            cal.add(Calendar.YEAR, -1);
+        }
+        return yearList;
+    }
+    
     public String getStatus() {
 
         return status;

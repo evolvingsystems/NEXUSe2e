@@ -41,8 +41,11 @@ public class MachineName extends BodyTagSupport {
 
         try {
             String configPath = System.getProperty("externalconfig");
-            File file = new File(configPath, "machine_name.txt");
-            if (!file.exists()) {
+            File file = null;
+            if (configPath != null) {
+                file = new File(configPath, "machine_name.txt");
+            }
+            if (file == null || !file.exists()) {
                 file = new File(pageContext.getServletContext().getRealPath("/WEB-INF/config/machine_name.txt"));
             }
             
