@@ -191,7 +191,7 @@
     </script>
     ]]>
     
-    <form:form action="ProcessConversationReport.do">
+    <form:form action="ProcessConversationReport.do" modelAttribute="reportingPropertiesForm">
         <form:hidden path="applyProperties" value="true"/>
         <form:hidden path="command"/>
     
@@ -207,340 +207,240 @@
         <table class="NEXUS_TABLE" width="100%" style="margin-bottom: 0pt;">
             <tr>
                 <td class="NEXUSValue">Search for</td>
-                <td class="NEXUSValue"><html:radio styleId="convSearch"
-                    onclick="javascript: disableLinks(); searchForConversations();"
-                    property="searchFor" value="conversation" />Conversations&nbsp;&nbsp;&nbsp;<html:radio
-                    onclick="javascript: disableLinks(); searchForMessages();"
-                    property="searchFor" value="message" />Messages</td>
-    
+                <td class="NEXUSValue">
+                    <form:radiobutton path="searchFor" styleId="convSearch" onclick="javascript: disableLinks(); searchForConversations();" value="conversation"/>Conversations&#160;&#160;&#160;
+                    <form:radiobutton path="searchFor" styleId="convSearch" onclick="javascript: disableLinks(); searchForMessages();" value="message"/>Messages&#160;&#160;&#160;
+                </td>
                 <td class="NEXUSValue">Choreography ID</td>
-                <td class="NEXUSValue"><html:select
-                    onchange="javascript: disableLinks();"
-                    styleClass="fixedsize" property="choreographyId">
-                    <html-el:option value="" />
-                    <logic:notEmpty name="reportingPropertiesForm"
-                        property="choreographyIds">
-                        <logic:iterate id="choreographies" name="reportingPropertiesForm"
-                            property="choreographyIds">
-                            <html-el:option value="${choreographies}" />
-                        </logic:iterate>
-                    </logic:notEmpty>
-                </html:select></td>
+                <td class="NEXUSValue">
+                    <form:select path="choreographyId" onchange="javascript: disableLinks();" styleClass="fixedsize" items="${reportingPropertiesForm.choreographyIds}"/>
+                </td>
             </tr>
             <tr>
                 <td class="NEXUSValue">Participant ID</td>
-                <td class="NEXUSValue"><html:select
-                    onchange="javascript: disableLinks();"
-                    styleClass="fixedsize" property="participantId">
-                    <html-el:option value="" />
-                    <logic:notEmpty name="reportingPropertiesForm"
-                        property="participantIds">
-                        <logic:iterate id="participants" name="reportingPropertiesForm"
-                            property="participantIds">
-                            <html-el:option value="${participants}" />
-                        </logic:iterate>
-                    </logic:notEmpty>
-                </html:select></td>
-                <td class="NEXUSValue">Conversation ID <html:checkbox
-                    onchange="javascript: disableLinks();"
-                    name="reportingPropertiesForm" property="conversationEnabled" /></td>
-                <td class="NEXUSValue"><html:text
-                    onchange="javascript: disableLinks();"
-                    styleClass="fixedsize" property="conversationId"></html:text></td>
+                <td class="NEXUSValue">
+                    <form:select path="participantId" onchange="javascript: disableLinks();" styleClass="fixedsize" items="${reportingPropertiesForm.participantIds}"/>
+                </td>
+                <td class="NEXUSValue">
+                    Conversation ID
+                    <form:checkbox path="conversationEnabled" onchange="javascript: disableLinks();" />
+                </td>
+                <td class="NEXUSValue">
+                    <form:input path="conversationId" onchange="javascript: disableLinks();" styleClass="fixedsize" />
+                </td>
             </tr>
-    
             <tr>
-    
-    
                 <td class="NEXUSValue">Status</td>
                 <td class="NEXUSValue">
-                    <logic:equal name="reportingPropertiesForm" property="searchFor" value="message">
-                        <html:select onchange="javascript: disableLinks();" styleClass="fixedsize" property="status">
-                            <html:option value="allMessages">&nbsp;</html:option>
-                            <html:option value="2">Queued</html:option>
-                            <html:option value="-1">Failed</html:option>
-                            <html:option value="4">Stopped</html:option>
-                            <html:option value="1">Retrying</html:option>
-                            <html:option value="3">Sent</html:option>
-                            <html:option value="0">Unknown</html:option>
-                            <html:option value="1,2">#active#</html:option>
-                            <html:option value="-1,3,4">#inactive#</html:option>
-                        </html:select>
-                    </logic:equal>
-                    <logic:notEqual name="reportingPropertiesForm" property="searchFor" value="message">
-                        <html:select onchange="javascript: disableLinks();" styleClass="fixedsize" property="status">
-                            <html:option value="allConversations">&nbsp;</html:option>
-                            <html:option value="2">Processing</html:option>
-                            <html:option value="9">Completed</html:option>
-                            <html:option value="1">Created</html:option>
-                            <html:option value="-1">Error</html:option>
-                            <html:option value="4">Idle</html:option>
-                            <html:option value="0">Unknown</html:option>
-                            <html:option value="1,2,3,5,6,7,8">#active#</html:option>
-                            <html:option value="4,9,-1">#inactive#</html:option>
-                        </html:select>
-                    </logic:notEqual>
+                    <c:if test="${reportingPropertiesForm.searchFor eq 'message'}">
+                        <form:select onchange="javascript: disableLinks();" styleClass="fixedsize" path="status">
+                            <form:option value="allMessages">&#160;</form:option>
+                            <form:option value="2">Queued</form:option>
+                            <form:option value="-1">Failed</form:option>
+                            <form:option value="4">Stopped</form:option>
+                            <form:option value="1">Retrying</form:option>
+                            <form:option value="3">Sent</form:option>
+                            <form:option value="0">Unknown</form:option>
+                            <form:option value="1,2">#active#</form:option>
+                            <form:option value="-1,3,4">#inactive#</form:option>
+                        </form:select>
+                    </c:if>
+                    <c:if test="${not reportingPropertiesForm.searchFor eq 'message'}">
+                        <form:select onchange="javascript: disableLinks();" styleClass="fixedsize" path="status">
+                            <form:option value="allConversations">&#160;</form:option>
+                            <form:option value="2">Processing</form:option>
+                            <form:option value="9">Completed</form:option>
+                            <form:option value="1">Created</form:option>
+                            <form:option value="-1">Error</form:option>
+                            <form:option value="4">Idle</form:option>
+                            <form:option value="0">Unknown</form:option>
+                            <form:option value="1,2,3,5,6,7,8">#active#</form:option>
+                            <form:option value="4,9,-1">#inactive#</form:option>
+                        </form:select>
+                    </c:if>
                 </td>
-    
-    
-                <td id="messageIdText" class="NEXUSValue">Message ID<html:checkbox
-                    onchange="javascript: disableLinks();"
-                    name="reportingPropertiesForm" property="messageEnabled" /></td>
-                <td class="NEXUSValue"><html:text
-                    onchange="javascript: disableLinks();"
-                    styleClass="fixedsize" property="messageId"></html:text></td>
+                <td id="messageIdText" class="NEXUSValue">
+                    Message ID
+                    <form:checkbox onchange="javascript: disableLinks();" path="messageEnabled" />
+                </td>
+                <td class="NEXUSValue">
+                    <form:input onchange="javascript: disableLinks();" styleClass="fixedsize" path="messageId"/>
+                </td>
             </tr>
     
             <tr>
-                <td class="NEXUSValue">Start Date <html:checkbox
-                    onchange="disableLinks();"
-                    name="reportingPropertiesForm" property="startEnabled" /></td>
-                <td class="NEXUSValue" align="left"><html:select
-                    onchange="javascript: disableLinks();"
-                    property="startYear">
-                    <%
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.YEAR, 2);
-                    for (int i = 0; i < 10; i++) {
-                        request.setAttribute("year", new Integer(cal.get(Calendar.YEAR)));
-                        cal.add(Calendar.YEAR, -1);
-                    %>
-                        <html-el:option value="${year}" />
-                    <%
-                    }
-                    %>
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="startMonth">
-                    <html:option value="01">January</html:option>
-                    <html:option value="02">February</html:option>
-                    <html:option value="03">March</html:option>
-                    <html:option value="04">April</html:option>
-                    <html:option value="05">May</html:option>
-                    <html:option value="06">June</html:option>
-                    <html:option value="07">July</html:option>
-                    <html:option value="08">August</html:option>
-                    <html:option value="09">September</html:option>
-                    <html:option value="10">October</html:option>
-                    <html:option value="11">November</html:option>
-                    <html:option value="12">December</html:option>
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="startDay">
-                    <html:option value="01">1</html:option>
-                    <html:option value="02">2</html:option>
-                    <html:option value="03">3</html:option>
-                    <html:option value="04">4</html:option>
-                    <html:option value="05">5</html:option>
-                    <html:option value="06">6</html:option>
-                    <html:option value="07">7</html:option>
-                    <html:option value="08">8</html:option>
-                    <html:option value="09">9</html:option>
-                    <html:option value="10">10</html:option>
-                    <html:option value="11">11</html:option>
-                    <html:option value="12">12</html:option>
-                    <html:option value="13">13</html:option>
-                    <html:option value="14">14</html:option>
-                    <html:option value="15">15</html:option>
-                    <html:option value="16">16</html:option>
-                    <html:option value="17">17</html:option>
-                    <html:option value="18">18</html:option>
-                    <html:option value="19">19</html:option>
-                    <html:option value="20">20</html:option>
-                    <html:option value="21">21</html:option>
-                    <html:option value="22">22</html:option>
-                    <html:option value="23">23</html:option>
-                    <html:option value="24">24</html:option>
-                    <html:option value="25">25</html:option>
-                    <html:option value="26">26</html:option>
-                    <html:option value="27">27</html:option>
-                    <html:option value="28">28</html:option>
-                    <html:option value="29">29</html:option>
-                    <html:option value="30">30</html:option>
-                    <html:option value="31">31</html:option>
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="startHour">
-                    <html:option value="00">12 A.M.</html:option>
-                    <html:option value="01">1 A.M.</html:option>
-                    <html:option value="02">2 A.M.</html:option>
-                    <html:option value="03">3 A.M.</html:option>
-                    <html:option value="04">4 A.M.</html:option>
-                    <html:option value="05">5 A.M.</html:option>
-                    <html:option value="06">6 A.M.</html:option>
-                    <html:option value="07">7 A.M.</html:option>
-                    <html:option value="08">8 A.M.</html:option>
-                    <html:option value="09">9 A.M.</html:option>
-                    <html:option value="10">10 A.M.</html:option>
-                    <html:option value="11">11 A.M.</html:option>
-                    <html:option value="12">12 P.M.</html:option>
-                    <html:option value="13">1 P.M.</html:option>
-                    <html:option value="14">2 P.M.</html:option>
-                    <html:option value="15">3 P.M.</html:option>
-                    <html:option value="16">4 P.M.</html:option>
-                    <html:option value="17">5 P.M.</html:option>
-                    <html:option value="18">6 P.M.</html:option>
-                    <html:option value="19">7 P.M.</html:option>
-                    <html:option value="20">8 P.M.</html:option>
-                    <html:option value="21">9 P.M.</html:option>
-                    <html:option value="22">10 P.M.</html:option>
-                    <html:option value="23">11 P.M.</html:option>
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="startMin">
-                    <html:option value="00">0</html:option>
-                    <html:option value="10">10</html:option>
-                    <html:option value="20">20</html:option>
-                    <html:option value="30">30</html:option>
-                    <html:option value="40">40</html:option>
-                    <html:option value="50">50</html:option>
-    
-                </html:select></td>
-    
-                <td class="NEXUSValue">End Date <html:checkbox
-                    onchange="javascript: disableLinks();"
-                    name="reportingPropertiesForm" property="endEnabled" /></td>
-                <td class="NEXUSValue" align="left"><html:select
-                    onchange="javascript: disableLinks();"
-                    property="endYear">
-                    <%
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.YEAR, 2);
-                    for (int i = 0; i < 10; i++) {
-                        request.setAttribute("year", new Integer(cal.get(Calendar.YEAR)));
-                        cal.add(Calendar.YEAR, -1);
-                    %>
-                        <html-el:option value="${year}" />
-                    <%
-                    }
-                    %>
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="endMonth">
-                    <html:option value="01">January</html:option>
-                    <html:option value="02">February</html:option>
-                    <html:option value="03">March</html:option>
-                    <html:option value="04">April</html:option>
-                    <html:option value="05">May</html:option>
-                    <html:option value="06">June</html:option>
-                    <html:option value="07">July</html:option>
-                    <html:option value="08">August</html:option>
-                    <html:option value="09">September</html:option>
-                    <html:option value="10">October</html:option>
-                    <html:option value="11">November</html:option>
-                    <html:option value="12">December</html:option>
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="endDay">
-                    <html:option value="01">1</html:option>
-                    <html:option value="02">2</html:option>
-                    <html:option value="03">3</html:option>
-                    <html:option value="04">4</html:option>
-                    <html:option value="05">5</html:option>
-                    <html:option value="06">6</html:option>
-                    <html:option value="07">7</html:option>
-                    <html:option value="08">8</html:option>
-                    <html:option value="09">9</html:option>
-                    <html:option value="10">10</html:option>
-                    <html:option value="11">11</html:option>
-                    <html:option value="12">12</html:option>
-                    <html:option value="13">13</html:option>
-                    <html:option value="14">14</html:option>
-                    <html:option value="15">15</html:option>
-                    <html:option value="16">16</html:option>
-                    <html:option value="17">17</html:option>
-                    <html:option value="18">18</html:option>
-                    <html:option value="19">19</html:option>
-                    <html:option value="20">20</html:option>
-                    <html:option value="21">21</html:option>
-                    <html:option value="22">22</html:option>
-                    <html:option value="23">23</html:option>
-                    <html:option value="24">24</html:option>
-                    <html:option value="25">25</html:option>
-                    <html:option value="26">26</html:option>
-                    <html:option value="27">27</html:option>
-                    <html:option value="28">28</html:option>
-                    <html:option value="29">29</html:option>
-                    <html:option value="30">30</html:option>
-                    <html:option value="31">31</html:option>
-    
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="endHour">
-                    <html:option value="00">12 A.M.</html:option>
-                    <html:option value="01">1 A.M.</html:option>
-                    <html:option value="02">2 A.M.</html:option>
-                    <html:option value="03">3 A.M.</html:option>
-                    <html:option value="04">4 A.M.</html:option>
-                    <html:option value="05">5 A.M.</html:option>
-                    <html:option value="06">6 A.M.</html:option>
-                    <html:option value="07">7 A.M.</html:option>
-                    <html:option value="08">8 A.M.</html:option>
-                    <html:option value="09">9 A.M.</html:option>
-                    <html:option value="10">10 A.M.</html:option>
-                    <html:option value="11">11 A.M.</html:option>
-                    <html:option value="12">12 P.M.</html:option>
-                    <html:option value="13">1 P.M.</html:option>
-                    <html:option value="14">2 P.M.</html:option>
-                    <html:option value="15">3 P.M.</html:option>
-                    <html:option value="16">4 P.M.</html:option>
-                    <html:option value="17">5 P.M.</html:option>
-                    <html:option value="18">6 P.M.</html:option>
-                    <html:option value="19">7 P.M.</html:option>
-                    <html:option value="20">8 P.M.</html:option>
-                    <html:option value="21">9 P.M.</html:option>
-                    <html:option value="22">10 P.M.</html:option>
-                    <html:option value="23">11 P.M.</html:option>
-                </html:select> <html:select onchange="javascript: disableLinks();"
-                    property="endMin">
-                    <html:option value="00">0</html:option>
-                    <html:option value="10">10</html:option>
-                    <html:option value="20">20</html:option>
-                    <html:option value="30">30</html:option>
-                    <html:option value="40">40</html:option>
-                    <html:option value="50">50</html:option>
-    
-                </html:select></td>
+                <td class="NEXUSValue">
+                    Start Date
+                    <form:checkbox onchange="disableLinks();" path="startEnabled" />
+                </td>
+                <td class="NEXUSValue" align="left">
+                    <form:select onchange="javascript: disableLinks();" path="startYear" items="${reportingPropertiesForm.yearList}"/>
+                    <form:select onchange="javascript: disableLinks();" path="startMonth">
+                        <form:option value="01">January</form:option>
+                        <form:option value="02">February</form:option>
+                        <form:option value="03">March</form:option>
+                        <form:option value="04">April</form:option>
+                        <form:option value="05">May</form:option>
+                        <form:option value="06">June</form:option>
+                        <form:option value="07">July</form:option>
+                        <form:option value="08">August</form:option>
+                        <form:option value="09">September</form:option>
+                        <form:option value="10">October</form:option>
+                        <form:option value="11">November</form:option>
+                        <form:option value="12">December</form:option>
+                    </form:select>
+                    <form:select onchange="javascript: disableLinks();" path="startDay">
+                        <c:forEach begin="1" end="31" var="i">
+                            <form:option value="${i}">${i}</form:option>
+                        </c:forEach>
+                    </form:select>
+                    <form:select onchange="javascript: disableLinks();" path="startHour">
+                        <form:option value="00">12 A.M.</form:option>
+                        <form:option value="01">1 A.M.</form:option>
+                        <form:option value="02">2 A.M.</form:option>
+                        <form:option value="03">3 A.M.</form:option>
+                        <form:option value="04">4 A.M.</form:option>
+                        <form:option value="05">5 A.M.</form:option>
+                        <form:option value="06">6 A.M.</form:option>
+                        <form:option value="07">7 A.M.</form:option>
+                        <form:option value="08">8 A.M.</form:option>
+                        <form:option value="09">9 A.M.</form:option>
+                        <form:option value="10">10 A.M.</form:option>
+                        <form:option value="11">11 A.M.</form:option>
+                        <form:option value="12">12 P.M.</form:option>
+                        <form:option value="13">1 P.M.</form:option>
+                        <form:option value="14">2 P.M.</form:option>
+                        <form:option value="15">3 P.M.</form:option>
+                        <form:option value="16">4 P.M.</form:option>
+                        <form:option value="17">5 P.M.</form:option>
+                        <form:option value="18">6 P.M.</form:option>
+                        <form:option value="19">7 P.M.</form:option>
+                        <form:option value="20">8 P.M.</form:option>
+                        <form:option value="21">9 P.M.</form:option>
+                        <form:option value="22">10 P.M.</form:option>
+                        <form:option value="23">11 P.M.</form:option>
+                    </form:select>
+                    <form:select onchange="javascript: disableLinks();" path="startMin">
+                        <form:option value="00">0</form:option>
+                        <form:option value="10">10</form:option>
+                        <form:option value="20">20</form:option>
+                        <form:option value="30">30</form:option>
+                        <form:option value="40">40</form:option>
+                        <form:option value="50">50</form:option>
+                    </form:select>
+                </td>
+                <td class="NEXUSValue">
+                    End Date <form:checkbox onchange="javascript: disableLinks();" path="endEnabled" />
+                </td>
+                <td class="NEXUSValue" align="left">
+                    <form:select onchange="javascript: disableLinks();" path="endYear" items="${reportingPropertiesForm.yearList}"/>
+                    <form:select onchange="javascript: disableLinks();" path="endMonth">
+                        <form:option value="01">January</form:option>
+                        <form:option value="02">February</form:option>
+                        <form:option value="03">March</form:option>
+                        <form:option value="04">April</form:option>
+                        <form:option value="05">May</form:option>
+                        <form:option value="06">June</form:option>
+                        <form:option value="07">July</form:option>
+                        <form:option value="08">August</form:option>
+                        <form:option value="09">September</form:option>
+                        <form:option value="10">October</form:option>
+                        <form:option value="11">November</form:option>
+                        <form:option value="12">December</form:option>
+                    </form:select>
+                    <form:select onchange="javascript: disableLinks();" path="endDay">
+                        <c:forEach begin="1" end="31" var="i">
+                            <form:option value="${i}">${i}</form:option>
+                        </c:forEach>
+                    </form:select>
+                    <form:select onchange="javascript: disableLinks();" path="endHour">
+                        <form:option value="00">12 A.M.</form:option>
+                        <form:option value="01">1 A.M.</form:option>
+                        <form:option value="02">2 A.M.</form:option>
+                        <form:option value="03">3 A.M.</form:option>
+                        <form:option value="04">4 A.M.</form:option>
+                        <form:option value="05">5 A.M.</form:option>
+                        <form:option value="06">6 A.M.</form:option>
+                        <form:option value="07">7 A.M.</form:option>
+                        <form:option value="08">8 A.M.</form:option>
+                        <form:option value="09">9 A.M.</form:option>
+                        <form:option value="10">10 A.M.</form:option>
+                        <form:option value="11">11 A.M.</form:option>
+                        <form:option value="12">12 P.M.</form:option>
+                        <form:option value="13">1 P.M.</form:option>
+                        <form:option value="14">2 P.M.</form:option>
+                        <form:option value="15">3 P.M.</form:option>
+                        <form:option value="16">4 P.M.</form:option>
+                        <form:option value="17">5 P.M.</form:option>
+                        <form:option value="18">6 P.M.</form:option>
+                        <form:option value="19">7 P.M.</form:option>
+                        <form:option value="20">8 P.M.</form:option>
+                        <form:option value="21">9 P.M.</form:option>
+                        <form:option value="22">10 P.M.</form:option>
+                        <form:option value="23">11 P.M.</form:option>
+                    </form:select>
+                    <form:select onchange="javascript: disableLinks();" path="endMin">
+                        <form:option value="00">0</form:option>
+                        <form:option value="10">10</form:option>
+                        <form:option value="20">20</form:option>
+                        <form:option value="30">30</form:option>
+                        <form:option value="40">40</form:option>
+                        <form:option value="50">50</form:option>
+                    </form:select>
+                </td>
             </tr>
         </table>
     
         <table class="NEXUS_BUTTON_TABLE" width="100%">
             <tr>
-                <td class="BUTTON_LEFT"><nobr><a class="button"
-                    href="#"
-                    onclick="javascript: Clear(); disableLinks();"><img
-                    src="images/icons/arrow_rotate_anticlockwise.png" name="clearButton" class="button">Reset
-                Fields</a></nobr></td>
+                <td class="BUTTON_LEFT">
+                    <nobr>
+                        <a class="button" href="#" onclick="javascript: Clear(); disableLinks();">
+                            <img src="images/icons/arrow_rotate_anticlockwise.png" name="clearButton" class="button"/>Reset Fields
+                        </a>
+                    </nobr>
+                </td>
                 <td class="button" width="100%">
-                <center><logic:equal name="reportingPropertiesForm"
-                    property="firstActive" value="true">
-                    <nexus:submit id="startLink"
-                        onClick="document.forms['reportingPropertiesForm'].command.value='first';"
-                        styleClass="NexusHeaderLink">Start</nexus:submit>
-                </logic:equal> <logic:equal name="reportingPropertiesForm" property="firstActive"
-                    value="false">Start</logic:equal> | <logic:equal
-                    name="reportingPropertiesForm" property="prevActive" value="true">
-                    <nexus:submit id="previousLink"
-                        onClick="document.forms['reportingPropertiesForm'].command.value='back';"
-                        styleClass="NexusHeaderLink">Previous</nexus:submit>
-                </logic:equal> <logic:equal name="reportingPropertiesForm" property="prevActive"
-                    value="false">Previous</logic:equal> | <bean:write
-                    name="reportingPropertiesForm" property="startCount" /> - <bean:write
-                    name="reportingPropertiesForm" property="endCount" /> of <bean:write
-                    name="reportingPropertiesForm" property="allItemsCount" /> | <logic:equal
-                    name="reportingPropertiesForm" property="nextActive" value="true">
-                    <nexus:submit id="nextLink"
-                        onClick="document.forms['reportingPropertiesForm'].command.value='next';"
-                        styleClass="NexusHeaderLink">Next</nexus:submit>
-                </logic:equal> <logic:equal name="reportingPropertiesForm" property="nextActive"
-                    value="false">Next</logic:equal> | <logic:equal
-                    name="reportingPropertiesForm" property="lastActive" value="true">
-                    <nexus:submit id="endLink"
-                        onClick="document.forms['reportingPropertiesForm'].command.value='last';"
-                        styleClass="NexusHeaderLink">End</nexus:submit>
-                </logic:equal> <logic:equal name="reportingPropertiesForm" property="lastActive"
-                    value="false">End</logic:equal></center>
+                    <center>
+                        <c:if test="${reportingPropertiesForm.firstActive}">
+                            <nexus:submit id="startLink" onClick="document.forms['reportingPropertiesForm'].command.value='first';" styleClass="NexusHeaderLink">
+                                Start
+                            </nexus:submit>
+                        </c:if>
+                        <c:if test="${!reportingPropertiesForm.firstActive}">
+                            Start
+                        </c:if> | 
+                        <c:if test="${reportingPropertiesForm.prevActive}">
+                            <nexus:submit id="previousLink" onClick="document.forms['reportingPropertiesForm'].command.value='back';" styleClass="NexusHeaderLink">
+                                Previous
+                            </nexus:submit>
+                        </c:if>
+                        <c:if test="${!reportingPropertiesForm.prevActive}">
+                            Previous
+                        </c:if> | 
+                        ${reportingPropertiesForm.startCount} - ${reportingPropertiesForm.endCount}
+                        of ${reportingPropertiesForm.allItemsCount} |
+                        <c:if test="${reportingPropertiesForm.nextActive}">
+                            <nexus:submit id="nextLink" onClick="document.forms['reportingPropertiesForm'].command.value='next';" styleClass="NexusHeaderLink">
+                                Next
+                            </nexus:submit>
+                        </c:if>
+                        <c:if test="$!reportingPropertiesForm.nextActive}">Next</c:if> |
+                        <c:if test="${reportingPropertiesForm.lastActive}">
+                            <nexus:submit id="endLink" onClick="document.forms['reportingPropertiesForm'].command.value='last';" styleClass="NexusHeaderLink">
+                                End
+                            </nexus:submit>
+                        </c:if>
+                        <c:if test="${!reportingPropertiesForm.lastActive}">End</c:if>
+                    </center>
                 </td>
                 <td class="BUTTON_RIGHT">
                     <nobr>
-                        <logic:equal name="reportingPropertiesForm" property="type" value="purge">
+                        <c:if test="${reportingPropertiesForm.type eq 'purge'}">
                             <nexus:submit onClick="javascript: enableLinks(); if(confirm('Purge the selected conversations?')) {document.forms['reportingPropertiesForm'].command.value='purge';} else {document.forms['reportingPropertiesForm'].command.value='report';}">
                                 <img src="images/icons/delete.png" name="deleteButton" class="button" />Purge Selected
                             </nexus:submit>
-                        </logic:equal>
+                        </c:if>
                         <nexus:submit onClick="javascript: document.forms['reportingPropertiesForm'].command.value='first'; enableLinks();">
                             <img src="images/icons/tick.png" name="resultsButton" class="button" />Refresh Results
                         </nexus:submit>
@@ -549,219 +449,208 @@
             </tr>
         </table>
     
-        <logic:messagesPresent>
-            <div class="NexusError"><html:errors /></div>
-        </logic:messagesPresent>
+        <form:errors element="div" cssClass="NexusError" path="*"/>
     
-        <logic:equal name="reportingPropertiesForm" property="searchFor"
-            value="message">
-    
-            <logic:notEmpty name="collection">
-                <table class="NEXUS_TABLE" width="100%">
+        <c:if test="${reportingPropertiesForm.searchFor eq 'message' and not empty collection}">
+            <table class="NEXUS_TABLE" width="100%">
+                <tr>
+                    <th class="NEXUSSection"></th>
+                    <th class="NEXUSSection">Message ID</th>
+                    <th class="NEXUSSection">Conversation ID</th>
+                    <c:if test="${reportingSettingsForm.messColParticipantId}">
+                        <th class="NEXUSSection">Participant ID</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.messColStatus}">
+                        <th class="NEXUSSection">Status</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.messColBackendStatus}">
+                        <th class="NEXUSSection">Backend Status</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.messColType}">
+                        <th class="NEXUSSection">Message Type</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.messColAction}">
+                        <th class="NEXUSSection">Action</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.messColCreated}">
+                        <th class="NEXUSSection">Date Created</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.messColTurnaround}">
+                        <th class="NEXUSSection">Turnaround Time</th>
+                    </c:if>
+                </tr>
+                <c:forEach var="message" items="${collection}">
                     <tr>
-                            <th class="NEXUSSection"></th>
-                        <th class="NEXUSSection">Message ID</th>
-                        <th class="NEXUSSection">Conversation ID</th>
-                        <logic:equal name="reportingSettingsForm"
-                            property="messColParticipantId" value="true">
-                            <th class="NEXUSSection">Participant ID</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="messColStatus" value="true">
-                            <th class="NEXUSSection">Status</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="messColBackendStatus" value="true">
-                            <th class="NEXUSSection">Backend Status</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm" property="messColType"
-                            value="true">
-                            <th class="NEXUSSection">Message Type</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="messColAction" value="true">
-                            <th class="NEXUSSection">Action</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="messColCreated" value="true">
-                            <th class="NEXUSSection">Date Created</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="messColTurnaround" value="true">
-                            <th class="NEXUSSection">Turnaround Time</th>
-                        </logic:equal>
+                        <td class="NEXUSValue">
+                            <form:checkbox path="selected" value="${message.participantId}|${message.choreographyId}|${message.conversationId}|${message.messageId}" />
+                        </td>
+                        <td class="NEXUSValue">
+                            <nexus:link styleClass="NexusLink" href="MessageView.do?mId=${message.messageId}&amp;convId=${message.conversationId}&amp;chorId=${message.choreographyId}&amp;partnerId=${message.participantId}">
+                                ${message.messageId}
+                            </nexus:link>
+                        </td>
+                        <td class="NEXUSValue">
+                            <nexus:link styleClass="NexusLink" href="ConversationView.do?convId=${message.nxConversationId}">
+                                ${message.conversationId}
+                            </nexus:link>
+                        </td>
+                        <c:if test="${reportingSettingsForm.messColParticipantId}">
+                            <td class="NEXUSValue">
+                                ${message.participantId}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.messColStatus}">
+                            <td class="NEXUSValue">
+                                ${message.status}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.messColBackendStatus}">
+                            <td class="NEXUSValue">
+                                ${message.backendStatus}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.messColType}">
+                            <td class="NEXUSValue">
+                                ${message.type}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.messColAction}">
+                            <td class="NEXUSValue">
+                                ${message.action}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.messColCreated}">
+                            <td class="NEXUSValue">
+                                ${message.createdDate}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.messColTurnaround}">
+                            <td class="NEXUSValue">
+                                ${message.turnaroundTime}
+                            </td>
+                        </c:if>
                     </tr>
-                    <logic:iterate indexId="counter" id="message" name="collection">
-                        <tr>
-    
-                                <td class="NEXUSValue">
-                                <html-el:multibox
-                                    property="selected"
-                                    value="${message.participantId}|${message.choreographyId}|${message.conversationId}|${message.messageId}" /></td>
-                            <td class="NEXUSValue"><nexus:link styleClass="NexusLink"
-                                href="MessageView.do?mId=${message.messageId}&convId=${message.conversationId}&chorId=${message.choreographyId}&partnerId=${message.participantId}">
-                                <bean:write name="message" property="messageId" />
-                            </nexus:link></td>
-                            <td class="NEXUSValue"><nexus:link styleClass="NexusLink"
-                                href="ConversationView.do?convId=${message.nxConversationId}">
-                                <bean:write name="message" property="conversationId" />
-                            </nexus:link></td>
-                            <logic:equal name="reportingSettingsForm"
-                                property="messColParticipantId" value="true">
-                                <td class="NEXUSValue"><bean:write name="message"
-                                    property="participantId" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="messColStatus" value="true">
-                                <td class="NEXUSValue"><bean:write name="message"
-                                    property="status" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="messColBackendStatus" value="true">
-                                <td class="NEXUSValue"><bean:write name="message"
-                                    property="backendStatus" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm" property="messColType"
-                                value="true">
-                                <td class="NEXUSValue"><bean:write name="message"
-                                    property="type" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="messColAction" value="true">
-                                <td class="NEXUSValue"><bean:write name="message"
-                                    property="action" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="messColCreated" value="true">
-                                <td class="NEXUSValue"><bean:write name="message"
-                                    property="createdDate" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="messColTurnaround" value="true">
-                                <td class="NEXUSValue"><bean:write name="message"
-                                    property="turnaroundTime" /></td>
-                            </logic:equal>
-                        </tr>
-                    </logic:iterate>
-                </table>
-                <logic:equal name="reportingSettingsForm" property="messColSelect"
-                    value="true">
-                    <table class="NEXUS_BUTTON_TABLE" width="100%">
-                        <tr>
-                            <td class="BUTTON_LEFT" width="75px"><a href="#" id="startLink"
-                                onClick="javascript: selectAll(true);return false;" class="NexusLink">
-                                <nobr>Select all</nobr>
-                            </a><br /><a href="#" id="startLink"
-                                onClick="javascript: selectAll(false)" class="NexusLink">
-                                <nobr>Deselect all</nobr>
-                            </a></td>
-    
-                            <td class="BUTTON_RIGHT"><nobr><nexus:submit
-                                onClick="document.forms['reportingPropertiesForm'].command.value='requeue';">
-                                <img src="images/icons/arrow_redo.png" name="clearButton" class="button">
-                                Re-Queue</nexus:submit></nobr></td>
-                            <td class="BUTTON_RIGHT"><nobr><nexus:submit
-                                onClick="document.forms['reportingPropertiesForm'].command.value='stop';">
-                                <img src="images/icons/arrow_rotate_anticlockwise.png" name="clearButton" class="button">
-                                Stop</nexus:submit></nobr></td>
-                        </tr>
-                    </table>
-                </logic:equal>
-            </logic:notEmpty>
-        </logic:equal>
-        <logic:notEqual name="reportingPropertiesForm" property="searchFor"
-            value="message">
-            <logic:notEmpty name="collection">
-                <table class="NEXUS_TABLE" width="100%">
+                </c:forEach>
+            </table>
+            <c:if test="${reportingSettingsForm.messColSelect}">
+                <table class="NEXUS_BUTTON_TABLE" width="100%">
                     <tr>
-                            <th class="NEXUSSection"></th>
-                        <logic:equal name="reportingSettingsForm"
-                            property="convColChorId" value="true">
-                            <th class="NEXUSSection">Choreography ID</th>
-                        </logic:equal>
-                        <th class="NEXUSSection">Conversation ID</th>
-                        <logic:equal name="reportingSettingsForm"
-                            property="convColPartId" value="true">
-                            <th class="NEXUSSection">Participant ID</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="convColStatus" value="true">
-                            <th class="NEXUSSection">Status</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="convColAction" value="true">
-                            <th class="NEXUSSection">Current Action</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="convColCreated" value="true">
-                            <th class="NEXUSSection">Date Created</th>
-                        </logic:equal>
-                        <logic:equal name="reportingSettingsForm"
-                            property="convColTurnaround" value="true">
-                            <th class="NEXUSSection">Turnaround Time</th>
-                        </logic:equal>
-                    </tr>
-                    <logic:iterate indexId="counter" id="conv" name="collection">
-                        <tr>
-                                <td class="NEXUSValue">
-                                <html-el:multibox
-                                    property="selected"
-                                    value="${conv.participantId}|${conv.choreographyId}|${conv.conversationId}" /></td>
-                            <logic:equal name="reportingSettingsForm"
-                                property="convColChorId" value="true">
-                                <td class="NEXUSValue"><bean:write name="conv"
-                                    property="choreographyId" /></td>
-                            </logic:equal>
-                            <td class="NEXUSValue"><nexus:link styleClass="NexusLink"
-                                href="ConversationView.do?convId=${conv.nxConversationId}">
-                                <bean:write name="conv" property="conversationId" />
-                            </nexus:link></td>
-                            <logic:equal name="reportingSettingsForm"
-                                property="convColPartId" value="true">
-                                <td class="NEXUSValue"><bean:write name="conv"
-                                    property="participantId" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="convColStatus" value="true">
-                                <td class="NEXUSValue"><bean:write name="conv"
-                                    property="status" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="convColAction" value="true">
-                                <td class="NEXUSValue"><bean:write name="conv"
-                                    property="action" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="convColCreated" value="true">
-                                <td class="NEXUSValue"><bean:write name="conv"
-                                    property="createdDate" /></td>
-                            </logic:equal>
-                            <logic:equal name="reportingSettingsForm"
-                                property="convColTurnaround" value="true">
-                                <td class="NEXUSValue"><bean:write name="conv"
-                                    property="turnaroundTime" /></td>
-                            </logic:equal>
-                        </tr>
-                    </logic:iterate>
-                </table>
-                <logic:equal name="reportingSettingsForm" property="convColSelect" value="true">
-                    <table class="NEXUS_BUTTON_TABLE" width="100%" border="1">
-                        <tr>
-                            <td class="BUTTON_LEFT" width="75px"><a href="#" id="startLink"
-                                onClick="javascript: selectAll(true);return false;" class="NexusLink">
+                        <td class="BUTTON_LEFT" width="75px">
+                            <a href="#" id="startLink" onClick="javascript: selectAll(true);return false;" class="NexusLink">
                                 <nobr>Select all</nobr>
-                            </a><br /><a href="#" id="startLink"
-                                onClick="javascript: selectAll(false)" class="NexusLink">
+                            </a>
+                            <br />
+                            <a href="#" id="startLink" onClick="javascript: selectAll(false)" class="NexusLink">
                                 <nobr>Deselect all</nobr>
-                            </a></td>
-                            <td  class="BUTTON_RIGHT"><nexus:submit
-                                onClick="document.forms['reportingPropertiesForm'].command.value='delete';">
-                                <img src="images/icons/delete.png" name="clearButton" class="button">
-                            Delete</nexus:submit></td>
-                        </tr>
-                    </table>
-                </logic:equal>
-            </logic:notEmpty>
-        </logic:notEqual>
-    </html:form>
+                            </a>
+                        </td>
+                        <td class="BUTTON_RIGHT">
+                            <nobr>
+                                <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='requeue';">
+                                    <img src="images/icons/arrow_redo.png" name="clearButton" class="button"/>
+                                    Re-Queue
+                                </nexus:submit>
+                            </nobr>
+                        </td>
+                        <td class="BUTTON_RIGHT">
+                            <nobr>
+                                <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='stop';">
+                                    <img src="images/icons/arrow_rotate_anticlockwise.png" name="clearButton" class="button"/>
+                                    Stop
+                                </nexus:submit>
+                            </nobr>
+                        </td>
+                    </tr>
+                </table>
+            </c:if>
+        </c:if>
+        <c:if test="${reportingPropertiesForm.searchFor eq 'message' and not empty collection}">
+            <table class="NEXUS_TABLE" width="100%">
+                <tr>
+                    <th class="NEXUSSection"></th>
+                    <c:if test="${reportingSettingsForm.convColChorId}">
+                        <th class="NEXUSSection">Choreography ID</th>
+                    </c:if>
+                    <th class="NEXUSSection">Conversation ID</th>
+                    <c:if test="${reportingSettingsForm.convColPartId}">
+                        <th class="NEXUSSection">Participant ID</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.convColStatus}">
+                        <th class="NEXUSSection">Status</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.convColAction}">
+                        <th class="NEXUSSection">Current Action</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.convColCreated}">
+                        <th class="NEXUSSection">Date Created</th>
+                    </c:if>
+                    <c:if test="${reportingSettingsForm.convColTurnaround}">
+                        <th class="NEXUSSection">Turnaround Time</th>
+                    </c:if>
+                </tr>
+                <c:forEach var="conv" items="${collection}">
+                    <tr>
+                        <td class="NEXUSValue">
+                            <form:checkbox path="selected" value="${conv.participantId}|${conv.choreographyId}|${conv.conversationId}" />
+                        </td>
+                        <c:if test="${reportingSettingsForm.convColChorId}">
+                            <td class="NEXUSValue">
+                                ${conv.choreographyId}
+                            </td>
+                        </c:if>
+                        <td class="NEXUSValue">
+                            <nexus:link styleClass="NexusLink" href="ConversationView.do?convId=${conv.nxConversationId}">
+                                ${conv.conversationId}
+                            </nexus:link>
+                        </td>
+                        <c:if test="${reportingSettingsForm.convColPartId}">
+                            <td class="NEXUSValue">
+                                ${conv.participantId}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.convColStatus}">
+                            <td class="NEXUSValue">
+                                ${conv.status}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.convColAction}">
+                            <td class="NEXUSValue">
+                                ${conv.action}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.convColCreated}">
+                            <td class="NEXUSValue">
+                                ${conv.createdDate}
+                            </td>
+                        </c:if>
+                        <c:if test="${reportingSettingsForm.convColTurnaround}">
+                            <td class="NEXUSValue">
+                                ${conv.turnaroundTime}
+                            </td>
+                        </c:if>
+                    </tr>
+                </c:forEach>
+            </table>
+            <c:if test="${reportingSettingsForm.convColSelect}">
+                <table class="NEXUS_BUTTON_TABLE" width="100%" border="1">
+                    <tr>
+                        <td class="BUTTON_LEFT" width="75px">
+                            <a href="#" id="startLink" onClick="javascript: selectAll(true);return false;" class="NexusLink">
+                                <nobr>Select all</nobr>
+                            </a>
+                            <br />
+                            <a href="#" id="startLink" onClick="javascript: selectAll(false)" class="NexusLink">
+                                <nobr>Deselect all</nobr>
+                            </a>
+                        </td>
+                        <td  class="BUTTON_RIGHT">
+                            <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='delete';">
+                            <img src="images/icons/delete.png" name="clearButton" class="button"/>
+                            Delete</nexus:submit>
+                        </td>
+                    </tr>
+                </table>
+            </c:if>
+        </c:if>
+    </form:form>
 </jsp:root>
