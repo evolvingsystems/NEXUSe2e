@@ -192,7 +192,7 @@
     ]]>
     
     <form:form action="ProcessConversationReport.do" modelAttribute="reportingPropertiesForm">
-        <form:hidden path="applyProperties" value="true"/>
+<!--         <form:hidden path="applyProperties" value="true"/> -->
         <form:hidden path="command"/>
     
         <table class="NEXUS_TABLE" width="100%">
