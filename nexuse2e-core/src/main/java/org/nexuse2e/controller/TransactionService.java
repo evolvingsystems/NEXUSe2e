@@ -612,12 +612,11 @@ public interface TransactionService extends Manageable {
     public List<int[]> getMessagesPerHourLast24Hours();
     
     /**
-     * @param start
-     * @param end
-     * @param session
-     * @param transaction
-     * @return
-     * @throws NexusException
+     * Removes a number of log entries from the database.
+     * @param start The start date. May be <code>null</code> for stone age.
+     * @param end The end date. May be <code>null</code> for Star Wars age.
+     * @return The number of log entries that have been deleted.
+     * @throws NexusException If something went wrong.
      */
     public abstract long removeLogEntries( Date start, Date end ) throws NexusException;
 

@@ -32,167 +32,164 @@
     <style type="text/css" media="screen">
         <!--
         .fixedsize {
-        	width: 240;
-        	height: 22;
+            width: 240;
+            height: 22;
         }
         -->
     </style>
     
     <script>
         this.Clear = function () {
-        	document.forms['reportingPropertiesForm'].status.options[0].selected = "true";
-    	    document.forms['reportingPropertiesForm'].choreographyId.options[0].selected = "true";
-    	    document.forms['reportingPropertiesForm'].participantId.options[0].selected = "true";
-    	    document.forms['reportingPropertiesForm'].conversationEnabled.checked = null;
-    	    document.forms['reportingPropertiesForm'].conversationId.value = "";
-    	    document.forms['reportingPropertiesForm'].messageEnabled.checked = null;
-    	    document.forms['reportingPropertiesForm'].messageId.value = "";
-        }
+            document.forms['reportingPropertiesForm'].status.options[0].selected = "true";
+            document.forms['reportingPropertiesForm'].choreographyId.options[0].selected = "true";
+            document.forms['reportingPropertiesForm'].participantId.options[0].selected = "true";
+            document.forms['reportingPropertiesForm'].conversationEnabled.checked = null;
+            document.forms['reportingPropertiesForm'].conversationId.value = "";
+            document.forms['reportingPropertiesForm'].messageEnabled.checked = null;
+            document.forms['reportingPropertiesForm'].messageId.value = "";
+        };
         
-    		this.cancelLink = function () {
-        	return false;
-      	}
+        this.cancelLink = function () {
+            return false;
+        };
       
-      	this.disableLink = function (link) {
+        this.disableLink = function (link) {
             if(link == null) {
-              return;
+                return;
             }
             if (link.onclick) {
-              link.oldOnClick = link.onclick;
+                link.oldOnClick = link.onclick;
             }
             link.onclick = cancelLink;
             if (link.style) {
-            	link.style.cursor = 'text';
-              link.style.color = '#000080';
+                link.style.cursor = 'text';
+                link.style.color = '#000080';
             }
                 
             link.className='NexusLinkDisabled';
-        }
+        };
         
         this.enableLink = function (link) {
-    	    if(link == null) {
-    	      return;
-    	    }
-    	    link.onclick = (link.oldOnClick ? link.oldOnClick : null);
-    	    if (link.style) {
-    	        link.style.cursor = (document.all ? 'hand' : 'pointer');
-    	        link.style.color = '#000000';
-    	    }
-    				
-    			link.className='NexusLink';
-        }
+            if(link == null) {
+                return;
+            }
+            link.onclick = (link.oldOnClick ? link.oldOnClick : null);
+            if (link.style) {
+                link.style.cursor = (document.all ? 'hand' : 'pointer');
+                link.style.color = '#000000';
+            }
+            link.className='NexusLink';
+        };
         
         this.disableLinks = function () {
-    			disableLink(document.getElementById('nextLink'));
-    			disableLink(document.getElementById('startLink'));
-    			disableLink(document.getElementById('previousLink'));
-    			disableLink(document.getElementById('endLink'));
-    		}
+            disableLink(document.getElementById('nextLink'));
+            disableLink(document.getElementById('startLink'));
+            disableLink(document.getElementById('previousLink'));
+            disableLink(document.getElementById('endLink'));
+        };
         
         this.enableLinks = function () {
-        	enableLink(document.getElementById('nextLink'));
-          enableLink(document.getElementById('previousLink'));
-          enableLink(document.getElementById('startLink'));
-          enableLink(document.getElementById('endLink'));
-        }
+            enableLink(document.getElementById('nextLink'));
+            enableLink(document.getElementById('previousLink'));
+            enableLink(document.getElementById('startLink'));
+            enableLink(document.getElementById('endLink'));
+        };
         
         this.searchForMessages = function () {
-    		if (document.forms['reportingPropertiesForm'].status.options[0].value == 'allMessages') {
-    			return;
-    		}
+            if (document.forms['reportingPropertiesForm'].status.options[0].value == 'allMessages') {
+                return;
+            }
     
-    		document.getElementById('messageIdText').className='NEXUSValue';
-    		document.forms['reportingPropertiesForm'].messageEnabled.disabled=false;
-    		document.forms['reportingPropertiesForm'].messageId.disabled=false;
+            document.getElementById('messageIdText').className='NEXUSValue';
+            document.forms['reportingPropertiesForm'].messageEnabled.disabled=false;
+            document.forms['reportingPropertiesForm'].messageId.disabled=false;
     
     
-    		var length = document.forms['reportingPropertiesForm'].status.options.length;
-    			
-          for (x = length ; x >= 0; x--) {
-          	document.forms['reportingPropertiesForm'].status.options[x] = null;
-          }
-          document.forms['reportingPropertiesForm'].status.options[0] = new Option('','allMessages');
-          document.forms['reportingPropertiesForm'].status.options[1] = new Option('Unknown','0');
-          document.forms['reportingPropertiesForm'].status.options[2] = new Option('Queued','2');
-          document.forms['reportingPropertiesForm'].status.options[3] = new Option('Failed','-1');
-          document.forms['reportingPropertiesForm'].status.options[4] = new Option('Stopped','4');
-          document.forms['reportingPropertiesForm'].status.options[5] = new Option('Retrying','1');
-          document.forms['reportingPropertiesForm'].status.options[6] = new Option('Sent','3');
-          document.forms['reportingPropertiesForm'].status.options[7] = new Option('#active#','1,2');
-          document.forms['reportingPropertiesForm'].status.options[8] = new Option('#inactive#','-1,3,4');
-        }
+            var length = document.forms['reportingPropertiesForm'].status.options.length;
+                
+            for (x = length ; x >= 0; x--) {
+                document.forms['reportingPropertiesForm'].status.options[x] = null;
+            }
+            document.forms['reportingPropertiesForm'].status.options[0] = new Option('','allMessages');
+            document.forms['reportingPropertiesForm'].status.options[1] = new Option('Unknown','0');
+            document.forms['reportingPropertiesForm'].status.options[2] = new Option('Queued','2');
+            document.forms['reportingPropertiesForm'].status.options[3] = new Option('Failed','-1');
+            document.forms['reportingPropertiesForm'].status.options[4] = new Option('Stopped','4');
+            document.forms['reportingPropertiesForm'].status.options[5] = new Option('Retrying','1');
+            document.forms['reportingPropertiesForm'].status.options[6] = new Option('Sent','3');
+            document.forms['reportingPropertiesForm'].status.options[7] = new Option('#active#','1,2');
+            document.forms['reportingPropertiesForm'].status.options[8] = new Option('#inactive#','-1,3,4');
+        };
         
         this.searchForConversations = function () {
-    		if (document.forms['reportingPropertiesForm'].status.options[0].value == 'allConversations') {
-    			return;
-    		}
-    
-    		var length = document.forms['reportingPropertiesForm'].status.options.length;
-    
-    		for (x = length ; x >= 0; x--) { 
-    					document.forms['reportingPropertiesForm'].status.options[x] = null;
-        	}
-        	
-        	
-        	
-        	document.forms['reportingPropertiesForm'].status.options[0] = new Option('','allConversations');
-    		document.forms['reportingPropertiesForm'].status.options[1] = new Option('Created','1');
-    		document.forms['reportingPropertiesForm'].status.options[2] = new Option('Processing','2');
-    		document.forms['reportingPropertiesForm'].status.options[3] = new Option('Error','-1');
-      		document.forms['reportingPropertiesForm'].status.options[4] = new Option('Idle','4');
-    		document.forms['reportingPropertiesForm'].status.options[5] = new Option('Completed','9');
-    		document.forms['reportingPropertiesForm'].status.options[6] = new Option('Unkown','0');
-    		document.forms['reportingPropertiesForm'].status.options[7] = new Option('#active#','1,2,3,5,6,7,8');
-    		document.forms['reportingPropertiesForm'].status.options[8] = new Option('#inactive#','4,9,-1');
-              
-        	document.getElementById('messageIdText').className='NEXUSValueDisabled';
-        	document.forms['reportingPropertiesForm'].messageEnabled.disabled=true;
-        	document.forms['reportingPropertiesForm'].messageId.disabled=true;
-      	}
-    
-        dojo.addOnLoad( function () {  
-    			var seqNo = 0;
-    			var msg = "";
-    	    var check = 0;      
-    	    for (var i = 0; i < 2; i++) {
-    				var checked = document.reportingPropertiesForm.searchFor[i].checked;
-    	      if (checked) {
-    					msg = (document.reportingPropertiesForm.searchFor[i].value);
-    				  check = 1;
-    				  break;
-    				}
-    			}
-    			if (check == 1) {
-    	    	if ( msg == "message" ) {
-    	        searchForMessages();
-    	        document.getElementById('messageIdText').className='NEXUSValue';
-    	        document.forms['reportingPropertiesForm'].messageEnabled.disabled=false;
-    	        document.forms['reportingPropertiesForm'].messageId.disabled=false;
-    	      } else {
-    	        searchForConversations();
-              document.getElementById('messageIdText').className='NEXUSValueDisabled';
-              document.forms['reportingPropertiesForm'].messageEnabled.disabled=true;
-              document.forms['reportingPropertiesForm'].messageId.disabled=true;
+            if (document.forms['reportingPropertiesForm'].status.options[0].value == 'allConversations') {
+                return;
             }
-    			}
-    		});
-    		
-    	this.selectAll = function (state) {
-          var checkboxes = document.forms['reportingPropertiesForm'].selected;
-          if (checkboxes.length) {
-            for (i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = state;
+    
+            var length = document.forms['reportingPropertiesForm'].status.options.length;
+    
+            for (x = length ; x >= 0; x--) { 
+                document.forms['reportingPropertiesForm'].status.options[x] = null;
             }
-          } else {
-            checkboxes.checked = state;
-          }
-  	    }
+
+            document.forms['reportingPropertiesForm'].status.options[0] = new Option('','allConversations');
+            document.forms['reportingPropertiesForm'].status.options[1] = new Option('Created','1');
+            document.forms['reportingPropertiesForm'].status.options[2] = new Option('Processing','2');
+            document.forms['reportingPropertiesForm'].status.options[3] = new Option('Error','-1');
+            document.forms['reportingPropertiesForm'].status.options[4] = new Option('Idle','4');
+            document.forms['reportingPropertiesForm'].status.options[5] = new Option('Completed','9');
+            document.forms['reportingPropertiesForm'].status.options[6] = new Option('Unkown','0');
+            document.forms['reportingPropertiesForm'].status.options[7] = new Option('#active#','1,2,3,5,6,7,8');
+            document.forms['reportingPropertiesForm'].status.options[8] = new Option('#inactive#','4,9,-1');
               
+            document.getElementById('messageIdText').className='NEXUSValueDisabled';
+            document.forms['reportingPropertiesForm'].messageEnabled.disabled=true;
+            document.forms['reportingPropertiesForm'].messageId.disabled=true;
+        };
+    
+        dojo.addOnLoad(function () {
+            var seqNo = 0;
+            var msg = "";
+            var check = 0;
+            for (var i = 0; i < 2; i++) {
+                var checked = document.forms['reportingPropertiesForm'].searchFor[i].checked;
+                if (checked) {
+                    msg = (document.forms['reportingPropertiesForm'].searchFor[i].value);
+                    check = 1;
+                    break;
+                }
+            }
+            if (check == 1) {
+                if ( msg == "message" ) {
+                    searchForMessages();
+                    document.getElementById('messageIdText').className='NEXUSValue';
+                    document.forms['reportingPropertiesForm'].messageEnabled.disabled=false;
+                    document.forms['reportingPropertiesForm'].messageId.disabled=false;
+                } else {
+                    searchForConversations();
+                    document.getElementById('messageIdText').className='NEXUSValueDisabled';
+                    document.forms['reportingPropertiesForm'].messageEnabled.disabled=true;
+                    document.forms['reportingPropertiesForm'].messageId.disabled=true;
+                }
+            }
+        });
+            
+        this.selectAll = function (state) {
+            var checkboxes = document.forms['reportingPropertiesForm'].selected;
+            if (checkboxes.length) {
+                for (i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked = state;
+                }
+            } else {
+                checkboxes.checked = state;
+            }
+        };
+        
     </script>
     ]]>
     
     <form:form action="ProcessConversationReport.do" modelAttribute="reportingPropertiesForm">
-<!--         <form:hidden path="applyProperties" value="true"/> -->
+        <form:hidden path="type"/>
         <form:hidden path="command"/>
     
         <table class="NEXUS_TABLE" width="100%">
@@ -208,22 +205,28 @@
             <tr>
                 <td class="NEXUSValue">Search for</td>
                 <td class="NEXUSValue">
-                    <form:radiobutton path="searchFor" styleId="convSearch" onclick="javascript: disableLinks(); searchForConversations();" value="conversation"/>Conversations&#160;&#160;&#160;
-                    <form:radiobutton path="searchFor" styleId="convSearch" onclick="javascript: disableLinks(); searchForMessages();" value="message"/>Messages&#160;&#160;&#160;
+                    <form:radiobutton path="searchFor" styleId="convSearch" onclick="javascript: disableLinks(); searchForConversations();" value="conversation" label=" Conversations"/>
+                    <span style="margin-left:15px;">&#160;</span>
+                    <form:radiobutton path="searchFor" styleId="convSearch" onclick="javascript: disableLinks(); searchForMessages();" value="message" label=" Messages"/>
                 </td>
                 <td class="NEXUSValue">Choreography ID</td>
                 <td class="NEXUSValue">
-                    <form:select path="choreographyId" onchange="javascript: disableLinks();" styleClass="fixedsize" items="${reportingPropertiesForm.choreographyIds}"/>
+                    <form:select path="choreographyId" onchange="javascript: disableLinks();" styleClass="fixedsize">
+                        <form:option value="">&#160;</form:option>
+                        <form:options items="${reportingPropertiesForm.choreographyIds}"/>
+                    </form:select>
                 </td>
             </tr>
             <tr>
                 <td class="NEXUSValue">Participant ID</td>
                 <td class="NEXUSValue">
-                    <form:select path="participantId" onchange="javascript: disableLinks();" styleClass="fixedsize" items="${reportingPropertiesForm.participantIds}"/>
+                    <form:select path="participantId" onchange="javascript: disableLinks();" styleClass="fixedsize">
+                        <form:option value="">&#160;</form:option>
+                        <form:options items="${reportingPropertiesForm.participantIds}"/>
+                    </form:select>
                 </td>
                 <td class="NEXUSValue">
-                    Conversation ID
-                    <form:checkbox path="conversationEnabled" onchange="javascript: disableLinks();" />
+                    <form:checkbox path="conversationEnabled" onchange="javascript: disableLinks();" value="true" label=" Conversation ID" />
                 </td>
                 <td class="NEXUSValue">
                     <form:input path="conversationId" onchange="javascript: disableLinks();" styleClass="fixedsize" />
@@ -232,36 +235,37 @@
             <tr>
                 <td class="NEXUSValue">Status</td>
                 <td class="NEXUSValue">
-                    <c:if test="${reportingPropertiesForm.searchFor eq 'message'}">
-                        <form:select onchange="javascript: disableLinks();" styleClass="fixedsize" path="status">
-                            <form:option value="allMessages">&#160;</form:option>
-                            <form:option value="2">Queued</form:option>
-                            <form:option value="-1">Failed</form:option>
-                            <form:option value="4">Stopped</form:option>
-                            <form:option value="1">Retrying</form:option>
-                            <form:option value="3">Sent</form:option>
-                            <form:option value="0">Unknown</form:option>
-                            <form:option value="1,2">#active#</form:option>
-                            <form:option value="-1,3,4">#inactive#</form:option>
-                        </form:select>
-                    </c:if>
-                    <c:if test="${not reportingPropertiesForm.searchFor eq 'message'}">
-                        <form:select onchange="javascript: disableLinks();" styleClass="fixedsize" path="status">
-                            <form:option value="allConversations">&#160;</form:option>
-                            <form:option value="2">Processing</form:option>
-                            <form:option value="9">Completed</form:option>
-                            <form:option value="1">Created</form:option>
-                            <form:option value="-1">Error</form:option>
-                            <form:option value="4">Idle</form:option>
-                            <form:option value="0">Unknown</form:option>
-                            <form:option value="1,2,3,5,6,7,8">#active#</form:option>
-                            <form:option value="4,9,-1">#inactive#</form:option>
-                        </form:select>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${reportingPropertiesForm.searchFor eq 'message'}">
+                            <form:select onchange="javascript: disableLinks();" styleClass="fixedsize" path="status">
+                                <form:option value="allMessages">&#160;</form:option>
+                                <form:option value="2">Queued</form:option>
+                                <form:option value="-1">Failed</form:option>
+                                <form:option value="4">Stopped</form:option>
+                                <form:option value="1">Retrying</form:option>
+                                <form:option value="3">Sent</form:option>
+                                <form:option value="0">Unknown</form:option>
+                                <form:option value="1,2">#active#</form:option>
+                                <form:option value="-1,3,4">#inactive#</form:option>
+                            </form:select>
+                        </c:when>
+                        <c:otherwise>
+                            <form:select onchange="javascript: disableLinks();" styleClass="fixedsize" path="status">
+                                <form:option value="allConversations">&#160;</form:option>
+                                <form:option value="2">Processing</form:option>
+                                <form:option value="9">Completed</form:option>
+                                <form:option value="1">Created</form:option>
+                                <form:option value="-1">Error</form:option>
+                                <form:option value="4">Idle</form:option>
+                                <form:option value="0">Unknown</form:option>
+                                <form:option value="1,2,3,5,6,7,8">#active#</form:option>
+                                <form:option value="4,9,-1">#inactive#</form:option>
+                            </form:select>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
                 <td id="messageIdText" class="NEXUSValue">
-                    Message ID
-                    <form:checkbox onchange="javascript: disableLinks();" path="messageEnabled" />
+                    <form:checkbox onchange="javascript: disableLinks();" path="messageEnabled" value="true" label=" Message ID" />
                 </td>
                 <td class="NEXUSValue">
                     <form:input onchange="javascript: disableLinks();" styleClass="fixedsize" path="messageId"/>
@@ -270,8 +274,7 @@
     
             <tr>
                 <td class="NEXUSValue">
-                    Start Date
-                    <form:checkbox onchange="disableLinks();" path="startEnabled" />
+                    <form:checkbox onchange="disableLinks();" path="startEnabled" value="true" label=" Start Date" />
                 </td>
                 <td class="NEXUSValue" align="left">
                     <form:select onchange="javascript: disableLinks();" path="startYear" items="${reportingPropertiesForm.yearList}"/>
@@ -330,7 +333,7 @@
                     </form:select>
                 </td>
                 <td class="NEXUSValue">
-                    End Date <form:checkbox onchange="javascript: disableLinks();" path="endEnabled" />
+                    <form:checkbox onchange="javascript: disableLinks();" path="endEnabled" value="true" label=" End Date" />
                 </td>
                 <td class="NEXUSValue" align="left">
                     <form:select onchange="javascript: disableLinks();" path="endYear" items="${reportingPropertiesForm.yearList}"/>
@@ -438,7 +441,7 @@
                     <nobr>
                         <c:if test="${reportingPropertiesForm.type eq 'purge'}">
                             <nexus:submit onClick="javascript: enableLinks(); if(confirm('Purge the selected conversations?')) {document.forms['reportingPropertiesForm'].command.value='purge';} else {document.forms['reportingPropertiesForm'].command.value='report';}">
-                                <img src="images/icons/delete.png" name="deleteButton" class="button" />Purge Selected
+                                <img src="images/icons/delete.png" name="deleteButton" class="button" />Purge All
                             </nexus:submit>
                         </c:if>
                         <nexus:submit onClick="javascript: document.forms['reportingPropertiesForm'].command.value='first'; enableLinks();">
@@ -450,207 +453,217 @@
         </table>
     
         <form:errors element="div" cssClass="NexusError" path="*"/>
-    
-        <c:if test="${reportingPropertiesForm.searchFor eq 'message' and not empty collection}">
-            <table class="NEXUS_TABLE" width="100%">
-                <tr>
-                    <th class="NEXUSSection"></th>
-                    <th class="NEXUSSection">Message ID</th>
-                    <th class="NEXUSSection">Conversation ID</th>
-                    <c:if test="${reportingSettingsForm.messColParticipantId}">
-                        <th class="NEXUSSection">Participant ID</th>
+
+        <c:choose>
+            <c:when test="${reportingPropertiesForm.searchFor eq 'message'}">
+                <c:if test="${not empty collection}">
+                    <table class="NEXUS_TABLE" width="100%">
+                        <tr>
+                            <th class="NEXUSSection"></th>
+                            <th class="NEXUSSection">Message ID</th>
+                            <th class="NEXUSSection">Conversation ID</th>
+                            <c:if test="${reportingSettingsForm.messColParticipantId}">
+                                <th class="NEXUSSection">Participant ID</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.messColStatus}">
+                                <th class="NEXUSSection">Status</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.messColBackendStatus}">
+                                <th class="NEXUSSection">Backend Status</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.messColType}">
+                                <th class="NEXUSSection">Message Type</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.messColAction}">
+                                <th class="NEXUSSection">Action</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.messColCreated}">
+                                <th class="NEXUSSection">Date Created</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.messColTurnaround}">
+                                <th class="NEXUSSection">Turnaround Time</th>
+                            </c:if>
+                        </tr>
+                        <c:forEach var="message" items="${collection}">
+                            <tr>
+                                <td class="NEXUSValue">
+                                    <c:if test="${reportingSettingsForm.messColSelect and reportingPropertiesForm.type != 'purge'}">
+                                        <form:checkbox path="selected" value="${message.participantId}|${message.choreographyId}|${message.conversationId}|${message.messageId}" />
+                                    </c:if>
+                                </td>
+                                <td class="NEXUSValue">
+                                    <nexus:link styleClass="NexusLink" href="MessageView.do?mId=${message.messageId}&amp;convId=${message.conversationId}&amp;chorId=${message.choreographyId}&amp;partnerId=${message.participantId}">
+                                        ${message.messageId}
+                                    </nexus:link>
+                                </td>
+                                <td class="NEXUSValue">
+                                    <nexus:link styleClass="NexusLink" href="ConversationView.do?convId=${message.nxConversationId}">
+                                        ${message.conversationId}
+                                    </nexus:link>
+                                </td>
+                                <c:if test="${reportingSettingsForm.messColParticipantId}">
+                                    <td class="NEXUSValue">
+                                        ${message.participantId}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.messColStatus}">
+                                    <td class="NEXUSValue">
+                                        ${message.status}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.messColBackendStatus}">
+                                    <td class="NEXUSValue">
+                                        ${message.backendStatus}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.messColType}">
+                                    <td class="NEXUSValue">
+                                        ${message.type}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.messColAction}">
+                                    <td class="NEXUSValue">
+                                        ${message.action}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.messColCreated}">
+                                    <td class="NEXUSValue">
+                                        ${message.createdDate}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.messColTurnaround}">
+                                    <td class="NEXUSValue">
+                                        ${message.turnaroundTime}
+                                    </td>
+                                </c:if>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                    <c:if test="${reportingSettingsForm.messColSelect and reportingPropertiesForm.type != 'purge'}">
+                        <table class="NEXUS_BUTTON_TABLE" width="100%">
+                            <tr>
+                                <td class="BUTTON_LEFT" width="75px">
+                                    <a href="#" id="startLink" onClick="javascript: selectAll(true);return false;" class="NexusLink">
+                                        <nobr>Select all</nobr>
+                                    </a>
+                                    <br />
+                                    <a href="#" id="startLink" onClick="javascript: selectAll(false)" class="NexusLink">
+                                        <nobr>Deselect all</nobr>
+                                    </a>
+                                </td>
+                                <td class="BUTTON_RIGHT">
+                                    <nobr>
+                                        <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='requeue';">
+                                            <img src="images/icons/arrow_redo.png" name="clearButton" class="button"/>
+                                            Re-Queue
+                                        </nexus:submit>
+                                    </nobr>
+                                </td>
+                                <td class="BUTTON_RIGHT">
+                                    <nobr>
+                                        <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='stop';">
+                                            <img src="images/icons/arrow_rotate_anticlockwise.png" name="clearButton" class="button"/>
+                                            Stop
+                                        </nexus:submit>
+                                    </nobr>
+                                </td>
+                            </tr>
+                        </table>
                     </c:if>
-                    <c:if test="${reportingSettingsForm.messColStatus}">
-                        <th class="NEXUSSection">Status</th>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <c:if test="${not empty collection}">
+                    <table class="NEXUS_TABLE" width="100%">
+                        <tr>
+                            <th class="NEXUSSection"></th>
+                            <c:if test="${reportingSettingsForm.convColChorId}">
+                                <th class="NEXUSSection">Choreography ID</th>
+                            </c:if>
+                            <th class="NEXUSSection">Conversation ID</th>
+                            <c:if test="${reportingSettingsForm.convColPartId}">
+                                <th class="NEXUSSection">Participant ID</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.convColStatus}">
+                                <th class="NEXUSSection">Status</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.convColAction}">
+                                <th class="NEXUSSection">Current Action</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.convColCreated}">
+                                <th class="NEXUSSection">Date Created</th>
+                            </c:if>
+                            <c:if test="${reportingSettingsForm.convColTurnaround}">
+                                <th class="NEXUSSection">Turnaround Time</th>
+                            </c:if>
+                        </tr>
+                        <c:forEach var="conv" items="${collection}">
+                            <tr>
+                                <td class="NEXUSValue">
+                                    <c:if test="${reportingSettingsForm.convColSelect and reportingPropertiesForm.type != 'purge'}">
+                                        <form:checkbox path="selected" value="${conv.participantId}|${conv.choreographyId}|${conv.conversationId}" />
+                                    </c:if>
+                                </td>
+                                <c:if test="${reportingSettingsForm.convColChorId}">
+                                    <td class="NEXUSValue">
+                                        ${conv.choreographyId}
+                                    </td>
+                                </c:if>
+                                <td class="NEXUSValue">
+                                    <nexus:link styleClass="NexusLink" href="ConversationView.do?convId=${conv.nxConversationId}">
+                                        ${conv.conversationId}
+                                    </nexus:link>
+                                </td>
+                                <c:if test="${reportingSettingsForm.convColPartId}">
+                                    <td class="NEXUSValue">
+                                        ${conv.participantId}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.convColStatus}">
+                                    <td class="NEXUSValue">
+                                        ${conv.status}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.convColAction}">
+                                    <td class="NEXUSValue">
+                                        ${conv.action}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.convColCreated}">
+                                    <td class="NEXUSValue">
+                                        ${conv.createdDate}
+                                    </td>
+                                </c:if>
+                                <c:if test="${reportingSettingsForm.convColTurnaround}">
+                                    <td class="NEXUSValue">
+                                        ${conv.turnaroundTime}
+                                    </td>
+                                </c:if>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                    <c:if test="${reportingSettingsForm.convColSelect and reportingPropertiesForm.type != 'purge'}">
+                        <table class="NEXUS_BUTTON_TABLE" width="100%" border="1">
+                            <tr>
+                                <td class="BUTTON_LEFT" width="75px">
+                                    <a href="#" id="startLink" onClick="javascript: selectAll(true);return false;" class="NexusLink">
+                                        <nobr>Select all</nobr>
+                                    </a>
+                                    <br />
+                                    <a href="#" id="startLink" onClick="javascript: selectAll(false)" class="NexusLink">
+                                        <nobr>Deselect all</nobr>
+                                    </a>
+                                </td>
+                                <td  class="BUTTON_RIGHT">
+                                    <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='delete';">
+                                    <img src="images/icons/delete.png" name="clearButton" class="button"/>
+                                    Delete</nexus:submit>
+                                </td>
+                            </tr>
+                        </table>
                     </c:if>
-                    <c:if test="${reportingSettingsForm.messColBackendStatus}">
-                        <th class="NEXUSSection">Backend Status</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.messColType}">
-                        <th class="NEXUSSection">Message Type</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.messColAction}">
-                        <th class="NEXUSSection">Action</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.messColCreated}">
-                        <th class="NEXUSSection">Date Created</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.messColTurnaround}">
-                        <th class="NEXUSSection">Turnaround Time</th>
-                    </c:if>
-                </tr>
-                <c:forEach var="message" items="${collection}">
-                    <tr>
-                        <td class="NEXUSValue">
-                            <form:checkbox path="selected" value="${message.participantId}|${message.choreographyId}|${message.conversationId}|${message.messageId}" />
-                        </td>
-                        <td class="NEXUSValue">
-                            <nexus:link styleClass="NexusLink" href="MessageView.do?mId=${message.messageId}&amp;convId=${message.conversationId}&amp;chorId=${message.choreographyId}&amp;partnerId=${message.participantId}">
-                                ${message.messageId}
-                            </nexus:link>
-                        </td>
-                        <td class="NEXUSValue">
-                            <nexus:link styleClass="NexusLink" href="ConversationView.do?convId=${message.nxConversationId}">
-                                ${message.conversationId}
-                            </nexus:link>
-                        </td>
-                        <c:if test="${reportingSettingsForm.messColParticipantId}">
-                            <td class="NEXUSValue">
-                                ${message.participantId}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.messColStatus}">
-                            <td class="NEXUSValue">
-                                ${message.status}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.messColBackendStatus}">
-                            <td class="NEXUSValue">
-                                ${message.backendStatus}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.messColType}">
-                            <td class="NEXUSValue">
-                                ${message.type}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.messColAction}">
-                            <td class="NEXUSValue">
-                                ${message.action}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.messColCreated}">
-                            <td class="NEXUSValue">
-                                ${message.createdDate}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.messColTurnaround}">
-                            <td class="NEXUSValue">
-                                ${message.turnaroundTime}
-                            </td>
-                        </c:if>
-                    </tr>
-                </c:forEach>
-            </table>
-            <c:if test="${reportingSettingsForm.messColSelect}">
-                <table class="NEXUS_BUTTON_TABLE" width="100%">
-                    <tr>
-                        <td class="BUTTON_LEFT" width="75px">
-                            <a href="#" id="startLink" onClick="javascript: selectAll(true);return false;" class="NexusLink">
-                                <nobr>Select all</nobr>
-                            </a>
-                            <br />
-                            <a href="#" id="startLink" onClick="javascript: selectAll(false)" class="NexusLink">
-                                <nobr>Deselect all</nobr>
-                            </a>
-                        </td>
-                        <td class="BUTTON_RIGHT">
-                            <nobr>
-                                <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='requeue';">
-                                    <img src="images/icons/arrow_redo.png" name="clearButton" class="button"/>
-                                    Re-Queue
-                                </nexus:submit>
-                            </nobr>
-                        </td>
-                        <td class="BUTTON_RIGHT">
-                            <nobr>
-                                <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='stop';">
-                                    <img src="images/icons/arrow_rotate_anticlockwise.png" name="clearButton" class="button"/>
-                                    Stop
-                                </nexus:submit>
-                            </nobr>
-                        </td>
-                    </tr>
-                </table>
-            </c:if>
-        </c:if>
-        <c:if test="${reportingPropertiesForm.searchFor eq 'message' and not empty collection}">
-            <table class="NEXUS_TABLE" width="100%">
-                <tr>
-                    <th class="NEXUSSection"></th>
-                    <c:if test="${reportingSettingsForm.convColChorId}">
-                        <th class="NEXUSSection">Choreography ID</th>
-                    </c:if>
-                    <th class="NEXUSSection">Conversation ID</th>
-                    <c:if test="${reportingSettingsForm.convColPartId}">
-                        <th class="NEXUSSection">Participant ID</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.convColStatus}">
-                        <th class="NEXUSSection">Status</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.convColAction}">
-                        <th class="NEXUSSection">Current Action</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.convColCreated}">
-                        <th class="NEXUSSection">Date Created</th>
-                    </c:if>
-                    <c:if test="${reportingSettingsForm.convColTurnaround}">
-                        <th class="NEXUSSection">Turnaround Time</th>
-                    </c:if>
-                </tr>
-                <c:forEach var="conv" items="${collection}">
-                    <tr>
-                        <td class="NEXUSValue">
-                            <form:checkbox path="selected" value="${conv.participantId}|${conv.choreographyId}|${conv.conversationId}" />
-                        </td>
-                        <c:if test="${reportingSettingsForm.convColChorId}">
-                            <td class="NEXUSValue">
-                                ${conv.choreographyId}
-                            </td>
-                        </c:if>
-                        <td class="NEXUSValue">
-                            <nexus:link styleClass="NexusLink" href="ConversationView.do?convId=${conv.nxConversationId}">
-                                ${conv.conversationId}
-                            </nexus:link>
-                        </td>
-                        <c:if test="${reportingSettingsForm.convColPartId}">
-                            <td class="NEXUSValue">
-                                ${conv.participantId}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.convColStatus}">
-                            <td class="NEXUSValue">
-                                ${conv.status}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.convColAction}">
-                            <td class="NEXUSValue">
-                                ${conv.action}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.convColCreated}">
-                            <td class="NEXUSValue">
-                                ${conv.createdDate}
-                            </td>
-                        </c:if>
-                        <c:if test="${reportingSettingsForm.convColTurnaround}">
-                            <td class="NEXUSValue">
-                                ${conv.turnaroundTime}
-                            </td>
-                        </c:if>
-                    </tr>
-                </c:forEach>
-            </table>
-            <c:if test="${reportingSettingsForm.convColSelect}">
-                <table class="NEXUS_BUTTON_TABLE" width="100%" border="1">
-                    <tr>
-                        <td class="BUTTON_LEFT" width="75px">
-                            <a href="#" id="startLink" onClick="javascript: selectAll(true);return false;" class="NexusLink">
-                                <nobr>Select all</nobr>
-                            </a>
-                            <br />
-                            <a href="#" id="startLink" onClick="javascript: selectAll(false)" class="NexusLink">
-                                <nobr>Deselect all</nobr>
-                            </a>
-                        </td>
-                        <td  class="BUTTON_RIGHT">
-                            <nexus:submit onClick="document.forms['reportingPropertiesForm'].command.value='delete';">
-                            <img src="images/icons/delete.png" name="clearButton" class="button"/>
-                            Delete</nexus:submit>
-                        </td>
-                    </tr>
-                </table>
-            </c:if>
-        </c:if>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </form:form>
 </jsp:root>

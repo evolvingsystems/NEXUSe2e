@@ -24,11 +24,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMapping;
-
 /**
  * @author guido.esch
  */
@@ -37,7 +32,7 @@ public class ReportingPropertiesForm implements Serializable {
     private static final long                       serialVersionUID                  = 3017346285374318341L;
 
     private String                                  status                            = null;
-    private String            backendStatus             = null;
+    private String                                  backendStatus                     = null;
     private String                                  choreographyId                    = null;
     private List<Integer>                           originIds                         = null;
     private String                                  conversationId                    = null;
@@ -51,17 +46,11 @@ public class ReportingPropertiesForm implements Serializable {
     private String                                  endDay                            = null;
     private String                                  endHour                           = null;
     private String                                  endMin                            = null;
-    private boolean                                 startEnabled                      = true;
-    private boolean                                 startEnabledCalled                = false;
-    private boolean                                 endEnabled                        = true;
-    private boolean                                 endEnabledCalled                  = false;
-    private boolean                                 applyProperties                   = false;
+    private Boolean                                 startEnabled                      = null;
+    private Boolean                                 endEnabled                        = null;
     private boolean                                 conversationEnabled               = false;
-    private boolean                                 conversationEnabledCalled         = false;
     private boolean                                 messageEnabled                    = false;
-    private boolean                                 messageEnabledCalled              = false;
     private boolean                                 messageTextEnabled                = false;
-    private boolean                                 messageTextEnabledCalled          = false;
     private String                                  searchFor                         = null;
     private String                                  messageId                         = null;
     private boolean                                 nextActive                        = false;
@@ -143,50 +132,6 @@ public class ReportingPropertiesForm implements Serializable {
         setStartMin( "00" );
         setEndMin( "00" );
     }
-    
-
-    public ActionErrors validate( ActionMapping mapping, HttpServletRequest request ) {
-        if (applyProperties) {
-            if (startEnabled && !startEnabledCalled) {
-                startEnabled = false;
-            }
-            if (endEnabled && !endEnabledCalled) {
-                endEnabled = false;
-            }
-            if (conversationEnabled && !conversationEnabledCalled) {
-                conversationEnabled = false;
-            }
-            if (messageEnabled && !messageEnabledCalled) {
-                messageEnabled = false;
-            }
-            if (messageTextEnabled && !messageTextEnabledCalled) {
-                messageTextEnabled = false;
-            }
-        }
-
-        reset();
-        return null;
-    }
-    
-    public void reset() {
-        startEnabledCalled = false;
-        endEnabledCalled = false;
-        conversationEnabledCalled = false;
-        messageEnabledCalled = false;
-        messageTextEnabledCalled = false;
-        applyProperties = false;
-    }
-    
-    
-    public boolean isApplyProperties() {
-        return applyProperties;
-    }
-
-
-    public void setApplyProperties(boolean applyProperties) {
-        this.applyProperties = applyProperties;
-    }
-
 
     public String getChoreographyId() {
 
@@ -347,29 +292,26 @@ public class ReportingPropertiesForm implements Serializable {
     public void setConversationEnabled( boolean conversationEnabled ) {
 
         this.conversationEnabled = conversationEnabled;
-        conversationEnabledCalled = true;
     }
 
     public boolean isEndEnabled() {
 
-        return endEnabled;
+        return endEnabled == null ? true : endEnabled;
     }
 
     public void setEndEnabled( boolean endEnabled ) {
 
         this.endEnabled = endEnabled;
-        endEnabledCalled = true;
     }
 
     public boolean isStartEnabled() {
 
-        return startEnabled;
+        return startEnabled == null ? true : startEnabled;
     }
 
     public void setStartEnabled( boolean startEnabled ) {
 
         this.startEnabled = startEnabled;
-        startEnabledCalled = true;
     }
 
     public int getEndCount() {
@@ -480,7 +422,6 @@ public class ReportingPropertiesForm implements Serializable {
     public void setMessageEnabled( boolean messageEnabled ) {
 
         this.messageEnabled = messageEnabled;
-        messageEnabledCalled = true;
     }
 
     public String getMessageId() {
@@ -551,7 +492,6 @@ public class ReportingPropertiesForm implements Serializable {
     public void setMessageTextEnabled( boolean messageTextEnabled ) {
 
         this.messageTextEnabled = messageTextEnabled;
-        messageTextEnabledCalled = true;
     }
 
     public boolean isOutbound() {

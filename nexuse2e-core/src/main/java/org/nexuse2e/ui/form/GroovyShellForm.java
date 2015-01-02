@@ -19,91 +19,47 @@
  */
 package org.nexuse2e.ui.form;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
+/**
+ * Form object for groovy shell functionality.
+ */
+public class GroovyShellForm implements Serializable {
 
-public class GroovyShellForm extends ActionForm {
+    private static final long serialVersionUID = -8626812841537871433L;
 
-    
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -8626812841537871433L;
-	/**
      * valid values: select, execute
      */
     private String            type             = "select";
     private String            script           = "";
-    private String			  response		   = "";
+    private String            response         = "";
     
     public GroovyShellForm() {
 
     }
-    
-    /**
-     * @param mapping
-     * @param request
-     */
-    @Override
-    public void reset( ActionMapping mapping, HttpServletRequest request ) {
-        
+
+    public String getType() {
+        return type;
     }
 
-    /**
-     * 
-     */
-    public void cleanSettings() {
-        
+    public void setType(String type) {
+        this.type = type;
     }
 
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    public String getScript() {
+        return script;
+    }
 
+    public void setScript(String script) {
+        this.script = script;
+    }
 
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getResponse() {
+        return response;
+    }
 
-
-	/**
-	 * @return the script
-	 */
-	public String getScript() {
-		return script;
-	}
-
-
-	/**
-	 * @param script the script to set
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
-
-	/**
-	 * @return the response
-	 */
-	public String getResponse() {
-		return response;
-	}
-
-	/**
-	 * @param response the response to set
-	 */
-	public void setResponse(String response) {
-		this.response = response;
-	}
-    
-    
-    
-
+    public void setResponse(String response) {
+        this.response = response;
+    }
 }

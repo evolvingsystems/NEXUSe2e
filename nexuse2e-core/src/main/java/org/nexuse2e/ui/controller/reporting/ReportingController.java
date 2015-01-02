@@ -47,6 +47,7 @@ import org.nexuse2e.ui.form.ReportingSettingsForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
  * Controller for reporting functionality.
@@ -54,20 +55,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Jonas Reese
  */
 @Controller
+@SessionAttributes("reportingPropertiesForm")
 public class ReportingController extends AbstractReportingController {
     private static Logger LOG = Logger.getLogger(ReportingController.class);
 
 
     @RequestMapping("/ProcessConversationReport.do")
-    public String processConversationReport(Model model, HttpServletRequest request, EngineConfiguration engineConfiguration) throws NexusException {
+    public String processConversationReport(
+            Model model,
+            HttpServletRequest request,
+            EngineConfiguration engineConfiguration,
+            ReportingPropertiesForm form)
+                    throws NexusException {
         
         ReportingSettingsForm reportingSettings = new ReportingSettingsForm();
-        ReportingPropertiesForm form = new ReportingPropertiesForm();
         fillForm(engineConfiguration, reportingSettings, form);
 
         List<String> participants = new ArrayList<>();
         List<PartnerPojo> partners = engineConfiguration.getPartners(Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
-
         for (PartnerPojo partner : partners) {
             participants.add(partner.getPartnerId());
         }
@@ -92,6 +97,8 @@ public class ReportingController extends AbstractReportingController {
         if (StringUtils.isNotBlank(type) && "purge".equals(type)) {
             purge = true;
         }
+        
+        form.setType(type);
         
         String searchFor = form.getSearchFor();
 
@@ -433,7 +440,8 @@ public class ReportingController extends AbstractReportingController {
         }
 
         model.addAttribute("collection", logItems);
-        model.addAttribute("reportingPropertiesForm", reportingSettings);
+        model.addAttribute("reportingSettingsForm", reportingSettings);
+        model.addAttribute("reportingPropertiesForm", form);
 
         return "pages/reporting/transaction_report";
     }

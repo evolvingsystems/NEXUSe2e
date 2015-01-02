@@ -19,24 +19,21 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
 
 /**
- * 
+ * Contains the settings for the reporting screen.
  *
  * @author Jonas Reese
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
-public class ReportingSettingsForm extends ActionForm {
+public class ReportingSettingsForm implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -497,33 +494,5 @@ public class ReportingSettingsForm extends ActionForm {
     public void setPageSize( int pageSize ) {
 
         this.pageSize = pageSize;
-    }
-
-    public void reset( ActionMapping mappping, HttpServletRequest request ) {
-        setConvColSelect( false );
-        setConvColConId( false );
-        setConvColChorId( false );
-        setConvColPartId( false );
-        setConvColStatus( false );
-        setConvColAction( false );
-        setConvColCreated( false );
-        setConvColTurnaround( false );
-
-        setMessColSelect( false );
-        setMessColMessageId( false );
-        setMessColParticipantId( false );
-        setMessColStatus( false );
-        setMessColBackendStatus(false);
-        setMessColType( false );
-        setMessColAction( false );
-        setMessColCreated( false );
-        setMessColTurnaround( false );
-
-        setEngineColSeverity( false );
-        setEngineColIssued( false );
-        setEngineColDescription( false );
-        setEngineColOrigin( false );
-        setEngineColClassName( false );
-        setEngineColmethodName( false );
     }
 }

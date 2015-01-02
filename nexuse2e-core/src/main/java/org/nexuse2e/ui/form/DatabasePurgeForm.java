@@ -19,20 +19,17 @@
  */
 package org.nexuse2e.ui.form;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
 
-public class DatabasePurgeForm extends ActionForm {
+public class DatabasePurgeForm implements Serializable {
 
     private static Logger     LOG              = Logger.getLogger( DatabasePurgeForm.class );
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 4372214059774003553L;
 
     /**
@@ -102,27 +99,13 @@ public class DatabasePurgeForm extends ActionForm {
 
     
     /**
-     * @param mapping
-     * @param request
-     */
-    @Override
-    public void reset( ActionMapping mapping, HttpServletRequest request ) {
-        setStartEnabled( false );
-        setEndEnabled( false );
-        setPurgeLog( false );
-        setPurgeMessages( false );
-    }
-
-    /**
      * 
      */
     public void cleanSettings() {
-
         setStartEnabled( false );
         setEndEnabled( false );
         setPurgeLog( false );
         setPurgeMessages( false );
-
     }
     
     
@@ -414,4 +397,14 @@ public class DatabasePurgeForm extends ActionForm {
         this.messageCount = messageCount;
     }
 
+    public List<Integer> getYearList() {
+        List<Integer> yearList = new ArrayList<Integer>();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 2);
+        for (int i = 0; i < 10; i++) {
+            yearList.add(cal.get(Calendar.YEAR));
+            cal.add(Calendar.YEAR, -1);
+        }
+        return yearList;
+    }
 }
