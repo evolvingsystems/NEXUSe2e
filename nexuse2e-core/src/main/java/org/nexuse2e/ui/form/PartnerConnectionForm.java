@@ -152,6 +152,7 @@ public class PartnerConnectionForm implements Serializable {
         setDescription( con.getDescription() );
         setNxConnectionId( con.getNxConnectionId() );
         setNxPartnerId( con.getPartner().getNxPartnerId() );
+        setPartnerId( con.getPartner().getPartnerId() );
         setNxCertificateId( ( con.getCertificate() == null ? 0 : con.getCertificate().getNxCertificateId() ) );
         setNxTrpId( con.getTrp().getNxTRPId() );
         setTimeout( con.getTimeout() );

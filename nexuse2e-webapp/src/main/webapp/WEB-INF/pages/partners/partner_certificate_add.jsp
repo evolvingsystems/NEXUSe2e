@@ -1,4 +1,4 @@
-<%--
+<!--
 
      NEXUSe2e Business Messaging Open Source
      Copyright 2000-2009, Tamgroup and X-ioma GmbH
@@ -18,17 +18,17 @@
      Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
      02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
---%>
-<%@ taglib uri="/tags/nexus" prefix="nexus" %>
-<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
-<%@ taglib uri="/tags/struts-html" prefix="html" %>
-<%@ taglib uri="/tags/struts-nested" prefix="nested" %>
-<%@ taglib uri="/tags/struts-tiles" prefix="tiles" %>
-<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
-<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %> 
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
 
-<nexus:fileUploadResponse>
-<% /*<nexus:helpBar helpDoc="documentation/Collaboration_Partners.htm"/> */ %>
+    <jsp:directive.page contentType="text/html" />
 
     <table class="NEXUS_TABLE" width="100%">
         <tr>
@@ -39,10 +39,8 @@
         </tr>
     </table>
 
-  <html:form action="PartnerCertificateCreate" enctype="multipart/form-data">
-
-    <html:hidden property="id"/>        
-        
+    <form:form action="PartnerCertificateSave.do" modelAttribute="partnerCertificateForm">
+        <form:hidden path="id"/>        
         <table class="NEXUS_TABLE" width="100%">
             <tr>
                 <td class="NEXUSSection">Collaboration Partner</td>
@@ -54,19 +52,19 @@
             </tr>
             <tr>
                 <td class="NEXUSName">FileName</td>
-                <td class="NEXUSValue"><html:file size="50" property="certificate" onkeypress="return checkKey(event);"/><br>
+                <td class="NEXUSValue"><input size="50" type="file" name="certificate" onkeypress="return checkKey(event);"/><br>
                 <font size="1">browse to select X509 compatible certificate</font></td>
             </tr>
         </table>
         <table class="NEXUS_BUTTON_TABLE">
-          <tr>
-            <td>
-              &nbsp;
-            </td>
-            <td class="NexusHeaderLink" style="text-align: right;">
-              <nexus:submit precondition="true /*certificateCheckFields()*/" sendFileForm="true" styleClass="button"><img src="images/icons/tick.png" class="button">Save</nexus:submit>
-            </td>
-          </tr>
+            <tr>
+                <td>
+                    &#160;
+                </td>
+                <td class="NexusHeaderLink" style="text-align: right;">
+                    <nexus:submit precondition="true /*certificateCheckFields()*/" sendFileForm="true" styleClass="button"><img src="images/icons/tick.png" class="button">Save</nexus:submit>
+                </td>
+            </tr>
         </table>
-    </html:form>
+    </form:form>
 </nexus:fileUploadResponse>

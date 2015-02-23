@@ -22,9 +22,18 @@ package org.nexuse2e.ui.controller.tool;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.UserPojo;
 import org.nexuse2e.ui.form.ConfigurationManagementForm;
 import org.springframework.stereotype.Controller;
@@ -64,5 +73,21 @@ public class ConfigurationController {
             bindingResult.rejectValue("payloadFile", "configuration.import.nofile", "No file uploaded");
             return "pages/tools/configuration_management";
         }
+    }
+
+    @RequestMapping("/ExportConfiguration.do")
+    public void exportConfiguration(HttpServletResponse response, EngineConfiguration engineConfiguration)
+            throws JAXBException, IOException {
+
+        response.setContentType( "text/xml" );
+        response.setHeader( "Content-Disposition", "attachment; filename=\"NEXUSe2e_configuration_"
+                + new SimpleDateFormat( "yyyyMMddHHmm" ).format( new Date() ) + ".xml\"" );
+        JAXBContext jaxbContext = JAXBContext.newInstance( EngineConfiguration.class );
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+        OutputStream os = response.getOutputStream();
+        marshaller.marshal(
+                engineConfiguration.getEngineConfig(), os );
+        os.flush();
     }
 }

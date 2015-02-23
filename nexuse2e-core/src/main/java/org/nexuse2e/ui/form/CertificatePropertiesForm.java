@@ -117,9 +117,9 @@ public class CertificatePropertiesForm implements Serializable {
                     }
                 }
             }
-            if (x509 != null) {
-                setCertificateProperties(x509);
-            }
+        }
+        if (x509 != null) {
+            setCertificateProperties(x509);
         }
         
         setName(cert.getName());

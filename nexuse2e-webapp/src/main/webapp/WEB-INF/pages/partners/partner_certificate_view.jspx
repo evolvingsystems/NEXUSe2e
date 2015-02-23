@@ -104,7 +104,7 @@
                         <td class="NEXUSName">Validity</td>
                         <td class="NEXUSValue">
                             <c:choose>
-                                <c:when test="${cert.valid == 'Okay'}">
+                                <c:when test="${cert.valid}">
                                     <font color="green"><b>${cert.valid}</b></font> ${cert.timeRemaining}
                                 </c:when>
                                 <c:otherwise>
@@ -125,9 +125,18 @@
 
         <table class="NEXUS_BUTTON_TABLE" width="100%">
             <tr>
-                <td>&#160;</td>
-                <td class="NexusHeaderLink"><nexus:submit><img src="images/icons/tick.png" class="button" name="SUBMIT"/>Update</nexus:submit></td>
-                <td class="NexusHeaderLink"><nexus:link href="PartnerCertificateDelete.do?nxPartnerId=${partnerCertificateForm.nxPartnerId}&amp;nxCertificateId=${partnerCertificateForm.nxCertificateId}" precondition="confirmDelete('Are you sure you want to delete this Certificate?')" styleClass="button"><img src="images/icons/delete.png" class="button"/>Delete</nexus:link></td>
+                <td class="BUTTON_LEFT">
+                    <nobr><nexus:link href="PartnerCertificateList.do?nxPartnerId=${partnerCertificateForm.nxPartnerId}" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back</nexus:link></nobr>
+                </td>
+                <td class="BUTTON_RIGHT">
+                    <nobr><a href="DataSaveAs.do?type=partner&amp;format=1&amp;nxCertificateId=${partnerCertificateForm.nxCertificateId}" target="_blank" class="button"><img src="images/icons/disk.png" class="button"/>Export</a></nobr>
+                </td>
+                <td class="NexusHeaderLink">
+                    <nobr><nexus:submit><img src="images/icons/tick.png" class="button" name="SUBMIT"/>Update</nexus:submit></nobr>
+                </td>
+                <td class="NexusHeaderLink">
+                    <nobr><nexus:link href="PartnerCertificateDelete.do?nxPartnerId=${partnerCertificateForm.nxPartnerId}&amp;nxCertificateId=${partnerCertificateForm.nxCertificateId}" precondition="confirmDelete('Are you sure you want to delete this Certificate?')" styleClass="button"><img src="images/icons/delete.png" class="button"/>Delete</nexus:link></nobr>
+                </td>
             </tr>
         </table>
     </form:form>

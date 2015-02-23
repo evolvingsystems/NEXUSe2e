@@ -130,15 +130,15 @@
 
         <table class="NEXUS_BUTTON_TABLE">
           <tr>
-            <td>
-              &#160;
+            <td class="BUTTON_LEFT">
+                <nobr><nexus:link href="PartnerConnectionList.do?nxPartnerId=${partnerConnectionForm.nxPartnerId}" styleClass="button"><img src="images/icons/resultset_previous.png" name="resultsButton" class="button" />Back</nexus:link></nobr>
             </td>
             <td class="NexusHeaderLink" style="text-align: right;">
               <nexus:submit styleClass="button"><img src="images/icons/tick.png" class="button"/>Save</nexus:submit>
             </td>
             <td class="NexusHeaderLink" style="text-align: right;">
             </td>
-              <nexus:link href="PartnerConnectionDelete.do?partnerId=${collaborationPartnerForm.partnerId}&amp;nxConnectionId=${partnerConnectionForm.nxConnectionId}" styleClass="button"><img src="images/icons/delete.png" class="button"/>Delete</nexus:link>
+              <nexus:link href="PartnerConnectionDelete.do?nxPartnerId=${partnerConnectionForm.nxPartnerId}&amp;nxConnectionId=${partnerConnectionForm.nxConnectionId}" styleClass="button"><img src="images/icons/delete.png" class="button"/>Delete</nexus:link>
           </tr>
         </table>
     </form:form>

@@ -932,7 +932,10 @@ public class CertificateController {
                 }
             }
             // Save as...
-            model.addAttribute("downloadLinkUrl", "DataSaveAs.do?type=staging");
+            model.addAttribute("downloadLinkUrl",
+                    "DataSaveAs.do?type=staging&content=" + content +
+                    "&format=" + format +
+                    "&nxCertificateId=" + form.getNxCertificateId());
         }
 
         return stagingExportCertificate(form, engineConfiguration);

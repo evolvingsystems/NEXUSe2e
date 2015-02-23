@@ -59,6 +59,7 @@ import org.nexuse2e.ui.form.CertificatePropertiesForm;
 import org.nexuse2e.ui.form.CollaborationPartnerForm;
 import org.nexuse2e.ui.form.PartnerCertificateForm;
 import org.nexuse2e.ui.form.PartnerConnectionForm;
+import org.nexuse2e.ui.form.ProtectedFileAccessForm;
 import org.nexuse2e.util.CertificateUtil;
 import org.nexuse2e.util.EncryptionUtil;
 import org.springframework.stereotype.Controller;
@@ -127,6 +128,43 @@ public class PartnerController {
         }
         
         return serverIdentities(model, Integer.toString(Constants.PARTNER_TYPE_LOCAL), request, engineConfiguration);
+    }
+    
+    @RequestMapping("/CollaborationPartners.do")
+    public String collaborationPartners(
+            Model model,
+            @RequestParam(value = "type", defaultValue = "2") int type,
+            EngineConfiguration engineConfiguration) throws NexusException {
+
+        List<CollaborationPartnerForm> partners = new ArrayList<CollaborationPartnerForm>();
+        List<PartnerPojo> partnerPojos = null;
+        if (type == 1) {
+            partnerPojos = engineConfiguration.getPartners(
+                    Constants.PARTNER_TYPE_LOCAL, Constants.PARTNERCOMPARATOR );
+
+        } else {
+            partnerPojos = engineConfiguration.getPartners(
+                    Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR );
+        }
+
+        for (PartnerPojo partner : partnerPojos) {
+            CollaborationPartnerForm cpf = new CollaborationPartnerForm();
+            cpf.setProperties( partner );
+            partners.add( cpf );
+        }
+        model.addAttribute("TYPE", type);
+        if (type == 1) {
+            model.addAttribute("HEADLINE", "Server Identities");
+            model.addAttribute("BUTTONTEXT", "Add Server Identity");
+
+        } else {
+            model.addAttribute("HEADLINE", "Collaboration Partners");
+            model.addAttribute("BUTTONTEXT", "Add Collaboration Partner");
+        }
+
+        model.addAttribute("collection", partners);
+
+        return "pages/partners/partners";
     }
     
     @RequestMapping("/CollaborationPartnerAdd.do")
@@ -222,7 +260,7 @@ public class PartnerController {
             PartnerConnectionForm form,
             EngineConfiguration engineConfiguration) throws NexusException {
 
-        form.cleanSettings();
+        PartnerPojo partner = engineConfiguration.getPartnerByNxPartnerId(form.getNxPartnerId());
 
         // defaults
         form.setReliable(true);
@@ -230,7 +268,6 @@ public class PartnerController {
         form.setTimeout(30);
         form.setMessageInterval(30);
 
-        PartnerPojo partner = engineConfiguration.getPartnerByPartnerId(form.getPartnerId());
         form.setCertificates(partner.getCertificates());
         form.setTrps(engineConfiguration.getTrps());
 
@@ -324,10 +361,12 @@ public class PartnerController {
             Model model,
             EngineConfiguration engineConfiguration) throws NexusException {
 
-        PartnerPojo partner = engineConfiguration.getPartnerByPartnerId(form.getPartnerId());
+        PartnerPojo partner = engineConfiguration.getPartnerByNxPartnerId(form.getNxPartnerId());
         try {
             ConnectionPojo connection = engineConfiguration.getConnectionFromPartnerByNxConnectionId(partner, form.getNxConnectionId());
-            engineConfiguration.deleteConnection( connection );
+            if (connection != null) {
+                engineConfiguration.deleteConnection( connection );
+            }
         } catch (ReferencedConnectionException e) {
             for (ParticipantPojo participant : e.getReferringObjects()) {
                 bindingResult.reject(
@@ -335,7 +374,7 @@ public class PartnerController {
                         new Object[] { participant.getChoreography().getName() },
                         "Connection referenced by choreography " + participant.getChoreography().getName());
             }
-            return "pages/partners/partner_connection_view";
+            return partnerConnectionView(form, engineConfiguration);
         }
 
         CollaborationPartnerForm collaborationPartnerForm = new CollaborationPartnerForm();
@@ -387,6 +426,16 @@ public class PartnerController {
         
         return partnerInfoView(form, engineConfiguration);
     }
+
+    @RequestMapping("/PartnerCertificateAdd.do")
+    public String partnerCertificateAdd(
+            @RequestParam("partnerId") String partnerId,
+            ProtectedFileAccessForm form,
+            EngineConfiguration engineConfiguration) throws NexusException {
+
+            form.setId( partnerId );
+            return "pages/partners/partner_certificate_add";
+        }
 
     @RequestMapping("/PartnerCertificateView.do")
     public String partnerCertificateView(Model model, PartnerCertificateForm form, EngineConfiguration engineConfiguration)

@@ -66,11 +66,11 @@
   </table>
     <table class="NEXUS_BUTTON_TABLE">
       <tr>
-         <td>
+        <td>
           &#160;
         </td>
         <td class="BUTTON_RIGHT" style="text-align: right;">
-          <nexus:link href="PartnerConnectionAdd.do?partnerId=${collaborationPartnerForm.partnerId}" styleClass="button"><img src="images/icons/add.png" class="button"/>Add Connection</nexus:link>
+          <nexus:link href="PartnerConnectionAdd.do?nxPartnerId=${collaborationPartnerForm.nxPartnerId}" styleClass="button"><img src="images/icons/add.png" class="button"/>Add Connection</nexus:link>
         </td>
       </tr>
     </table>
