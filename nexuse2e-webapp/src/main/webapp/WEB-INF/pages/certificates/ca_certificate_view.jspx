@@ -116,7 +116,10 @@
             </td>
             <td class="BUTTON_RIGHT">
                 <nobr>
-                    <nexus:link href="CACertificateDelete.do?nxCertificateId=${certificatePropertiesForm.nxCertificateId}" styleClass="NexusHeaderLink">
+                    <a href="DataSaveAs.do?type=cacert&amp;format=1&amp;nxCertificateId=${certificatePropertiesForm.nxCertificateId}" target="_blank" class="button"><img src="images/icons/disk.png" class="button"/>Export</a>
+                </nobr>
+                <nobr>
+                    <nexus:link href="CACertificateDelete.do?nxCertificateId=${certificatePropertiesForm.nxCertificateId}" styleClass="button">
                         <img src="images/icons/delete.png" class="button"/>Delete
                     </nexus:link>
                 </nobr>

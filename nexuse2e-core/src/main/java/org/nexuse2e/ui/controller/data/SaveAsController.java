@@ -117,6 +117,35 @@ public class SaveAsController {
                 OutputStream os = response.getOutputStream();
                 os.write(data);
                 os.flush();
+            } else if (type.equals("cacert")) {
+                byte[] data = new byte[0];
+                
+                int format = form.getFormat();
+                int nxCertificateId = form.getNxCertificateId();
+                String filename = "unknown";
+                if (format == ProtectedFileAccessForm.PEM) {
+                    filename = "ca_certificate.pem";
+                } else {
+                    filename = "ca_certificate.der";
+                }
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+                
+                CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.CA.getOrdinal(), nxCertificateId);
+                if (cPojo == null) {
+                    return;
+                }
+                
+                X509Certificate cert = CertificateUtil.getX509Certificate(cPojo);
+                if (format == ProtectedFileAccessForm.PEM) {
+                    data = CertificateUtil.getPemData(cert).getBytes();
+                } else {
+                    data = cert.getEncoded();
+                }
+                
+                response.setContentLength(data.length);
+                OutputStream os = response.getOutputStream();
+                os.write(data);
+                os.flush();
             } else if (type.equals("staging")) {
                 byte[] data = new byte[0];
     
