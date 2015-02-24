@@ -1,0 +1,97 @@
+<!--
+
+     NEXUSe2e Business Messaging Open Source
+     Copyright 2000-2009, Tamgroup and X-ioma GmbH
+
+     This is free software; you can redistribute it and/or modify it
+     under the terms of the GNU Lesser General Public License as
+     published by the Free Software Foundation version 2.1 of
+     the License.
+
+     This software is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this software; if not, write to the Free
+     Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:nexus="/tags/nexus"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:tiles="http://tiles.apache.org/tags-tiles"
+    version="2.0">
+
+    <form:form modelAttribute="choreographyForm" action="ChoreographyUpdate.do">
+        <form:hidden path="nxChoreographyId"/>
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td>
+                    <nexus:crumbs/>
+                </td>
+            </tr>
+            <tr>
+                <td class="NEXUSScreenName">${choreographyForm.choreographyName}</td>
+            </tr>
+        </table>
+        
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td class="NEXUSName">Description</td>
+                <td class="NEXUSValue"><form:input path="description"/></td>
+            </tr>
+        </table>
+        
+        
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td class="NEXUSIcon">
+                    <nexus:link href="Actions.do?Target=ClusterTest&amp;Type=View" styleClass="NexusImgLink"><img src="images/icons/lightning.png" border="0"/></nexus:link>
+                </td>
+                <td class="NEXUSNameNoWidth">
+                    <nexus:link href="ActionsList.do?choreographyId=${choreographyForm.choreographyName}" styleClass="NexusLink">Actions</nexus:link>
+                </td>
+            </tr>
+            <tr>
+                <td class="NEXUSIcon">
+                    <nexus:link href="Notifiers.do?Target=ClusterTest&amp;Type=View" styleClass="NexusImgLink"><img src="images/icons/transmit_blue.png" border="0"/></nexus:link>
+                </td>
+                <td class="NEXUSNameNoWidth">
+                    <nexus:link href="NotifierList.do?choreographyId=${choreographyForm.choreographyName}" styleClass="NexusLink">Notifiers</nexus:link>
+                </td>
+            </tr>
+            <tr>
+                <td class="NEXUSIcon">
+                    <nexus:link href="ParticipantList.do?choreographyId=${choreographyForm.choreographyName}" styleClass="NexusImgLink"><img src="images/icons/group.png" border="0"/></nexus:link>
+                </td>
+                <td class="NEXUSNameNoWidth">
+                    <nexus:link href="ParticipantList.do?choreographyId=${choreographyForm.choreographyName}" styleClass="NexusLink">Participants</nexus:link>
+                </td>
+            </tr>
+            <tr>
+                <td class="NEXUSIcon">
+                    <nexus:link href="ReportingForward.do?noReset&amp;refresh&amp;type=transaction" styleClass="NexusImgLink"><img src="images/icons/report.png" border="0"/></nexus:link>
+                </td>
+                <td class="NEXUSNameNoWidth">
+                    <nexus:link href="ReportingForward.do?noReset&amp;refresh&amp;type=transaction" styleClass="NexusLink">Reports</nexus:link>
+                </td>
+            </tr>
+        </table>
+
+        <form:errors element="div" cssClass="NexusError" path="*"/>
+
+        <table class="NEXUS_BUTTON_TABLE" width="100%">
+            <tr>
+                <td>&#160;</td>
+                <td class="NexusHeaderLink"><nexus:submit styleClass="button"><img src="images/icons/tick.png" class="button"/>Update</nexus:submit></td>
+                <td class="NexusHeaderLink"><nexus:link href="ChoreographyDelete.do?choreographyName=${choreographyForm.choreographyName}" precondition="confirmDelete('Are you sure you want to delete this Choreography and all associated records?')" styleClass="button"><img src="images/icons/delete.png" class="button"/>Delete</nexus:link></td>
+            </tr>
+        </table>
+    </form:form>
+</jsp:root>

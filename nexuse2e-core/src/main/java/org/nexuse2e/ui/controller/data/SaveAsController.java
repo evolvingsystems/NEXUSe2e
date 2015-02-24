@@ -101,12 +101,17 @@ public class SaveAsController {
                 }
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
                 
-                CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.PARTNER.getOrdinal(), nxCertificateId);
+                CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), nxCertificateId);
                 if (cPojo == null) {
                     return;
                 }
-                
-                X509Certificate cert = CertificateUtil.getX509Certificate(cPojo);
+                X509Certificate cert;
+                if (cPojo.isX509()) {
+                    cert = CertificateUtil.getX509Certificate(cPojo);
+                } else {
+                    KeyStore keyStore = CertificateUtil.getPKCS12KeyStore(cPojo);
+                    cert = CertificateUtil.getHeadCertificate(keyStore);
+                }
                 if (format == ProtectedFileAccessForm.PEM) {
                     data = CertificateUtil.getPemData(cert).getBytes();
                 } else {

@@ -19,9 +19,11 @@
  */
 package org.nexuse2e.ui.form;
 
-import java.util.Vector;
+import java.io.Serializable;
+import java.util.Collection;
 
-import org.apache.struts.action.ActionForm;
+import javax.validation.constraints.Size;
+
 import org.nexuse2e.pojo.ActionPojo;
 import org.nexuse2e.pojo.ChoreographyPojo;
 import org.nexuse2e.pojo.ParticipantPojo;
@@ -29,125 +31,80 @@ import org.nexuse2e.pojo.ParticipantPojo;
 /**
  * @author guido.esch
  */
-public class ChoreographyForm extends ActionForm {
+public class ChoreographyForm implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 6527987381436278179L;
 
-    int                       nxChoreographyId = 0;
-    String                    choreographyName;
-    String                    description;
-    String                    lastModifiedUserId;
-    Vector<ActionPojo>        actions;
-    Vector<ParticipantPojo>   participants;
+    private int                       nxChoreographyId = 0;
+    private String                    choreographyName;
+    private String                    description;
+    private String                    lastModifiedUserId;
+    private Collection<ActionPojo>    actions;
+    private Collection<ParticipantPojo> participants;
 
-    public void setProperties( ChoreographyPojo choreographyPojo ) {
+    public void setProperties(ChoreographyPojo choreographyPojo) {
 
-        setNxChoreographyId( choreographyPojo.getNxChoreographyId() );
-        setChoreographyName( choreographyPojo.getName() );
-        setDescription( choreographyPojo.getDescription() );
-        setLastModifiedUserId( "" + choreographyPojo.getModifiedNxUserId() );
+        setNxChoreographyId(choreographyPojo.getNxChoreographyId());
+        setChoreographyName(choreographyPojo.getName());
+        setDescription(choreographyPojo.getDescription());
+        setLastModifiedUserId("" + choreographyPojo.getModifiedNxUserId());
     }
 
-    public ChoreographyPojo getProperties( ChoreographyPojo choreographyPojo ) {
+    public ChoreographyPojo getProperties(ChoreographyPojo choreographyPojo) {
 
-        choreographyPojo.setNxChoreographyId( getNxChoreographyId() );
-        choreographyPojo.setName( getChoreographyName() );
-        choreographyPojo.setDescription( getDescription() );
-        choreographyPojo.setModifiedNxUserId( new Integer( getLastModifiedUserId() ).intValue() );
+        choreographyPojo.setNxChoreographyId(getNxChoreographyId());
+        choreographyPojo.setName(getChoreographyName());
+        choreographyPojo.setDescription(getDescription());
+        choreographyPojo.setModifiedNxUserId(new Integer(getLastModifiedUserId()).intValue());
         return choreographyPojo;
     }
 
-    /**
-     * @return the choreographyName
-     */
+    @Size(min = 1, message = "{choreography.error.name.required}")
     public String getChoreographyName() {
-
         return choreographyName;
     }
 
-    /**
-     * @param choreographyName the choreographyName to set
-     */
-    public void setChoreographyName( String choreographyName ) {
-
+    public void setChoreographyName(String choreographyName) {
         this.choreographyName = choreographyName;
     }
 
-    /**
-     * @return the description
-     */
     public String getDescription() {
-
         return description;
     }
 
-    /**
-     * @param description the description to set
-     */
-    public void setDescription( String description ) {
-
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    /**
-     * @return the lastModifiedUserId
-     */
     public String getLastModifiedUserId() {
-
         return lastModifiedUserId;
     }
 
-    /**
-     * @param lastModifiedUserId the lastModifiedUserId to set
-     */
-    public void setLastModifiedUserId( String lastModifiedUserId ) {
-
+    public void setLastModifiedUserId(String lastModifiedUserId) {
         this.lastModifiedUserId = lastModifiedUserId;
     }
 
-    /**
-     * @return the actions
-     */
-    public Vector getActions() {
-
+    public Collection<ActionPojo> getActions() {
         return actions;
     }
 
-    /**
-     * @param actions the actions to set
-     */
-    public void setActions( Vector actions ) {
-
+    public void setActions(Collection<ActionPojo> actions) {
         this.actions = actions;
     }
 
-    /**
-     * @return the participants
-     */
-    public Vector getParticipants() {
-
+    public Collection<ParticipantPojo> getParticipants() {
         return participants;
     }
 
-    /**
-     * @param participants the participants to set
-     */
-    public void setParticipants( Vector participants ) {
-
+    public void setParticipants(Collection<ParticipantPojo> participants) {
         this.participants = participants;
     }
 
     public int getNxChoreographyId() {
-
         return nxChoreographyId;
     }
 
-    public void setNxChoreographyId( int nxChoreographyId ) {
-
+    public void setNxChoreographyId(int nxChoreographyId) {
         this.nxChoreographyId = nxChoreographyId;
     }
-
 }
