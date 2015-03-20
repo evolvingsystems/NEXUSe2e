@@ -122,7 +122,7 @@ public class TransportSender extends AbstractPipelet {
         // re-initialize when service is changed
         if ( SERVICE_PARAM_NAME.equals( name ) ) {
             Object v = getParameter( name );
-            if ( v == null && value != null || value == null && v != null || !( v.equals( value ) ) ) {
+            if (v == null && value != null || value == null && v != null || v != null && !v.equals( value )) {
                 try {
                     initialize( Engine.getInstance().getCurrentConfiguration() );
                 } catch ( InstantiationException e ) {
