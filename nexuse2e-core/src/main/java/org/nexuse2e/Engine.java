@@ -42,7 +42,9 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.nexuse2e.configuration.BaseConfigurationProvider;
 import org.nexuse2e.configuration.ConfigurationAccessService;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -61,6 +63,7 @@ import org.nexuse2e.messaging.ebxml.EBXMLTimestampFormatter;
 import org.nexuse2e.messaging.mime.binary_base64;
 import org.nexuse2e.service.Service;
 import org.nexuse2e.util.CertificateUtil;
+import org.nexuse2e.util.DBInterceptor;
 import org.nexuse2e.util.XMLUtil;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNameAware;
@@ -287,6 +290,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
      */
     public void initialize() throws InstantiationException {
 
+
         try {
             // undefined - no db connection, spring not configured.
             // instanciated - db connected, string config loaded.
@@ -304,6 +308,8 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
                 localSessionFactoryBean = (LocalSessionFactoryBean) getBeanFactory().getBean(
                         "&hibernateSessionFactory" );
                 if ( localSessionFactoryBean != null ) {
+
+                    localSessionFactoryBean.getConfiguration().setInterceptor(new DBInterceptor());
                     // localSessionFactoryBean.createDatabaseSchema();
 //                    localSessionFactoryBean.updateDatabaseSchema();
 

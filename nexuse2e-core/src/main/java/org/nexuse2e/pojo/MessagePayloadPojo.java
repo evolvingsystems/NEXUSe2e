@@ -77,6 +77,9 @@ public class MessagePayloadPojo implements NEXUSe2ePojo {
     @Lob
     private byte[]            payloadData;
 
+    @Column(name = "payload_text", length = 33554432, nullable = true, columnDefinition="TEXT")
+    private String            payloadText;
+
     @Column(name = "created_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date              createdDate;
@@ -299,4 +302,11 @@ public class MessagePayloadPojo implements NEXUSe2ePojo {
         this.charset = charset;
     }
 
+    public String getPayloadText() {
+        return payloadText;
+    }
+
+    public void setPayloadText(String payloadText) {
+        this.payloadText = payloadText;
+    }
 }
