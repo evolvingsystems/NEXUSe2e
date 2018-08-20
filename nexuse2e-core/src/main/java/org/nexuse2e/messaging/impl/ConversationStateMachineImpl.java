@@ -33,6 +33,7 @@ import org.nexuse2e.MessageBackendStatus;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.controller.StateTransitionException;
+import org.nexuse2e.controller.TransactionService;
 import org.nexuse2e.dao.UpdateTransactionOperation;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.ConversationStateMachine;
@@ -412,7 +413,7 @@ public class ConversationStateMachineImpl implements ConversationStateMachine {
             UpdateTransactionOperation operation = new UpdateTransactionOperation() {
                 public UpdateScope update(ConversationPojo conversation, MessagePojo message, MessagePojo referencedMessage) throws NexusException, StateTransitionException {
                     message.setStatus( MessageStatus.SENT.getOrdinal() );
-                    message.setBackendStatus(MessageBackendStatus.SENT.getOrdinal());
+                    message.setBackendStatus(MessageBackendStatus.PROCESSED.getOrdinal());
                     message.setModifiedDate( new Date() );
                     message.setEndDate( message.getModifiedDate() );
                     
@@ -462,16 +463,19 @@ public class ConversationStateMachineImpl implements ConversationStateMachine {
     public void processingFailed() throws StateTransitionException, NexusException {
 
         UpdateTransactionOperation operation = new UpdateTransactionOperation() {
-            public UpdateScope update(ConversationPojo conversation, MessagePojo message, MessagePojo referencedMessage) throws NexusException, StateTransitionException {
+            public UpdateScope update(ConversationPojo conversation, MessagePojo message, MessagePojo referencedMessage)
+                    throws NexusException, StateTransitionException {
                 if (conversation.getStatus() == Constants.CONVERSATION_STATUS_COMPLETED) {
                     throw new StateTransitionException( "Conversation " + conversation.getConversationId() + " cannot be set from status " 
                              + ConversationPojo.getStatusName( conversation.getStatus() ) + " to status "
                              + ConversationPojo.getStatusName( Constants.CONVERSATION_STATUS_ERROR ) );
                 }
-
                 message.setStatus( MessageStatus.FAILED.getOrdinal() );
                 conversation.setStatus( Constants.CONVERSATION_STATUS_ERROR );
-                
+                if(!message.isOutbound()) {
+                    message.setBackendStatus(MessageBackendStatus.FAILED.getOrdinal());
+                }
+
                 return UpdateScope.CONVERSATION_AND_MESSAGE;
             }
             

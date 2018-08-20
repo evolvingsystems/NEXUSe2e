@@ -84,7 +84,7 @@ public class BackendPipeline extends AbstractPipeline implements ActionSpecific 
             if (messageContext.getMessagePojo().isOutbound()) {
                 messageContext.getMessagePojo().setBackendStatus(MessageBackendStatus.OUTBOUND.getOrdinal());
             } else {
-                messageContext.getMessagePojo().setBackendStatus(MessageBackendStatus.SENT.getOrdinal());
+                messageContext.getMessagePojo().setBackendStatus(MessageBackendStatus.PROCESSED.getOrdinal());
             }
             messageContext = pipelineEndpoint.processMessage( messageContext );
 

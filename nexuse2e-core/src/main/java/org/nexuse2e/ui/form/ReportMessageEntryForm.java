@@ -121,8 +121,8 @@ public class ReportMessageEntryForm extends ActionForm {
         switch (MessageBackendStatus.getByOrdinal(messagePojo.getBackendStatus())) {
             case FAILED:
                 setBackendStatus("Failed");
-            case SENT:
-                setBackendStatus("Sent");
+            case PROCESSED:
+                setBackendStatus("Processed");
             default:
                 setBackendStatus("Unknown");
         }
