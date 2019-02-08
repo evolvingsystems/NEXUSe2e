@@ -483,8 +483,6 @@ public class ProcessConversationReportAction extends ReportingAction {
 
     /**
      * @param form
-     *
-     *
      * @return
      */
     private Date getEndDate(ReportingPropertiesForm form) {
