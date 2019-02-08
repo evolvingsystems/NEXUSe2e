@@ -21,6 +21,7 @@ package org.nexuse2e.ui.action.reporting;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -223,16 +224,21 @@ public class ProcessEngineLogAction extends ReportingAction {
      */
     private Date getEndDate( ReportingPropertiesForm form ) {
 
-        Date startDate = null;
-        String time = form.getEndYear() + form.getEndMonth() + form.getEndDay() + form.getEndHour() + form.getEndMin();
-        SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMddhhmm" );
-        try {
-            startDate = sdf.parse( time );
-        } catch ( ParseException e ) {
-            e.printStackTrace();
+        Calendar endCal = Calendar.getInstance();
+        endCal.set(Calendar.YEAR, Integer.parseInt(form.getEndYear()));
+        endCal.set(Calendar.MONTH, Integer.parseInt(form.getEndMonth()) - 1);
+        int maxDay = endCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int selectedDay = Integer.parseInt(form.getEndDay());
+        if (maxDay < selectedDay) {
+            selectedDay = maxDay;
         }
+        endCal.set(Calendar.DAY_OF_MONTH, selectedDay);
+        endCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(form.getEndHour()));
+        endCal.set(Calendar.MINUTE, Integer.parseInt(form.getEndMin()));
+        endCal.set(Calendar.SECOND, 0);
+        endCal.set(Calendar.MILLISECOND, 0);
 
-        return startDate;
+        return endCal.getTime();
     }
 
     /**
@@ -241,16 +247,20 @@ public class ProcessEngineLogAction extends ReportingAction {
      */
     private Date getStartDate( ReportingPropertiesForm form ) {
 
-        Date endDate = null;
-        String time = form.getStartYear() + form.getStartMonth() + form.getStartDay() + form.getStartHour()
-                + form.getStartMin();
-        SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMddhhmm" );
-        try {
-            endDate = sdf.parse( time );
-        } catch ( ParseException e ) {
-            e.printStackTrace();
+        Calendar startCal = Calendar.getInstance();
+        startCal.set(Calendar.YEAR, Integer.parseInt(form.getStartYear()));
+        startCal.set(Calendar.MONTH, Integer.parseInt(form.getStartMonth()) - 1);
+        int maxDay = startCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int selectedDay = Integer.parseInt(form.getStartDay());
+        if (maxDay < selectedDay) {
+            selectedDay = maxDay;
         }
+        startCal.set(Calendar.DAY_OF_MONTH, selectedDay);
+        startCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(form.getStartHour()));
+        startCal.set(Calendar.MINUTE, Integer.parseInt(form.getStartMin()));
+        startCal.set(Calendar.SECOND, 0);
+        startCal.set(Calendar.MILLISECOND, 0);
 
-        return endDate;
+        return startCal.getTime();
     }
 } // ProcessEngineLogAction

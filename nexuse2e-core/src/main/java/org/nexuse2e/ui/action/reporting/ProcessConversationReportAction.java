@@ -491,16 +491,21 @@ public class ProcessConversationReportAction extends ReportingAction {
             return null;
         }
 
-        Calendar startCal = Calendar.getInstance();
-        startCal.set(Calendar.YEAR, Integer.parseInt(form.getEndYear()));
-        startCal.set(Calendar.MONTH, Integer.parseInt(form.getEndMonth()) - 1);
-        startCal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(form.getEndDay()));
-        startCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(form.getEndHour()));
-        startCal.set(Calendar.MINUTE, Integer.parseInt(form.getEndMin()));
-        startCal.set(Calendar.SECOND, 0);
-        startCal.set(Calendar.MILLISECOND, 0);
+        Calendar endCal = Calendar.getInstance();
+        endCal.set(Calendar.YEAR, Integer.parseInt(form.getEndYear()));
+        endCal.set(Calendar.MONTH, Integer.parseInt(form.getEndMonth()) - 1);
+        int maxDay = endCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int selectedDay = Integer.parseInt(form.getEndDay());
+        if (maxDay < selectedDay) {
+            selectedDay = maxDay;
+        }
+        endCal.set(Calendar.DAY_OF_MONTH, selectedDay);
+        endCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(form.getEndHour()));
+        endCal.set(Calendar.MINUTE, Integer.parseInt(form.getEndMin()));
+        endCal.set(Calendar.SECOND, 0);
+        endCal.set(Calendar.MILLISECOND, 0);
 
-        return startCal.getTime();
+        return endCal.getTime();
     }
 
     /**
@@ -515,7 +520,12 @@ public class ProcessConversationReportAction extends ReportingAction {
         Calendar startCal = Calendar.getInstance();
         startCal.set(Calendar.YEAR, Integer.parseInt(form.getStartYear()));
         startCal.set(Calendar.MONTH, Integer.parseInt(form.getStartMonth()) - 1);
-        startCal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(form.getStartDay()));
+        int maxDay = startCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int selectedDay = Integer.parseInt(form.getStartDay());
+        if (maxDay < selectedDay) {
+            selectedDay = maxDay;
+        }
+        startCal.set(Calendar.DAY_OF_MONTH, selectedDay);
         startCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(form.getStartHour()));
         startCal.set(Calendar.MINUTE, Integer.parseInt(form.getStartMin()));
         startCal.set(Calendar.SECOND, 0);
