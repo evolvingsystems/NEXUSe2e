@@ -9,7 +9,7 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-name: $(BuildID)
+name: $(TeamProject)_$(BuildDefinitionName)_$(BuildID)
 steps:
 - task: Maven@3
   inputs:
