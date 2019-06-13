@@ -14,6 +14,13 @@ pool:
 
 name: $(BuildID)
 steps:
+steps:
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'echo $Sonartype.somevariable'
+
 - task: Maven@3
   inputs:
     mavenPomFile: './nexuse2e-parent/pom.xml'
