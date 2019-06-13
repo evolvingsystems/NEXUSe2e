@@ -24,10 +24,11 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: './nexuse2e-core/pom.xml'
-    mavenOptions: '-Xmx3072m -s $(System.DefaultWorkingDirectory)/ci-settings.xml'
+    mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
     publishJUnitResults: false
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'clean package'
+    options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml'
