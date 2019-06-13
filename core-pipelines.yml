@@ -31,4 +31,5 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'clean package'
-    options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml'
+    options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
+-Dmaven.wagon.http.ssl.allowall=true'
