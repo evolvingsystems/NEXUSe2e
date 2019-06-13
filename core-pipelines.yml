@@ -14,13 +14,6 @@ pool:
 
 name: $(BuildID)
 steps:
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'echo $MySecret'
-  env:
-    MySecret: $(somevariable)
 - task: Maven@3
   inputs:
     mavenPomFile: './nexuse2e-core/pom.xml'
