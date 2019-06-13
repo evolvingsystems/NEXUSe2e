@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <!--
+    <mirrors>
+        <!--
+        <mirror>
+            <id>mirror.central</id>
+            <name>Lokal Proxy of Central</name>
+            <url>https://dev.direkt-gruppe.de/nexus/content/groups/comp</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+        <mirror>
+            <id>mirror.codehaus-snapshots</id>
+            <name>Lokal Proxy of Codehaus Snapshots</name>
+            <url>https://dev.direkt-gruppe.de/nexus/content/groups/comp-snapshots</url>
+            <mirrorOf>codehaus-snapshots</mirrorOf>
+        </mirror>
+        <mirror>
+            <id>java.net</id>
+            <name>Lokal Proxy of java.net</name>
+            <url>https://dev.direkt-gruppe.de/nexus/content/groups/comp</url>
+            <mirrorOf>java.net</mirrorOf>
+        </mirror>
+        
+    </mirrors>
+    -->
+    <!--
+    <servers>
+        
+        <server>
+            <id>comp</id>
+            <username>${nexus.user}</username>
+            <password>${nexus.password}</password>
+        </server>
+        <server>
+            <id>comp-snapshots</id>
+            <username>${nexus.user}</username>
+            <password>${nexus.password}</password>
+        </server>
+        <server>
+            <id>so-releases</id>
+            <username>${nexus.user}</username>
+            <password>${nexus.password}</password>
+        </server>
+        <server>
+            <id>so-snapshots</id>
+            <username>${nexus.user}</username>
+            <password>${nexus.password}</password>
+        </server>
+        <server>
+            <id>so-thirdparty</id>
+            <username>${nexus.user}</username>
+            <password>${nexus.password}</password>
+        </server>
+        
+    </servers>
+    -->
+    <profiles>
+        <profile>
+            <id>solutions-direkt</id>
+            <properties>
+                <distribution.release.repoId>so-releases</distribution.release.repoId>
+                <distribution.release.repoName>solutions direkt Releases</distribution.release.repoName>
+                <distribution.release.repoUrl>https://dev.direkt-gruppe.de/nexus/content/repositories/so-releases</distribution.release.repoUrl>
+                <distribution.snapshot.repoId>so-snapshots</distribution.snapshot.repoId>
+                <distribution.snapshot.repoName>solutions direkt Snapshots</distribution.snapshot.repoName>
+                <distribution.snapshot.repoUrl>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</distribution.snapshot.repoUrl>
+            </properties>
+            <repositories>
+                <repository>
+                    <id>comp</id>
+                    <name>Comprehensive group repository</name>
+                    <layout>default</layout>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/groups/comp</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>comp-snapshots</id>
+                    <name>Comprehensive group snapshot repository</name>
+                    <layout>default</layout>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/groups/comp-snapshots</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Repository Switchboard</name>
+                    <layout>default</layout>
+                    <url>http://repo1.maven.org/maven2</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>codehaus-snapshots</id>
+                    <name>Maven Snapshots Repository of Codehaus</name>
+                    <layout>default</layout>
+                    <url>http://snapshots.repository.codehaus.org</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>so-releases</id>
+                    <name>solutions direkt Releases</name>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-releases</url>
+                    <layout>default</layout>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>so-snapshots</id>
+                    <name>solutions direkt Snapshots</name>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</url>
+                    <layout>default</layout>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>so-thirdparty</id>
+                    <name>solutions direkt 3rd Party</name>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-thirdparty</url>
+                    <layout>default</layout>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>comp</id>
+                    <name>Comprehensive group repository</name>
+                    <layout>default</layout>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/groups/comp</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>central</id>
+                    <name>Maven Repository Switchboard</name>
+                    <layout>default</layout>
+                    <url>http://repo1.maven.org/maven2</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>so-releases</id>
+                    <name>solutions direkt Releases</name>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-releases</url>
+                    <layout>default</layout>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>so-snapshots</id>
+                    <name>solutions direkt Snapshots</name>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</url>
+                    <layout>default</layout>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>so-thirdparty</id>
+                    <name>solutions direkt 3rd Party</name>
+                    <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-thirdparty</url>
+                    <layout>default</layout>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+        
+    </profiles>
+    <activeProfiles>
+        <activeProfile>solutions-direkt</activeProfile>
+    </activeProfiles>
+</settings>
