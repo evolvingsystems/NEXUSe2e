@@ -18,7 +18,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'echo $somevariable'
+    script: 'echo $global_variable'
 
 - task: Maven@3
   inputs:
