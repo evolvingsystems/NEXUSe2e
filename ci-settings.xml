@@ -28,27 +28,27 @@
     <servers>
         <server>
             <id>comp</id>
-            <username>${nexuse2e.user}</username>
+            <username>${nexuse2e.username}</username>
             <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>comp-snapshots</id>
-            <username>${nexuse2e.user}</username>
+            <username>${nexuse2e.username}</username>
             <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>so-releases</id>
-            <username>${nexuse2e.user}</username>
+            <username>${nexuse2e.username}</username>
             <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>so-snapshots</id>
-            <username>${nexuse2e.user}</username>
+            <username>${nexuse2e.username}</username>
             <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>so-thirdparty</id>
-            <username>${nexuse2e.user}</username>
+            <username>${nexuse2e.username}</username>
             <password>${nexuse2e.password}</password>
         </server>
     </servers>
