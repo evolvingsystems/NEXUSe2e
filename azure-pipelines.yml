@@ -20,7 +20,7 @@ steps:
     targetType: 'inline'
     script: 'echo $MySecret'
   env:
-    MySecret: $(System.DefaultWorkingDirectory)
+    MySecret: $(somevariable)
 - task: Maven@3
   inputs:
     mavenPomFile: './nexuse2e-parent/pom.xml'
