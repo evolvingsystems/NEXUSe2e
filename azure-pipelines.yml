@@ -18,8 +18,9 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'echo $global_variable'
-
+    script: 'echo $MySecret'
+    env:
+      MySecret: $(somevariable)
 - task: Maven@3
   inputs:
     mavenPomFile: './nexuse2e-parent/pom.xml'
