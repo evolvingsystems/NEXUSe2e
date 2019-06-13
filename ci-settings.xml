@@ -25,37 +25,33 @@
         
     </mirrors>
     -->
-    <!--
     <servers>
-        
         <server>
             <id>comp</id>
-            <username>${nexus.user}</username>
-            <password>${nexus.password}</password>
+            <username>${nexuse2e.user}</username>
+            <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>comp-snapshots</id>
-            <username>${nexus.user}</username>
-            <password>${nexus.password}</password>
+            <username>${nexuse2e.user}</username>
+            <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>so-releases</id>
-            <username>${nexus.user}</username>
-            <password>${nexus.password}</password>
+            <username>${nexuse2e.user}</username>
+            <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>so-snapshots</id>
-            <username>${nexus.user}</username>
-            <password>${nexus.password}</password>
+            <username>${nexuse2e.user}</username>
+            <password>${nexuse2e.password}</password>
         </server>
         <server>
             <id>so-thirdparty</id>
-            <username>${nexus.user}</username>
-            <password>${nexus.password}</password>
+            <username>${nexuse2e.user}</username>
+            <password>${nexuse2e.password}</password>
         </server>
-        
     </servers>
-    -->
     <profiles>
         <profile>
             <id>solutions-direkt</id>
