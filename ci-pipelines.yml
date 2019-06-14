@@ -11,7 +11,25 @@ trigger:
 stages:
 - stage: Build
   jobs:
-  - job: BuildJob
+  - job: Parent
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Maven@3
+      inputs:
+        mavenPomFile: './nexuse2e-parent/pom.xml'
+        mavenOptions: '-Xmx3072m -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.8'
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: false
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        goals: 'clean install'
+        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
+    -Dmaven.wagon.http.ssl.allowall=true -DskipTests -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+    
+
+  - job: Core
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -24,13 +42,41 @@ stages:
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'clean package'
+        goals: 'clean install'
         options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
     -Dmaven.wagon.http.ssl.allowall=true -DskipTests -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
     - task: CopyFiles@2
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
         Contents: '**/*.jar'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+
+  - job: Webapp
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Maven@3
+      inputs:
+        mavenPomFile: './nexuse2e-webapp/pom.xml'
+        mavenOptions: '-Xmx3072m -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.8'
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: false
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        goals: 'clean package'
+        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
+    -Dmaven.wagon.http.ssl.allowall=true -DskipTests -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(system.defaultworkingdirectory)'
+        Contents: '**/*.war'
         TargetFolder: '$(build.artifactstagingdirectory)'
     - task: PublishBuildArtifacts@1
       inputs:
