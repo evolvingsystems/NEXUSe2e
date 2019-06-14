@@ -26,3 +26,13 @@ steps:
     goals: 'clean package'
     options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
 -Dmaven.wagon.http.ssl.allowall=true -DskipTests -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**/*.jar'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
