@@ -14,7 +14,6 @@ stages:
   - job: BuildJob
     pool:
       vmImage: 'ubuntu-latest'
- #   name: $(BuildID)
     steps:
     - task: Maven@3
       inputs:
