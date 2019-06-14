@@ -16,7 +16,7 @@ name: $(BuildID)
 steps:
 - task: Maven@3
   inputs:
-    mavenPomFile: './nexuse2e-core/pom.xml'
+    mavenPomFile: './nexuse2e-webapp/pom.xml'
     mavenOptions: '-Xmx3072m -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
