@@ -14,7 +14,7 @@ stages:
   - job: BuildJob
     pool:
       vmImage: 'ubuntu-latest'
-    name: $(BuildID)
+ #   name: $(BuildID)
     steps:
     - task: Maven@3
       inputs:
@@ -37,4 +37,4 @@ stages:
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
-    publishLocation: 'Container'
+        publishLocation: 'Container'
