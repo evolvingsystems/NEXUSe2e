@@ -429,7 +429,11 @@ public class SftpPollingReceiverService extends AbstractService implements Recei
                 int port = 22;
 
                 if (StringUtils.isNotEmpty(sftpPortStr)) {
-                    port = Integer.parseInt(sftpPortStr);
+                    try {
+                        port = Integer.parseInt(sftpPortStr);
+                    } catch (NumberFormatException e) {
+                        throw new NexusException("Could not parse SFTP port parameter, parameter needs to be a number: " + sftpPortStr, e);
+                    }
                 }
 
                 Properties configuration = new java.util.Properties();
