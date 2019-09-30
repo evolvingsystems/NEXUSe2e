@@ -121,7 +121,7 @@ public class DBIntegrationPipelet extends AbstractPipelet {
             }
         }
 
-        return null;
+        return messageContext;
     }
 
     /* (non-Javadoc)
