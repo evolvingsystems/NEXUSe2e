@@ -455,7 +455,7 @@
         </dependency>
         <dependency>
             <groupId>jgroups</groupId>
-            <artifactId>jgroups-all</artifactId>
+            <artifactId>jgroups</artifactId>
             <version>2.6.6.GA</version>
             <scope>compile</scope>
         </dependency>
