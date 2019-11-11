@@ -21,6 +21,7 @@
  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
  <!-- where to retrieve -->
+	<!--
   <repositories>
     <repository>
       <id>java.net-Public</id>
@@ -40,6 +41,7 @@
       </snapshots>
     </repository>
   </repositories>
+-->
   <!-- build -->
   <build>
 	  <plugins>
