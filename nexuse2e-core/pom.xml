@@ -396,9 +396,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.incubator</groupId>
+            <groupId>org.apache.ftpserver</groupId>
             <artifactId>ftpserver</artifactId>
-            <version>0.1</version>
+            <version>1.1.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
