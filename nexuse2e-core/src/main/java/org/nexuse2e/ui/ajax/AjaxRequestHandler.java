@@ -21,7 +21,7 @@ package org.nexuse2e.ui.ajax;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONException;
+import org.codehaus.jettison.json.JSONException;
 
 /**
  * Interface for instances that can handle Ajax requests.
