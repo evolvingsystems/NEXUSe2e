@@ -15,6 +15,7 @@
                 <distribution.snapshot.repoName>solutions direkt Snapshots</distribution.snapshot.repoName>
                 <distribution.snapshot.repoUrl>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</distribution.snapshot.repoUrl>
             </properties>
+            <!--
             <repositories>
                 <repository>
                     <id>codehaus-snapshots</id>
@@ -26,7 +27,7 @@
                     </snapshots>
                 </repository>
             </repositories>
-            
+            -->
         </profile>
         
     </profiles>
