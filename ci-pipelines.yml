@@ -18,7 +18,7 @@ stages:
     - task: MavenAuthenticate@0
       displayName: 'Maven Authenticate'
       inputs:
-        artifactsFeeds: MyFeedInOrg1,MyFeedInOrg2
+        artifactsFeeds: 'org.nexuse2e'
     - task: Maven@3
       inputs:
         mavenPomFile: './nexuse2e-parent/pom.xml'
