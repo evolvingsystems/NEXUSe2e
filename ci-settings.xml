@@ -15,19 +15,19 @@
                 <distribution.snapshot.repoName>solutions direkt Snapshots</distribution.snapshot.repoName>
                 <distribution.snapshot.repoUrl>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</distribution.snapshot.repoUrl>
             </properties>
-            <!--
+            
             <repositories>
                 <repository>
-                    <id>codehaus-snapshots</id>
-                    <name>Maven Snapshots Repository of Codehaus</name>
+                    <id>codehaus</id>
+                    <name>Maven Repository of Codehaus</name>
                     <layout>default</layout>
-                    <url>http://snapshots.repository.codehaus.org</url>
+                    <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
                     <snapshots>
-                        <enabled>true</enabled>
+                        <enabled>false</enabled>
                     </snapshots>
                 </repository>
             </repositories>
-            -->
+            
         </profile>
         
     </profiles>
