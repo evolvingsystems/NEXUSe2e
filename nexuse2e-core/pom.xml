@@ -716,64 +716,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <dependencies>
-
-                    <!-- runtime dependency for the antrun plugin. It brings tools.jar
-                      into the plugins execution space so the 'rmic' compiler can be called from
-                      Ant's <rmic/> task. This is ALL you have to do!
-                    -->
-                    <dependency>
-                        <groupId>sun</groupId>
-                        <artifactId>tools</artifactId>
-                        <version>1.0</version>
-                        <scope>system</scope>
-                        <systemPath>${tools.jar}</systemPath>
-                    </dependency>
-
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>build-testclient</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="${basedir}/package-testclient.xml"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>build-patches</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="${basedir}/package-patches.xml"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <configuration>
-                            <tasks>
-                                <rmic classname="org.nexuse2e.integration.NEXUSe2eInterfaceImpl"
-                                      base="${basedir}/target/classes"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+           
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
