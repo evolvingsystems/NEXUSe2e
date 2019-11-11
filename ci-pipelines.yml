@@ -31,6 +31,7 @@ stages:
     # -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)
 
   - job: Core
+    dependsOn: Parent
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -61,6 +62,7 @@ stages:
 
 
   - job: Webapp
+    dependsOn: Core
     pool:
       vmImage: 'ubuntu-latest'
     steps:
