@@ -21,8 +21,19 @@
  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
  <!-- where to retrieve -->
-	<!--
+	
   <repositories>
+    <repository>
+  <id>solutionsdirekt-visualstudio-com-solutionsdirekt-org-nexuse2e</id>
+  <url>https://solutionsdirekt.pkgs.visualstudio.com/_packaging/org.nexuse2e/maven/v1</url>
+  <releases>
+    <enabled>true</enabled>
+  </releases>
+  <snapshots>
+    <enabled>false</enabled>
+  </snapshots>
+</repository>
+	  <!--
     <repository>
       <id>java.net-Public</id>
       <name>Maven Java Net Snapshots and Releases</name>
@@ -40,8 +51,9 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-  </repositories>
 -->
+  </repositories>
+
   <!-- build -->
   <build>
 	  <plugins>
