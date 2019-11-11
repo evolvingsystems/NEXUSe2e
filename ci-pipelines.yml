@@ -15,6 +15,10 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
+    - task: MavenAuthenticate@0
+      displayName: 'Maven Authenticate'
+      inputs:
+        artifactsFeeds: MyFeedInOrg1,MyFeedInOrg2
     - task: Maven@3
       inputs:
         mavenPomFile: './nexuse2e-parent/pom.xml'
