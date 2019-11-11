@@ -11,7 +11,7 @@ trigger:
 stages:
 - stage: Build
   jobs:
-  - job: Parent
+  - job: Build
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -30,11 +30,7 @@ stages:
     
     # -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)
 
-  - job: Core
-    dependsOn: Parent
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+  
     - task: Maven@3
       inputs:
         mavenPomFile: './nexuse2e-core/pom.xml'
@@ -59,13 +55,6 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
-
-
-  - job: Webapp
-    dependsOn: Core
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
     - task: Maven@3
       inputs:
         mavenPomFile: './nexuse2e-webapp/pom.xml'
