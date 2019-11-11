@@ -15,40 +15,35 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - task: MavenAuthenticate@0
-      displayName: 'Maven Authenticate'
-      inputs:
-        artifactsFeeds: 'org.nexuse2e'
+    
     - task: Maven@3
       inputs:
         mavenPomFile: './nexuse2e-parent/pom.xml'
-        mavenOptions: '-Xmx3072m -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+        goals: 'clean install'
+        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests'
+        publishJUnitResults: false
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'clean install'
-        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
-    -Dmaven.wagon.http.ssl.allowall=true -DskipTests '
+        mavenVersionOption: 'Default'
+        mavenOptions: '-Xmx3072m'
+        mavenAuthenticateFeed: true
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
     
-    # -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)
-
-  
     - task: Maven@3
       inputs:
         mavenPomFile: './nexuse2e-core/pom.xml'
-        mavenOptions: '-Xmx3072m -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+        goals: 'clean install'
+        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests'
+        publishJUnitResults: false
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'clean install'
-        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
-    -Dmaven.wagon.http.ssl.allowall=true -DskipTests '
+        mavenVersionOption: 'Default'
+        mavenOptions: '-Xmx3072m'
+        mavenAuthenticateFeed: true
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
 
-    # -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)
     - task: CopyFiles@2
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
@@ -62,17 +57,17 @@ stages:
     - task: Maven@3
       inputs:
         mavenPomFile: './nexuse2e-webapp/pom.xml'
-        mavenOptions: '-Xmx3072m -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)'
+        goals: 'clean package'
+        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests'
+        publishJUnitResults: false
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'clean package'
-        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true
-    -Dmaven.wagon.http.ssl.allowall=true -DskipTests '
+        mavenVersionOption: 'Default'
+        mavenOptions: '-Xmx3072m'
+        mavenAuthenticateFeed: true
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
 
-    # -Dnexuse2e.username=$(nexuse2e.username) -Dnexuse2e.password=$(nexuse2e.password)
     - task: CopyFiles@2
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
