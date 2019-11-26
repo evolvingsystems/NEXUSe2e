@@ -21,16 +21,19 @@
  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
  <!-- where to retrieve -->
+	
   <repositories>
-    <repository>  
-      <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <layout>default</layout>
-      <url>http://repo1.maven.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
+    <repository>
+  <id>solutionsdirekt-visualstudio-com-solutionsdirekt-org-nexuse2e</id>
+  <url>https://solutionsdirekt.pkgs.visualstudio.com/_packaging/org.nexuse2e/maven/v1</url>
+  <releases>
+    <enabled>true</enabled>
+  </releases>
+  <snapshots>
+    <enabled>false</enabled>
+  </snapshots>
+</repository>
+	  <!--
     <repository>
       <id>java.net-Public</id>
       <name>Maven Java Net Snapshots and Releases</name>
@@ -48,7 +51,9 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+-->
   </repositories>
+
   <!-- build -->
   <build>
 	  <plugins>
@@ -63,21 +68,5 @@
 	      </plugin>
 	  </plugins>
   </build>
-  <!-- where to deploy -->
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>${distribution.release.repoId}</id>
-      <url>${distribution.release.repoUrl}</url>
-      <name>${distribution.release.repoName}</name>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>true</uniqueVersion>
-      <id>${distribution.snapshot.repoId}</id>
-      <url>${distribution.snapshot.repoUrl}</url>
-      <name>${distribution.snapshot.repoName}</name>
-      <layout>default</layout>
-    </snapshotRepository>
-  </distributionManagement>
+  
 </project>

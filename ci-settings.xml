@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    
+        
+    <profiles>
+        <profile>
+            <id>solutions-direkt</id>
+            <properties>
+                <distribution.release.repoId>so-releases</distribution.release.repoId>
+                <distribution.release.repoName>solutions direkt Releases</distribution.release.repoName>
+                <distribution.release.repoUrl>https://dev.direkt-gruppe.de/nexus/content/repositories/so-releases</distribution.release.repoUrl>
+                <distribution.snapshot.repoId>so-snapshots</distribution.snapshot.repoId>
+                <distribution.snapshot.repoName>solutions direkt Snapshots</distribution.snapshot.repoName>
+                <distribution.snapshot.repoUrl>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</distribution.snapshot.repoUrl>
+            </properties>
+            
+            <repositories>
+                <repository>
+                    <id>codehaus</id>
+                    <name>Maven Repository of Codehaus</name>
+                    <layout>default</layout>
+                    <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            
+        </profile>
+        
+    </profiles>
+    <activeProfiles>
+        <activeProfile>solutions-direkt</activeProfile>
+    </activeProfiles>
+</settings>

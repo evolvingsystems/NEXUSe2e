@@ -299,12 +299,14 @@
             <!-- <version>1.1-beta3</version> -->
             <scope>compile</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>json.org</groupId>
             <artifactId>json</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jsp-2.1</artifactId>
@@ -317,12 +319,14 @@
             <version>1.1.2</version>
             <scope>compile</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
             <version>1.0.1B</version>
             <scope>compile</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>
@@ -394,9 +398,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.incubator</groupId>
-            <artifactId>ftpserver</artifactId>
-            <version>0.1</version>
+            <groupId>org.apache.ftpserver</groupId>
+            <artifactId>ftpserver-core</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -453,7 +457,7 @@
         </dependency>
         <dependency>
             <groupId>jgroups</groupId>
-            <artifactId>jgroups-all</artifactId>
+            <artifactId>jgroups</artifactId>
             <version>2.6.6.GA</version>
             <scope>compile</scope>
         </dependency>
@@ -594,25 +598,25 @@
         <dependency>
             <groupId>org.eclipse.birt</groupId>
             <artifactId>coreapi</artifactId>
-            <version>2.2.1</version>
+            <version>2.3.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.birt</groupId>
             <artifactId>engineapi</artifactId>
-            <version>2.2.1</version>
+            <version>2.3.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.birt</groupId>
             <artifactId>scriptapi</artifactId>
-            <version>2.2.1</version>
+            <version>2.3.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.birt</groupId>
             <artifactId>modelapi</artifactId>
-            <version>2.2.1</version>
+            <version>2.3.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -635,7 +639,7 @@
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>quartz</artifactId>
-            <version>1.6.0</version>
+            <version>1.6.3</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
@@ -714,64 +718,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <dependencies>
-
-                    <!-- runtime dependency for the antrun plugin. It brings tools.jar
-                      into the plugins execution space so the 'rmic' compiler can be called from
-                      Ant's <rmic/> task. This is ALL you have to do!
-                    -->
-                    <dependency>
-                        <groupId>sun</groupId>
-                        <artifactId>tools</artifactId>
-                        <version>1.0</version>
-                        <scope>system</scope>
-                        <systemPath>${tools.jar}</systemPath>
-                    </dependency>
-
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>build-testclient</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="${basedir}/package-testclient.xml"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>build-patches</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="${basedir}/package-patches.xml"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <configuration>
-                            <tasks>
-                                <rmic classname="org.nexuse2e.integration.NEXUSe2eInterfaceImpl"
-                                      base="${basedir}/target/classes"/>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+           
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

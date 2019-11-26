@@ -1,7 +1,7 @@
 package org.nexuse2e.monitoring;
 
-import org.json.JSONException;
-import org.json.JSONStringer;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONStringer;
 import org.nexuse2e.Engine;
 import org.nexuse2e.EngineStatusSummary;
 import org.nexuse2e.NexusException;

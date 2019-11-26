@@ -19,22 +19,8 @@
  */
 package org.nexuse2e.service.sftp;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.regex.Pattern;
-
+import com.jcraft.jsch.*;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -48,20 +34,16 @@ import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
 import org.nexuse2e.messaging.MessageContext;
 import org.nexuse2e.pojo.MessagePojo;
-import org.nexuse2e.service.AbstractService;
-import org.nexuse2e.service.ReceiverAware;
-import org.nexuse2e.service.SchedulerClient;
-import org.nexuse2e.service.SchedulingService;
-import org.nexuse2e.service.Service;
+import org.nexuse2e.service.*;
 import org.nexuse2e.transport.TransportReceiver;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.ChannelSftp.LsEntry;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * This service implementation acts as an SFTP client and receives files by
@@ -85,6 +67,10 @@ public class SftpPollingReceiverService extends AbstractService implements Recei
     public static final String TRANSFER_MODE_PARAM_NAME    = "transferMode";
     public static final String RENAMING_PREFIX_PARAM_NAME  = "prefix";
     public static final String CHANGE_FILE_PARAM_NAME      = "changeFile";
+    public static final String DSA_PRIVATE_KEY_PATH_PARAM_NAME = "dsaPrivateKey";
+    public static final String DSA_PRIVATE_KEY_PASSWORD_PARAM_NAME = "dsaPrivateKeyPassword";
+    public static final String SFTP_PORT_PARAM_NAME = "sftpPort";
+
 
     public static final String CUSTOM_PARAMETER_FILE_NAME  = "fileName";
     public static final String CUSTOM_PARAMETER_PARTNER_ID = "partnerId";
@@ -141,6 +127,15 @@ public class SftpPollingReceiverService extends AbstractService implements Recei
 
         parameterMap.put( CHANGE_FILE_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN, "Change/Delete File",
                 "Rename/Delete file active", Boolean.TRUE ) );
+
+        parameterMap.put( DSA_PRIVATE_KEY_PATH_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Private key path",
+                                                                    "The path to the SFTP private key", "anonymous" ) );
+
+        parameterMap.put( DSA_PRIVATE_KEY_PASSWORD_PARAM_NAME, new ParameterDescriptor( ParameterType.PASSWORD, "Private key password",
+                                                                        "The password of the SFTP private key", "" ) );
+
+        parameterMap.put( SFTP_PORT_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Server port",
+                                                                                        "The port of the SFTP-Server", "22" ) );
 
     }
 
@@ -422,10 +417,35 @@ public class SftpPollingReceiverService extends AbstractService implements Recei
             try {
                 URL url = new URL( (String) getParameter( URL_PARAM_NAME ) );
 
-                session = jsch.getSession( user, url.getHost(), 22 );
+                // set private key
+                String pkeyPath = getParameter( DSA_PRIVATE_KEY_PATH_PARAM_NAME );
+                String pkeyPw = getParameter( DSA_PRIVATE_KEY_PASSWORD_PARAM_NAME );
+                String sftpPortStr = getParameter( SFTP_PORT_PARAM_NAME );
+                boolean keyAuth= false;
+                if ( StringUtils.isNotEmpty(pkeyPath)&& StringUtils.isNotEmpty(pkeyPw)) {
+                    jsch.addIdentity( pkeyPath , pkeyPw);
+                    keyAuth= true;
+                }
+                int port = 22;
 
-                UserInfo userInfo = new UserInfo( password );
-                session.setUserInfo( userInfo );
+                if (StringUtils.isNotEmpty(sftpPortStr)) {
+                    try {
+                        port = Integer.parseInt(sftpPortStr);
+                    } catch (NumberFormatException e) {
+                        throw new NexusException("Could not parse SFTP port parameter, parameter needs to be a number: " + sftpPortStr, e);
+                    }
+                }
+
+                Properties configuration = new java.util.Properties();
+                configuration.put("StrictHostKeyChecking", "no");
+
+                session = jsch.getSession( user, url.getHost(), port );
+                session.setConfig(configuration);
+
+                if (!keyAuth) {
+                    UserInfo userInfo = new UserInfo(password);
+                    session.setUserInfo(userInfo);
+                }
 
                 try {
                     session.connect();
@@ -469,11 +489,15 @@ public class SftpPollingReceiverService extends AbstractService implements Recei
                 for ( LsEntry file : files ) {
                     if ( Pattern.matches( regEx, file.getFilename() ) ) {
                         Vector<LsEntry> targetFiles = null;
-                        try {
-                            targetFiles = channelSftp.ls( prefix + file.getFilename() );
-                        } catch ( SftpException sftpEx ) {
-                            LOG.debug( "File does not exist in backup location: " + file.getFilename() );
+
+                        if (StringUtils.isNotEmpty(prefix)) {
+                            try {
+                                targetFiles = channelSftp.ls(prefix + file.getFilename());
+                            } catch (SftpException sftpEx) {
+                                LOG.debug("File does not exist in backup location: " + file.getFilename());
+                            }
                         }
+
                         if ( !fileChangeActive || (targetFiles == null) || targetFiles.isEmpty() ) {
                             LOG.trace( "Processing file: " + file.getFilename() );
 
