@@ -7,7 +7,12 @@
 #- group: Sonartype Nexus
 name: $(BuildID)
 trigger:
-- master
+  branches:
+    include:
+    - master
+  tags:
+    include:
+    - "*"
 stages:
 - stage: Build
   jobs:
