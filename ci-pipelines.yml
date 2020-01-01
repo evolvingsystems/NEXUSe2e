@@ -68,13 +68,7 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
 
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          #!/usr/bin/env bash
-          nexuse2eversion=$(grep version ./nexuse2e-webapp/pom.xml | grep -v '<?xml' | grep '<version>'|head -n 1|awk '{print $1}'| cut -d'>' -f 2 | cut -d'<' -f 1)
-          echo "##vso[task.setvariable variable=nexuse2eversion]$nexuse2eversion"
+   
     - task: CopyFiles@2
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
