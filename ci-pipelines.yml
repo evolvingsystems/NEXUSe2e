@@ -99,6 +99,11 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: 'git clone https://solutionsdirekt.visualstudio.com/DefaultCollection/NEXUSe2e/_git/NEXUSe2e-integration-testing'
+    
     - task: DockerCompose@0
       name: BuildContainer
       inputs:
