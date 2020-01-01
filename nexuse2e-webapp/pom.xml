@@ -56,7 +56,7 @@
                             <Jenkins-Build-Number>${env.BUILD_ID}</Jenkins-Build-Number>
                         </manifestEntries>
                     </archive>
-                    <warName>NEXUSe2e</warName>
+                    <!--<warName>NEXUSe2e</warName>-->
                     <warSourceExcludes>
                         WEB-INF/classes/tldCache.ser,
                         WEB-INF/classes/org/**,
