@@ -22,6 +22,7 @@ stages:
     steps:
     
     - task: Maven@3
+      name: 'Jar_Build'
       inputs:
         mavenPomFile: './nexuse2e-parent/pom.xml'
         goals: 'clean install'
@@ -36,6 +37,7 @@ stages:
         sonarQubeRunAnalysis: false
     
     - task: Maven@3
+      name: 'War_Build'
       inputs:
         mavenPomFile: './nexuse2e-core/pom.xml'
         goals: 'clean install'
