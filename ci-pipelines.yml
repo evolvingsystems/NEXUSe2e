@@ -58,7 +58,7 @@ stages:
       inputs:
         mavenPomFile: './nexuse2e-webapp/pom.xml'
         goals: 'clean package'
-        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests'
+        options: '--settings $(System.DefaultWorkingDirectory)/ci-settings.xml -P with-reporting-module -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests'
         publishJUnitResults: false
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.8'
