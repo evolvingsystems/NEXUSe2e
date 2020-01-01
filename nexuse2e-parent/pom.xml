@@ -33,6 +33,15 @@
     <enabled>false</enabled>
   </snapshots>
 </repository>
+      <repository>
+          <id>codehaus</id>
+          <name>Maven Repository of Codehaus</name>
+          <layout>default</layout>
+          <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+          <snapshots>
+              <enabled>false</enabled>
+          </snapshots>
+      </repository>
 	  <!--
     <repository>
       <id>java.net-Public</id>
