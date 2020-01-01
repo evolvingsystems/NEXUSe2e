@@ -115,4 +115,4 @@ stages:
         containerregistrytype: 'Container Registry'
         dockerComposeFile: '**/docker-compose.yml'
         action: 'Run a Docker Compose command'
-        dockerComposeCommand: 'version'
+        dockerComposeCommand: 'build'
