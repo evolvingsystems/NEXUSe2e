@@ -93,13 +93,14 @@ stages:
         publishLocation: 'Container'
 
 
-- stage: Build
+- stage: Test
   jobs:
-  - job: Build
+  - job: Testing
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: DockerCompose@0
+      name: BuildContainer
       inputs:
         containerregistrytype: 'Container Registry'
         dockerComposeFile: '**/docker-compose.yml'
