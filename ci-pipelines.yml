@@ -55,11 +55,13 @@ stages:
         sonarQubeRunAnalysis: false
 
     - task: CopyFiles@2
+      name: 'CopyJar'
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
         Contents: '**/*.jar'
         TargetFolder: '$(build.artifactstagingdirectory)'
     - task: PublishBuildArtifacts@1
+      name: 'PublishJar'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
@@ -82,11 +84,13 @@ stages:
 
    
     - task: CopyFiles@2
+      name: 'CopyWebapp'
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
         Contents: '**/*.war'
         TargetFolder: '$(build.artifactstagingdirectory)'
     - task: PublishBuildArtifacts@1
+      name: 'PublishWebapp'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
@@ -101,6 +105,7 @@ stages:
     steps:
     - checkout: self
       persistCredentials: true
+      clean: true
     
     - task: Bash@3
       inputs:
