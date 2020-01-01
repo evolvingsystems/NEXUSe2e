@@ -14,6 +14,9 @@ trigger:
     include:
     - "*"
 stages:
+
+
+
 - stage: Build
   jobs:
   - job: Build
@@ -88,3 +91,16 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
+
+
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: DockerCompose@0
+      inputs:
+        containerregistrytype: 'Container Registry'
+        dockerComposeFile: '**/docker-compose.yml'
+        action: 'Run a Docker Compose command'
