@@ -106,6 +106,13 @@ stages:
         targetType: 'inline'
         script: 'git clone https://solutionsdirekt.visualstudio.com/DefaultCollection/NEXUSe2e/_git/NEXUSe2e-integration-testing'
     
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: >
+             git config user.email "$(Build.RequestedForEmail)";
+             git config user.name "$(Build.RequestedFor)";
+             git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" clone https://solutionsdirekt.visualstudio.com/DefaultCollection/NEXUSe2e/_git/NEXUSe2e-integration-testing'
     - task: DockerCompose@0
       name: BuildContainer
       inputs:
