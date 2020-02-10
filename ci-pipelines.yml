@@ -55,11 +55,13 @@ stages:
         sonarQubeRunAnalysis: false
 
     - task: CopyFiles@2
+      name: 'CopyJar'
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
         Contents: '**/*.jar'
         TargetFolder: '$(build.artifactstagingdirectory)'
     - task: PublishBuildArtifacts@1
+      name: 'PublishJar'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
@@ -82,11 +84,13 @@ stages:
 
    
     - task: CopyFiles@2
+      name: 'CopyWebapp'
       inputs:
         SourceFolder: '$(system.defaultworkingdirectory)'
         Contents: '**/*.war'
         TargetFolder: '$(build.artifactstagingdirectory)'
     - task: PublishBuildArtifacts@1
+      name: 'PublishWebapp'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
@@ -101,6 +105,7 @@ stages:
     steps:
     - checkout: self
       persistCredentials: true
+      clean: true
     
     - task: Bash@3
       inputs:
@@ -108,11 +113,11 @@ stages:
         script: >
              git config user.email "$(Build.RequestedForEmail)";
              git config user.name "$(Build.RequestedFor)";
-             git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" clone https://solutionsdirekt.visualstudio.com/DefaultCollection/NEXUSe2e/_git/NEXUSe2e-integration-testing'
+             git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" clone https://solutionsdirekt.visualstudio.com/DefaultCollection/NEXUSe2e/_git/NEXUSe2e-integration-testing
     - task: DockerCompose@0
       name: BuildContainer
       inputs:
         containerregistrytype: 'Container Registry'
         dockerComposeFile: '**/docker-compose.yml'
         action: 'Run a Docker Compose command'
-        dockerComposeCommand: 'version'
+        dockerComposeCommand: 'build'
