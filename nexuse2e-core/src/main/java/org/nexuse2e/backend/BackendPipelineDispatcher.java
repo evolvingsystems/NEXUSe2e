@@ -178,7 +178,7 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
             labels = new HashMap<>(1);
             labels.put(st.nextToken(), st.nextToken());
         }
-        return processMessage( partnerId, choreographyId, actionId, conversationId, messageId, labels,
+        return processMessageWithLabels( partnerId, choreographyId, actionId, conversationId, messageId, labels,
                 primaryKey, payloads, errors );
     } // processMessage
 
