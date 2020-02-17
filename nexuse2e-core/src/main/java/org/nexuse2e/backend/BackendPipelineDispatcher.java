@@ -196,7 +196,7 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
      * @return
      * @throws NexusException
      */
-    public MessageContext processMessage( String partnerId, String choreographyId, String actionId,
+    public MessageContext processMessageWithLabels( String partnerId, String choreographyId, String actionId,
           String conversationId, String messageId, Map<String, String> labels, Object primaryKey,
           List<? extends Object> payloads, List<ErrorDescriptor> errors ) throws NexusException {
        String contentId = null;
