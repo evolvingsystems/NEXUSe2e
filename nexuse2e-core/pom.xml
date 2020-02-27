@@ -736,7 +736,7 @@
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.3.5</version>
 
                 <dependencies>
 
