@@ -93,9 +93,11 @@ public class WSDispatcherService extends AbstractService {
                 public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
                     WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
                     String user = pc.getIdentifier();
-                    if (user.equals(username)) {
-                        pc.setPassword(password);
+                    if (!(user.equals(username) && pc.getPassword().equals(password))) {
+                    //    pc.setPassword(password);
+                        throw new IOException("invalid credentials");
                     }
+
 
                 }
             };
