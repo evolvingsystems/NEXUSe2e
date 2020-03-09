@@ -62,6 +62,8 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
     private static final String SCHEDULING_SERVICE_PARAM_NAME = "schedulerName";
     private static final String CHOREOGRAPHY_PARAM_NAME = "choreography";
     private static final String ACTION_PARAM_NAME = "action";
+    private static final String SFTP_CONNECT_TIMEOUT_PARAM_NAME = "sftpConnectTimeout";
+    private static final String SFTP_SESSION_KEEPALIVE_PARAM_NAME = "sftpSessionKeepAlive";
 
     private SchedulingService schedulingService;
     private String interval = null;
@@ -71,6 +73,8 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
     private String user = null;
     private String password = null;
     private String pattern = null;
+    private int sftpSessionKeepAlive = 0;
+    private int sftpConnectTimeout = 0;
 
     private BackendPipelineDispatcher backendPipelineDispatcher;
 
@@ -98,6 +102,11 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
         parameterMap.put(CHANGE_FILE_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Change/Delete File", "Rename/Delete file active", Boolean.TRUE));
         parameterMap.put(SCHEDULING_SERVICE_PARAM_NAME, new ParameterDescriptor(ParameterType.SERVICE, "Scheduling Service",
                 "The name of the service that shall be used for time schedule", SchedulingService.class));
+        parameterMap.put(SFTP_SESSION_KEEPALIVE_PARAM_NAME, new ParameterDescriptor(
+                ParameterType.STRING, "Session Keep Alive", "The sftp session keep alive in milliseconds (0 = not configured)", "0"));
+        parameterMap.put(SFTP_CONNECT_TIMEOUT_PARAM_NAME, new ParameterDescriptor(
+                ParameterType.STRING, "Connect Timeout", "The sftp connect timeout in milliseconds (0 = not configured)", "0"));
+
     }
 
     @Override
@@ -108,6 +117,24 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
         user = (String) getParameter(USER_PARAM_NAME);
         password = (String) getParameter(PASSWORD_PARAM_NAME);
         pattern = (String) getParameter(FILE_PATTERN_PARAM_NAME);
+
+        String timeoutValue = (String) getParameter(SFTP_SESSION_KEEPALIVE_PARAM_NAME);
+        try {
+            if (StringUtils.isNotEmpty(timeoutValue)) {
+                sftpSessionKeepAlive = Integer.parseInt(timeoutValue);
+            }
+        } catch (NumberFormatException e) {
+            LOG.error(timeoutValue + " is not a valid number for property 'sftp session timeout in seconds'");
+        }
+
+        timeoutValue = (String) getParameter(SFTP_CONNECT_TIMEOUT_PARAM_NAME);
+        try {
+            if (StringUtils.isNotEmpty(timeoutValue)) {
+                sftpConnectTimeout = Integer.parseInt(timeoutValue);
+            }
+        } catch (NumberFormatException e) {
+            LOG.error(timeoutValue + " is not a valid number for property 'sftp connect timeout in seconds'");
+        }
 
         backendPipelineDispatcher = (BackendPipelineDispatcher) Engine.getInstance().getCurrentConfiguration()
                 .getStaticBeanContainer().getBackendPipelineDispatcher();
@@ -217,6 +244,14 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
             UserInfo userInfo = new UserInfo(password);
             session.setUserInfo(userInfo);
 
+            if (sftpConnectTimeout > 0) {
+                session.setTimeout(sftpConnectTimeout);
+            }
+
+            if (sftpSessionKeepAlive > 0) {
+                session.setServerAliveInterval(sftpSessionKeepAlive);
+            }
+
             // connect
             try {
                 session.connect();
@@ -225,6 +260,7 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
                         "SFTP authentication failed: " + jSchEx.getMessage(), jSchEx);
             }
             LOG.debug("Connected to " + url.getHost() + ".");
+
 
             Channel channel = session.openChannel("sftp");
             channel.connect();

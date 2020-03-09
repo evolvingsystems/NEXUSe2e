@@ -172,6 +172,9 @@ public class SftpUploadPipelet extends AbstractPipelet {
             if (sftpConnectTimeout > 0) {
                 session.setTimeout(sftpConnectTimeout);
             }
+            if (sftpSessionKeepAlive > 0) {
+                session.setServerAliveInterval(sftpSessionKeepAlive);
+            }
             // connect
             try {
                 session.connect();
@@ -179,9 +182,7 @@ public class SftpUploadPipelet extends AbstractPipelet {
                 throw new NexusException(new LogMessage(String.format("SFTP authentication failed: %s", jSchEx.getMessage()), message), jSchEx);
             }
             LOG.debug("Connected to " + url.getHost() + ".");
-            if (sftpSessionKeepAlive > 0) {
-                session.setServerAliveInterval(sftpSessionKeepAlive);
-            }
+
             Channel channel = session.openChannel("sftp");
             channel.connect();
             channelSftp = (ChannelSftp) channel;
