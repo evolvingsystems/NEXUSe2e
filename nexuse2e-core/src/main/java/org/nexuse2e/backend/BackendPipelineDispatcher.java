@@ -249,6 +249,9 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
                 messagePojo.setMessageLabels(new ArrayList<MessageLabelPojo>());
             }
             messagePojo.getMessageLabels().add(label);
+            if (entry.getKey().equals(org.nexuse2e.Constants.NX_LABEL_FILE_NAME)) {
+                contentId = entry.getValue();
+            }
         }
 
         messageContext.setConversation(messagePojo.getConversation());
