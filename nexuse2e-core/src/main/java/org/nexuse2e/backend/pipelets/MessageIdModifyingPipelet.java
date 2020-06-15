@@ -93,7 +93,7 @@ public class MessageIdModifyingPipelet extends AbstractPipelet {
                     for (String segment : segments) {
                         String value = "";
                         if (segment.startsWith("${")) {
-                            value = replaceBuildIn(segment.substring(2, segment.length() - 1),messageContext);
+                            value = replaceBuildIn(segment.substring(2, segment.length() - 1), messageContext);
                         } else if (segment.startsWith("\"")) { // Spaces and other static parts
                             value = segment.substring(1, segment.length() - 1);
                         } else {
@@ -123,7 +123,7 @@ public class MessageIdModifyingPipelet extends AbstractPipelet {
         return null;
     }
 
-    private String replaceBuildIn(String buildIn,MessageContext messageContext) {
+    private String replaceBuildIn(String buildIn, MessageContext messageContext) {
         switch (buildIn) {
             case "now":
                 SimpleDateFormat format = new SimpleDateFormat("ddMMyyyyHHmmssSSS");
