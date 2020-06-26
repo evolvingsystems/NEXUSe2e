@@ -26,7 +26,6 @@ import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.jdbc.Work;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.Type;
 import org.nexuse2e.Constants;
@@ -41,12 +40,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.*;
 
 /**
