@@ -500,7 +500,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         Map<Level, Long> result = new LinkedHashMap<Level, Long>(l.size());
         for (Object o : l) {
             Object[] kv = (Object[]) o;
-            Long count = new Long(((Number) kv[0]).longValue());
+            Long count = ((Number) kv[0]).longValue();
             Level level = Level.toLevel(((Number) kv[1]).intValue());
             result.put(level, count);
         }
