@@ -52,7 +52,7 @@ public class ConversationIdModifyingPipelet extends AbstractPipelet {
     public ConversationIdModifyingPipelet() {
 
         parameterMap.put(DEFINITION_LIST, new ParameterDescriptor(ParameterType.TEXT, "Label List",
-                "List of labels and build-ins concatenated into the new conversation id. Be careful with special characters. (supported: ${now}, ${action}, ${choreography} )", ""));
+                "List of labels and build-ins concatenated into the new conversation id. Be careful with special characters. You can use static texts in quotes like \"-\" for separators, labels (simply the label name) and build-ins. (supported: ${now}, ${action}, ${choreography} )", ""));
 
     }
 
