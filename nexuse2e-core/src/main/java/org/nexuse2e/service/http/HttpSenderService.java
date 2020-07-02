@@ -128,6 +128,8 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 LOG.debug("Using SSL");
                 Protocol myhttps;
+                String tlsProtocols = messageContext.getParticipant().getConnection().getTlsProtocols();
+                String tlsCiphers = messageContext.getParticipant().getConnection().getTlsCiphers();
 
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(new LogMessage("participant: " + participant, messageContext.getMessagePojo()));
@@ -157,7 +159,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 myhttps = new Protocol("https", (ProtocolSocketFactory) new CertSSLProtocolSocketFactory(privateKeyChain,
                         EncryptionUtil.decryptString(localCert.getPassword()), Engine.getInstance().getActiveConfigurationAccessService().getCacertsKeyStore(),
-                        cacertspwd, partnerCert), 443);
+                        cacertspwd, partnerCert,tlsProtocols,tlsCiphers), 443);
 
                 client.getHostConfiguration().setHost(receiverURL.getHost(), receiverURL.getPort(), myhttps);
 
