@@ -2,8 +2,8 @@ name: $(BuildID)
 trigger:
   batch: false
   branches:
-    include:
-      - master
+    exclude:
+      - '*'
   tags:
     include:
       - '*'
@@ -15,7 +15,7 @@ stages:
           vmImage: ubuntu-latest
         steps:
           - task: Maven@3
-            name: ParentBuild
+            name: Install Parent
             inputs:
               mavenPomFile: ./nexuse2e-parent/pom.xml
               goals: clean install
