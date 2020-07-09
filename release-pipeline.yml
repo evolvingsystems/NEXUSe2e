@@ -1,0 +1,34 @@
+name: $(BuildID)
+trigger:
+  batch: false
+  branches:
+    include:
+      - master
+  tags:
+    include:
+      - '*'
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: Maven@3
+            name: ParentBuild
+            inputs:
+              mavenPomFile: ./nexuse2e-parent/pom.xml
+              goals: clean install
+              options: >
+                -B -e --no-transfer-progress --settings
+                $(System.DefaultWorkingDirectory)/ci-settings.xml
+                --Dmaven.wagon.http.ssl.insecure=true
+                --Dmaven.wagon.http.ssl.allowall=true
+                -DskipTests
+              publishJUnitResults: false
+              javaHomeOption: JDKVersion
+              jdkVersionOption: 1.8
+              jdkArchitectureOption: 'x64'
+              mavenOptions: '-Xmx3072m'
+              mavenAuthenticateFeed: true
+
