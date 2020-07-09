@@ -40,6 +40,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 /**
  * @author gesch
@@ -143,21 +144,30 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
      * @param socket The socket to be initialized.
      * @return The initialized socket, or a new socket object that wraps-up the given socket.
      */
-    protected Socket init(Socket socket) {
+    protected Socket init(Socket socket) throws IOException {
 
         if (socket instanceof SSLSocket) {
             SSLSocket sslSocket = (SSLSocket) socket;
             if (StringUtils.isNotBlank(tlsProtocols)) {
-                sslSocket.setEnabledProtocols(tlsProtocols.split(","));
+                String[] supportedProtocols = getSSLContext().getSupportedSSLParameters().getProtocols();
+                String[] configuredProtocols = tlsProtocols.trim().split("\\s*,\\s*");
+                if (!Arrays.asList(supportedProtocols).containsAll(Arrays.asList(configuredProtocols))) {
+                    throw new IOException("Unsupported tls protocols selected: " + Arrays.toString(configuredProtocols) + " (supported protocols: " + Arrays.toString(supportedProtocols) + ")");
+                }
+                sslSocket.setEnabledProtocols(configuredProtocols);
             } else {
                 String httpsProtocols = System.getProperty("https.protocols");
                 if (httpsProtocols != null) {
                     sslSocket.setEnabledProtocols(httpsProtocols.split(","));
                 }
             } if (StringUtils.isNotBlank(tlsCiphers)) {
-                sslSocket.setEnabledCipherSuites(tlsCiphers.split("\n"));
+                String[] supportedCipherSuites = getSSLContext().getSupportedSSLParameters().getCipherSuites();
+                String[] configuredCipherSuites = tlsCiphers.trim().split("\\s*,\\s*");
+                if (!Arrays.asList(supportedCipherSuites).containsAll(Arrays.asList(configuredCipherSuites))) {
+                    throw new IOException("Unsupported tls cipher suites selected: " + Arrays.toString(configuredCipherSuites) + " (supported cipher suites: " + Arrays.toString(supportedCipherSuites) + ")");
+                }
+                sslSocket.setEnabledCipherSuites(configuredCipherSuites);
             }
-
         }
 
         return socket;
