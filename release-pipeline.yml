@@ -15,7 +15,7 @@ stages:
           vmImage: ubuntu-latest
         steps:
           - task: Maven@3
-            name: Install Parent
+            name: Install_Parent
             inputs:
               mavenPomFile: ./nexuse2e-parent/pom.xml
               goals: clean install
@@ -28,7 +28,7 @@ stages:
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
           - task: Maven@3
-            name: Build core
+            name: Build_core
             inputs:
               mavenPomFile: ./nexuse2e-core/pom.xml
               goals: clean deploy
