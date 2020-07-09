@@ -6,7 +6,7 @@ trigger:
       - '*'
   tags:
     include:
-      - '*'
+      - 'v*'
 stages:
   - stage: Build
     jobs:
@@ -40,4 +40,3 @@ stages:
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
-
