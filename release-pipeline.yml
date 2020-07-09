@@ -27,4 +27,17 @@ stages:
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
+          - task: Maven@3
+            name: Build core
+            inputs:
+              mavenPomFile: ./nexuse2e-core/pom.xml
+              goals: clean deploy
+              options: >
+                -B -e --no-transfer-progress 
+              publishJUnitResults: false
+              javaHomeOption: JDKVersion
+              jdkVersionOption: 1.8
+              jdkArchitectureOption: 'x64'
+              mavenOptions: '-Xmx3072m'
+              mavenAuthenticateFeed: true
 
