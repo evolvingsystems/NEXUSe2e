@@ -97,6 +97,7 @@ public class DateTimeTest {
         assertTrue(0 == returned[7]);
         
         Date returnedDate = dt.toDate();
+        System.out.println(returnedDate.getTime());
         assertTrue(3000L == returnedDate.getTime());
         
         assertTrue(3000L == dt.toLong());
