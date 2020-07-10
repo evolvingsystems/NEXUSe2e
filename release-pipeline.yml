@@ -33,7 +33,6 @@ stages:
               mavenPomFile: ./nexuse2e-core/pom.xml
               goals: clean deploy
               options: >
-                --settings $(System.DefaultWorkingDirectory)/ci-settings.xml
                 -B -e --no-transfer-progress
               publishJUnitResults: false
               javaHomeOption: JDKVersion

@@ -24,6 +24,19 @@
         </license>
     </licenses>
 
+    <distributionManagement>
+        <repository>
+            <id>so-releases</id>
+            <name>solutions direkt Releases</name>
+            <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>so-snapshots</id>
+            <name>solutions direkt Snapshots</name>
+            <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <org.springframework.version>3.2.4.RELEASE</org.springframework.version>
         <surefire.useFile>false</surefire.useFile>
