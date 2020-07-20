@@ -48,7 +48,12 @@ stages:
               mavenAuthenticateFeed: true
           - task: CopyPublishBuildArtifacts@1
             inputs:
-              Contents: 'target/'
+              Contents: 'nexuse2e-core/target/*.jar'
+              ArtifactName: 'core'
+              ArtifactType: 'Container'
+          - task: CopyPublishBuildArtifacts@1
+            inputs:
+              Contents: 'nexuse2e-webapp/target/*.war'
               ArtifactName: 'webapp'
               ArtifactType: 'Container'
           - task: GitHubRelease@1
