@@ -14,6 +14,10 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
+          - task: MavenAuthenticate@0
+            name: authenticate_feeds
+            inputs:
+              artifactsFeeds: 'org.nexuse2e, org.nexuse2e-snapshots'
           - task: Maven@3
             name: Install_Parent
             inputs:
