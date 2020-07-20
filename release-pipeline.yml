@@ -46,3 +46,17 @@ stages:
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
+          - task: CopyPublishBuildArtifacts@1
+            inputs:
+              Contents: 'target/'
+              ArtifactName: 'webapp'
+              ArtifactType: 'Container'
+          - task: GitHubRelease@1
+            inputs:
+              gitHubConnection: 'GitHub - Serranya'
+              repositoryName: 'solutionsdirekt/NEXUSe2e'
+              action: 'create'
+              target: '$(Build.SourceVersion)'
+              tagSource: 'gitTag'
+              isDraft: true
+              addChangeLog: false
