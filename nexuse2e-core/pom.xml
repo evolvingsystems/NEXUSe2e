@@ -26,14 +26,14 @@
 
     <distributionManagement>
         <repository>
-            <id>so-releases</id>
-            <name>solutions direkt Releases</name>
-            <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-releases</url>
+            <id>org.nexuse2e</id>
+            <name>NEXUSe2e Releases</name>
+            <url>https://solutionsdirekt.pkgs.visualstudio.com/_packaging/org.nexuse2e/maven/v1</url>
         </repository>
         <snapshotRepository>
-            <id>so-snapshots</id>
-            <name>solutions direkt Snapshots</name>
-            <url>https://dev.direkt-gruppe.de/nexus/content/repositories/so-snapshots</url>
+            <id>org.nexuse2e-snapshots</id>
+            <name>NEXUSe2e Snapshots</name>
+            <url>https://solutionsdirekt.pkgs.visualstudio.com/NEXUSe2e/_packaging/org.nexuse2e-snapshots/maven/v1</url>
         </snapshotRepository>
     </distributionManagement>
 
