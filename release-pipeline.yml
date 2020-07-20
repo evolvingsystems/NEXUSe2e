@@ -47,6 +47,19 @@ stages:
               Contents: 'nexuse2e-core/target/*.jar'
               ArtifactName: 'core'
               ArtifactType: 'Container'
+          - task: Maven@3
+            name: Build_webapp
+            inputs:
+              mavenPomFile: ./nexuse2e-webapp/pom.xml
+              goals: clean package
+              options: >
+                -B -e --no-transfer-progress
+              publishJUnitResults: false
+              javaHomeOption: JDKVersion
+              jdkVersionOption: 1.8
+              jdkArchitectureOption: 'x64'
+              mavenOptions: '-Xmx3072m'
+              mavenAuthenticateFeed: true
           - task: CopyPublishBuildArtifacts@1
             inputs:
               Contents: 'nexuse2e-webapp/target/*.war'
