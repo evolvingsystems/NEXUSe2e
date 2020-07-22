@@ -64,3 +64,11 @@ stages:
               Contents: 'nexuse2e-webapp/target/*.war'
               ArtifactName: 'webapp'
               ArtifactType: 'Container'
+  - stage: Deploy
+    jobs:
+      - deployment: github
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                scripts: echo Hello world
