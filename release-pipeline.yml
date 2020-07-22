@@ -64,7 +64,7 @@ stages:
               Contents: 'nexuse2e-webapp/target/*.war'
               ArtifactName: 'webapp'
               ArtifactType: 'Container'
-  - stage: Deploy
+  - stage: Deploy_to_github
     jobs:
       - deployment: github
         environment: nexuse2e
@@ -72,12 +72,32 @@ stages:
           runOnce:
             deploy:
               steps:
-              - task: GitHubRelease@1
+                - task: GitHubRelease@1
+                  inputs:
+                    gitHubConnection: 'GitHub - Serranya'
+                    repositoryName: 'solutionsdirekt/NEXUSe2e'
+                    action: 'create'
+                    target: '$(Build.SourceVersion)'
+                    tagSource: 'gitTag'
+                    isDraft: true
+                    addChangeLog: false
+  - stage: Deploy_to_feed
+    jobs:
+      - deployment: feeds
+        environment: nexuse2e
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: Maven@3
                 inputs:
-                  gitHubConnection: 'GitHub - Serranya'
-                  repositoryName: 'solutionsdirekt/NEXUSe2e'
-                  action: 'create'
-                  target: '$(Build.SourceVersion)'
-                  tagSource: 'gitTag'
-                  isDraft: true
-                  addChangeLog: false
+                  mavenPomFile: ./nexuse2e-webapp/pom.xml
+                  goals: deploy
+                  options: >
+                    -B -e --no-transfer-progress
+                  publishJUnitResults: false;
+                  javaHomeOption: JDKVersion
+                  jdkVersionOption: 1.11
+                  jdkArchitectureOption: 'x64'
+                  mavenOptions: '-Xmx3072m'
+                  mavenAuthenticateFeed: true
