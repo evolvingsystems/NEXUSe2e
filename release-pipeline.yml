@@ -91,10 +91,10 @@ stages:
               steps:
               - task: Maven@3
                 inputs:
-                  mavenPomFile: ./nexuse2e-webapp/pom.xml
-                  goals: deploy
+                  goals: deploy:deploy-file
                   options: >
                     -B -e --no-transfer-progress
+                    -Dfile=core/nexuse2e-core-*.jar
                   publishJUnitResults: false;
                   javaHomeOption: JDKVersion
                   jdkVersionOption: 1.11
