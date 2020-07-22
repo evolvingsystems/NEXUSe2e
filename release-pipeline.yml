@@ -50,7 +50,7 @@ stages:
             name: Build_webapp
             inputs:
               mavenPomFile: ./nexuse2e-webapp/pom.xml
-              goals: clean deploy
+              goals: clean verify
               options: >
                 -B -e --no-transfer-progress
               publishJUnitResults: false
@@ -81,3 +81,23 @@ stages:
                     tagSource: 'gitTag'
                     isDraft: true
                     addChangeLog: false
+  - stage: Deploy_to_feed
+    jobs:
+      - deployment: feeds
+        environment: nexuse2e
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: Maven@3
+                inputs:
+                  mavenPomFile: ./nexuse2e-webapp/pom.xml
+                  goals: deploy
+                  options: >
+                    -B -e --no-transfer-progress
+                  publishJUnitResults: false;
+                  javaHomeOption: JDKVersion
+                  jdkVersionOption: 1.11
+                  jdkArchitectureOption: 'x64'
+                  mavenOptions: '-Xmx3072m'
+                  mavenAuthenticateFeed: true
