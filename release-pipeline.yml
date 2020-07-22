@@ -1,4 +1,5 @@
 name: $(BuildID)
+pr: none
 trigger:
   batch: false
   branches:
@@ -23,7 +24,7 @@ stages:
                 -B -e --no-transfer-progress 
               publishJUnitResults: false
               javaHomeOption: JDKVersion
-              jdkVersionOption: 1.8
+              jdkVersionOption: 11
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
@@ -31,14 +32,12 @@ stages:
             name: Build_core
             inputs:
               mavenPomFile: ./nexuse2e-core/pom.xml
-              goals: clean deploy
+              goals: clean verify
               options: >
                 -B -e --no-transfer-progress
-                -Dmaven.wagon.http.ssl.insecure=true
-                -Dmaven.wagon.http.ssl.allowall=true
               publishJUnitResults: false
               javaHomeOption: JDKVersion
-              jdkVersionOption: 1.8
+              jdkVersionOption: 11
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
@@ -51,12 +50,12 @@ stages:
             name: Build_webapp
             inputs:
               mavenPomFile: ./nexuse2e-webapp/pom.xml
-              goals: clean package
+              goals: clean verify
               options: >
                 -B -e --no-transfer-progress
               publishJUnitResults: false
               javaHomeOption: JDKVersion
-              jdkVersionOption: 1.8
+              jdkVersionOption: 11
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
@@ -65,12 +64,3 @@ stages:
               Contents: 'nexuse2e-webapp/target/*.war'
               ArtifactName: 'webapp'
               ArtifactType: 'Container'
-          - task: GitHubRelease@1
-            inputs:
-              gitHubConnection: 'GitHub - Serranya'
-              repositoryName: 'solutionsdirekt/NEXUSe2e'
-              action: 'create'
-              target: '$(Build.SourceVersion)'
-              tagSource: 'gitTag'
-              isDraft: true
-              addChangeLog: false
