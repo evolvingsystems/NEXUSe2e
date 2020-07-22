@@ -24,7 +24,7 @@ stages:
                 -B -e --no-transfer-progress 
               publishJUnitResults: false
               javaHomeOption: JDKVersion
-              jdkVersionOption: 11
+              jdkVersionOption: 1.11
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
@@ -37,7 +37,7 @@ stages:
                 -B -e --no-transfer-progress
               publishJUnitResults: false
               javaHomeOption: JDKVersion
-              jdkVersionOption: 11
+              jdkVersionOption: 1.11
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
@@ -55,7 +55,7 @@ stages:
                 -B -e --no-transfer-progress
               publishJUnitResults: false
               javaHomeOption: JDKVersion
-              jdkVersionOption: 11
+              jdkVersionOption: 1.11
               jdkArchitectureOption: 'x64'
               mavenOptions: '-Xmx3072m'
               mavenAuthenticateFeed: true
