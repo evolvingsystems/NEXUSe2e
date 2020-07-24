@@ -88,10 +88,6 @@ public class LabelGeneratorPipelet extends AbstractPipelet {
 
         LOG.trace("xPath List: " + xPathListValue);
 
-        String xPathSeparator = getParameter("\n");
-        String label = null;
-        String xPathToken = null;
-        String xPath = null;
 
         labelDefinitions = new HashMap<String, String>();
         String[] pairs = xPathListValue.split("\n");

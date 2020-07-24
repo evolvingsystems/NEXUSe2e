@@ -126,7 +126,14 @@
                 <td class="NEXUSName">Password</td>
                 <td class="NEXUSValue"><html:password size="50" property="password"/></td>
             </tr>
-            
+            <tr>
+                <td class="NEXUSName">TLS Protocols</td>
+                <td class="NEXUSValue"><html:text size="50" property="tlsProtocols"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">TLS Ciphers</td>
+                <td class="NEXUSValue"><html:textarea rows="10" cols="38" property="tlsCiphers"/></td>
+            </tr>
         </table>
 
         <center> 

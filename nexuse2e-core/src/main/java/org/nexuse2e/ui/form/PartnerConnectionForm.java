@@ -1,28 +1,23 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2009, Tamgroup and X-ioma GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 2.1 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2009, Tamgroup and X-ioma GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 2.1 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.ui.form;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
@@ -30,85 +25,95 @@ import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.pojo.ConnectionPojo;
 import org.nexuse2e.pojo.TRPPojo;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Set;
+
 public class PartnerConnectionForm extends ActionForm {
 
     /**
-     * 
+     *
      */
-    private static final long    serialVersionUID = 6252275396500984748L;
-    private String               url;
-    private String               description;
-    private String               partnerId;
-    private int                  nxPartnerId;
-    private int                  nxConnectionId;
+    private static final long serialVersionUID = 6252275396500984748L;
+    private String url;
+    private String description;
+    private String partnerId;
+    private int nxPartnerId;
+    private int nxConnectionId;
 
     private Set<CertificatePojo> certificates;
-    private int                  nxCertificateId;
-    private List<TRPPojo>        trps;
-    private int                  nxTrpId;
-    private int                  timeout;
-    private int                  messageInterval;
-    private boolean              secure;
-    private boolean              reliable;
-    private boolean              synchronous;
-    private boolean              pickUp;
-    private boolean              hold;
-    private int                  synchronousTimeout;
-    private int                  retries;
-    private String               name;
-    private String               loginName;
-    private String               password;
+    private int nxCertificateId;
+    private List<TRPPojo> trps;
+    private int nxTrpId;
+    private int timeout;
+    private int messageInterval;
+    private boolean secure;
+    private boolean reliable;
+    private boolean synchronous;
+    private boolean pickUp;
+    private boolean hold;
+    private int synchronousTimeout;
+    private int retries;
+    private String name;
+    private String loginName;
+    private String password;
+    private String tlsProtocols;
+    private String tlsCiphers;
 
     public void cleanSettings() {
 
-        setUrl( null );
-        setDescription( null );
-        setNxCertificateId( 0 );
-        setNxConnectionId( 0 );
-        setNxPartnerId( 0 );
-        setNxTrpId( 0 );
-        setTimeout( 0 );
-        setMessageInterval( 0 );
-        setSecure( false );
-        setReliable( false );
-        setSynchronous( false );
-        setPickUp( false );
-        setHold( false );
-        setSynchronousTimeout( 0 );
-        setRetries( 0 );
-        setName( null );
-        setLoginName( null );
-        setPassword( null );
-        setCertificates( null );
-        setTrps( null );
+        setUrl(null);
+        setDescription(null);
+        setNxCertificateId(0);
+        setNxConnectionId(0);
+        setNxPartnerId(0);
+        setNxTrpId(0);
+        setTimeout(0);
+        setMessageInterval(0);
+        setSecure(false);
+        setReliable(false);
+        setSynchronous(false);
+        setPickUp(false);
+        setHold(false);
+        setSynchronousTimeout(0);
+        setRetries(0);
+        setName(null);
+        setLoginName(null);
+        setPassword(null);
+        setCertificates(null);
+        setTrps(null);
+        setTlsProtocols(null);
+        setTlsCiphers(null);
     }
 
-    public ConnectionPojo getProperties( ConnectionPojo con ) {
+    public ConnectionPojo getProperties(ConnectionPojo con) {
 
-        con.setUri( getUrl() );
-        con.setDescription( getDescription() );
-        con.setNxConnectionId( getNxConnectionId() );
-        con.setTimeout( getTimeout() );
-        con.setMessageInterval( getMessageInterval() );
-        con.setSecure( isSecure() );
-        con.setReliable( isReliable() );
-        con.setSynchronous( isSynchronous() );
-        con.setHold( isHold() );
-        con.setPickUp( isPickUp() );
-        con.setSynchronousTimeout( getSynchronousTimeout() );
-        con.setRetries( getRetries() );
-        con.setName( getName() );
-        con.setLoginName( getLoginName() );
-        con.setPassword( getPassword() );
-        con.setCertificate( null );
-        for ( CertificatePojo certificatePojo : certificates ) {
-            if ( nxCertificateId == certificatePojo.getNxCertificateId() ) {
-                con.setCertificate( certificatePojo );
+        con.setUri(getUrl());
+        con.setDescription(getDescription());
+        con.setNxConnectionId(getNxConnectionId());
+        con.setTimeout(getTimeout());
+        con.setMessageInterval(getMessageInterval());
+        con.setSecure(isSecure());
+        con.setReliable(isReliable());
+        con.setSynchronous(isSynchronous());
+        con.setHold(isHold());
+        con.setPickUp(isPickUp());
+        con.setSynchronousTimeout(getSynchronousTimeout());
+        con.setRetries(getRetries());
+        con.setName(getName());
+        con.setLoginName(getLoginName());
+        con.setPassword(getPassword());
+        con.setTlsProtocols(getTlsProtocols());
+        con.setTlsCiphers(getTlsCiphers());
+        con.setCertificate(null);
+        for (CertificatePojo certificatePojo : certificates) {
+            if (nxCertificateId == certificatePojo.getNxCertificateId()) {
+                con.setCertificate(certificatePojo);
             }
         }
-        for ( TRPPojo trpPojo : trps ) {
-            if ( nxTrpId == trpPojo.getNxTRPId() ) {
-                con.setTrp( trpPojo );
+        for (TRPPojo trpPojo : trps) {
+            if (nxTrpId == trpPojo.getNxTRPId()) {
+                con.setTrp(trpPojo);
             }
         }
         return con;
@@ -119,7 +124,7 @@ public class PartnerConnectionForm extends ActionForm {
         return description;
     }
 
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
 
         this.description = description;
     }
@@ -129,7 +134,7 @@ public class PartnerConnectionForm extends ActionForm {
         return url;
     }
 
-    public void setUrl( String url ) {
+    public void setUrl(String url) {
 
         this.url = url;
     }
@@ -137,26 +142,28 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param con
      */
-    public void setProperties( ConnectionPojo con ) {
+    public void setProperties(ConnectionPojo con) {
 
-        setUrl( con.getUri() );
-        setDescription( con.getDescription() );
-        setNxConnectionId( con.getNxConnectionId() );
-        setNxPartnerId( con.getPartner().getNxPartnerId() );
-        setNxCertificateId( ( con.getCertificate() == null ? 0 : con.getCertificate().getNxCertificateId() ) );
-        setNxTrpId( con.getTrp().getNxTRPId() );
-        setTimeout( con.getTimeout() );
-        setMessageInterval( con.getMessageInterval() );
-        setSecure( con.isSecure() );
-        setReliable( con.isReliable() );
-        setHold( con.isHold() );
-        setPickUp( con.isPickUp() );
-        setSynchronous( con.isSynchronous() );
-        setSynchronousTimeout( con.getSynchronousTimeout() );
-        setRetries( con.getRetries() );
-        setName( con.getName() );
-        setLoginName( con.getLoginName() );
-        setPassword( con.getPassword() );
+        setUrl(con.getUri());
+        setDescription(con.getDescription());
+        setNxConnectionId(con.getNxConnectionId());
+        setNxPartnerId(con.getPartner().getNxPartnerId());
+        setNxCertificateId((con.getCertificate() == null ? 0 : con.getCertificate().getNxCertificateId()));
+        setNxTrpId(con.getTrp().getNxTRPId());
+        setTimeout(con.getTimeout());
+        setMessageInterval(con.getMessageInterval());
+        setSecure(con.isSecure());
+        setReliable(con.isReliable());
+        setHold(con.isHold());
+        setPickUp(con.isPickUp());
+        setSynchronous(con.isSynchronous());
+        setSynchronousTimeout(con.getSynchronousTimeout());
+        setRetries(con.getRetries());
+        setName(con.getName());
+        setLoginName(con.getLoginName());
+        setPassword(con.getPassword());
+        setTlsProtocols(con.getTlsProtocols());
+        setTlsCiphers(con.getTlsCiphers());
     }
 
     public String getPartnerId() {
@@ -164,7 +171,7 @@ public class PartnerConnectionForm extends ActionForm {
         return partnerId;
     }
 
-    public void setPartnerId( String partnerId ) {
+    public void setPartnerId(String partnerId) {
 
         this.partnerId = partnerId;
     }
@@ -180,7 +187,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param nxConnectionId the nxConnectionId to set
      */
-    public void setNxConnectionId( int nxConnectionId ) {
+    public void setNxConnectionId(int nxConnectionId) {
 
         this.nxConnectionId = nxConnectionId;
     }
@@ -196,7 +203,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param certificates the certificates to set
      */
-    public void setCertificates( Set<CertificatePojo> certificates ) {
+    public void setCertificates(Set<CertificatePojo> certificates) {
 
         this.certificates = certificates;
     }
@@ -212,7 +219,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param messageInterval the messageInterval to set
      */
-    public void setMessageInterval( int messageInterval ) {
+    public void setMessageInterval(int messageInterval) {
 
         this.messageInterval = messageInterval;
     }
@@ -228,7 +235,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param name the name to set
      */
-    public void setName( String name ) {
+    public void setName(String name) {
 
         this.name = name;
     }
@@ -244,7 +251,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param nxCertificateId the nxCertificateId to set
      */
-    public void setNxCertificateId( int nxCertificateId ) {
+    public void setNxCertificateId(int nxCertificateId) {
 
         this.nxCertificateId = nxCertificateId;
     }
@@ -260,7 +267,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param nxTrpId the nxTrpId to set
      */
-    public void setNxTrpId( int nxTrpId ) {
+    public void setNxTrpId(int nxTrpId) {
 
         this.nxTrpId = nxTrpId;
     }
@@ -276,7 +283,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param reliable the reliable to set
      */
-    public void setReliable( boolean reliable ) {
+    public void setReliable(boolean reliable) {
 
         this.reliable = reliable;
     }
@@ -292,7 +299,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param retries the retries to set
      */
-    public void setRetries( int retries ) {
+    public void setRetries(int retries) {
 
         this.retries = retries;
     }
@@ -308,7 +315,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param secure the secure to set
      */
-    public void setSecure( boolean secure ) {
+    public void setSecure(boolean secure) {
 
         this.secure = secure;
     }
@@ -324,7 +331,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param synchronous the synchronous to set
      */
-    public void setSynchronous( boolean synchronous ) {
+    public void setSynchronous(boolean synchronous) {
 
         this.synchronous = synchronous;
     }
@@ -341,7 +348,7 @@ public class PartnerConnectionForm extends ActionForm {
      * Sets the pickUp flag.
      * @param pickUp If <code>true</code>, this connection is polled, otherwise not.
      */
-    public void setPickUp( boolean pickUp ) {
+    public void setPickUp(boolean pickUp) {
         this.pickUp = pickUp;
     }
 
@@ -373,7 +380,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param synchronousTimeout the synchronousTimeout to set
      */
-    public void setSynchronousTimeout( int synchronousTimeout ) {
+    public void setSynchronousTimeout(int synchronousTimeout) {
 
         this.synchronousTimeout = synchronousTimeout;
     }
@@ -389,7 +396,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param timeout the timeout to set
      */
-    public void setTimeout( int timeout ) {
+    public void setTimeout(int timeout) {
 
         this.timeout = timeout;
     }
@@ -405,7 +412,7 @@ public class PartnerConnectionForm extends ActionForm {
     /**
      * @param trps the trps to set
      */
-    public void setTrps( List<TRPPojo> trps ) {
+    public void setTrps(List<TRPPojo> trps) {
 
         this.trps = trps;
     }
@@ -415,13 +422,13 @@ public class PartnerConnectionForm extends ActionForm {
         return nxPartnerId;
     }
 
-    public void setNxPartnerId( int nxPartnerId ) {
+    public void setNxPartnerId(int nxPartnerId) {
 
         this.nxPartnerId = nxPartnerId;
     }
 
     @Override
-    public void reset( ActionMapping arg0, HttpServletRequest arg1 ) {
+    public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 
         secure = false;
         reliable = false;
@@ -430,28 +437,43 @@ public class PartnerConnectionForm extends ActionForm {
         hold = false;
     }
 
-    
+
     public String getLoginName() {
-    
+
         return loginName;
     }
 
-    
-    public void setLoginName( String loginName ) {
-    
+
+    public void setLoginName(String loginName) {
+
         this.loginName = loginName;
     }
 
-    
+
     public String getPassword() {
-    
+
         return password;
     }
 
-    
-    public void setPassword( String password ) {
-    
+
+    public void setPassword(String password) {
+
         this.password = password;
     }
 
+    public String getTlsProtocols() {
+        return tlsProtocols;
+    }
+
+    public void setTlsProtocols(String tlsProtocols) {
+        this.tlsProtocols = tlsProtocols;
+    }
+
+    public String getTlsCiphers() {
+        return tlsCiphers;
+    }
+
+    public void setTlsCiphers(String tlsCiphers) {
+        this.tlsCiphers = tlsCiphers;
+    }
 }
