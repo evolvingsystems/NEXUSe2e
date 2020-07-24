@@ -152,7 +152,7 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
                 String[] supportedProtocols = getSSLContext().getSupportedSSLParameters().getProtocols();
                 String[] configuredProtocols = tlsProtocols.trim().split("\\s*,\\s*");
                 if (!Arrays.asList(supportedProtocols).containsAll(Arrays.asList(configuredProtocols))) {
-                    throw new IOException("Unsupported tls protocols selected: " + Arrays.toString(configuredProtocols) + " (supported protocols: " + Arrays.toString(supportedProtocols) + ")");
+                    throw new IllegalArgumentException("Unsupported tls protocols selected: " + Arrays.toString(configuredProtocols) + " (supported protocols: " + Arrays.toString(supportedProtocols) + ")");
                 }
                 sslSocket.setEnabledProtocols(configuredProtocols);
             } else {
@@ -160,7 +160,8 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
                 if (httpsProtocols != null) {
                     sslSocket.setEnabledProtocols(httpsProtocols.split(","));
                 }
-            } if (StringUtils.isNotBlank(tlsCiphers)) {
+            }
+            if (StringUtils.isNotBlank(tlsCiphers)) {
                 String[] supportedCipherSuites = getSSLContext().getSupportedSSLParameters().getCipherSuites();
                 String[] configuredCipherSuites = tlsCiphers.trim().split("\\s*,\\s*");
                 if (!Arrays.asList(supportedCipherSuites).containsAll(Arrays.asList(configuredCipherSuites))) {
