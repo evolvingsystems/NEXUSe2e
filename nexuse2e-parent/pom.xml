@@ -21,16 +21,38 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <!-- only for caching purposes -->
+    <distributionManagement>
         <repository>
-            <id>solutionsdirekt-visualstudio-com-solutionsdirekt-org-nexuse2e</id>
+            <id>org.nexuse2e</id>
+            <name>NEXUSe2e Releases</name>
+            <url>https://solutionsdirekt.pkgs.visualstudio.com/_packaging/org.nexuse2e/maven/v1</url>
+        </repository>
+        <snapshotRepository>
+            <id>org.nexuse2e-snapshots</id>
+            <name>NEXUSe2e Snapshots</name>
+            <url>https://solutionsdirekt.pkgs.visualstudio.com/NEXUSe2e/_packaging/org.nexuse2e-snapshots/maven/v1</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>org.nexuse2e</id>
             <url>https://solutionsdirekt.pkgs.visualstudio.com/_packaging/org.nexuse2e/maven/v1</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
+            </snapshots>
+        </repository>
+         <repository>
+            <id>org.nexuse2e-snapshots</id>
+            <url>https://solutionsdirekt.pkgs.visualstudio.com/NEXUSe2e/_packaging/org.nexuse2e-snapshots/maven/v1</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
         <repository>
@@ -52,8 +74,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
