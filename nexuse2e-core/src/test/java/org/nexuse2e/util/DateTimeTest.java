@@ -5,9 +5,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.ParseException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -93,33 +90,6 @@ public class DateTimeTest {
         DateTime dt = new DateTime("Invalid DateTime string!");
     }
 
-    @Test
-    @Ignore
-    public void testValues() {
-        Instant reference =
-                ZonedDateTime.of(LocalDateTime.of(1970, 1, 1, 1, 0, 3, 0), TimeZone.getDefault().toZoneId())
-                .toInstant();
-
-        short[] parameters = {19, 70, 1, 1, 1, 0, 3, 0};
-        DateTime dt = new DateTime(parameters);
-
-        short[] returned = dt.getValues();
-        assertEquals(19, returned[0]);
-        assertEquals(70, returned[1]);
-        assertEquals(1, returned[2]);
-        assertEquals(1, returned[3]);
-        assertEquals(1, returned[4]);
-        assertEquals(0, returned[5]);
-        assertEquals(3, returned[6]);
-        assertEquals(0, returned[7]);
-
-        Date returnedDate = dt.toDate();
-        assertEquals(reference.toEpochMilli(), returnedDate.getTime());
-
-        assertEquals(reference.toEpochMilli(), dt.toLong());
-
-        assertTrue("1970-01-01T01:00:03".equalsIgnoreCase(dt.toString()));
-    }
 
     @Test
     public void testParses() throws ParseException {
