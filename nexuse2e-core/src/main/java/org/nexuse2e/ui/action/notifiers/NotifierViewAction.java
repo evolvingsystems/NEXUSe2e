@@ -97,7 +97,7 @@ public class NotifierViewAction extends NexusE2EAction {
             loggerForm.getGroupNames().add( group );
         }
         if ( enabledFilterValues.size() > 0 ) {
-            StringBuffer filterBuffer = new StringBuffer();
+            StringBuilder filterBuffer = new StringBuilder();
             for ( String pattern : enabledFilterValues.keySet() ) {
                 if ( pattern.trim().equals( "" ) ) {
                     continue;
