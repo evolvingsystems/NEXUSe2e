@@ -89,7 +89,6 @@ public class NotifierViewAction extends NexusE2EAction {
 
             String value = enabledFilterValues.get( "group_" + group );
             if ( value != null ) {
-                LOG.trace( "value:" + value );
                 tempFilterValues.put( "group_" + group, value );
                 enabledFilterValues.remove( "group_" + group );
             } else {
@@ -98,7 +97,7 @@ public class NotifierViewAction extends NexusE2EAction {
             loggerForm.getGroupNames().add( group );
         }
         if ( enabledFilterValues.size() > 0 ) {
-            StringBuffer filterBuffer = new StringBuffer();
+            StringBuilder filterBuffer = new StringBuilder();
             for ( String pattern : enabledFilterValues.keySet() ) {
                 if ( pattern.trim().equals( "" ) ) {
                     continue;
@@ -107,6 +106,8 @@ public class NotifierViewAction extends NexusE2EAction {
                 filterBuffer.append( ", " );
             }
             loggerForm.setFilterJavaPackagePattern( filterBuffer.toString() );
+        } else {
+            loggerForm.setFilterJavaPackagePattern( "" );
         }
 
         List<ComponentPojo> components = engineConfiguration.getComponents(
