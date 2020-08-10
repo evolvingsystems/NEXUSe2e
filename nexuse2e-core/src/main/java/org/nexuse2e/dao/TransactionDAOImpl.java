@@ -36,6 +36,8 @@ import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.dao.UpdateTransactionOperation.UpdateScope;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.*;
+import org.nexuse2e.reporting.MessageStub;
+import org.nexuse2e.reporting.Statistics;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -217,6 +219,51 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
         return getCountThroughSessionFind(getMessagesForReportCriteria(status, nxChoreographyId, nxPartnerId,
                 conversationId, messageId, null, startDate, endDate, 0, false));
+    }
+
+    public Statistics getStatistics(Date startDate, Date endDate) {
+
+        Statistics result = new Statistics();
+        result.setStartDate(startDate);
+        result.setEndDAte(endDate);
+
+        StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status\n" +
+                " FROM nx_message " +
+                " INNER JOIN nx_conversation " +
+                " ON nx_conversation.nx_conversation_id = nx_message.nx_conversation_id " +
+                " INNER JOIN nx_action " +
+                " ON nx_action.nx_action_id = nx_message.nx_action_id " +
+                " INNER JOIN nx_choreography " +
+                " ON nx_conversation.nx_choreography_id = nx_choreography.nx_choreography_id " +
+                " INNER JOIN nx_partner " +
+                " ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id ");
+
+        if ( startDate != null || endDate != null) {
+
+            sqlQuery.append(" WHERE ");
+            String prefix = "";
+            if (startDate != null) {
+                sqlQuery.append("nx_message.created_date >= :start");
+                prefix = " AND ";
+            }
+            if (endDate != null) {
+                sqlQuery.append(prefix + " nx_message.created_date <= :end");
+                prefix = " AND ";
+            }
+        }
+
+        sqlQuery.append(" ORDER by nx_message.created_date DESC");
+        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());
+        setTimestampFields(startDate, endDate, query);
+
+        List<Object[]> resultset = query.list();
+
+        for (Object[] record : resultset) {
+            MessageStub line = new MessageStub(record);
+            result.getMessages().add(line);
+        }
+        return result;
+
     }
 
     /* (non-Javadoc)

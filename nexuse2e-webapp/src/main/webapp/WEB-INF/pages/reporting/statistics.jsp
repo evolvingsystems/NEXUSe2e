@@ -37,43 +37,150 @@
 		<td class="NEXUSScreenName">NEXUSe2e</td>
 	</tr>
 </table>
+<div style="float: left">
+<canvas id="Choreographies" width="400" height="400"></canvas>
+<script>
+	    var colorGradient = [
+	    		'#FFB74D',
+				'#FFA726',
+				'#FF9800',
+				'#FB8C00',
+				'#F57C00',
+				'#EF6C00',
+				'#E65100',
+				'#FFAB40',
+				'#FF9100',
+				'#FF6D00',
+				'#FFCC80',
+				'#FFF3E0',
+				'#FFE0B2',
+				'#FFD180',
+				]
+		var colorBinary = [
+			'#FF5722',
+			'#FFB74D',
+			'#00E676',
+		]
+		var ctx = document.getElementById('Choreographies').getContext('2d');
+		var myChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: [
+						${choreographies}
+						],
+				datasets: [{
+					label: '# of messages',
+					data: [${choreographyCounts}],
+					backgroundColor: colorGradient,
+					borderWidth: 2
+				}]
+			},
+			options: {
+				responsive:false,
+				maintainAspectRatio: false,
 
-<logic:greaterThan name="messageCount" value="0">
-	<nexus:reportsAvailable>
-		<table width="100%">
-			<tr>
-				<td>
-					<nexus:report name="message_stati_24h">
-						<nexus:reportParam name="startDate" value="${last24Hours}"/>
-					</nexus:report>
-				</td>
-				<td>
-					<nexus:report name="conversation_stati_24h">
-						<nexus:reportParam name="startDate" value="${last24Hours}"/>
-					</nexus:report>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<nexus:report name="messages_by_choreography_24h">
-	                    <nexus:reportParam name="startDate" value="${last24Hours}"/>
-					</nexus:report>
-				</td>
-				<td>
-					<nexus:report name="messages_per_hour">
-						<nexus:reportParam name="startDate" value="${last24HoursRounded}"/>
-					</nexus:report>
-				</td>
-			</tr>
-		</table>
-	</nexus:reportsAvailable>
-	<nexus:reportsUnavailable>
-		Statistics cannot be displayed because the reporting add-on is not installed.
-	</nexus:reportsUnavailable>
-</logic:greaterThan>
-<logic:lessEqual name="messageCount" value="0">
-	No messages have been created within the last 24 hours. Please try again when messages have been received or sent.
-</logic:lessEqual>
+			}
+		});
+	</script>
+</div>
+
+<div style="float: left">
+<canvas id="Status" width="400" height="400"></canvas>
+<script>
+	var ctx = document.getElementById('Status').getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'pie',
+		data: {
+			labels: [
+				${status}
+			],
+			datasets: [{
+				label: '# of messages',
+				data: [${statusCounts}],
+				backgroundColor: colorBinary,
+				borderWidth: 2
+			}]
+		},
+		options: {
+			responsive:false,
+			maintainAspectRatio: false,
+
+		}
+	});
+</script>
+</div>
+
+
+<div style="float: left">
+	<canvas id="timeline" width="800" height="400"></canvas>
+	<script>
+		var timeFormat = 'MM/DD/YYYY HH:mm';
+
+		function newDate(days) {
+			return moment().add(days, 'd').toDate();
+		}
+
+		function newDateString(days) {
+			return moment().add(days, 'd').format(timeFormat);
+		}
+
+		var color = Chart.helpers.color;
+		var ctx = document.getElementById('timeline').getContext('2d');
+		var myChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: [ ${times}
+
+				],
+				datasets: [{
+					label: 'My First dataset',
+					backgroundColor: color('#FFD180').alpha(0.5).rgbString(),
+					borderColor: '#FFD180',
+					fill: false,
+					data: [
+						${timeCounts}
+
+					],
+				}, {
+					label: 'My Second dataset',
+					backgroundColor: color('#FFD180').alpha(0.5).rgbString(),
+					borderColor: '#FFD180',
+					barThickness: 5,
+					fill: false,
+					data: [
+						2,3,4,5,6,7,8
+					],
+				}]
+			},
+			options: {
+				title: {
+					text: 'Chart.js Time Scale'
+				},
+				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							parser: timeFormat,
+							round: 'day',
+							tooltipFormat: 'll HH:mm'
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Date'
+						}
+					}],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'value'
+						}
+					}]
+				},
+			}
+		});
+	</script>
+</div>
+
 
 <center><logic:messagesPresent>
 	<div class="NexusError"><html:errors /></div>

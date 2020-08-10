@@ -35,6 +35,7 @@ import org.nexuse2e.pojo.LogPojo;
 import org.nexuse2e.pojo.MessagePayloadPojo;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.pojo.PartnerPojo;
+import org.nexuse2e.reporting.Statistics;
 
 public interface TransactionDAO {
 
@@ -77,10 +78,14 @@ public interface TransactionDAO {
     public abstract int getMessagesCount( String status, int nxChoreographyId, int nxPartnerId, String conversationId,
             String messageId, Date startDate, Date endDate ) throws NexusException;
 
-    /**
-     * @return
-     * @throws NexusException
-     */
+
+    public abstract Statistics getStatistics(Date startDate, Date endDate);
+
+
+        /**
+         * @return
+         * @throws NexusException
+         */
     public abstract List<MessagePojo> getActiveMessages() throws NexusException; // getActiveMessages
 
     /**
