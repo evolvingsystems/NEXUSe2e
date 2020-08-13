@@ -52,7 +52,7 @@ stages:
               mavenPomFile: ./nexuse2e-webapp/pom.xml
               goals: clean verify
               options: >
-                -B -e --no-transfer-progress
+                -B -e --no-transfer-progress -Pwith-reporting-module
               publishJUnitResults: false
               javaHomeOption: JDKVersion
               jdkVersionOption: 1.11
