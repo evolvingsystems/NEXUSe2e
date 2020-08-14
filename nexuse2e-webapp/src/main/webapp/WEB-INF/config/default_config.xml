@@ -309,7 +309,6 @@
                 <ServiceParam paramName="logical_name" sequenceNumber="0" value="httpplain"/>
             </ServiceParams>
         </Service>
-
     </Services>
     <Users>
         <User active="true" firstName="Administrator" lastName="User" loginName="admin" nxRoleId="1" nxUserId="1" password="0DPiKuNIrrVmD8IUCuw1hQxNqZc=" visible="true"/>
