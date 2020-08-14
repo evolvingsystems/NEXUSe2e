@@ -231,9 +231,6 @@
         <Component className="org.nexuse2e.logging.EmailLogger" description="Email Logger" name="EmailLogger" nxComponentId="13" type="2"/>
         <Component className="org.nexuse2e.backend.pipelets.FileSystemLoadPipelet" description="FileSystemLoadPipelet" name="FileSystemLoadPipelet" nxComponentId="14" type="1"/>
         <Component className="org.nexuse2e.backend.pipelets.FileSystemSavePipelet" description="FileSystemSavePipelet" name="FileSystemSavePipelet" nxComponentId="15" type="1"/>
-        <Component className="org.nexuse2e.service.ftp.FtpPollingReceiverService" description="The polling receiver service for FTP (client)" name="FtpPollingReceiver" nxComponentId="16" type="3"/>
-        <Component className="org.nexuse2e.service.ftp.FtpReceiverService" description="The receiver service for FTP (server)" name="FtpReceiver" nxComponentId="17" type="3"/>
-        <Component className="org.nexuse2e.service.ftp.FtpSenderService" description="The sender service for FTP" name="FtpSender" nxComponentId="18" type="3"/>
         <Component className="org.nexuse2e.backend.pipelets.HTTPIntegrationPipelet" description="HTTP Integration Pipelet" name="HTTPIntegrationPipelet" nxComponentId="19" type="1"/>
         <Component className="org.nexuse2e.messaging.httpplain.HTTPPlainHeaderDeserializer" description="httpPlainHeaderDeserializer Pipelet" name="httpPlainHeaderDeserializer" nxComponentId="20" type="1"/>
         <Component className="org.nexuse2e.messaging.httpplain.HTTPPlainMessagePacker" description="httpPlainMessagePacker Pipelet" name="httpPlainMessagePacker" nxComponentId="21" type="1"/>
@@ -312,15 +309,7 @@
                 <ServiceParam paramName="logical_name" sequenceNumber="0" value="httpplain"/>
             </ServiceParams>
         </Service>
-        <Service autostart="false" description="The default sender service for FTP" name="FtpSenderService" nxComponentId="18" nxServiceId="5" position="0">
-            <ServiceParams/>
-        </Service>
-        <Service autostart="false" description="The default receiver service for FTP (server)" name="FtpReceiverService" nxComponentId="17" nxServiceId="7" position="0">
-            <ServiceParams/>
-        </Service>
-        <Service autostart="false" description="The default polling receiver service for FTP (client)" name="FtpPollingReceiverService" nxComponentId="16" nxServiceId="6" position="0">
-            <ServiceParams/>
-        </Service>
+
     </Services>
     <Users>
         <User active="true" firstName="Administrator" lastName="User" loginName="admin" nxRoleId="1" nxUserId="1" password="0DPiKuNIrrVmD8IUCuw1hQxNqZc=" visible="true"/>
