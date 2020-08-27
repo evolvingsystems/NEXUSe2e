@@ -74,8 +74,13 @@ public abstract class AbstractLogger extends AppenderSkeleton implements LogAppe
     
     @SuppressWarnings("unchecked")
     public <T> T getParameter( String name ) {
-
-        return (T) parameters.get( name );
+        
+        T value = (T) parameters.get( name );
+        if (value != null) {
+            return value;
+        } else {
+            return parameterMap.get(name).getDefaultValue();
+        }
     }
 
     /* (non-Javadoc)
