@@ -87,7 +87,10 @@ import org.bouncycastle.util.encoders.Hex;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
+import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.CertificatePojo;
+import org.nexuse2e.ui.form.CertificatePromotionForm;
+import org.nexuse2e.ui.form.CertificatePropertiesForm;
 
 /**
  * Utility class to work with certificates (mostly instances of <code>X509Certificate</code>).
@@ -1181,5 +1184,38 @@ public class CertificateUtil {
             }
         }
         return trustmanagers;
+    }
+
+    public static List<X509Certificate> getDuplicates(EngineConfiguration engineConfiguration, CertificateType type, X509Certificate cert) throws NexusException, CertificateEncodingException {
+        List<X509Certificate> duplicates = new ArrayList<>();
+        List<X509Certificate> allCertificates = getAllCaCertificates(engineConfiguration, type);
+
+        for (X509Certificate certificate : allCertificates) {
+            if (cert.getSubjectX500Principal().equals(certificate.getSubjectX500Principal())
+                    ||  getMD5Fingerprint(cert).equals(getMD5Fingerprint(certificate))) {
+                duplicates.add(certificate);
+            }
+        }
+
+        return duplicates;
+    }
+
+    private static List<X509Certificate> getAllCaCertificates(EngineConfiguration engineConfiguration, CertificateType type) throws NexusException {
+        List<X509Certificate> allCertificates = new ArrayList<>();
+
+        for (CertificatePojo certificate : engineConfiguration.getCertificates(type.getOrdinal(), null)) {
+            byte[] b = certificate.getBinaryData();
+            if (b != null && b.length > 0) {
+                try {
+                    X509Certificate cacert = CertificateUtil.getX509Certificate(b);
+                    if (cacert != null) { // #39
+                        allCertificates.add(cacert);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        return allCertificates;
     }
 }

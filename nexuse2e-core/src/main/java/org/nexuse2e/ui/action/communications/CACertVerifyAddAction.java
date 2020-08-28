@@ -20,6 +20,8 @@
 package org.nexuse2e.ui.action.communications;
 
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,13 +70,34 @@ public class CACertVerifyAddAction extends NexusE2EAction {
             String alias = form.getAlias();
 
             CertificatePojo cPojo = engineConfiguration.getCertificateByName(CertificateType.CA.getOrdinal(), alias);
+            byte[] data = form.getCertficate().getFileData();
+            X509Certificate cert = CertificateUtil.getX509Certificate(data);
+            List<X509Certificate> duplicates = CertificateUtil.getDuplicates(engineConfiguration, CertificateType.CA, cert);
             if (cPojo != null) {
+                List<CertificatePropertiesForm> certForms = new ArrayList<>();
                 CertificatePropertiesForm certForm = new CertificatePropertiesForm();
                 X509Certificate x509Certificate = CertificateUtil.getX509Certificate(cPojo.getBinaryData());
 
                 certForm.setCertificateProperties(x509Certificate);
                 certForm.setAlias(alias);
-                request.setAttribute("existingCertificate", certForm);
+                certForms.add(certForm);
+
+                request.setAttribute("existingCertificates", certForms);
+
+                // request.getSession().setAttribute( Crumbs.CURRENT_LOCATION, Crumbs.CA_VERIFY_ADD );
+                form.setPreserve(true);
+
+                return update;
+            } else if (duplicates.size() > 0) {
+                List<CertificatePropertiesForm> certForms = new ArrayList<>();
+                CertificatePropertiesForm certForm;
+
+                for (X509Certificate duplicate : duplicates) {
+                    certForm = new CertificatePropertiesForm();
+                    certForm.setCertificateProperties(duplicate);
+                    certForms.add(certForm);
+                }
+                request.setAttribute("existingCertificates", certForms);
 
                 // request.getSession().setAttribute( Crumbs.CURRENT_LOCATION, Crumbs.CA_VERIFY_ADD );
                 form.setPreserve(true);
