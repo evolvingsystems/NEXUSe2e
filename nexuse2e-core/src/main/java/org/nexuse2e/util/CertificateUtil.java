@@ -25,16 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathBuilderException;
 import java.security.cert.CertStore;
@@ -56,6 +47,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
@@ -1185,7 +1177,8 @@ public class CertificateUtil {
         X509Certificate certificate;
         for (CertificatePojo cPojo : allCertificates) {
             certificate = getX509Certificate(cPojo);
-            if (hasSameFingerPrint(cert, certificate) || hasSameSubject(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate)) {
+            if (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
+                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate)) {
                 duplicates.add(cPojo);
             }
         }
@@ -1193,7 +1186,7 @@ public class CertificateUtil {
         return duplicates;
     }
 
-    public static boolean hasSameFingerPrint(X509Certificate cert1, X509Certificate cert2) {
+    public static boolean hasSameMD5FingerPrint(X509Certificate cert1, X509Certificate cert2) {
         try {
             if (StringUtils.isNotBlank(getMD5Fingerprint(cert1))) {
                 return getMD5Fingerprint(cert1).equals(getMD5Fingerprint(cert2));
@@ -1203,7 +1196,17 @@ public class CertificateUtil {
         return false;
     }
 
-    public static boolean hasSameSubject(X509Certificate cert1, X509Certificate cert2) {
+    public static boolean hasSameSHA1FingerPrint(X509Certificate cert1, X509Certificate cert2) {
+        try {
+            if (StringUtils.isNotBlank(getSHA1Fingerprint(cert1))) {
+                return getSHA1Fingerprint(cert1).equals(getSHA1Fingerprint(cert2));
+            }
+        } catch (CertificateEncodingException ignored) {
+        }
+        return false;
+    }
+
+    public static boolean hasSameDistinguishedName(X509Certificate cert1, X509Certificate cert2) {
         if (cert1.getSubjectX500Principal() != null && StringUtils.isNotBlank(cert1.getSubjectX500Principal().getName())) {
             return cert1.getSubjectX500Principal().equals(cert2.getSubjectX500Principal());
         }
@@ -1220,8 +1223,8 @@ public class CertificateUtil {
         return false;
     }
 
-    private static String getSubjectKeyIdentifier(X509Certificate x509Cert) {
-        byte[] extensionValue = x509Cert.getExtensionValue("2.5.29.14");
+    public static String getSubjectKeyIdentifier(X509Certificate cert) {
+        byte[] extensionValue = cert.getExtensionValue("2.5.29.14");
         byte[] skiValue = new byte[extensionValue.length - 4];
         System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
         return new DEROctetString(skiValue).toString();

@@ -49,14 +49,17 @@
                 <tr>
                     <td class="NEXUSName">Identical (supposedly unique) Attributes</td>
                     <td class="NEXUSValue">
-                        <logic:equal name="duplicate" property="duplicateFingerprint" value="true">
-                            Fingerprint<br>
-                        </logic:equal>
-                        <logic:equal name="duplicate" property="duplicateSubject" value="true">
-                            Subject<br>
+                        <logic:equal name="duplicate" property="duplicateDistinguishedName" value="true">
+                            Distinguished Name<br>
                         </logic:equal>
                         <logic:equal name="duplicate" property="duplicateSki" value="true">
                             SubjectKeyIdentifier
+                        </logic:equal>
+                        <logic:equal name="duplicate" property="duplicateFingerprint" value="true">
+                            MD5 Fingerprint<br>
+                        </logic:equal>
+                        <logic:equal name="duplicate" property="duplicateSHA1Fingerprint" value="true">
+                            SHA1 Fingerprint<br>
                         </logic:equal>
                     </td>
                 </tr>
@@ -110,6 +113,18 @@
                             <font color="red"><b><bean:write name="duplicate" property="valid"/></b></font>
                         </logic:notEqual>
                     </td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">SubjectKeyIdentifier</td>
+                    <td class="NEXUSValue"><bean:write name="duplicate" property="subjectKeyIdentifier"/></td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">MD5 Fingerprint</td>
+                    <td class="NEXUSValue"><bean:write name="duplicate" property="fingerprint"/></td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">SHA1 Fingerprint</td>
+                    <td class="NEXUSValue"><bean:write name="duplicate" property="sha1Fingerprint"/></td>
                 </tr>
             </table>
         </logic:iterate>

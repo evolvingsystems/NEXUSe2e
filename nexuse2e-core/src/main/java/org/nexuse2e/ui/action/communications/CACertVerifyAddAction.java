@@ -96,8 +96,9 @@ public class CACertVerifyAddAction extends NexusE2EAction {
                     certForm = new CertificatePropertiesForm();
                     certForm.setAlias(duplicate.getName());
                     certForm.setCertificateProperties(x509Certificate);
-                    certForm.setDuplicateFingerprint(CertificateUtil.hasSameFingerPrint(cert, x509Certificate));
-                    certForm.setDuplicateSubject(CertificateUtil.hasSameSubject(cert, x509Certificate));
+                    certForm.setDuplicateFingerprint(CertificateUtil.hasSameMD5FingerPrint(cert, x509Certificate));
+                    certForm.setDuplicateSHA1Fingerprint(CertificateUtil.hasSameSHA1FingerPrint(cert, x509Certificate));
+                    certForm.setDuplicateDistinguishedName(CertificateUtil.hasSameDistinguishedName(cert, x509Certificate));
                     certForm.setDuplicateSki(CertificateUtil.hasSameSubjectKeyIdentifier(cert, x509Certificate));
                     certForms.add(certForm);
                 }

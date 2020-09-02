@@ -93,6 +93,18 @@
 
                 </td>
             </tr>
+            <tr>
+                <td class="NEXUSName">SubjectKeyIdentifier</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="subjectKeyIdentifier"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">MD5 Fingerprint</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="fingerprint"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">SHA1 Fingerprint</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="sha1Fingerprint"/></td>
+            </tr>
         </table>
         
         <center> 

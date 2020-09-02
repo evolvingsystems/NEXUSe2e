@@ -54,6 +54,8 @@ public class CertificatePropertiesForm extends ActionForm {
     private String            valid            = null;
     private String            timeRemaining    = null;
     private String            fingerprint      = null;
+    private String            sha1Fingerprint  = null;
+    private String            subjectKeyIdentifier = null;
     private String            created          = null;
     private String            issuerCN         = null;
 
@@ -62,8 +64,9 @@ public class CertificatePropertiesForm extends ActionForm {
     private int               nxCertificateId  = 0;
 
     private Boolean           duplicateFingerprint = false;
-    private Boolean           duplicateSubject = false;
-    private Boolean           duplicateSki = false;
+    private Boolean           duplicateSHA1Fingerprint = false;
+    private Boolean           duplicateDistinguishedName = false;
+    private Boolean           duplicateSki     = false;
 
 
     public void setCertificateProperties( X509Certificate x509 ) {
@@ -90,6 +93,12 @@ public class CertificatePropertiesForm extends ActionForm {
         } catch ( CertificateEncodingException e1 ) {
             setFingerprint( "not available" );
         }
+        try {
+            setSha1Fingerprint(CertificateUtil.getSHA1Fingerprint(x509));
+        } catch (CertificateEncodingException e1) {
+            setSha1Fingerprint("not available");
+        }
+        setSubjectKeyIdentifier(CertificateUtil.getSubjectKeyIdentifier(x509));
     }
     
     public void setPrincipal( X509Principal principal ) {
@@ -252,6 +261,22 @@ public class CertificatePropertiesForm extends ActionForm {
         this.fingerprint = fingerprint;
     }
 
+    public String getSha1Fingerprint() {
+        return sha1Fingerprint;
+    }
+
+    public void setSha1Fingerprint(String sha1Fingerprint) {
+        this.sha1Fingerprint = sha1Fingerprint;
+    }
+
+    public String getSubjectKeyIdentifier() {
+        return subjectKeyIdentifier;
+    }
+
+    public void setSubjectKeyIdentifier(String subjectKeyIdentifier) {
+        this.subjectKeyIdentifier = subjectKeyIdentifier;
+    }
+
     public String getCreated() {
 
         return created;
@@ -314,12 +339,20 @@ public class CertificatePropertiesForm extends ActionForm {
         this.duplicateFingerprint = duplicateFingerprint;
     }
 
-    public Boolean getDuplicateSubject() {
-        return duplicateSubject;
+    public Boolean getDuplicateSHA1Fingerprint() {
+        return duplicateSHA1Fingerprint;
     }
 
-    public void setDuplicateSubject(Boolean duplicateSubject) {
-        this.duplicateSubject = duplicateSubject;
+    public void setDuplicateSHA1Fingerprint(Boolean duplicateSHA1Fingerprint) {
+        this.duplicateSHA1Fingerprint = duplicateSHA1Fingerprint;
+    }
+
+    public Boolean getDuplicateDistinguishedName() {
+        return duplicateDistinguishedName;
+    }
+
+    public void setDuplicateDistinguishedName(Boolean duplicateDistinguishedName) {
+        this.duplicateDistinguishedName = duplicateDistinguishedName;
     }
 
     public Boolean getDuplicateSki() {
