@@ -110,9 +110,17 @@
         <center>
             <table class="NEXUS_BUTTON_TABLE" width="100%">
                 <tr>
-                    <td>&nbsp;</td>
                     <td class="BUTTON_RIGHT">
-                    	<nexus:submit precondition="confirmDelete('Are you sure you want to delete this Certificate?')"><img src="images/icons/tick.png" class="button">Delete</nexus:submit>
+                        <nobr>
+                            <nexus:link href="CACertificateExportCertificate.do?nxCertificateId=${certificatePropertiesForm.nxCertificateId}" styleClass="NexusHeaderLink">
+                            <img src="images/icons/disk.png" class="button"/>Export</nexus:link>
+                        </nobr>
+                    </td>
+                    <td class="BUTTON_RIGHT">
+                        <nobr>
+                    	    <nexus:submit precondition="confirmDelete('Are you sure you want to delete this Certificate?')">
+                            <img src="images/icons/delete.png" class="button">Delete</nexus:submit>
+                        </nobr>
                     </td>
                 </tr>
             </table>

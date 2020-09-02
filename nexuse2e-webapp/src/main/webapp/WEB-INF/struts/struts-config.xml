@@ -346,6 +346,15 @@
     <action path="/CACertificateView" name="certificatePropertiesForm" type="org.nexuse2e.ui.action.communications.CACertViewAction">
       <forward name="success" path="/WEB-INF/pages/communications/ca_certificate_view.jsp"/>
     </action>
+    <action path="/CACertificateExportCertificate" name="protectedFileAccessForm" type="org.nexuse2e.ui.action.communications.CACertSingleCertExportAction">
+      <forward name="success" path="/WEB-INF/pages/communications/ca_certificate_export_certificate.jsp"/>
+      <forward name="error" path="/WEB-INF/pages/error.jsp"/>
+    </action>
+    <action path="/CACertStoreExported" name="protectedFileAccessForm" type="org.nexuse2e.ui.action.communications.CACertStoreExportedAction">
+      <forward name="success" path="/CACertificatesList.do"/>
+      <forward name="renderDownloadLink" path="/WEB-INF/pages/communications/ca_certificate_export_certificate.jsp"/>
+      <forward name="error" path="/CACertificateExportCertificate.do"/>
+    </action>
     <action path="/CACertificateVerifyAddCert" name="protectedFileAccessForm" type="org.nexuse2e.ui.action.communications.CACertVerifyAddAction">
       <forward name="update" path="/WEB-INF/pages/communications/ca_certificate_verify_add.jsp"/>
       <forward name="duplicate" path="/WEB-INF/pages/communications/ca_certificate_verify_add_duplicate.jsp"/>
