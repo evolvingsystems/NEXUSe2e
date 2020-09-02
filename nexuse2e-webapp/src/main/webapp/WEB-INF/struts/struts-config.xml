@@ -348,6 +348,7 @@
     </action>
     <action path="/CACertificateVerifyAddCert" name="protectedFileAccessForm" type="org.nexuse2e.ui.action.communications.CACertVerifyAddAction">
       <forward name="update" path="/WEB-INF/pages/communications/ca_certificate_verify_add.jsp"/>
+      <forward name="duplicate" path="/WEB-INF/pages/communications/ca_certificate_verify_add_duplicate.jsp"/>
       <forward name="error" path="/WEB-INF/pages/communications/ca_certificate_add.jsp"/>
       <forward name="new" path="/CACertificateSaveSingleCert.do"/>
     </action>

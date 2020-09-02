@@ -71,7 +71,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERObjectIdentifier;
+import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.MD5Digest;
@@ -1186,36 +1188,26 @@ public class CertificateUtil {
         return trustmanagers;
     }
 
-    public static List<X509Certificate> getDuplicates(EngineConfiguration engineConfiguration, CertificateType type, X509Certificate cert) throws NexusException, CertificateEncodingException {
-        List<X509Certificate> duplicates = new ArrayList<>();
-        List<X509Certificate> allCertificates = getAllCaCertificates(engineConfiguration, type);
-
-        for (X509Certificate certificate : allCertificates) {
+    public static List<CertificatePojo> getDuplicates(EngineConfiguration engineConfiguration, CertificateType type, X509Certificate cert) throws NexusException, CertificateEncodingException, IOException {
+        List<CertificatePojo> duplicates = new ArrayList<>();
+        List<CertificatePojo> allCertificates = engineConfiguration.getCertificates(type.getOrdinal(), null);
+        X509Certificate certificate;
+        for (CertificatePojo cPojo : allCertificates) {
+            certificate = getX509Certificate(cPojo);
             if (cert.getSubjectX500Principal().equals(certificate.getSubjectX500Principal())
-                    ||  getMD5Fingerprint(cert).equals(getMD5Fingerprint(certificate))) {
-                duplicates.add(certificate);
+                    || getMD5Fingerprint(cert).equals(getMD5Fingerprint(certificate))
+                    || getSKI(cert) != null && getSKI(cert).equals(getSKI(certificate))) {
+                duplicates.add(cPojo);
             }
         }
 
         return duplicates;
     }
 
-    private static List<X509Certificate> getAllCaCertificates(EngineConfiguration engineConfiguration, CertificateType type) throws NexusException {
-        List<X509Certificate> allCertificates = new ArrayList<>();
-
-        for (CertificatePojo certificate : engineConfiguration.getCertificates(type.getOrdinal(), null)) {
-            byte[] b = certificate.getBinaryData();
-            if (b != null && b.length > 0) {
-                try {
-                    X509Certificate cacert = CertificateUtil.getX509Certificate(b);
-                    if (cacert != null) { // #39
-                        allCertificates.add(cacert);
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        }
-
-        return allCertificates;
+    private static String getSKI(X509Certificate x509Cert) throws IOException {
+        byte[] extensionValue = x509Cert.getExtensionValue("2.5.29.14");
+        byte[] skiValue = new byte[extensionValue.length - 4];
+        System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
+        return new DEROctetString(skiValue).toString();
     }
 }

@@ -41,61 +41,59 @@
 				    </tr>
 				</table>
         
-        <logic:iterate id="existingCertificate" name="existingCertificates">
-            <table class="NEXUS_TABLE" width="100%">
-                <tr>
-                    <td colspan="2" class="NEXUSSection">WARNING: Existing CA Certificate for Alias: <bean:write name="existingCertificate" property="alias"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Common Name</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="commonName"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Organisation</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="organisation"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Organisation Unit</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="organisationUnit"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Country</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="country"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">State</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="state"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Location</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="location"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">E-Mail</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="email"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Not Valid Before</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="notBefore"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Not Valid After</td>
-                    <td class="NEXUSValue"><bean:write name="existingCertificate" property="notAfter"/></td>
-                </tr>
-                <tr>
-                    <td class="NEXUSName">Validity</td>
-                    <td class="NEXUSValue">
-                        <logic:equal name="existingCertificate" property="valid" value="Okay">
-                            <font color="green"><b><bean:write name="existingCertificate" property="valid"/></b></font> <bean:write name="existingCertificate" property="timeRemaining"/>
-                        </logic:equal>
-                        <logic:notEqual name="existingCertificate" property="valid" value="Okay">
-                            <font color="red"><b><bean:write name="existingCertificate" property="valid"/></b></font>
-                        </logic:notEqual>
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td colspan="2" class="NEXUSSection">WARNING: Existing CA Certificate for Alias: <bean:write name="existingCertificate" property="alias"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Common Name</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="commonName"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Organisation</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="organisation"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Organisation Unit</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="organisationUnit"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Country</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="country"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">State</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="state"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Location</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="location"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">E-Mail</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="email"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Not Valid Before</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="notBefore"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Not Valid After</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="notAfter"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Validity</td>
+                <td class="NEXUSValue">
+                    <logic:equal name="existingCertificate" property="valid" value="Okay">
+                        <font color="green"><b><bean:write name="existingCertificate" property="valid"/></b></font> <bean:write name="existingCertificate" property="timeRemaining"/>
+                    </logic:equal>
+                    <logic:notEqual name="existingCertificate" property="valid" value="Okay">
+                        <font color="red"><b><bean:write name="existingCertificate" property="valid"/></b></font>
+                    </logic:notEqual>
 
-                    </td>
-                </tr>
-            </table>
-        </logic:iterate>
+                </td>
+            </tr>
+        </table>
         
         <center> 
           <logic:messagesPresent> 
