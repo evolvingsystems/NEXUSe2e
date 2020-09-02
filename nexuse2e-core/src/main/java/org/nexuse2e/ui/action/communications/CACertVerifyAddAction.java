@@ -92,9 +92,13 @@ public class CACertVerifyAddAction extends NexusE2EAction {
                 CertificatePropertiesForm certForm;
 
                 for (CertificatePojo duplicate : duplicates) {
+                    X509Certificate x509Certificate = CertificateUtil.getX509Certificate(duplicate);
                     certForm = new CertificatePropertiesForm();
                     certForm.setAlias(duplicate.getName());
-                    certForm.setCertificateProperties(CertificateUtil.getX509Certificate(duplicate));
+                    certForm.setCertificateProperties(x509Certificate);
+                    certForm.setDuplicateFingerprint(CertificateUtil.hasSameFingerPrint(cert, x509Certificate));
+                    certForm.setDuplicateSubject(CertificateUtil.hasSameSubject(cert, x509Certificate));
+                    certForm.setDuplicateSki(CertificateUtil.hasSameSubjectKeyIdentifier(cert, x509Certificate));
                     certForms.add(certForm);
                 }
                 request.setAttribute("duplicates", certForms);

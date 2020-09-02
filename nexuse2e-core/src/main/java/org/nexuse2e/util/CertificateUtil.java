@@ -49,16 +49,7 @@ import java.security.cert.TrustAnchor;
 import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
@@ -1194,9 +1185,7 @@ public class CertificateUtil {
         X509Certificate certificate;
         for (CertificatePojo cPojo : allCertificates) {
             certificate = getX509Certificate(cPojo);
-            if (cert.getSubjectX500Principal().equals(certificate.getSubjectX500Principal())
-                    || getMD5Fingerprint(cert).equals(getMD5Fingerprint(certificate))
-                    || getSKI(cert) != null && getSKI(cert).equals(getSKI(certificate))) {
+            if (hasSameFingerPrint(cert, certificate) || hasSameSubject(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate)) {
                 duplicates.add(cPojo);
             }
         }
@@ -1204,7 +1193,34 @@ public class CertificateUtil {
         return duplicates;
     }
 
-    private static String getSKI(X509Certificate x509Cert) throws IOException {
+    public static boolean hasSameFingerPrint(X509Certificate cert1, X509Certificate cert2) {
+        try {
+            if (StringUtils.isNotBlank(getMD5Fingerprint(cert1))) {
+                return getMD5Fingerprint(cert1).equals(getMD5Fingerprint(cert2));
+            }
+        } catch (CertificateEncodingException ignored) {
+        }
+        return false;
+    }
+
+    public static boolean hasSameSubject(X509Certificate cert1, X509Certificate cert2) {
+        if (cert1.getSubjectX500Principal() != null && StringUtils.isNotBlank(cert1.getSubjectX500Principal().getName())) {
+            return cert1.getSubjectX500Principal().equals(cert2.getSubjectX500Principal());
+        }
+        return false;
+    }
+
+    public static boolean hasSameSubjectKeyIdentifier(X509Certificate cert1, X509Certificate cert2) {
+        try {
+            if (StringUtils.isNotBlank(getSubjectKeyIdentifier(cert1))) {
+                return getSubjectKeyIdentifier(cert1).equals(getSubjectKeyIdentifier(cert2));
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    private static String getSubjectKeyIdentifier(X509Certificate x509Cert) {
         byte[] extensionValue = x509Cert.getExtensionValue("2.5.29.14");
         byte[] skiValue = new byte[extensionValue.length - 4];
         System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);

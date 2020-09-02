@@ -44,7 +44,21 @@
         <logic:iterate id="duplicate" name="duplicates">
             <table class="NEXUS_TABLE" width="100%">
                 <tr>
-                    <td colspan="2" class="NEXUSSection">WARNING: Duplicate CA Certificate already exists: <bean:write name="duplicate" property="alias"/></td>
+                    <td colspan="2" class="NEXUSSection">WARNING: CA Certificate with same supposedly unique attribute(s) already exists: <bean:write name="duplicate" property="alias"/></td>
+                </tr>
+                <tr>
+                    <td class="NEXUSName">Identical (supposedly unique) Attributes</td>
+                    <td class="NEXUSValue">
+                        <logic:equal name="duplicate" property="duplicateFingerprint" value="true">
+                            Fingerprint<br>
+                        </logic:equal>
+                        <logic:equal name="duplicate" property="duplicateSubject" value="true">
+                            Subject<br>
+                        </logic:equal>
+                        <logic:equal name="duplicate" property="duplicateSki" value="true">
+                            SubjectKeyIdentifier
+                        </logic:equal>
+                    </td>
                 </tr>
                 <tr>
                     <td class="NEXUSName">Alias</td>
@@ -95,7 +109,6 @@
                         <logic:notEqual name="duplicate" property="valid" value="Okay">
                             <font color="red"><b><bean:write name="duplicate" property="valid"/></b></font>
                         </logic:notEqual>
-
                     </td>
                 </tr>
             </table>

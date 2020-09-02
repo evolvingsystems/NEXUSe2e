@@ -61,6 +61,11 @@ public class CertificatePropertiesForm extends ActionForm {
 
     private int               nxCertificateId  = 0;
 
+    private Boolean           duplicateFingerprint = false;
+    private Boolean           duplicateSubject = false;
+    private Boolean           duplicateSki = false;
+
+
     public void setCertificateProperties( X509Certificate x509 ) {
 
         setCert( x509 );
@@ -299,5 +304,29 @@ public class CertificatePropertiesForm extends ActionForm {
     public void setCert( X509Certificate cert ) {
     
         this.cert = cert;
+    }
+
+    public Boolean getDuplicateFingerprint() {
+        return duplicateFingerprint;
+    }
+
+    public void setDuplicateFingerprint(Boolean duplicateFingerprint) {
+        this.duplicateFingerprint = duplicateFingerprint;
+    }
+
+    public Boolean getDuplicateSubject() {
+        return duplicateSubject;
+    }
+
+    public void setDuplicateSubject(Boolean duplicateSubject) {
+        this.duplicateSubject = duplicateSubject;
+    }
+
+    public Boolean getDuplicateSki() {
+        return duplicateSki;
+    }
+
+    public void setDuplicateSki(Boolean duplicateSki) {
+        this.duplicateSki = duplicateSki;
     }
 }
