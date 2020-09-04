@@ -20,6 +20,8 @@
 package org.nexuse2e.ui.action.communications;
 
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,6 +71,27 @@ public class CACertViewAction extends NexusE2EAction {
         form.setCertificateProperties(x509Certificate);
         form.setAlias(cPojo.getName());
         form.setNxCertificateId(cPojo.getNxCertificateId());
+
+        List<CertificatePojo> duplicates = CertificateUtil.getDuplicates(engineConfiguration, CertificateType.CA, x509Certificate);
+        List<CertificatePropertiesForm> duplicateForms = new ArrayList<>();
+        CertificatePropertiesForm duplicateForm;
+        for (CertificatePojo duplicate : duplicates) {
+            if (!duplicate.getName().equals(cPojo.getName())) {
+                X509Certificate duplicateCert = CertificateUtil.getX509Certificate(duplicate);
+                duplicateForm = new CertificatePropertiesForm();
+                duplicateForm.setAlias(duplicate.getName());
+                duplicateForm.setCertificateProperties(duplicateCert);
+                duplicateForm.setDuplicateFingerprint(CertificateUtil.hasSameMD5FingerPrint(x509Certificate, duplicateCert));
+                duplicateForm.setDuplicateSHA1Fingerprint(CertificateUtil.hasSameSHA1FingerPrint(x509Certificate, duplicateCert));
+                duplicateForm.setDuplicateDistinguishedName(CertificateUtil.hasSameDistinguishedName(x509Certificate, duplicateCert));
+                duplicateForm.setDuplicateSki(CertificateUtil.hasSameSubjectKeyIdentifier(x509Certificate, duplicateCert));
+                duplicateForm.setNxCertificateId(duplicate.getNxCertificateId());
+                duplicateForms.add(duplicateForm);
+            }
+        }
+        request.setAttribute("duplicates", duplicateForms);
+
+
         if (!errors.isEmpty()) {
             return error;
         }
