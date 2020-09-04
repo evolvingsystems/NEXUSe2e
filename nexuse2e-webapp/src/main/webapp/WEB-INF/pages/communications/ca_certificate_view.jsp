@@ -120,7 +120,7 @@
                 <tr>
                     <td class="BUTTON_RIGHT">
                         <nobr>
-                            <nexus:link href="CACertificateExportCertificate.do?nxCertificateId=${certificatePropertiesForm.nxCertificateId}" styleClass="NexusHeaderLink">
+                            <nexus:link href="CACertificateExportCertificate.do?nxCertificateId=${certificatePropertiesForm.nxCertificateId}" styleClass="button">
                             <img src="images/icons/disk.png" class="button"/>Export</nexus:link>
                         </nobr>
                     </td>

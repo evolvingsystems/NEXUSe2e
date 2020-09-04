@@ -81,6 +81,7 @@ public class CACertVerifyAddAction extends NexusE2EAction {
 
                 certForm.setCertificateProperties(x509Certificate);
                 certForm.setAlias(alias);
+                certForm.setNxCertificateId(cPojo.getNxCertificateId());
                 request.setAttribute("existingCertificate", certForm);
 
                 // request.getSession().setAttribute( Crumbs.CURRENT_LOCATION, Crumbs.CA_VERIFY_ADD );
@@ -100,6 +101,7 @@ public class CACertVerifyAddAction extends NexusE2EAction {
                     certForm.setDuplicateSHA1Fingerprint(CertificateUtil.hasSameSHA1FingerPrint(cert, x509Certificate));
                     certForm.setDuplicateDistinguishedName(CertificateUtil.hasSameDistinguishedName(cert, x509Certificate));
                     certForm.setDuplicateSki(CertificateUtil.hasSameSubjectKeyIdentifier(cert, x509Certificate));
+                    certForm.setNxCertificateId(duplicate.getNxCertificateId());
                     certForms.add(certForm);
                 }
                 request.setAttribute("duplicates", certForms);

@@ -44,7 +44,7 @@
         <logic:iterate id="duplicate" name="duplicates">
             <table class="NEXUS_TABLE" width="100%">
                 <tr>
-                    <td colspan="2" class="NEXUSSection">WARNING: CA Certificate with same supposedly unique attribute(s) already exists: <bean:write name="duplicate" property="alias"/></td>
+                    <td colspan="2" class="NEXUSSection" style="background-color: yellow;">WARNING: CA Certificate with same supposedly unique attribute(s) already exists: <bean:write name="duplicate" property="alias"/></td>
                 </tr>
                 <tr>
                     <td class="NEXUSName">Identical (supposedly unique) Attributes</td>
@@ -63,6 +63,8 @@
                         </logic:equal>
                     </td>
                 </tr>
+            </table>
+            <table class="NEXUS_TABLE" width="100%">
                 <tr>
                     <td class="NEXUSName">Alias</td>
                     <td class="NEXUSValue"><bean:write name="duplicate" property="alias"/></td>
@@ -127,6 +129,19 @@
                     <td class="NEXUSValue"><bean:write name="duplicate" property="sha1Fingerprint"/></td>
                 </tr>
             </table>
+            <center>
+                <table class="NEXUS_BUTTON_TABLE" width="100%">
+                    <tr>
+                        <td class="BUTTON_RIGHT">
+                            <nobr>
+                                <nexus:link href="CACertificateExportCertificate.do?nxCertificateId=${duplicate.nxCertificateId}" styleClass="button">
+                                    <img src="images/icons/disk.png" class="button"/>Export existing certificate
+                                </nexus:link>
+                            </nobr>
+                        </td>
+                    </tr>
+                </table>
+            </center>
         </logic:iterate>
         
         <center> 
@@ -140,11 +155,11 @@
             <center>
                 <table class="NEXUS_BUTTON_TABLE" width="100%">
                     <tr>
-                        <td>&nbsp;</td>
                         <td class="BUTTON_RIGHT">
-                            <nexus:submit precondition="confirmDelete('Are you sure you want to import the new certificate anyway?')"><img src="images/icons/add.png" name="SUBMIT"></nexus:submit>
+                            <nexus:submit precondition="confirmDelete('Are you sure you want to import the new certificate anyway?')">
+                                <img class="button" src="images/icons/add.png" name="SUBMIT">Import new certificate anyway
+                            </nexus:submit>
                         </td>
-                        <td class="NexusHeaderLink"><nexus:submit precondition="confirmDelete('Are you sure you want to import the new certificate anyway?')">Import</nexus:submit></td>
                     </tr>
                 </table>
             </center>
