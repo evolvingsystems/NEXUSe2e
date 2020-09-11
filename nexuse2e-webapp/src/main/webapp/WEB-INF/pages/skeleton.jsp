@@ -51,18 +51,9 @@
 <script src="javascript/Generic.js" language="JavaScript"
 	type="text/javascript">
     </script>
-<script src="javascript/CPA.js" language="JavaScript"
-	type="text/javascript">
-    </script>
 <script src="javascript/Choreography.js" language="JavaScript"
 	type="text/javascript">
     </script>
-
-	<script src="javascript/moment.min.js" language="JavaScript"
-			type="text/javascript"></script>
-	<script src="javascript/Chart.min.js" language="JavaScript"
-			type="text/javascript"></script>
-
 <script>
     	/*
 			 * Allows display of debug messages.
