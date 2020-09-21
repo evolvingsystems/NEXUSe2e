@@ -1225,8 +1225,15 @@ public class CertificateUtil {
 
     public static String getSubjectKeyIdentifier(X509Certificate cert) {
         byte[] extensionValue = cert.getExtensionValue("2.5.29.14");
-        byte[] skiValue = new byte[extensionValue.length - 4];
-        System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
-        return new DEROctetString(skiValue).toString();
+        if (extensionValue != null) {
+            try {
+                byte[] skiValue = new byte[extensionValue.length - 4];
+                System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
+                return new DEROctetString(skiValue).toString();
+            } catch (RuntimeException e) {
+                LOG.warn("Error while determining Subject Key Identifier (SKI) for cert", e);
+            }
+        }
+        return null;
     }
 }
