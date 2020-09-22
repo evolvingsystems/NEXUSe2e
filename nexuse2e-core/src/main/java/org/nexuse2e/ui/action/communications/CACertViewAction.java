@@ -57,12 +57,15 @@ public class CACertViewAction extends NexusE2EAction {
         ActionForward error = actionMapping.findForward(ACTION_FORWARD_FAILURE);
         CertificatePropertiesForm form = (CertificatePropertiesForm) actionForm;
 
-        String alias = request.getParameter("alias");
-        if (alias == null) {
+        Integer nxCertificateId = null;
+        try{
+            nxCertificateId = Integer.valueOf(request.getParameter("nxCertificateId"));
+        } catch (Exception nfe) {
             return error;
         }
 
-        CertificatePojo cPojo = engineConfiguration.getCertificateByName(CertificateType.CA.getOrdinal(), alias);
+
+        CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.CA.getOrdinal(), nxCertificateId);
         if (cPojo == null) {
             return error;
         }
