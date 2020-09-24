@@ -1156,8 +1156,9 @@ public class CertificateUtil {
         X509Certificate certificate;
         for (CertificatePojo cPojo : allCertificates) {
             certificate = getX509Certificate(cPojo);
-            if (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
-                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate)) {
+            if (certificate != null
+                    && (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
+                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate))) {
                 duplicates.add(cPojo);
             }
         }
@@ -1166,45 +1167,57 @@ public class CertificateUtil {
     }
 
     public static boolean hasSameMD5FingerPrint(X509Certificate cert1, X509Certificate cert2) {
-        try {
-            String fingerPrint = getMD5Fingerprint(cert1);
-            if (StringUtils.isNotBlank(fingerPrint)) {
-                return fingerPrint.equals(getMD5Fingerprint(cert2));
+        if (cert1 != null && cert2 != null) {
+            try {
+                String fingerPrint = getMD5Fingerprint(cert1);
+                if (StringUtils.isNotBlank(fingerPrint)) {
+                    return fingerPrint.equals(getMD5Fingerprint(cert2));
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing md5 fingerprint.", e);
             }
-        } catch (CertificateEncodingException ignored) {
         }
         return false;
     }
 
     public static boolean hasSameSHA1FingerPrint(X509Certificate cert1, X509Certificate cert2) {
-        try {
-            String fingerPrint = getSHA1Fingerprint(cert1);
-            if (StringUtils.isNotBlank(fingerPrint)) {
-                return fingerPrint.equals(getSHA1Fingerprint(cert2));
+        if (cert1 != null && cert2 != null) {
+            try {
+                String fingerPrint = getSHA1Fingerprint(cert1);
+                if (StringUtils.isNotBlank(fingerPrint)) {
+                    return fingerPrint.equals(getSHA1Fingerprint(cert2));
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing sha1 fingerprint.", e);
             }
-        } catch (CertificateEncodingException ignored) {
         }
         return false;
     }
 
     public static boolean hasSameDistinguishedName(X509Certificate cert1, X509Certificate cert2) {
-        try {
-            X500Principal principal = cert1.getSubjectX500Principal();
-            if (principal != null && StringUtils.isNotBlank(principal.getName())) {
-                return principal.equals(cert2.getSubjectX500Principal());
+        if (cert1 != null && cert2 != null) {
+            try {
+                X500Principal principal = cert1.getSubjectX500Principal();
+                if (principal != null && StringUtils.isNotBlank(principal.getName())) {
+                    return principal.equals(cert2.getSubjectX500Principal());
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing distinguished name.", e);
             }
-        } catch (Exception ignored) {
         }
         return false;
     }
 
     public static boolean hasSameSubjectKeyIdentifier(X509Certificate cert1, X509Certificate cert2) {
-        try {
-            String ski = getSubjectKeyIdentifier(cert1);
-            if (StringUtils.isNotBlank(ski)) {
-                return ski.equals(getSubjectKeyIdentifier(cert2));
+        if (cert1 != null && cert2 != null) {
+            try {
+                String ski = getSubjectKeyIdentifier(cert1);
+                if (StringUtils.isNotBlank(ski)) {
+                    return ski.equals(getSubjectKeyIdentifier(cert2));
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing subject key identifier.", e);
             }
-        } catch (Exception ignored) {
         }
         return false;
     }
