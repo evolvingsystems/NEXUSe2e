@@ -96,6 +96,10 @@
             </td>
         </tr>
         <tr>
+            <td class="NEXUSName">Distinguished Name</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="distinguishedName"/></td>
+        </tr>
+        <tr>
             <td class="NEXUSName">SubjectKeyIdentifier</td>
             <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="subjectKeyIdentifier"/></td>
         </tr>
@@ -212,6 +216,10 @@
                         <font color="red"><b><bean:write name="duplicate" property="valid"/></b></font>
                     </logic:notEqual>
                 </td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Distinguished Name</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="distinguishedName"/></td>
             </tr>
             <tr>
                 <td class="NEXUSName">SubjectKeyIdentifier</td>
