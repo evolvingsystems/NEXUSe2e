@@ -1156,8 +1156,9 @@ public class CertificateUtil {
         X509Certificate certificate;
         for (CertificatePojo cPojo : allCertificates) {
             certificate = getX509Certificate(cPojo);
-            if (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
-                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate)) {
+            if (certificate != null
+                    && (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
+                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate))) {
                 duplicates.add(cPojo);
             }
         }
@@ -1171,7 +1172,7 @@ public class CertificateUtil {
             if (StringUtils.isNotBlank(fingerPrint)) {
                 return fingerPrint.equals(getMD5Fingerprint(cert2));
             }
-        } catch (CertificateEncodingException ignored) {
+        } catch (Exception ignored) {
         }
         return false;
     }
@@ -1182,7 +1183,7 @@ public class CertificateUtil {
             if (StringUtils.isNotBlank(fingerPrint)) {
                 return fingerPrint.equals(getSHA1Fingerprint(cert2));
             }
-        } catch (CertificateEncodingException ignored) {
+        } catch (Exception ignored) {
         }
         return false;
     }
