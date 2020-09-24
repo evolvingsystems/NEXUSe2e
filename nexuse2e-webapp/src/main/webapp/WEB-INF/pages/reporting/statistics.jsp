@@ -38,57 +38,19 @@
 	</tr>
 </table>
 
-<table class="NEXUS_TABLE" width="100%">
-	<tr>
-		<th class="NEXUSSection">Message ID</th>
-		<th class="NEXUSSection">Status</th>
-		<th class="NEXUSSection">Message Type</th>
-		<th class="NEXUSSection">Action</th>
-		<th class="NEXUSSection">Direction</th>
-		<th class="NEXUSSection">Created Date</th>
-		<th class="NEXUSSection">End Date</th>
-		<th class="NEXUSSection">Turnaround Time</th>
-	</tr>
-	<logic:iterate indexId="counter" id="message" name="collection">
-		<tr>
-			<td class="NEXUSValue"><nexus:link styleClass="NexusLink"
-											   href="MessageView.do?mId=${message.messageId}&convId=${message.conversationId}&chorId=${message.choreographyId}&partnerId=${message.participantId}">
-				<bean:write name="message" property="messageId" />
-			</nexus:link></td>
-			<td class="NEXUSValue"><bean:write name="message"
-											   property="status" /></td>
-			<td class="NEXUSValue"><bean:write name="message"
-											   property="type" /></td>
-			<td class="NEXUSValue"><bean:write name="message"
-											   property="action" /></td>
-			<td class="NEXUSValue"><bean:write name="message"
-											   property="direction" /></td>
-			<td class="NEXUSValue"><bean:write name="message"
-											   property="createdDate" /></td>
-			<td class="NEXUSValue"><bean:write name="message"
-											   property="endDate" /></td>
-			<td class="NEXUSValue"><bean:write name="message"
-											   property="turnaroundTime" /></td>
-		</tr>
-	</logic:iterate>
-</table>
-
 <div class="statistics">
 	<section class="statistics">
-		<h2>Messages (last 24h)</h2>
-
-		<h3>By Status</h3>
-		<div class="chart" id="overview">
+		<h2>Conversations (last 24h)</h2>
+		<div class="chart" id="conversations">
 		</div>
 
-		<h3>Error Messages</h3>
+		<h2>Failed Messages</h2>
 		<table class="error-messages">
 			<colgroup>
 				<col>
-				<col>
-				<col style="width: 25%">
-				<col style="width: 25%">
-				<col>
+				<col style="width: 10%">
+				<col style="width: 30%">
+				<col style="width: 30%">
 				<col style="width: 75px">
 			</colgroup>
 			<tr>
@@ -96,129 +58,50 @@
 				<th>Choreography</th>
 				<th>Conversation ID</th>
 				<th>Message ID</th>
-				<th>Participant ID</th>
 				<th></th>
 			</tr>
-			<tr>
-				<td>23.05.19 13:56</td>
-				<td>GenericFile</td>
-				<td>t6guzu7-gzhz6zz-67t767tg-78zh8z8</td>
-				<td>sddsfhfs-ewrwer-67t767tg-78zh8z8</td>
-				<td>dev2</td>
-				<td><button>Requeue</button></td>
-			</tr>
 		</table>
-
-		<h3>By partner</h3>
-		<table>
-			<colgroup>
-				<col>
-				<col>
-				<col style="width: 40%">
-			</colgroup>
-			<tr>
-				<th>Partner</th>
-				<th>Last successful message</th>
-				<th></th>
-			</tr>
-			<tr>
-				<td>Awesome Inc.</td>
-				<td>23.05.19 13:58</td>
-				<td><div class="chart" id="awesome-inc"></td>
-			</tr>
-			<tr>
-				<td>Test Corp.</td>
-				<td>23.05.19 13:56</td>
-				<td><div class="chart" id="test-corp"></td>
-			</tr>
-		</table>
-	</section>
-
-	<section>
-		<h2>Certificates</h2>
-
-		<h3>Local</h3>
-		<div class="cert-box">
-			<div class="cert-name">Cert1</div>
-			<div>~8 months left</div>
-		</div>
-		<div class="cert-box">
-			<div class="cert-name">Cert2</div>
-			<div>~8 months left</div>
-		</div>
-
-		<hr>
-
-		<h3>Awesome Inc.</h3>
-		<div class="cert-box">
-			<div class="cert-name">Cert1</div>
-			<div>~8 months left</div>
-		</div>
-		<div class="cert-box">
-			<div class="cert-name">Cert2</div>
-			<div>~8 months left</div>
-		</div>
-
-		<h3>Test Corp.</h3>
-		<div class="cert-box">
-			<div class="cert-name">Cert1</div>
-			<div>~8 months left</div>
-		</div>
-		<div class="cert-box">
-			<div class="cert-name">Cert2</div>
-			<div>~2 weeks left</div>
-		</div>
-	</section>
+		<nexus:link href="ProcessConversationReport.do?noReset=true">
+			<button class="full-width">Show more</button>
+		</nexus:link>
 </div>
 
 <script>
-	let chartData = {
-		'overview' : {
-			'Error': 106,
-			'Idle': 58,
-			'AckSent': 124,
-			'Completed': 980
-		},
+window.statistics = window.statistics || {};
+
+(function (s) {
+	"use strict";
+	const chartData = {
+		'conversations': ${conversationStatusCounts},
 		'awesome-inc' : {
-			'Inbound' : 40,
-			'Outbound' : 60,
-			'Error' : 2
+			'inbound' : 40,
+			'error' : 2,
+			'outbound' : 60
 		},
 		'test-corp' : {
-			'Inbound' : 50,
-			'Outbound' : 50
+			'inbound' : 50,
+			'outbound' : 50
 		}
 	};
 
 	const total = {};
 
-	const colors = {
-		'Failed': '#FB5012',
-		'Error': '#FB5012',
-		'Retrying': '#58A4B0',
-		'Outbound': '#58A4B0',
-		'Inbound': '#305252',
-		'Queued': '#305252',
-		'Sent': '#6DA34D',
-		'Stopped': '#3B252C',
-		'Unknown': '#B6B6B6',
-		'Created': '#58A4B0',
-		'Processing': '#305252',
-		'AckSent': '#305252',
-		'SendingAck': '#58A4B0',
-		'Idle': '#58A4B0',
-		'Completed': '#6DA34D'
-	}
-
-	const sort = function(obj) {
-		let sortable = [];
-		for (let key in obj)
-			if (obj.hasOwnProperty(key))
-				sortable.push([key, obj[key]]);
-			sortable.sort(function (a, b) {
-			return a[1] - b[1];
-		});
-		return sortable;
+	const chartColors = {
+		'failed': '#FB5012',
+		'error': '#FB5012',
+		'retrying': '#58A4B0',
+		'outbound': '#58A4B0',
+		'inbound': '#305252',
+		'queued': '#305252',
+		'sent': '#6DA34D',
+		'stopped': '#3B252C',
+		'unknown': '#B6B6B6',
+		'created': '#58A4B0',
+		'processing': '#305252',
+		'acksent': '#305252',
+		'sendingack': '#58A4B0',
+		'idle': '#58A4B0',
+		'completed': '#6DA34D'
 	}
 
 	const createSegments = function (chart) {
@@ -226,7 +109,7 @@
 		Object.keys(counts).forEach((name) => {
 			const segment = document.createElement('div');
 			const width = (counts[name] / total[chart.id] * 100);
-			segment.style.background = colors[name]
+			segment.style.background = chartColors[name]
 			segment.style.width = width + '%';
 			segment.innerHTML = name;
 			const countLabel = document.createElement('span');
@@ -244,11 +127,29 @@
 		});
 	}
 
-	const sortData = function() {
-		Object.keys(chartData).forEach((key) => {
-			chartData[key] = sort(chartData[key]);
+	const sortDescending = function(obj) {
+		const sortable = [];
+		for (const element in obj) {
+			sortable.push([element, obj[element]]);
+		}
+
+		sortable.sort(function(a, b) {
+			return b[1] - a[1];
+		});
+
+		return sortable;
+	}
+
+	const sortChartData = function() {
+		Object.keys(chartData).forEach((name) => {
+		    const sortedObj = {};
+		    const sortedArray = sortDescending(chartData[name]);
+            sortedArray.forEach(function(item){
+                sortedObj[item[0]]=item[1]
+            })
+            chartData[name] = sortedObj;
 		})
-	};
+	}
 
 	const populateCharts = function() {
 		const charts = document.querySelectorAll('.chart');
@@ -258,8 +159,48 @@
 		}
 	};
 
-	console.log(${choreographies});
+	const populateMessageTable = function() {
+		const table = document.querySelector('.error-messages');
+		for (const message of ${messages}) {
+			const row = document.createElement('tr');
+
+			const createdDate = document.createElement('td');
+			createdDate.innerHTML = message['createdDate'];
+			createdDate.setAttribute('title', message['createdDate']);
+
+			const choreographyId = document.createElement('td');
+			choreographyId.innerHTML = message['choreographyId'];
+			choreographyId.setAttribute('title', message['choreographyId']);
+
+			const conversationId = document.createElement('td');
+            const anchor = document.createElement('a');
+            anchor.innerHTML = message['conversationId'];
+            anchor.setAttribute('href', "ConversationView.do?convId=" + message['conversationId']);
+			conversationId.appendChild(anchor);
+			conversationId.setAttribute('title', message['conversationId']);
+
+			const messageId = document.createElement('td');
+			messageId.innerHTML = message['messageId'];
+			messageId.setAttribute('title', message['messageId']);
+
+			const requeueButton = document.createElement('td');
+			const button = document.createElement('button');
+			button.innerHTML = "Requeue";
+			requeueButton.appendChild(button);
+
+			row.appendChild(createdDate);
+			row.appendChild(choreographyId);
+			row.appendChild(messageId);
+			row.appendChild(conversationId);
+			row.appendChild(requeueButton);
+			table.appendChild(row);
+		}
+	}
+
+	populateMessageTable();
+	sortChartData();
 	populateCharts();
+})(statistics);
 </script>
 
 

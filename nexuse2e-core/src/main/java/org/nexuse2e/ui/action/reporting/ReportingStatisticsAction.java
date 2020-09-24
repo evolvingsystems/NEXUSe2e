@@ -34,6 +34,8 @@ import org.apache.struts.action.ActionMessages;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.integration.info.wsdl.Conversation;
+import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.reporting.MessageStub;
 import org.nexuse2e.reporting.Statistics;
 import org.nexuse2e.ui.action.NexusE2EAction;
@@ -57,90 +59,69 @@ public class ReportingStatisticsAction extends NexusE2EAction {
         Calendar cal = Calendar.getInstance();
         cal.add( Calendar.DATE, -1 );
         Timestamp timestamp = new Timestamp( cal.getTimeInMillis() );
-        
-        // check if there are any messages that have been created after timestamp
-        request.setAttribute( "messageCount", Engine.getInstance().getTransactionService().getCreatedMessagesSinceCount( timestamp ) );
-        Statistics statistics = Engine.getInstance().getTransactionService().getTransactionDao().getStatistics(timestamp,null);
-        request.setAttribute( "statistics", statistics );
+        Statistics statistics = Engine.getInstance().getTransactionService().getTransactionDao().getStatistics(timestamp, null);
 
-        Map<String, Integer> choreographyCounts = new HashMap<>();
+        List<MessageStub> messageStubs = statistics.getMessages();
+        request.setAttribute("messages", messageStubs);
+
+        Map<String, Integer> messageStatusCounts = new HashMap<>();
         for (MessageStub message : statistics.getMessages()) {
-            Integer count = choreographyCounts.get(message.getChoreographyId());
+            String status = message.getStatus().toString().toLowerCase();
+            Integer count = messageStatusCounts.get(status);
             if(count == null) {
-                choreographyCounts.put(message.getChoreographyId(),1);
+                messageStatusCounts.put(status, 1);
             } else {
-                choreographyCounts.put(message.getChoreographyId(), ++count);
+                messageStatusCounts.put(status, ++count);
             }
         }
-        String[] values = toJsonArray(choreographyCounts);
+        request.setAttribute("messageStatusCounts", toJson(messageStatusCounts));
 
-        request.setAttribute( "choreographies", values[0] );
-        request.setAttribute( "choreographyCounts", values[1] );
-
-
-        Map<String, Integer> statusCounts = new HashMap<>();
-        for (MessageStub message : statistics.getMessages()) {
-            Integer count = statusCounts.get(message.getStatus().toString());
-            if(count == null) {
-                statusCounts.put(message.getStatus().toString(),1);
+        List<ConversationPojo> conversations = statistics.getConversations();
+        Map<String, Integer> conversationStatusCounts = new HashMap<>();
+        for (ConversationPojo conversation : conversations) {
+            String status = conversation.getStatusName().toLowerCase();
+            Integer count = conversationStatusCounts.get(status);
+            if (count == null) {
+                conversationStatusCounts.put(status, 1);
             } else {
-                statusCounts.put(message.getStatus().toString(), ++count);
+                conversationStatusCounts.put(status, ++count);
             }
         }
-        values = toJsonArray(statusCounts);
-
-        request.setAttribute( "status", values[0] );
-        request.setAttribute( "statusCounts", values[1] );
+        request.setAttribute("conversationStatusCounts", toJson(conversationStatusCounts));
 
         Map<Date, Integer> timeCounts = new HashMap<>();
         for (MessageStub message : statistics.getMessages()) {
-
             Date truncated = DateUtils.truncate(message.getCreatedDate(), Calendar.HOUR);
-
             Integer count = timeCounts.get(truncated);
             if(count == null) {
-                timeCounts.put(truncated,1);
+                timeCounts.put(truncated, 1);
             } else {
                 timeCounts.put(truncated, ++count);
             }
         }
-        values = toJsonArrayDate(timeCounts);
-
-        request.setAttribute( "times", values[0] );
-        request.setAttribute( "timeCounts", values[1] );
-
+        request.setAttribute("timeCounts", toJson(timeCounts));
 
         return actionMapping.findForward( ACTION_FORWARD_SUCCESS );
     }
-    private String[] toJsonArrayDate(Map<Date, Integer> timeCounts) {
-        SimpleDateFormat ebXMLDateFormat = new SimpleDateFormat( "ddMMyyyy'T'HHmmss'Z'" );
-//        SimpleDateFormat ebXMLDateFormat = new SimpleDateFormat( "yyyyMMdd'T'HHmmss'Z'" );
 
-        StringBuilder names = new StringBuilder();
-        StringBuilder counts = new StringBuilder();
-        for (Map.Entry<Date, Integer> dateIntegerEntry : timeCounts.entrySet()) {
-            if(names.length() > 0){
-                names.append(",");
-                counts.append(",");
+    private String toJson(Map<?, Integer> map) {
+        StringBuilder result = new StringBuilder("{");
+        for (Map.Entry<?, Integer> entry : map.entrySet()) {
+            if (result.length() > 1) {
+                result.append(",");
             }
-
-            names.append("'"+ebXMLDateFormat.format(dateIntegerEntry.getKey())+"'");
-            counts.append(dateIntegerEntry.getValue());
-        }
-        return new String[] {names.toString(),counts.toString()};
-    }
-    private String[] toJsonArray(Map<String, Integer> choreographyCounts) {
-        StringBuilder names = new StringBuilder();
-        StringBuilder counts = new StringBuilder();
-        for (Map.Entry<String, Integer> stringIntegerEntry : choreographyCounts.entrySet()) {
-            if(names.length() > 0){
-                names.append(",");
-                counts.append(",");
+            Object key = entry.getKey();
+            if (key instanceof Date) {
+                SimpleDateFormat ebXMLDateFormat = new SimpleDateFormat( "ddMMyyyy'T'HHmmss'Z'" );
+                key = ebXMLDateFormat.format(key);
             }
-            names.append("'"+stringIntegerEntry.getKey()+"'");
-            counts.append(stringIntegerEntry.getValue());
+            result.append("'");
+            result.append(key);
+            result.append("':");
+            result.append(entry.getValue());
         }
-        return new String[] {names.toString(),counts.toString()};
+        result.append("}");
+        return result.toString();
     }
 
 }

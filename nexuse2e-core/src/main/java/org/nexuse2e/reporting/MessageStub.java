@@ -14,6 +14,7 @@ public class MessageStub {
     private Date createdDate;
     private Integer type;
     private MessageStatus status;
+    private String conversationId;
 
     public MessageStub(Object[] record) {
 
@@ -23,8 +24,18 @@ public class MessageStub {
         createdDate = (Date)record[3];
         type = (Integer)record[4];
         status = MessageStatus.getByOrdinal((int)record[5]);
+        conversationId = (String)record[6];
     }
 
+    public String toString() {
+        return "{'messageId': '" + messageId + "'," +
+                "'actionId': '" + actionId + "'," +
+                "'choreographyId': '" + choreographyId + "'," +
+                "'createdDate': '" + createdDate + "'," +
+                "'type': " + type + "," +
+                "'status': '" + status + "'," +
+                "'conversationId': '" + conversationId + "'}";
+    }
 
     public String getMessageId() {
         return messageId;
@@ -74,4 +85,11 @@ public class MessageStub {
         this.status = status;
     }
 
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
 }

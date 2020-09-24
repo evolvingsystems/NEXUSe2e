@@ -225,9 +225,9 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
         Statistics result = new Statistics();
         result.setStartDate(startDate);
-        result.setEndDAte(endDate);
+        result.setEndDate(endDate);
 
-        StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status\n" +
+        StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status, nx_conversation.conversation_id\n" +
                 " FROM nx_message " +
                 " INNER JOIN nx_conversation " +
                 " ON nx_conversation.nx_conversation_id = nx_message.nx_conversation_id " +
@@ -248,7 +248,6 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
             }
             if (endDate != null) {
                 sqlQuery.append(prefix + " nx_message.created_date <= :end");
-                prefix = " AND ";
             }
         }
 
@@ -256,12 +255,21 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());
         setTimestampFields(startDate, endDate, query);
 
+        query.setMaxResults(10);
         List<Object[]> resultset = query.list();
 
         for (Object[] record : resultset) {
             MessageStub line = new MessageStub(record);
             result.getMessages().add(line);
         }
+
+        try {
+            List<ConversationPojo> conversations = getConversationsForReport(null, 0, 0, null, startDate, endDate, 500, 1, 0, false);
+            result.setConversations(conversations);
+        } catch (NexusException e) {
+            LOG.error( "Error getting conversations for statistics", e);
+        }
+
         return result;
 
     }

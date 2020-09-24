@@ -507,11 +507,14 @@ td.BUTTON_RIGHT {
 	text-align: left;
 }
 
+.statistics h2:first-child {
+	margin-top: 0;
+}
+
 .statistics table {
 	width: 100%;
 	border: 1px solid #eee;
 	padding: 5px;
-	table-layout: fixed;
 }
 
 .statistics table th {
@@ -520,7 +523,6 @@ td.BUTTON_RIGHT {
 }
 
 .statistics td, .statistics th {
-	cursor: pointer;
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -534,7 +536,24 @@ td.BUTTON_RIGHT {
 .statistics section {
 	margin: 30px 0;
 	padding: 20px;
-	box-shadow: 0px 0px 3px rgb(184, 177, 177);
+	box-shadow: 0 0 3px rgb(184, 177, 177);
+}
+
+.statistics .full-width {
+	width: 100%;
+	margin-top: -16px;
+	border-radius: 0 0 3px 3px;
+	border: 1px solid gray;
+	cursor: pointer;
+	outline: none;
+}
+
+.statistics .full-width:hover {
+	filter: brightness(0.96);
+}
+
+.statistics .error-messages {
+	table-layout: fixed;
 }
 
 .statistics .error-messages td:last-child {
@@ -555,6 +574,7 @@ td.BUTTON_RIGHT {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	text-transform: capitalize;
 	transition: all 0.3s;
 }
 
@@ -586,7 +606,7 @@ td.BUTTON_RIGHT {
 }
 
 .statistics .cert-box:hover {
-	box-shadow: 0px 0px 3px rgb(184, 177, 177);
+	box-shadow: 0 0 3px rgb(184, 177, 177);
 }
 
 .statistics .cert-box:last-of-type {
