@@ -66,7 +66,7 @@ public class CACertSingleCertExportAction extends NexusE2EAction {
             }
             form.setAlias(cPojo.getName());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error while exporting ca cert.", e);
             ActionMessage errorMessage = new ActionMessage("generic.error", e.getMessage());
             errors.add(ActionMessages.GLOBAL_MESSAGE, errorMessage);
             addRedirect(request, URL, TIMEOUT);

@@ -95,7 +95,7 @@ public class CACertStoreExportedAction extends NexusE2EAction {
                 fos.flush();
                 fos.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Error while exporting ca cert.", e);
                 ActionMessage errorMessage = new ActionMessage("generic.error", e.getMessage());
                 errors.add(ActionMessages.GLOBAL_MESSAGE, errorMessage);
                 addRedirect(request, URL, TIMEOUT);

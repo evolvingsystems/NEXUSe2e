@@ -1188,8 +1188,9 @@ public class CertificateUtil {
 
     public static boolean hasSameMD5FingerPrint(X509Certificate cert1, X509Certificate cert2) {
         try {
-            if (StringUtils.isNotBlank(getMD5Fingerprint(cert1))) {
-                return getMD5Fingerprint(cert1).equals(getMD5Fingerprint(cert2));
+            String fingerPrint = getMD5Fingerprint(cert1);
+            if (StringUtils.isNotBlank(fingerPrint)) {
+                return fingerPrint.equals(getMD5Fingerprint(cert2));
             }
         } catch (CertificateEncodingException ignored) {
         }
@@ -1198,8 +1199,9 @@ public class CertificateUtil {
 
     public static boolean hasSameSHA1FingerPrint(X509Certificate cert1, X509Certificate cert2) {
         try {
-            if (StringUtils.isNotBlank(getSHA1Fingerprint(cert1))) {
-                return getSHA1Fingerprint(cert1).equals(getSHA1Fingerprint(cert2));
+            String fingerPrint = getSHA1Fingerprint(cert1);
+            if (StringUtils.isNotBlank(fingerPrint)) {
+                return fingerPrint.equals(getSHA1Fingerprint(cert2));
             }
         } catch (CertificateEncodingException ignored) {
         }
@@ -1207,16 +1209,21 @@ public class CertificateUtil {
     }
 
     public static boolean hasSameDistinguishedName(X509Certificate cert1, X509Certificate cert2) {
-        if (cert1.getSubjectX500Principal() != null && StringUtils.isNotBlank(cert1.getSubjectX500Principal().getName())) {
-            return cert1.getSubjectX500Principal().equals(cert2.getSubjectX500Principal());
+        try {
+            X500Principal principal = cert1.getSubjectX500Principal();
+            if (principal != null && StringUtils.isNotBlank(principal.getName())) {
+                return principal.equals(cert2.getSubjectX500Principal());
+            }
+        } catch (Exception ignored) {
         }
         return false;
     }
 
     public static boolean hasSameSubjectKeyIdentifier(X509Certificate cert1, X509Certificate cert2) {
         try {
-            if (StringUtils.isNotBlank(getSubjectKeyIdentifier(cert1))) {
-                return getSubjectKeyIdentifier(cert1).equals(getSubjectKeyIdentifier(cert2));
+            String ski = getSubjectKeyIdentifier(cert1);
+            if (StringUtils.isNotBlank(ski)) {
+                return ski.equals(getSubjectKeyIdentifier(cert2));
             }
         } catch (Exception ignored) {
         }
