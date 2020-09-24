@@ -53,7 +53,7 @@
                             Distinguished Name<br>
                         </logic:equal>
                         <logic:equal name="duplicate" property="duplicateSki" value="true">
-                            SubjectKeyIdentifier
+                            SubjectKeyIdentifier<br>
                         </logic:equal>
                         <logic:equal name="duplicate" property="duplicateFingerprint" value="true">
                             MD5 Fingerprint<br>

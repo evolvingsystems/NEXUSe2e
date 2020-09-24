@@ -79,7 +79,7 @@ public class CACertViewAction extends NexusE2EAction {
         List<CertificatePropertiesForm> duplicateForms = new ArrayList<>();
         CertificatePropertiesForm duplicateForm;
         for (CertificatePojo duplicate : duplicates) {
-            if (!duplicate.getName().equals(cPojo.getName())) {
+            if (duplicate.getNxCertificateId() != nxCertificateId) {
                 X509Certificate duplicateCert = CertificateUtil.getX509Certificate(duplicate);
                 duplicateForm = new CertificatePropertiesForm();
                 duplicateForm.setAlias(duplicate.getName());
