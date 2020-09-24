@@ -1236,7 +1236,7 @@ public class CertificateUtil {
             try {
                 byte[] skiValue = new byte[extensionValue.length - 4];
                 System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
-                return new DEROctetString(skiValue).toString();
+                return new String(Hex.encode(skiValue));
             } catch (RuntimeException e) {
                 LOG.warn("Error while determining Subject Key Identifier (SKI) for cert", e);
             }
