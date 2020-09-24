@@ -42,8 +42,8 @@
 				</table>
         
         <table class="NEXUS_TABLE" width="100%">
-            <tr>            
-            <td colspan="2" class="NEXUSSection">WARNING: Existing CA Certificate for Alias: <bean:write name="existingCertificate" property="alias"/></td>            
+            <tr>
+                <td colspan="2" class="NEXUSSection">WARNING: Existing CA Certificate for Alias: <bean:write name="existingCertificate" property="alias"/></td>
             </tr>
             <tr>
                 <td class="NEXUSName">Common Name</td>
@@ -84,14 +84,26 @@
             <tr>
                 <td class="NEXUSName">Validity</td>
                 <td class="NEXUSValue">
-                <logic:equal name="existingCertificate" property="valid" value="Okay">
-            <font color="green"><b><bean:write name="existingCertificate" property="valid"/></b></font> <bean:write name="existingCertificate" property="timeRemaining"/>
-          </logic:equal>
-          <logic:notEqual name="existingCertificate" property="valid" value="Okay">
-            <font color="red"><b><bean:write name="existingCertificate" property="valid"/></b></font>
-          </logic:notEqual>
-          
+                    <logic:equal name="existingCertificate" property="valid" value="Okay">
+                        <font color="green"><b><bean:write name="existingCertificate" property="valid"/></b></font> <bean:write name="existingCertificate" property="timeRemaining"/>
+                    </logic:equal>
+                    <logic:notEqual name="existingCertificate" property="valid" value="Okay">
+                        <font color="red"><b><bean:write name="existingCertificate" property="valid"/></b></font>
+                    </logic:notEqual>
+
                 </td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">SubjectKeyIdentifier</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="subjectKeyIdentifier"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">MD5 Fingerprint</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="fingerprint"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">SHA1 Fingerprint</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="sha1Fingerprint"/></td>
             </tr>
         </table>
         

@@ -25,16 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathBuilderException;
 import java.security.cert.CertStore;
@@ -49,29 +40,23 @@ import java.security.cert.TrustAnchor;
 import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERObjectIdentifier;
+import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.MD5Digest;
@@ -87,7 +72,10 @@ import org.bouncycastle.util.encoders.Hex;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
+import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.CertificatePojo;
+import org.nexuse2e.ui.form.CertificatePromotionForm;
+import org.nexuse2e.ui.form.CertificatePropertiesForm;
 
 /**
  * Utility class to work with certificates (mostly instances of <code>X509Certificate</code>).
@@ -1181,5 +1169,78 @@ public class CertificateUtil {
             }
         }
         return trustmanagers;
+    }
+
+    public static List<CertificatePojo> getDuplicates(EngineConfiguration engineConfiguration, CertificateType type, X509Certificate cert) throws NexusException, CertificateEncodingException, IOException {
+        List<CertificatePojo> duplicates = new ArrayList<>();
+        List<CertificatePojo> allCertificates = engineConfiguration.getCertificates(type.getOrdinal(), null);
+        X509Certificate certificate;
+        for (CertificatePojo cPojo : allCertificates) {
+            certificate = getX509Certificate(cPojo);
+            if (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
+                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate)) {
+                duplicates.add(cPojo);
+            }
+        }
+
+        return duplicates;
+    }
+
+    public static boolean hasSameMD5FingerPrint(X509Certificate cert1, X509Certificate cert2) {
+        try {
+            String fingerPrint = getMD5Fingerprint(cert1);
+            if (StringUtils.isNotBlank(fingerPrint)) {
+                return fingerPrint.equals(getMD5Fingerprint(cert2));
+            }
+        } catch (CertificateEncodingException ignored) {
+        }
+        return false;
+    }
+
+    public static boolean hasSameSHA1FingerPrint(X509Certificate cert1, X509Certificate cert2) {
+        try {
+            String fingerPrint = getSHA1Fingerprint(cert1);
+            if (StringUtils.isNotBlank(fingerPrint)) {
+                return fingerPrint.equals(getSHA1Fingerprint(cert2));
+            }
+        } catch (CertificateEncodingException ignored) {
+        }
+        return false;
+    }
+
+    public static boolean hasSameDistinguishedName(X509Certificate cert1, X509Certificate cert2) {
+        try {
+            X500Principal principal = cert1.getSubjectX500Principal();
+            if (principal != null && StringUtils.isNotBlank(principal.getName())) {
+                return principal.equals(cert2.getSubjectX500Principal());
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    public static boolean hasSameSubjectKeyIdentifier(X509Certificate cert1, X509Certificate cert2) {
+        try {
+            String ski = getSubjectKeyIdentifier(cert1);
+            if (StringUtils.isNotBlank(ski)) {
+                return ski.equals(getSubjectKeyIdentifier(cert2));
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    public static String getSubjectKeyIdentifier(X509Certificate cert) {
+        byte[] extensionValue = cert.getExtensionValue("2.5.29.14");
+        if (extensionValue != null) {
+            try {
+                byte[] skiValue = new byte[extensionValue.length - 4];
+                System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
+                return new DEROctetString(skiValue).toString();
+            } catch (RuntimeException e) {
+                LOG.warn("Error while determining Subject Key Identifier (SKI) for cert", e);
+            }
+        }
+        return null;
     }
 }

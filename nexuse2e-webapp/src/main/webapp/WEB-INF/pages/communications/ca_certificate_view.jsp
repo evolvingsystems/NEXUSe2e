@@ -28,94 +28,216 @@
 
 <% /*<nexus:helpBar helpDoc="documentation/SSL.htm"/> */ %>
 
-    <center>
-    		<table class="NEXUS_TABLE" width="100%">
-				    <tr>
-				        <td>
-				        	<nexus:crumbs/>
-				        </td>
-				    </tr>
-				    <tr>
-				        <td class="NEXUSScreenName">Server Certificate</td>
-				    </tr>
-				</table>
-        
+<center>
     <table class="NEXUS_TABLE" width="100%">
-            <tr>            
-            <td colspan="2" class="NEXUSSection">CA Certificate</td>            
-            </tr>
-            <tr>
-                <td class="NEXUSName">Common Name</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="commonName"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Organisation</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="organisation"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Organisation Unit</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="organisationUnit"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Country</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="country"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">State</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="state"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Location</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="location"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">E-Mail</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="email"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Not Valid Before</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="notBefore"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Not Valid After</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="notAfter"/></td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Validity</td>
-                <td class="NEXUSValue">
+        <tr>
+            <td>
+                <nexus:crumbs/>
+            </td>
+        </tr>
+        <tr>
+            <td class="NEXUSScreenName">Server Certificate</td>
+        </tr>
+    </table>
+
+    <table class="NEXUS_TABLE" width="100%">
+        <tr>
+            <td colspan="2" class="NEXUSSection">CA Certificate</td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Alias</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="alias"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Common Name</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="commonName"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Organisation</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="organisation"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Organisation Unit</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="organisationUnit"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Country</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="country"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">State</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="state"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Location</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="location"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">E-Mail</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="email"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Not Valid Before</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="notBefore"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Not Valid After</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="notAfter"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">Validity</td>
+            <td class="NEXUSValue">
                 <logic:equal name="certificatePropertiesForm" property="valid" value="Okay">
-            <font color="green"><b><bean:write name="certificatePropertiesForm" property="valid"/></b></font> <bean:write name="certificatePropertiesForm" property="timeRemaining"/>
-          </logic:equal>
-          <logic:notEqual name="certificatePropertiesForm" property="valid" value="Okay">
-            <font color="red"><b><bean:write name="certificatePropertiesForm" property="valid"/></b></font>
-          </logic:notEqual>
-          
-                </td>
-            </tr>
-            <tr>
-                <td class="NEXUSName">Fingerprint</td>
-                <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="fingerprint"/></td>
-            </tr>
-        </table>
-        
-        <center> 
-          <logic:messagesPresent> 
-                <div class="NexusError"><html:errors/></div> 
-                </logic:messagesPresent>
-            </center>
-            
-        <html:form action="CACertificateDelete.do" method="POST"> 
+                    <font color="green"><b><bean:write name="certificatePropertiesForm" property="valid"/></b></font> <bean:write name="certificatePropertiesForm" property="timeRemaining"/>
+                </logic:equal>
+                <logic:notEqual name="certificatePropertiesForm" property="valid" value="Okay">
+                    <font color="red"><b><bean:write name="certificatePropertiesForm" property="valid"/></b></font>
+                </logic:notEqual>
+            </td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">SubjectKeyIdentifier</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="subjectKeyIdentifier"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">MD5 Fingerprint</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="fingerprint"/></td>
+        </tr>
+        <tr>
+            <td class="NEXUSName">SHA1 Fingerprint</td>
+            <td class="NEXUSValue"><bean:write name="certificatePropertiesForm" property="sha1Fingerprint"/></td>
+        </tr>
+    </table>
+
+    <center>
+        <logic:messagesPresent>
+            <div class="NexusError"><html:errors/></div>
+        </logic:messagesPresent>
+    </center>
+
+    <html:form action="CACertificateDelete.do" method="POST">
         <html:hidden property="nxCertificateId"/>
-        <html:hidden property="commonName"/> 
+        <html:hidden property="commonName"/>
         <center>
             <table class="NEXUS_BUTTON_TABLE" width="100%">
                 <tr>
-                    <td>&nbsp;</td>
                     <td class="BUTTON_RIGHT">
-                    	<nexus:submit precondition="confirmDelete('Are you sure you want to delete this Certificate?')"><img src="images/icons/tick.png" class="button">Delete</nexus:submit>
+                        <nobr>
+                            <nexus:link href="CACertificateExportCertificate.do?nxCertificateId=${certificatePropertiesForm.nxCertificateId}" styleClass="button">
+                            <img src="images/icons/disk.png" class="button"/>Export</nexus:link>
+                        </nobr>
+                    </td>
+                    <td class="BUTTON_RIGHT">
+                        <nobr>
+                            <nexus:submit precondition="confirmDelete('Are you sure you want to delete this Certificate?')">
+                            <img src="images/icons/delete.png" class="button">Delete</nexus:submit>
+                        </nobr>
                     </td>
                 </tr>
             </table>
         </center>
     </html:form>
-    </center>
+
+    <logic:iterate id="duplicate" name="duplicates">
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td colspan="2" class="NEXUSSection" style="background-color: yellow;">WARNING: Another CA Certificate with same supposedly unique attribute(s) exists: <bean:write name="duplicate" property="alias"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Identical (supposedly unique) Attributes</td>
+                <td class="NEXUSValue">
+                    <logic:equal name="duplicate" property="duplicateDistinguishedName" value="true">
+                        Distinguished Name<br>
+                    </logic:equal>
+                    <logic:equal name="duplicate" property="duplicateSki" value="true">
+                        SubjectKeyIdentifier
+                    </logic:equal>
+                    <logic:equal name="duplicate" property="duplicateFingerprint" value="true">
+                        MD5 Fingerprint<br>
+                    </logic:equal>
+                    <logic:equal name="duplicate" property="duplicateSHA1Fingerprint" value="true">
+                        SHA1 Fingerprint<br>
+                    </logic:equal>
+                </td>
+            </tr>
+        </table>
+        <table class="NEXUS_TABLE" width="100%">
+            <tr>
+                <td class="NEXUSName">Alias</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="alias"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Common Name</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="commonName"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Organisation</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="organisation"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Organisation Unit</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="organisationUnit"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Country</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="country"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">State</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="state"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Location</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="location"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">E-Mail</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="email"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Not Valid Before</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="notBefore"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Not Valid After</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="notAfter"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">Validity</td>
+                <td class="NEXUSValue">
+                    <logic:equal name="duplicate" property="valid" value="Okay">
+                        <font color="green"><b><bean:write name="duplicate" property="valid"/></b></font> <bean:write name="duplicate" property="timeRemaining"/>
+                    </logic:equal>
+                    <logic:notEqual name="duplicate" property="valid" value="Okay">
+                        <font color="red"><b><bean:write name="duplicate" property="valid"/></b></font>
+                    </logic:notEqual>
+                </td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">SubjectKeyIdentifier</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="subjectKeyIdentifier"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">MD5 Fingerprint</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="fingerprint"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">SHA1 Fingerprint</td>
+                <td class="NEXUSValue"><bean:write name="duplicate" property="sha1Fingerprint"/></td>
+            </tr>
+        </table>
+        <center>
+            <table class="NEXUS_BUTTON_TABLE" width="100%">
+                <tr>
+                    <td class="BUTTON_RIGHT">
+                        <nobr>
+                            <nexus:link href="CACertificateExportCertificate.do?nxCertificateId=${duplicate.nxCertificateId}" styleClass="button">
+                                <img src="images/icons/disk.png" class="button"/>Export existing certificate
+                            </nexus:link>
+                        </nobr>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </logic:iterate>
+</center>
