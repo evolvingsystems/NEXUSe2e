@@ -19,18 +19,15 @@
  */
 package org.nexuse2e.ui.form;
 
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.X509Certificate;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.X509Principal;
 import org.nexuse2e.util.CertificateUtil;
 
-import javax.security.auth.x500.X500Principal;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 
 /**
  * @author guido.esch

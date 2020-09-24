@@ -19,44 +19,12 @@
  */
 package org.nexuse2e.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.cert.CertPathBuilder;
-import java.security.cert.CertPathBuilderException;
-import java.security.cert.CertStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.CollectionCertStoreParameters;
-import java.security.cert.PKIXBuilderParameters;
-import java.security.cert.PKIXCertPathBuilderResult;
-import java.security.cert.TrustAnchor;
-import java.security.cert.X509CertSelector;
-import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
-import java.util.*;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.x500.X500Principal;
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERObjectIdentifier;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.MD5Digest;
@@ -74,8 +42,19 @@ import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.CertificatePojo;
-import org.nexuse2e.ui.form.CertificatePromotionForm;
-import org.nexuse2e.ui.form.CertificatePropertiesForm;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.x500.X500Principal;
+import java.io.*;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.*;
+import java.security.interfaces.RSAPublicKey;
+import java.util.*;
 
 /**
  * Utility class to work with certificates (mostly instances of <code>X509Certificate</code>).
