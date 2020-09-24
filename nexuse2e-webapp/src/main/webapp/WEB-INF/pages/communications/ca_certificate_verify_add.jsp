@@ -94,6 +94,10 @@
                 </td>
             </tr>
             <tr>
+                <td class="NEXUSName">Distinguished Name</td>
+                <td class="NEXUSValue"><bean:write name="existingCertificate" property="distinguishedName"/></td>
+            </tr>
+            <tr>
                 <td class="NEXUSName">SubjectKeyIdentifier</td>
                 <td class="NEXUSValue"><bean:write name="existingCertificate" property="subjectKeyIdentifier"/></td>
             </tr>

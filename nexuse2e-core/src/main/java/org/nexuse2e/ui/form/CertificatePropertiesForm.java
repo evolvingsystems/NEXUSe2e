@@ -24,10 +24,13 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.X509Principal;
 import org.nexuse2e.util.CertificateUtil;
+
+import javax.security.auth.x500.X500Principal;
 
 /**
  * @author guido.esch
@@ -53,6 +56,7 @@ public class CertificatePropertiesForm extends ActionForm {
     private String            notBefore        = null;
     private String            valid            = null;
     private String            timeRemaining    = null;
+    private String            distinguishedName = null;
     private String            fingerprint      = null;
     private String            sha1Fingerprint  = null;
     private String            subjectKeyIdentifier = null;
@@ -73,6 +77,7 @@ public class CertificatePropertiesForm extends ActionForm {
 
         setCert( x509 );
         setPrincipal( CertificateUtil.getPrincipalFromCertificate( x509, true ) );
+        setDistinguishedName( CertificateUtil.getDistinguishedName( x509 ) );
         setNotAfter( "" + x509.getNotAfter() );
         setNotBefore( "" + x509.getNotBefore() );
         String valid = "Okay";
@@ -249,6 +254,14 @@ public class CertificatePropertiesForm extends ActionForm {
     public void setAlias( String alias ) {
 
         this.alias = alias;
+    }
+
+    public String getDistinguishedName() {
+        return distinguishedName;
+    }
+
+    public void setDistinguishedName(String distinguishedName) {
+        this.distinguishedName = distinguishedName;
     }
 
     public String getFingerprint() {

@@ -1230,10 +1230,23 @@ public class CertificateUtil {
         return false;
     }
 
+    public static String getDistinguishedName(X509Certificate cert) {
+        X500Principal principal = cert.getSubjectX500Principal();
+        if (principal != null) {
+            return principal.toString();
+        }
+        return null;
+    }
+
     public static String getSubjectKeyIdentifier(X509Certificate cert) {
         byte[] extensionValue = cert.getExtensionValue("2.5.29.14");
         if (extensionValue != null) {
             try {
+                /**
+                 * Strip away first four bytes from the extensionValue.
+                 * The first two bytes are the tag and length of the extensionValue OCTET STRING,
+                 * and the next two bytes are the tag and length of the ski OCTET STRING.
+                 */
                 byte[] skiValue = new byte[extensionValue.length - 4];
                 System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
                 return new String(Hex.encode(skiValue));
