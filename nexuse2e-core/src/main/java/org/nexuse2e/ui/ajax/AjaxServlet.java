@@ -51,6 +51,8 @@ public class AjaxServlet extends HttpServlet {
 
     private static final String PATH_COMMANDS    = "/commands";
 
+    private static final String PATH_LOGIN       = "/login";
+
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -66,6 +68,8 @@ public class AjaxServlet extends HttpServlet {
                 result = new TreeProvider().handleRequest( request );
             } else if ( PATH_COMMANDS.equals( request.getPathInfo() ) ) {
                 result = new TreeProvider().handleRequest( request );
+            } else if (PATH_LOGIN.equals(request.getPathInfo())) {
+                result = "{ \"name\" : 5 }";
             } else {
                 LOG.warn( "Unknown path requested: path=" + request.getPathInfo() );
             }

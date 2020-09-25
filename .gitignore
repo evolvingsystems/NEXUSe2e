@@ -7,5 +7,5 @@
 /nexuse2e-webapp/.classpath
 /nexuse2e-webapp/.project
 /nexuse2e-webapp/.settings
-/nexuse2e-core/.classpath
 .idea
+*.iml

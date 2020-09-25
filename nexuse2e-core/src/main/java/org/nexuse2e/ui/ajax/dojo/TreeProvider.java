@@ -64,6 +64,7 @@ public class TreeProvider implements AjaxRequestHandler {
             engineConfiguration = Engine.getInstance().getConfiguration(user.getNxUserId());
         } else {
             // no user, no configuration
+            // TODO get response, set status 401
             return "";
         }
 
