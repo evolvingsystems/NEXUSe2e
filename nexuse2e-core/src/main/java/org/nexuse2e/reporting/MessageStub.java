@@ -15,16 +15,19 @@ public class MessageStub {
     private Integer type;
     private MessageStatus status;
     private String conversationId;
+    private Integer nxMessageId;
+    private Integer nxConversationId;
 
     public MessageStub(Object[] record) {
-
-        messageId = (String)record[0];
-        actionId = (String)record[1];
-        choreographyId = (String)record[2];
-        createdDate = (Date)record[3];
-        type = (Integer)record[4];
-        status = MessageStatus.getByOrdinal((int)record[5]);
-        conversationId = (String)record[6];
+        messageId = (String) record[0];
+        actionId = (String) record[1];
+        choreographyId = (String) record[2];
+        createdDate = (Date) record[3];
+        type = (Integer) record[4];
+        status = MessageStatus.getByOrdinal((int) record[5]);
+        conversationId = (String) record[6];
+        nxMessageId = (Integer) record[7];
+        nxConversationId = (Integer) record[8];
     }
 
     public String toString() {
@@ -34,6 +37,8 @@ public class MessageStub {
                 "'createdDate': '" + createdDate + "'," +
                 "'type': " + type + "," +
                 "'status': '" + status + "'," +
+                "'nxMessageId': " + nxMessageId + "," +
+                "'nxConversationId': " + nxConversationId + "," +
                 "'conversationId': '" + conversationId + "'}";
     }
 
@@ -91,5 +96,21 @@ public class MessageStub {
 
     public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
+    }
+
+    public Integer getNxMessageId() {
+        return nxMessageId;
+    }
+
+    public void setNxMessageId(Integer nxMessageId) {
+        this.nxMessageId = nxMessageId;
+    }
+
+    public Integer getNxConversationId() {
+        return nxConversationId;
+    }
+
+    public void setNxConversationId(Integer nxConversationId) {
+        this.nxConversationId = nxConversationId;
     }
 }

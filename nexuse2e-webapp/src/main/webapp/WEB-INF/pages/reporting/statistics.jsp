@@ -98,6 +98,7 @@ window.statistics = window.statistics || {};
 		'unknown': '#B6B6B6',
 		'created': '#58A4B0',
 		'processing': '#305252',
+		'awaiting_ack': '#305252',
 		'acksent': '#305252',
 		'sendingack': '#58A4B0',
 		'idle': '#58A4B0',
@@ -154,7 +155,7 @@ window.statistics = window.statistics || {};
 	const populateCharts = function() {
 		const charts = document.querySelectorAll('.chart');
 		for (const chart of charts) {
-			total[chart.id] = Object.values(chartData[chart.id]).reduce((a, b) => a + b);
+			total[chart.id] = Object.values(chartData[chart.id]).reduce((a, b) => a + b, 0);
 			createSegments(chart);
 		}
 	};
@@ -174,8 +175,8 @@ window.statistics = window.statistics || {};
 
 			const conversationId = document.createElement('td');
             const anchor = document.createElement('a');
-            anchor.innerHTML = message['conversationId'];
-            anchor.setAttribute('href', "ConversationView.do?convId=" + message['conversationId']);
+            anchor.innerText = message['conversationId'];
+            anchor.setAttribute('href', "javascript: setContentUrl('ConversationView.do?convId=" + message['nxConversationId'] + "');");
 			conversationId.appendChild(anchor);
 			conversationId.setAttribute('title', message['conversationId']);
 
@@ -190,8 +191,8 @@ window.statistics = window.statistics || {};
 
 			row.appendChild(createdDate);
 			row.appendChild(choreographyId);
-			row.appendChild(messageId);
 			row.appendChild(conversationId);
+			row.appendChild(messageId);
 			row.appendChild(requeueButton);
 			table.appendChild(row);
 		}

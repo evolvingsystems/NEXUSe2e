@@ -227,7 +227,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         result.setStartDate(startDate);
         result.setEndDate(endDate);
 
-        StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status, nx_conversation.conversation_id\n" +
+        StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status, nx_conversation.conversation_id, nx_message.nx_message_id, nx_conversation.nx_conversation_id\n" +
                 " FROM nx_message " +
                 " INNER JOIN nx_conversation " +
                 " ON nx_conversation.nx_conversation_id = nx_message.nx_conversation_id " +
