@@ -60,7 +60,6 @@ public class AjaxServlet extends HttpServlet {
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException,
             IOException {
 
-        setHeaders(response);
         LOG.trace( "PROCESSING REQUEST" );
 
         try {
@@ -99,7 +98,6 @@ public class AjaxServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        setHeaders(response);
         String data = readAll(request.getInputStream());
 
         EngineConfiguration engineConfig = Engine.getInstance().getCurrentConfiguration();
@@ -174,14 +172,6 @@ public class AjaxServlet extends HttpServlet {
 
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        setHeaders(resp);
         super.doOptions(req, resp);
-    }
-
-    private void setHeaders(HttpServletResponse response) {
-        // TODO Only for dev environment
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Language, Content-Type, Accept, Accept-Language");
     }
 }
