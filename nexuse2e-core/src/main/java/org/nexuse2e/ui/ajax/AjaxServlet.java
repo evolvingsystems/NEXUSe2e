@@ -19,19 +19,19 @@
  */
 package org.nexuse2e.ui.ajax;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
+import org.nexuse2e.Engine;
+import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.pojo.UserPojo;
+import org.nexuse2e.ui.action.NexusE2EAction;
 import org.nexuse2e.ui.ajax.dojo.TreeProvider;
 
 /**
@@ -60,6 +60,7 @@ public class AjaxServlet extends HttpServlet {
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException,
             IOException {
 
+        setHeaders(response);
         LOG.trace( "PROCESSING REQUEST" );
 
         try {
@@ -97,13 +98,30 @@ public class AjaxServlet extends HttpServlet {
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void doPost( HttpServletRequest arg0, HttpServletResponse arg1 ) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        setHeaders(response);
+        String data = readAll(request.getInputStream());
 
-        BufferedReader br = new BufferedReader( new InputStreamReader( arg0.getInputStream() ) );
-        while ( br.ready() ) {
-            LOG.debug( br.readLine() );
+        EngineConfiguration engineConfig = Engine.getInstance().getCurrentConfiguration();
+        UserPojo userInstance = engineConfig.getUserByLoginName("admin");
+        if (userInstance != null) {
+            HttpSession session = request.getSession();
+            session.setAttribute(NexusE2EAction.ATTRIBUTE_USER, userInstance);
+            response.setStatus(200);
+        } else {
+            super.doPost(request, response);
         }
-        super.doPost( arg0, arg1 );
+    }
+
+    private static String readAll(InputStream in) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        InputStreamReader inr = new InputStreamReader(in, StandardCharsets.UTF_8);
+        BufferedReader br = new BufferedReader(inr);
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        return sb.toString();
     }
 
     public String getStringRepresentation( HttpServletRequest request ) {
@@ -154,4 +172,16 @@ public class AjaxServlet extends HttpServlet {
         return sb.toString();
     }
 
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        setHeaders(resp);
+        super.doOptions(req, resp);
+    }
+
+    private void setHeaders(HttpServletResponse response) {
+        // TODO Only for dev environment
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Language, Content-Type, Accept, Accept-Language");
+    }
 }

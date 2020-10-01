@@ -14,8 +14,8 @@ export class LoginComponent implements OnInit {
   constructor(private http: HttpClient) {
   }
 
-  testAjax() {
-    return this.http.get('http://localhost:8080/nexuse2e_webapp_war/ajax/login').subscribe(
+  testGet() {
+    return this.http.get('http://localhost:8080/ajax/login').subscribe(
       (data) => {
         console.log(data);
       },
@@ -25,8 +25,26 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  testPost() {
+    const testObject = {
+      'user' : 'admin'
+    };
+    const result = this.http.post('http://localhost:8080/ajax/login', testObject);
+    result.subscribe(
+      (data) => {
+        console.log(data);
+      },
+      () => {
+        console.log('There was an error :(');
+      }
+    );
+
+    return result;
+  }
+
   ngOnInit() {
-    this.testAjax();
+    this.testGet();
+    this.testPost();
   }
 
 }
