@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, Injectable, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,31 +10,32 @@ import {ActivatedRoute, Router} from "@angular/router";
 @Injectable({ providedIn: 'root' })
 export class LoginComponent implements OnInit {
   private returnUrl: string;
+  loginError: boolean;
+  user: string;
+  password: string;
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    const returnUrl = 'returnUrl';
+    this.returnUrl = this.route.snapshot.queryParams[returnUrl] || '/';
   }
 
-  testPost() {
-    const testObject = {
-      'user': 'admin',
-      'password': 'admin'
-    };
-    const result = this.http.post('http://localhost:8080/auth', testObject);
-    result.subscribe(
-      () => {
-        this.router.navigateByUrl(this.returnUrl);
-        console.log('redirecting to', this.returnUrl);
-      },
-      () => {
-        console.log('There was an error :(');
-      }
-    );
+  async login() {
+    this.loginError = false;
 
-    return result;
+    const loginData = {
+      user: this.user,
+      password: '*****'
+    };
+
+    try {
+      await this.http.post('/auth', loginData).toPromise();
+      await this.router.navigateByUrl(this.returnUrl);
+    } catch {
+      this.loginError = true;
+    }
   }
 
 }

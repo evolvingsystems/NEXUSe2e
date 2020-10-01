@@ -1,5 +1,6 @@
 package org.nexuse2e.rest;
 
+import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -11,8 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class AuthServlet extends HttpServlet {
 
@@ -48,7 +49,12 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EngineConfiguration engineConfig = Engine.getInstance().getCurrentConfiguration();
-        UserPojo userInstance = engineConfig.getUserByLoginName("admin");
+        String requestBody = readAll(request.getInputStream());
+
+        Gson gson = new Gson();
+        LoginData loginData = gson.fromJson(requestBody, LoginData.class);
+
+        UserPojo userInstance = engineConfig.getUserByLoginName(loginData.user);
         if (userInstance != null) {
             HttpSession session = request.getSession();
             session.setAttribute(NexusE2EAction.ATTRIBUTE_USER, userInstance);
@@ -56,6 +62,22 @@ public class AuthServlet extends HttpServlet {
         } else {
             super.doPost(request, response);
         }
+    }
+
+    private static String readAll(InputStream in) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        InputStreamReader inr = new InputStreamReader(in, StandardCharsets.UTF_8);
+        BufferedReader br = new BufferedReader(inr);
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private static class LoginData {
+        String user;
+        String password;
     }
 }
 

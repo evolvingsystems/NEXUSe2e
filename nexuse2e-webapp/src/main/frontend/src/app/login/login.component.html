@@ -1,1 +1,10 @@
-<button type="button" (click)="testPost()">Login</button>
+<form name="login">
+  <label>
+    <input name="user" type="text" required [(ngModel)]="user">
+  </label>
+  <label>
+    <input name="password" type="password" required [(ngModel)]="password">
+  </label>
+</form>
+<div *ngIf="loginError">Wrong login data. Please try again.</div>
+<button type="button" (click)="login()">Login</button>
