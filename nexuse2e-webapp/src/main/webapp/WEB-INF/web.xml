@@ -106,6 +106,18 @@
         <url-pattern>/ajax/*</url-pattern>
     </servlet-mapping>
 
+    <!-- Auth servlet -->
+
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>org.nexuse2e.rest.AuthServlet</servlet-class>
+        <load-on-startup>8</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/auth/*</url-pattern>
+    </servlet-mapping>
+
     <!-- Struts: Standard Action Servlet Configuration (with debugging) -->
     <servlet>
         <servlet-name>action</servlet-name>

@@ -19,20 +19,19 @@
  */
 package org.nexuse2e.ui.ajax;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
-import org.nexuse2e.Engine;
-import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.pojo.UserPojo;
-import org.nexuse2e.ui.action.NexusE2EAction;
 import org.nexuse2e.ui.ajax.dojo.TreeProvider;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Writer;
+import java.util.Enumeration;
 
 /**
  * @author Sebastian Schulze
@@ -41,7 +40,7 @@ import org.nexuse2e.ui.ajax.dojo.TreeProvider;
 public class AjaxServlet extends HttpServlet {
 
     /**
-     * 
+     *
      */
     private static final long   serialVersionUID = -6583444281593200091L;
 
@@ -50,8 +49,6 @@ public class AjaxServlet extends HttpServlet {
     private static final String PATH_MENU        = "/menu";
 
     private static final String PATH_COMMANDS    = "/commands";
-
-    private static final String PATH_LOGIN       = "/login";
 
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -68,8 +65,6 @@ public class AjaxServlet extends HttpServlet {
                 result = new TreeProvider().handleRequest( request );
             } else if ( PATH_COMMANDS.equals( request.getPathInfo() ) ) {
                 result = new TreeProvider().handleRequest( request );
-            } else if (PATH_LOGIN.equals(request.getPathInfo())) {
-                result = "{ \"name\" : 5 }";
             } else {
                 LOG.warn( "Unknown path requested: path=" + request.getPathInfo() );
             }
@@ -97,29 +92,13 @@ public class AjaxServlet extends HttpServlet {
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String data = readAll(request.getInputStream());
+    protected void doPost( HttpServletRequest arg0, HttpServletResponse arg1 ) throws ServletException, IOException {
 
-        EngineConfiguration engineConfig = Engine.getInstance().getCurrentConfiguration();
-        UserPojo userInstance = engineConfig.getUserByLoginName("admin");
-        if (userInstance != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute(NexusE2EAction.ATTRIBUTE_USER, userInstance);
-            response.setStatus(200);
-        } else {
-            super.doPost(request, response);
+        BufferedReader br = new BufferedReader( new InputStreamReader( arg0.getInputStream() ) );
+        while ( br.ready() ) {
+            LOG.debug( br.readLine() );
         }
-    }
-
-    private static String readAll(InputStream in) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        InputStreamReader inr = new InputStreamReader(in, StandardCharsets.UTF_8);
-        BufferedReader br = new BufferedReader(inr);
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        return sb.toString();
+        super.doPost( arg0, arg1 );
     }
 
     public String getStringRepresentation( HttpServletRequest request ) {
@@ -170,8 +149,4 @@ public class AjaxServlet extends HttpServlet {
         return sb.toString();
     }
 
-    @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp);
-    }
 }
