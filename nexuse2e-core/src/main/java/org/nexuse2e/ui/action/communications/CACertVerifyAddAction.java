@@ -20,6 +20,8 @@
 package org.nexuse2e.ui.action.communications;
 
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +49,7 @@ public class CACertVerifyAddAction extends NexusE2EAction {
     private static String TIMEOUT = "cacerts.error.timeout";
     private static String NEW     = "new";
     private static String UPDATE  = "update";
+    private static String DUPLICATE = "duplicate";
 
     /*
      * (non-Javadoc)
@@ -60,6 +63,7 @@ public class CACertVerifyAddAction extends NexusE2EAction {
 
         ActionForward newCert = actionMapping.findForward(NEW);
         ActionForward update = actionMapping.findForward(UPDATE);
+        ActionForward duplicateCert = actionMapping.findForward(DUPLICATE);
         ActionForward error = actionMapping.findForward(ACTION_FORWARD_FAILURE);
 
         ProtectedFileAccessForm form = (ProtectedFileAccessForm) actionForm;
@@ -74,17 +78,42 @@ public class CACertVerifyAddAction extends NexusE2EAction {
 
                 certForm.setCertificateProperties(x509Certificate);
                 certForm.setAlias(alias);
+                certForm.setNxCertificateId(cPojo.getNxCertificateId());
                 request.setAttribute("existingCertificate", certForm);
 
-                // request.getSession().setAttribute( Crumbs.CURRENT_LOCATION, Crumbs.CA_VERIFY_ADD );
                 form.setPreserve(true);
 
                 return update;
             } else {
-                // request.getSession().setAttribute( Crumbs.CURRENT_LOCATION, Crumbs.CA_VERIFY_ADD );
-                form.setPreserve(true);
+                byte[] data = form.getCertficate().getFileData();
+                X509Certificate cert = CertificateUtil.getX509Certificate(data);
+                List<CertificatePojo> duplicates = CertificateUtil.getDuplicates(engineConfiguration, CertificateType.CA, cert);
+                if (duplicates.size() > 0) {
+                    List<CertificatePropertiesForm> certForms = new ArrayList<>();
+                    CertificatePropertiesForm certForm;
 
-                return newCert;
+                    for (CertificatePojo duplicate : duplicates) {
+                        X509Certificate x509Certificate = CertificateUtil.getX509Certificate(duplicate);
+                        certForm = new CertificatePropertiesForm();
+                        certForm.setAlias(duplicate.getName());
+                        certForm.setCertificateProperties(x509Certificate);
+                        certForm.setDuplicateFingerprint(CertificateUtil.hasSameMD5FingerPrint(cert, x509Certificate));
+                        certForm.setDuplicateSHA1Fingerprint(CertificateUtil.hasSameSHA1FingerPrint(cert, x509Certificate));
+                        certForm.setDuplicateDistinguishedName(CertificateUtil.hasSameDistinguishedName(cert, x509Certificate));
+                        certForm.setDuplicateSki(CertificateUtil.hasSameSubjectKeyIdentifier(cert, x509Certificate));
+                        certForm.setNxCertificateId(duplicate.getNxCertificateId());
+                        certForms.add(certForm);
+                    }
+                    request.setAttribute("duplicates", certForms);
+
+                    form.setPreserve(true);
+
+                    return duplicateCert;
+                } else {
+                    form.setPreserve(true);
+
+                    return newCert;
+                }
             }
         } catch (Exception e) {
             ActionMessage errormessage = new ActionMessage("generic.error", e.getMessage());

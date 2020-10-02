@@ -19,15 +19,15 @@
  */
 package org.nexuse2e.ui.form;
 
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateExpiredException;
-import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.X509Certificate;
-
 import org.apache.struts.action.ActionForm;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.jce.X509Principal;
 import org.nexuse2e.util.CertificateUtil;
+
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 
 /**
  * @author guido.esch
@@ -53,7 +53,10 @@ public class CertificatePropertiesForm extends ActionForm {
     private String            notBefore        = null;
     private String            valid            = null;
     private String            timeRemaining    = null;
+    private String            distinguishedName = null;
     private String            fingerprint      = null;
+    private String            sha1Fingerprint  = null;
+    private String            subjectKeyIdentifier = null;
     private String            created          = null;
     private String            issuerCN         = null;
 
@@ -61,10 +64,17 @@ public class CertificatePropertiesForm extends ActionForm {
 
     private int               nxCertificateId  = 0;
 
+    private Boolean           duplicateFingerprint = false;
+    private Boolean           duplicateSHA1Fingerprint = false;
+    private Boolean           duplicateDistinguishedName = false;
+    private Boolean           duplicateSki     = false;
+
+
     public void setCertificateProperties( X509Certificate x509 ) {
 
         setCert( x509 );
         setPrincipal( CertificateUtil.getPrincipalFromCertificate( x509, true ) );
+        setDistinguishedName( CertificateUtil.getDistinguishedName( x509 ) );
         setNotAfter( "" + x509.getNotAfter() );
         setNotBefore( "" + x509.getNotBefore() );
         String valid = "Okay";
@@ -85,6 +95,12 @@ public class CertificatePropertiesForm extends ActionForm {
         } catch ( CertificateEncodingException e1 ) {
             setFingerprint( "not available" );
         }
+        try {
+            setSha1Fingerprint(CertificateUtil.getSHA1Fingerprint(x509));
+        } catch (CertificateEncodingException e1) {
+            setSha1Fingerprint("not available");
+        }
+        setSubjectKeyIdentifier(CertificateUtil.getSubjectKeyIdentifier(x509));
     }
     
     public void setPrincipal( X509Principal principal ) {
@@ -237,6 +253,14 @@ public class CertificatePropertiesForm extends ActionForm {
         this.alias = alias;
     }
 
+    public String getDistinguishedName() {
+        return distinguishedName;
+    }
+
+    public void setDistinguishedName(String distinguishedName) {
+        this.distinguishedName = distinguishedName;
+    }
+
     public String getFingerprint() {
 
         return fingerprint;
@@ -245,6 +269,22 @@ public class CertificatePropertiesForm extends ActionForm {
     public void setFingerprint( String fingerprint ) {
 
         this.fingerprint = fingerprint;
+    }
+
+    public String getSha1Fingerprint() {
+        return sha1Fingerprint;
+    }
+
+    public void setSha1Fingerprint(String sha1Fingerprint) {
+        this.sha1Fingerprint = sha1Fingerprint;
+    }
+
+    public String getSubjectKeyIdentifier() {
+        return subjectKeyIdentifier;
+    }
+
+    public void setSubjectKeyIdentifier(String subjectKeyIdentifier) {
+        this.subjectKeyIdentifier = subjectKeyIdentifier;
     }
 
     public String getCreated() {
@@ -299,5 +339,37 @@ public class CertificatePropertiesForm extends ActionForm {
     public void setCert( X509Certificate cert ) {
     
         this.cert = cert;
+    }
+
+    public Boolean getDuplicateFingerprint() {
+        return duplicateFingerprint;
+    }
+
+    public void setDuplicateFingerprint(Boolean duplicateFingerprint) {
+        this.duplicateFingerprint = duplicateFingerprint;
+    }
+
+    public Boolean getDuplicateSHA1Fingerprint() {
+        return duplicateSHA1Fingerprint;
+    }
+
+    public void setDuplicateSHA1Fingerprint(Boolean duplicateSHA1Fingerprint) {
+        this.duplicateSHA1Fingerprint = duplicateSHA1Fingerprint;
+    }
+
+    public Boolean getDuplicateDistinguishedName() {
+        return duplicateDistinguishedName;
+    }
+
+    public void setDuplicateDistinguishedName(Boolean duplicateDistinguishedName) {
+        this.duplicateDistinguishedName = duplicateDistinguishedName;
+    }
+
+    public Boolean getDuplicateSki() {
+        return duplicateSki;
+    }
+
+    public void setDuplicateSki(Boolean duplicateSki) {
+        this.duplicateSki = duplicateSki;
     }
 }
