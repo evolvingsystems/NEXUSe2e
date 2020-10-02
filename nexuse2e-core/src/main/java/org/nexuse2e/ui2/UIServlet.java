@@ -1,5 +1,6 @@
 package org.nexuse2e.ui2;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ServletOutputStream;
@@ -11,40 +12,43 @@ import java.io.InputStream;
 
 public class UIServlet extends HttpServlet {
 
+    public static final String BASE = "/WEB-INF/ui/";
+    public static final String ENTRY_POINT = "index.html";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getPathInfo();
-        if (path != null && path.endsWith(".js")) {
-            String[] segments = path.split("/");
-            try (InputStream in = getServletContext().getResourceAsStream("/WEB-INF/ui/" + segments[segments.length - 1])) {
-                if (in == null) {
-                    response.setStatus(404);
-                    return;
-                }
-                response.setContentType("application/javascript");
-                ServletOutputStream out = response.getOutputStream();
-                IOUtils.copy(in, out);
+        String outputFilename = ENTRY_POINT;
+        if (path != null) {
+            if (!FilenameUtils.getExtension(path).isEmpty()) {
+                outputFilename = FilenameUtils.getName(path);
             }
-        } else if (path != null && path.endsWith("favicon.ico")) {
-            try (InputStream in = getServletContext().getResourceAsStream("/WEB-INF/ui/favicon.ico")) {
-                if (in == null) {
-                    response.setStatus(404);
-                    return;
-                }
-                response.setContentType("image/x-icon");
-                ServletOutputStream out = response.getOutputStream();
-                IOUtils.copy(in, out);
+        }
+        handleResponse(response, outputFilename);
+    }
+
+    private void handleResponse(HttpServletResponse response, String fileName) throws IOException {
+        try (InputStream in = getServletContext().getResourceAsStream(BASE + fileName)) {
+            if (in == null) {
+                response.setStatus(404);
+                return;
             }
-        } else {
-            try (InputStream in = getServletContext().getResourceAsStream("/WEB-INF/ui/index.html")) {
-                if (in == null) {
-                    response.setStatus(404);
-                    return;
-                }
-                response.setContentType("text/html");
-                ServletOutputStream out = response.getOutputStream();
-                IOUtils.copy(in, out);
+            String mimeType = getMimeTypeFromName(fileName);
+            if (mimeType != null) {
+                response.setContentType(mimeType);
             }
+            ServletOutputStream out = response.getOutputStream();
+            IOUtils.copy(in, out);
+        }
+    }
+
+    private String getMimeTypeFromName(String filename) {
+        switch (FilenameUtils.getExtension(filename)) {
+            case "js": return "application/javascript";
+            case "map": return "application/json";
+            case "ico": return "image/x-icon";
+            case "html": return "text/html";
+            default: return null;
         }
     }
 
