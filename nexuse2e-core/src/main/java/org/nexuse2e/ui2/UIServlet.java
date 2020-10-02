@@ -12,8 +12,8 @@ import java.io.InputStream;
 
 public class UIServlet extends HttpServlet {
 
-    public static final String BASE = "/WEB-INF/ui/";
-    public static final String ENTRY_POINT = "index.html";
+    private static final String BASE = "/WEB-INF/ui/";
+    private static final String ENTRY_POINT = "index.html";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

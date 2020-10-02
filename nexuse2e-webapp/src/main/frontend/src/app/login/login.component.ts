@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
 
     const loginData = {
       user: this.user,
-      password: '*****'
+      password: this.password
     };
 
     try {
