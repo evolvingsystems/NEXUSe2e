@@ -174,14 +174,19 @@ window.statistics = window.statistics || {};
 			choreographyId.setAttribute('title', message['choreographyId']);
 
 			const conversationId = document.createElement('td');
-            const anchor = document.createElement('a');
-            anchor.innerText = message['conversationId'];
-            anchor.setAttribute('href', "javascript: setContentUrl('ConversationView.do?convId=" + message['nxConversationId'] + "');");
-			conversationId.appendChild(anchor);
+            const cAnchor = document.createElement('a');
+            cAnchor.innerText = message['conversationId'];
+            cAnchor.setAttribute('href', "javascript: setContentUrl('ConversationView.do?convId=" + message['nxConversationId'] + "');");
+			cAnchor.classList.add('NexusLink');
+            conversationId.appendChild(cAnchor);
 			conversationId.setAttribute('title', message['conversationId']);
 
 			const messageId = document.createElement('td');
-			messageId.innerHTML = message['messageId'];
+			const mAnchor = document.createElement('a');
+			mAnchor.innerText = message['messageId'];
+			mAnchor.setAttribute('href', "javascript: setContentUrl('MessageView.do?mId=" + message['messageId'] + "');");
+			mAnchor.classList.add('NexusLink');
+			messageId.appendChild(mAnchor);
 			messageId.setAttribute('title', message['messageId']);
 
 			const requeueButton = document.createElement('td');
