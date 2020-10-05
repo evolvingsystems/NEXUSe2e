@@ -69,6 +69,7 @@ public class CACertListAction extends NexusE2EAction {
                         CertificatePropertiesForm form = new CertificatePropertiesForm();
                         form.setCertificateProperties(x509Certificate);
                         form.setAlias(certificate.getName());
+                        form.setNxCertificateId(certificate.getNxCertificateId());
                         certs.add(form);
                     }
                 }
