@@ -41,11 +41,10 @@
 <div class="statistics">
 	<section class="statistics">
 		<h2>Conversations (last 24h)</h2>
-		<div class="chart" id="conversations">
-		</div>
+		<div class="chart" id="conversations"></div>
 
 		<h2>Failed Messages</h2>
-		<table class="error-messages">
+		<table class="NEXUS_TABLE fixed-table" width="100%">
 			<colgroup>
 				<col>
 				<col style="width: 10%">
@@ -54,16 +53,71 @@
 				<col style="width: 75px">
 			</colgroup>
 			<tr>
-				<th>Time</th>
-				<th>Choreography</th>
-				<th>Conversation ID</th>
-				<th>Message ID</th>
-				<th></th>
+				<th class="NEXUSSection">Time</th>
+				<th class="NEXUSSection">Choreography</th>
+				<th class="NEXUSSection">Conversation ID</th>
+				<th class="NEXUSSection">Message ID</th>
+				<th class="NEXUSSection"></th>
 			</tr>
+			<logic:iterate id="message" name="messages">
+				<tr>
+					<td class="NEXUSName" title="${message.createdDate}">
+						<bean:write name="message" property="createdDate" />
+					</td>
+					<td class="NEXUSName" title="${message.choreographyId}">
+						<bean:write name="message" property="choreographyId" />
+					</td>
+					<td class="NEXUSName" title="${message.conversationId}">
+						<nexus:link
+							href="ConversationView.do?convId=${message.nxConversationId}"
+							styleClass="NexusLink">
+							<bean:write name="message" property="conversationId" />
+						</nexus:link>
+					</td>
+					<td class="NEXUSName" title="${message.messageId}">
+						<nexus:link
+							href="MessageView.do?mId=${message.messageId}"
+							styleClass="NexusLink">
+						<bean:write name="message" property="messageId" />
+						</nexus:link>
+					</td>
+					<td><button>Requeue</button></td>
+				</tr>
+			</logic:iterate>
 		</table>
 		<nexus:link href="ProcessConversationReport.do?noReset=true">
 			<button class="full-width">Show more</button>
 		</nexus:link>
+
+		<h2>Partners</h2>
+		<table class="NEXUS_TABLE fixed-table" width="100%">
+			<colgroup>
+				<col>
+				<col>
+				<col>
+				<col style="width: 30%">
+			</colgroup>
+			<tr>
+				<td class="NEXUSSection">Partner ID</td>
+				<td class="NEXUSSection">Last Inbound</td>
+				<td class="NEXUSSection">Last Outbound</td>
+				<td class="NEXUSSection"></td>
+			</tr>
+			<logic:iterate id="partner" name="partners">
+				<tr>
+					<td class="NEXUSName"><nexus:link
+							href="PartnerInfoView.do?nxPartnerId=${partner.nxPartnerId}&type=2"
+							styleClass="NexusLink">
+						<bean:write name="partner" property="partnerId" /> (<bean:write name="partner" property="name" />)
+					</nexus:link></td>
+					<td><nexus:link
+							href="PartnerConnectionList.do?nxPartnerId=${partner.nxPartnerId}"
+							styleClass="NexusDrillDownLink">Connections</nexus:link></td>
+					<td></td>
+					<td><div class="chart" id="${partner.partnerId}"></div></td>
+				</tr>
+			</logic:iterate>
+		</table>
 </div>
 
 <script>
@@ -73,7 +127,7 @@ window.statistics = window.statistics || {};
 	"use strict";
 	const chartData = {
 		'conversations': ${conversationStatusCounts},
-		'awesome-inc' : {
+		'Xioma' : {
 			'inbound' : 40,
 			'error' : 2,
 			'outbound' : 60
@@ -160,50 +214,6 @@ window.statistics = window.statistics || {};
 		}
 	};
 
-	const populateMessageTable = function() {
-		const table = document.querySelector('.error-messages');
-		for (const message of ${messages}) {
-			const row = document.createElement('tr');
-
-			const createdDate = document.createElement('td');
-			createdDate.innerHTML = message['createdDate'];
-			createdDate.setAttribute('title', message['createdDate']);
-
-			const choreographyId = document.createElement('td');
-			choreographyId.innerHTML = message['choreographyId'];
-			choreographyId.setAttribute('title', message['choreographyId']);
-
-			const conversationId = document.createElement('td');
-            const cAnchor = document.createElement('a');
-            cAnchor.innerText = message['conversationId'];
-            cAnchor.setAttribute('href', "javascript: setContentUrl('ConversationView.do?convId=" + message['nxConversationId'] + "');");
-			cAnchor.classList.add('NexusLink');
-            conversationId.appendChild(cAnchor);
-			conversationId.setAttribute('title', message['conversationId']);
-
-			const messageId = document.createElement('td');
-			const mAnchor = document.createElement('a');
-			mAnchor.innerText = message['messageId'];
-			mAnchor.setAttribute('href', "javascript: setContentUrl('MessageView.do?mId=" + message['messageId'] + "');");
-			mAnchor.classList.add('NexusLink');
-			messageId.appendChild(mAnchor);
-			messageId.setAttribute('title', message['messageId']);
-
-			const requeueButton = document.createElement('td');
-			const button = document.createElement('button');
-			button.innerHTML = "Requeue";
-			requeueButton.appendChild(button);
-
-			row.appendChild(createdDate);
-			row.appendChild(choreographyId);
-			row.appendChild(conversationId);
-			row.appendChild(messageId);
-			row.appendChild(requeueButton);
-			table.appendChild(row);
-		}
-	}
-
-	populateMessageTable();
 	sortChartData();
 	populateCharts();
 })(statistics);

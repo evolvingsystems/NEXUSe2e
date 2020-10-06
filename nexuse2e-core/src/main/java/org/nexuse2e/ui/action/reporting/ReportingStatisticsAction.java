@@ -19,26 +19,25 @@
  */
 package org.nexuse2e.ui.action.reporting;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.nexuse2e.Engine;
-import org.nexuse2e.MessageStatus;
+import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.integration.info.wsdl.Conversation;
 import org.nexuse2e.pojo.ConversationPojo;
+import org.nexuse2e.pojo.PartnerPojo;
 import org.nexuse2e.reporting.MessageStub;
 import org.nexuse2e.reporting.Statistics;
 import org.nexuse2e.ui.action.NexusE2EAction;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Fills the context for the statistics report(s).
@@ -100,6 +99,11 @@ public class ReportingStatisticsAction extends NexusE2EAction {
             }
         }
         request.setAttribute("timeCounts", toJson(timeCounts));
+
+        List<PartnerPojo> partners = engineConfiguration.getPartners(
+                Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
+
+        request.setAttribute("partners", partners);
 
         return actionMapping.findForward( ACTION_FORWARD_SUCCESS );
     }

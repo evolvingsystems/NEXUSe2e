@@ -552,11 +552,11 @@ td.BUTTON_RIGHT {
 	filter: brightness(0.96);
 }
 
-.statistics .error-messages {
+.statistics .fixed-table {
 	table-layout: fixed;
 }
 
-.statistics .error-messages td:last-child {
+.statistics .fixed-table td:last-child {
 	text-align: right;
 }
 
@@ -564,6 +564,11 @@ td.BUTTON_RIGHT {
 	background: #efefef;
 	width: 100%;
 	display: flex;
+}
+
+.statistics #conversations {
+	border: 6px solid #eee;
+	box-sizing: border-box;
 }
 
 .statistics .segment {
