@@ -18,15 +18,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AuthServlet extends HttpServlet {
+public class RestDispatcherServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(RestDispatcherServlet.class);
     private static class LoginData { String user, password; }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String result = null;
+    private final List<Handler> handlers = new ArrayList<>();
+
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if ("POST".equalsIgnoreCase(req.getMethod()) && "/login".equalsIgnoreCase(req.getPathInfo())) {
+            login(req, resp);
+            return;
+        }
 
         if ("GET".equalsIgnoreCase(req.getMethod()) && "/loggedIn".equalsIgnoreCase(req.getPathInfo())) {
             probeLogin(req, resp);
