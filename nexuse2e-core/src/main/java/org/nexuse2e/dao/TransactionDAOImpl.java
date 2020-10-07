@@ -236,11 +236,11 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
                 " INNER JOIN nx_choreography " +
                 " ON nx_conversation.nx_choreography_id = nx_choreography.nx_choreography_id " +
                 " INNER JOIN nx_partner " +
-                " ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id ");
+                " ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id " +
+                " WHERE nx_message.status = -1 ");
 
-        if ( startDate != null || endDate != null) {
-
-            sqlQuery.append(" WHERE ");
+        if (startDate != null || endDate != null) {
+            sqlQuery.append(" AND ");
             String prefix = "";
             if (startDate != null) {
                 sqlQuery.append("nx_message.created_date >= :start");

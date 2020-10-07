@@ -29,7 +29,7 @@
 
 <% /*<nexus:helpBar helpDoc="documentation/NEXUSe2e.html" /> */ %>
 
-<table class="NEXUS_TABLE" width="100%">
+<table class="NEXUS_TABLE" style="width: 100%">
 	<tr>
 		<td><nexus:crumbs /></td>
 	</tr>
@@ -44,7 +44,7 @@
 		<div class="chart" id="conversations"></div>
 
 		<h2>Failed Messages</h2>
-		<table class="NEXUS_TABLE fixed-table" width="100%">
+		<table class="NEXUS_TABLE fixed-table" style="width: 100%">
 			<colgroup>
 				<col>
 				<col style="width: 10%">
@@ -78,10 +78,14 @@
 						<nexus:link
 							href="MessageView.do?mId=${message.messageId}"
 							styleClass="NexusLink">
-						<bean:write name="message" property="messageId" />
+							<bean:write name="message" property="messageId" />
 						</nexus:link>
 					</td>
-					<td><button>Requeue</button></td>
+					<td><button>
+						<nexus:link href="ModifyMessage.do?noReset&refresh&type=transaction&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}">
+							Requeue
+						</nexus:link>
+					</button></td>
 				</tr>
 			</logic:iterate>
 		</table>
@@ -90,7 +94,7 @@
 		</nexus:link>
 
 		<h2>Partners</h2>
-		<table class="NEXUS_TABLE fixed-table" width="100%">
+		<table class="NEXUS_TABLE fixed-table" style="width: 100%">
 			<colgroup>
 				<col>
 				<col>
@@ -123,7 +127,7 @@
 <script>
 window.statistics = window.statistics || {};
 
-(function (s) {
+(function () {
 	"use strict";
 	const chartData = {
 		'conversations': ${conversationStatusCounts},
@@ -173,7 +177,7 @@ window.statistics = window.statistics || {};
 			segment.appendChild(countLabel);
 			segment.classList.add('segment');
 			if (width === 0) {
-				segment.style.padding = 0;
+				segment.style.padding = '0';
 			}
 			chart.appendChild(segment);
 			if (segment.offsetWidth < 30) {
@@ -185,7 +189,9 @@ window.statistics = window.statistics || {};
 	const sortDescending = function(obj) {
 		const sortable = [];
 		for (const element in obj) {
-			sortable.push([element, obj[element]]);
+			if (obj.hasOwnProperty(element)) {
+				sortable.push([element, obj[element]]);
+			}
 		}
 
 		sortable.sort(function(a, b) {
@@ -200,7 +206,7 @@ window.statistics = window.statistics || {};
 		    const sortedObj = {};
 		    const sortedArray = sortDescending(chartData[name]);
             sortedArray.forEach(function(item){
-                sortedObj[item[0]]=item[1]
+                sortedObj[item[0]] = item[1]
             })
             chartData[name] = sortedObj;
 		})
@@ -220,6 +226,6 @@ window.statistics = window.statistics || {};
 </script>
 
 
-<center><logic:messagesPresent>
+<logic:messagesPresent>
 	<div class="NexusError"><html:errors /></div>
-</logic:messagesPresent></center>
+</logic:messagesPresent>

@@ -19,20 +19,16 @@
  */
 package org.nexuse2e.ui.action.reporting;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.*;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.messaging.MessageHandlingCenter;
 import org.nexuse2e.ui.action.NexusE2EAction;
 import org.nexuse2e.ui.form.ReportingPropertiesForm;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Requeue or stop a message
@@ -51,7 +47,7 @@ public class ModifyMessageAction extends NexusE2EAction {
             throws Exception {
 
         ActionForward success = actionMapping.findForward( ACTION_FORWARD_SUCCESS );
-        // ActionForward error = actionMapping.findForward( ACTION_FORWARD_FAILURE );
+        ActionForward error = actionMapping.findForward( ACTION_FORWARD_FAILURE );
 
         ReportingPropertiesForm reportingPropertiesForm = (ReportingPropertiesForm) actionForm;
 
@@ -62,10 +58,11 @@ public class ModifyMessageAction extends NexusE2EAction {
         String action = reportingPropertiesForm.getCommand();
         boolean outbound = reportingPropertiesForm.isOutbound();
 
-        if ( action == null || participantId == null || choreographyId == null || conversationId == null
-                || messageId == null ) {
+        if ( action == null || messageId == null ) {
             ActionMessage errorMessage = new ActionMessage( "generic.error", "can't modify message status" );
             errors.add( ActionMessages.GLOBAL_MESSAGE, errorMessage );
+            resetForm(reportingPropertiesForm);
+            return error;
         }
         LOG.debug( "Modify Message Action: " + action );
 
@@ -104,15 +101,16 @@ public class ModifyMessageAction extends NexusE2EAction {
 
         }
 
-        // Make sure form selection criteria is reset
+        resetForm(reportingPropertiesForm);
+        return success;
+    }
+
+    private void resetForm(ReportingPropertiesForm reportingPropertiesForm) {
         reportingPropertiesForm.setParticipantId( null );
         reportingPropertiesForm.setMessageId( null );
         reportingPropertiesForm.setConversationId( null );
         reportingPropertiesForm.setChoreographyId( null );
-
         reportingPropertiesForm.setConversationEnabled( false );
         reportingPropertiesForm.setMessageEnabled( false );
-
-        return success;
     }
 } // ModifyMessageAction
