@@ -106,7 +106,7 @@
         <url-pattern>/ajax/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Auth servlet -->
+    <!-- RestDispatcherServlet servlet -->
 
     <servlet>
         <servlet-name>AuthServlet</servlet-name>
@@ -114,8 +114,8 @@
         <load-on-startup>8</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>AuthServlet</servlet-name>
-        <url-pattern>/auth/*</url-pattern>
+        <servlet-name>RestDispatcherServlet</servlet-name>
+        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
     <!-- UI Servlet -->

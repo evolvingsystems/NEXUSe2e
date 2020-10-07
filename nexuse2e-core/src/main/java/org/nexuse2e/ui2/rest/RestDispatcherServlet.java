@@ -8,48 +8,56 @@ import org.nexuse2e.pojo.UserPojo;
 import org.nexuse2e.ui.action.NexusE2EAction;
 import org.nexuse2e.util.PasswordUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 
 public class AuthServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(AuthServlet.class);
-
-    private static final String PATH_USER_NAME = "/getUserName";
+    private static final Logger LOG = Logger.getLogger(RestDispatcherServlet.class);
+    private static class LoginData { String user, password; }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String result = null;
 
-        if (PATH_USER_NAME.equals(request.getPathInfo())) {
-            UserPojo user = (UserPojo) request.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER);
-            if (user != null) {
-                result = "{ \"user\" : \"" + user.getLoginName() + "\" }";
+        if ("GET".equalsIgnoreCase(req.getMethod()) && "/loggedIn".equalsIgnoreCase(req.getPathInfo())) {
+            probeLogin(req, resp);
+            return;
+        }
+
+        for (Handler handler : handlers) {
+            try {
+                if (handler.canHandle(req.getPathInfo(), req.getMethod())) {
+                    handler.handle(req, resp);
+                    return;
+                }
+            } catch (Exception e) {
+                resp.setStatus(500);
+                LOG.error("Error occurred when handling path " + req.getPathInfo() + " with method " + req.getMethod());
+                return;
             }
         }
-
-        if (result != null) {
-            LOG.trace("Result: " + result);
-            response.setContentType("text/json");
-            response.setStatus(HttpServletResponse.SC_OK);
-            Writer writer = response.getWriter();
-            writer.write(result);
-            writer.flush();
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }
-
-        LOG.trace("RETURNING REQUEST");
+        resp.setStatus(404);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void probeLogin(HttpServletRequest request, HttpServletResponse response) {
+        UserPojo user = (UserPojo) request.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER);
+        if (user != null) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
+    private void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         EngineConfiguration engineConfig = Engine.getInstance().getCurrentConfiguration();
         String requestBody = readAll(request.getInputStream());
 
@@ -69,7 +77,7 @@ public class AuthServlet extends HttpServlet {
             session.setAttribute(NexusE2EAction.ATTRIBUTE_USER, userInstance);
             response.setStatus(200);
         } else {
-            super.doPost(request, response);
+            response.setStatus(401);
         }
     }
 
@@ -105,11 +113,6 @@ public class AuthServlet extends HttpServlet {
 
     private boolean constantTimeCompare(String a, String b) {
         return constantTimeCompare(parseHexString(a), parseHexString(b));
-    }
-
-    private static class LoginData {
-        String user;
-        String password;
     }
 }
 

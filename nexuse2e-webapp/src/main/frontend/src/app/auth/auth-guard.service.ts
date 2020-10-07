@@ -11,7 +11,7 @@ export class AuthGuardService implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     try {
-      await this.http.get('/auth/getUserName').toPromise();
+      await this.http.get('/api/loggedIn').toPromise();
     } catch {
       await this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
       return false;

@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
     };
 
     try {
-      await this.http.post('/auth', loginData).toPromise();
+      await this.http.post('/api/login', loginData).toPromise();
       await this.router.navigateByUrl(this.returnUrl);
     } catch {
       this.loginError = true;
