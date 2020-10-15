@@ -19,25 +19,30 @@
  */
 package org.nexuse2e.ui.action.reporting;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.nexuse2e.Engine;
+import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.pojo.ConversationPojo;
-import org.nexuse2e.pojo.PartnerPojo;
+import org.nexuse2e.dao.TransactionDAO;
+import org.nexuse2e.pojo.*;
+import org.nexuse2e.reporting.CertificateStub;
 import org.nexuse2e.reporting.MessageStub;
 import org.nexuse2e.reporting.Statistics;
 import org.nexuse2e.ui.action.NexusE2EAction;
+import org.nexuse2e.ui.form.CertificatePropertiesForm;
+import org.nexuse2e.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.nexuse2e.util.CertificateUtil.getIncludedCertificates;
 
 /**
  * Fills the context for the statistics report(s).
@@ -58,23 +63,67 @@ public class ReportingStatisticsAction extends NexusE2EAction {
         Calendar cal = Calendar.getInstance();
         cal.add( Calendar.DATE, -1 );
         Timestamp timestamp = new Timestamp( cal.getTimeInMillis() );
-        Statistics statistics = Engine.getInstance().getTransactionService().getTransactionDao().getStatistics(timestamp, null);
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null);
 
         List<MessageStub> messageStubs = statistics.getMessages();
         request.setAttribute("messages", messageStubs);
 
-        Map<String, Integer> messageStatusCounts = new HashMap<>();
-        for (MessageStub message : statistics.getMessages()) {
-            String status = message.getStatus().toString().toLowerCase();
-            Integer count = messageStatusCounts.get(status);
-            if(count == null) {
-                messageStatusCounts.put(status, 1);
-            } else {
-                messageStatusCounts.put(status, ++count);
-            }
-        }
-        request.setAttribute("messageStatusCounts", toJson(messageStatusCounts));
+        Map<String, Integer> conversationStatusCounts = getConversationCounts(statistics);
+        request.setAttribute("conversationStatusCounts", toJson(conversationStatusCounts));
 
+        List<PartnerPojo> partners = engineConfiguration.getPartners(
+                Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
+
+        Map<String, ArrayList<CertificateStub>> certificatesPerPartner = new HashMap<>();
+        Map<String, String> lastOutboundPerPartner = new HashMap<>();
+        Map<String, String> lastInboundPerPartner = new HashMap<>();
+
+        for (PartnerPojo partner : partners) {
+            Set<ConnectionPojo> connections = partner.getConnections();
+            ArrayList<CertificateStub> certificates = new ArrayList<>();
+            for (ConnectionPojo connection : connections) {
+                CertificatePojo certificate = connection.getCertificate();
+                if (certificate != null) {
+                    certificates.add(new CertificateStub(certificate));
+                }
+            }
+            certificatesPerPartner.put(partner.getPartnerId(), certificates);
+            lastOutboundPerPartner.put(partner.getPartnerId(), getLastSentMessageTimeDiff(partner, true));
+            lastInboundPerPartner.put(partner.getPartnerId(), getLastSentMessageTimeDiff(partner, false));
+        }
+
+        List<CertificatePojo> stagedCertificates = engineConfiguration.getCertificates(CertificateType.STAGING.getOrdinal(), Constants.CERTIFICATECOMPARATOR);
+        Vector<CertificatePropertiesForm> certificatePropertiesForms = getIncludedCertificates(stagedCertificates);
+        List<CertificateStub> localCertificates = new LinkedList<>();
+
+        for (CertificatePropertiesForm certificatePropertiesForm : certificatePropertiesForms) {
+            localCertificates.add(new CertificateStub(certificatePropertiesForm));
+        }
+
+        request.setAttribute("partners", partners);
+        request.setAttribute("lastOutboundPerPartner", lastOutboundPerPartner);
+        request.setAttribute("lastInboundPerPartner", lastInboundPerPartner);
+        request.setAttribute("certificatesPerPartner", certificatesPerPartner);
+        request.setAttribute("localCertificates", localCertificates);
+
+        List<ChoreographyPojo> choreographies = engineConfiguration.getChoreographies();
+
+        Map<String, String> lastOutboundPerChoreography = new HashMap<>();
+        Map<String, String> lastInboundPerChoreography = new HashMap<>();
+        for (ChoreographyPojo choreography : choreographies) {
+            lastOutboundPerChoreography.put(choreography.getName(), getLastSentMessageTimeDiff(choreography, true));
+            lastInboundPerChoreography.put(choreography.getName(), getLastSentMessageTimeDiff(choreography, false));
+        }
+
+        request.setAttribute("choreographies", choreographies);
+        request.setAttribute("lastOutboundPerChoreography", lastOutboundPerChoreography);
+        request.setAttribute("lastInboundPerChoreography", lastInboundPerChoreography);
+
+        return actionMapping.findForward( ACTION_FORWARD_SUCCESS );
+    }
+
+    private Map<String, Integer> getConversationCounts(Statistics statistics) {
         List<ConversationPojo> conversations = statistics.getConversations();
         Map<String, Integer> conversationStatusCounts = new HashMap<>();
         for (ConversationPojo conversation : conversations) {
@@ -86,26 +135,29 @@ public class ReportingStatisticsAction extends NexusE2EAction {
                 conversationStatusCounts.put(status, ++count);
             }
         }
-        request.setAttribute("conversationStatusCounts", toJson(conversationStatusCounts));
+        return conversationStatusCounts;
+    }
 
-        Map<Date, Integer> timeCounts = new HashMap<>();
-        for (MessageStub message : statistics.getMessages()) {
-            Date truncated = DateUtils.truncate(message.getCreatedDate(), Calendar.HOUR);
-            Integer count = timeCounts.get(truncated);
-            if(count == null) {
-                timeCounts.put(truncated, 1);
-            } else {
-                timeCounts.put(truncated, ++count);
-            }
+    private String getLastSentMessageTimeDiff(PartnerPojo partner, boolean outbound) {
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        // TODO set status to 3
+        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusPartnerAndDirection(-1, partner, outbound);
+        if (lastMessage != null) {
+            return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
+        } else {
+            return "never";
         }
-        request.setAttribute("timeCounts", toJson(timeCounts));
+    }
 
-        List<PartnerPojo> partners = engineConfiguration.getPartners(
-                Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
-
-        request.setAttribute("partners", partners);
-
-        return actionMapping.findForward( ACTION_FORWARD_SUCCESS );
+    private String getLastSentMessageTimeDiff(ChoreographyPojo choreography, boolean outbound) {
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        // TODO set status to 3
+        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusChoreographyAndDirection(-1, choreography, outbound);
+        if (lastMessage != null) {
+            return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
+        } else {
+            return "never";
+        }
     }
 
     private String toJson(Map<?, Integer> map) {
@@ -127,5 +179,4 @@ public class ReportingStatisticsAction extends NexusE2EAction {
         result.append("}");
         return result.toString();
     }
-
 }

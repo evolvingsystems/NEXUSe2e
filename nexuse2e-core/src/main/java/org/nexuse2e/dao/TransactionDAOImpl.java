@@ -1194,6 +1194,28 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         return (List<MessagePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
+    public MessagePojo getLastMessageByStatusChoreographyAndDirection(int status, ChoreographyPojo choreography, boolean outbound) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
+        criteria.createCriteria("conversation").createCriteria("choreography").add(Restrictions.eq("nxChoreographyId", choreography.getNxChoreographyId()));
+        criteria.add(Restrictions.eq("outbound", outbound));
+        criteria.add(Restrictions.eq("status", status));
+        criteria.addOrder(Order.desc("createdDate"));
+
+        List<?> results = getListThroughSessionFind(criteria, 0, 1);
+        return results.isEmpty() ? null : (MessagePojo) results.get(0);
+    }
+
+    public MessagePojo getLastMessageByStatusPartnerAndDirection(int status, PartnerPojo partner, boolean outbound) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
+        criteria.createCriteria("conversation").createCriteria("partner").add(Restrictions.eq("nxPartnerId", partner.getNxPartnerId()));
+        criteria.add(Restrictions.eq("outbound", outbound));
+        criteria.add(Restrictions.eq("status", status));
+        criteria.addOrder(Order.desc("createdDate"));
+
+        List<?> results = getListThroughSessionFind(criteria, 0, 1);
+        return results.isEmpty() ? null : (MessagePojo) results.get(0);
+    }
+
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.TransactionDAO#getMessagesByActionPartnerDirectionAndStatus(org.nexuse2e.pojo.ActionPojo, org.nexuse2e.pojo.PartnerPojo, boolean, int, int, boolean)
      */

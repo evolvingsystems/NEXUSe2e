@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ModifyMessageAction extends NexusE2EAction {
 
     private static Logger LOG = Logger.getLogger( ModifyMessageAction.class );
+    private static final String ORIGIN_DASHBOARD = "dashboard";
 
     /* (non-Javadoc)
      * @see org.nexuse2e.ui.action.NexusE2EAction#executeNexusE2EAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.apache.struts.action.ActionMessages, org.apache.struts.action.ActionMessages)
@@ -56,6 +57,7 @@ public class ModifyMessageAction extends NexusE2EAction {
         String conversationId = reportingPropertiesForm.getConversationId();
         String messageId = reportingPropertiesForm.getMessageId();
         String action = reportingPropertiesForm.getCommand();
+        String origin = reportingPropertiesForm.getOrigin();
         boolean outbound = reportingPropertiesForm.isOutbound();
 
         if ( action == null || messageId == null ) {
@@ -102,7 +104,7 @@ public class ModifyMessageAction extends NexusE2EAction {
         }
 
         resetForm(reportingPropertiesForm);
-        return success;
+        return ORIGIN_DASHBOARD.equals(origin) ? new ActionForward() : success;
     }
 
     private void resetForm(ReportingPropertiesForm reportingPropertiesForm) {
@@ -112,5 +114,6 @@ public class ModifyMessageAction extends NexusE2EAction {
         reportingPropertiesForm.setChoreographyId( null );
         reportingPropertiesForm.setConversationEnabled( false );
         reportingPropertiesForm.setMessageEnabled( false );
+        reportingPropertiesForm.setOrigin(null);
     }
 } // ModifyMessageAction

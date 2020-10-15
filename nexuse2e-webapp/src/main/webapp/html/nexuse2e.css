@@ -519,7 +519,7 @@ td.BUTTON_RIGHT {
 
 .statistics table th {
 	text-align: left;
-	padding: 6px 0 10px 0;
+	padding: 6px 2px;
 }
 
 .statistics td, .statistics th {
@@ -566,15 +566,10 @@ td.BUTTON_RIGHT {
 	display: flex;
 }
 
-.statistics #conversations {
-	border: 6px solid #eee;
-	box-sizing: border-box;
-}
-
 .statistics .segment {
 	min-width: 0;
 	box-sizing: border-box;
-	padding: 10px;
+	padding: 5px 0;
 	color: white;
 	white-space: nowrap;
 	overflow: hidden;
@@ -584,7 +579,7 @@ td.BUTTON_RIGHT {
 }
 
 .statistics .segment:hover {
-	min-width: 100px;
+	min-width: 100%;
 	filter: brightness(1.1);
 }
 
@@ -601,6 +596,15 @@ td.BUTTON_RIGHT {
 	opacity: 0.7;
 }
 
+.statistics #conversations {
+	border: 6px solid #eee;
+	box-sizing: border-box;
+}
+
+.statistics #conversations .segment {
+	padding: 10px 0;
+}
+
 .statistics .cert-box {
 	display: inline-block;
 	background: #6DA34D;
@@ -612,10 +616,6 @@ td.BUTTON_RIGHT {
 
 .statistics .cert-box:hover {
 	box-shadow: 0 0 3px rgb(184, 177, 177);
-}
-
-.statistics .cert-box:last-of-type {
-	background: #FB5012;
 }
 
 .statistics .cert-name {
