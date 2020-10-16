@@ -3,8 +3,6 @@ package org.nexuse2e.reporting;
 import org.nexuse2e.MessageStatus;
 
 import java.util.Date;
-import java.util.List;
-import org.nexuse2e.messaging.Constants;
 
 public class MessageStub {
 
@@ -17,6 +15,7 @@ public class MessageStub {
     private String conversationId;
     private Integer nxMessageId;
     private Integer nxConversationId;
+    private String partnerId;
 
     public MessageStub(Object[] record) {
         messageId = (String) record[0];
@@ -28,6 +27,7 @@ public class MessageStub {
         conversationId = (String) record[6];
         nxMessageId = (Integer) record[7];
         nxConversationId = (Integer) record[8];
+        partnerId = (String) record[9];
     }
 
     public String toString() {
@@ -39,6 +39,7 @@ public class MessageStub {
                 "'status': '" + status + "'," +
                 "'nxMessageId': " + nxMessageId + "," +
                 "'nxConversationId': " + nxConversationId + "," +
+                "'partnerId': " + partnerId + "," +
                 "'conversationId': '" + conversationId + "'}";
     }
 
@@ -112,5 +113,13 @@ public class MessageStub {
 
     public void setNxConversationId(Integer nxConversationId) {
         this.nxConversationId = nxConversationId;
+    }
+
+    public String getPartnerId() {
+        return partnerId;
+    }
+
+    public void setPartnerId(String partnerId) {
+        this.partnerId = partnerId;
     }
 }

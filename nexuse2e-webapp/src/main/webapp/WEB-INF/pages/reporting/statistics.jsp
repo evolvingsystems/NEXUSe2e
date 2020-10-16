@@ -54,6 +54,7 @@
 	<c:when test="${not empty messages}">
 		<table class="NEXUS_TABLE fixed-table">
 			<colgroup>
+				<col style="width: 17%">
 				<col>
 				<col style="width: 10%">
 				<col style="width: 30%">
@@ -62,31 +63,35 @@
 			</colgroup>
 			<tr>
 				<th class="NEXUSSection">Time</th>
+				<th class="NEXUSSection">Partner</th>
 				<th class="NEXUSSection">Choreography</th>
-				<th class="NEXUSSection">Conversation ID</th>
-				<th class="NEXUSSection">Message ID</th>
+				<th class="NEXUSSection">Conversation</th>
+				<th class="NEXUSSection">Message</th>
 				<th class="NEXUSSection"></th>
 			</tr>
 			<logic:iterate id="message" name="messages">
 				<tr class="${message.messageId}">
-					<td  title="${message.createdDate}">
-						<bean:write name="message" property="createdDate" />
+					<td title="${message.createdDate}">
+						${message.createdDate}
 					</td>
-					<td  title="${message.choreographyId}">
-						<bean:write name="message" property="choreographyId" />
+					<td title="${message.partnerId}">
+							${message.partnerId}
 					</td>
-					<td  title="${message.conversationId}">
+					<td title="${message.choreographyId}">
+						${message.choreographyId}
+					</td>
+					<td title="${message.conversationId}">
 						<nexus:link
 							href="ConversationView.do?convId=${message.nxConversationId}"
 							styleClass="NexusLink">
-							<bean:write name="message" property="conversationId" />
+							${message.conversationId}
 						</nexus:link>
 					</td>
-					<td  title="${message.messageId}">
+					<td title="${message.messageId}">
 						<nexus:link
 							href="MessageView.do?mId=${message.messageId}"
 							styleClass="NexusLink">
-							<bean:write name="message" property="messageId" />
+							${message.messageId}
 						</nexus:link>
 					</td>
 					<td><button onClick="this.disabled = true; setContentUrl('ModifyMessage.do?&origin=dashboard&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}');">
