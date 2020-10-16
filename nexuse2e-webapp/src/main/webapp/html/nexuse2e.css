@@ -595,6 +595,7 @@ td.BUTTON_RIGHT {
 
 .statistics #conversations {
 	box-sizing: border-box;
+	border: 5px solid #eee;
 }
 
 .statistics #conversations .segment {

@@ -54,8 +54,8 @@
 	<c:when test="${not empty messages}">
 		<table class="NEXUS_TABLE fixed-table">
 			<colgroup>
-				<col style="width: 17%">
 				<col>
+				<col style="width: 6%">
 				<col style="width: 10%">
 				<col style="width: 30%">
 				<col style="width: 30%">
@@ -110,9 +110,9 @@
 	</c:choose>
 
 	<div class="tab">
+		<button class="tablinks" onclick="openTab(event, 'certificates')">Certificates</button>
 		<button class="tablinks" onclick="openTab(event, 'partners')">Partners</button>
 		<button class="tablinks" onclick="openTab(event, 'choreographies')">Choreographies</button>
-		<button class="tablinks" onclick="openTab(event, 'certificates')">Certificates</button>
 	</div>
 
 	<table class="NEXUS_TABLE fixed-table tabcontent" id="partners">
@@ -130,18 +130,20 @@
 			</tr>
 			<logic:iterate id="partner" name="partners">
 				<tr>
-					<td><nexus:link
+					<td title="${partner.partnerId}"><nexus:link
 							href="PartnerInfoView.do?nxPartnerId=${partner.nxPartnerId}&type=2"
 							styleClass="NexusLink">
-						<bean:write name="partner" property="partnerId" /> (<bean:write name="partner" property="name" />)
+						${partner.partnerId} (${partner.name})
 					</nexus:link></td>
-					<td>
+					<td title="${lastInboundPerPartner[partner.partnerId]}">
 						${lastInboundPerPartner[partner.partnerId]}
 					</td>
-					<td>
+					<td title="${lastOutboundPerPartner[partner.partnerId]}">
 						${lastOutboundPerPartner[partner.partnerId]}
 					</td>
-					<td><div class="chart" id="${partner.partnerId}"></div></td>
+					<td>
+						<div class="chart" id="${partner.partnerId}"></div>
+					</td>
 				</tr>
 			</logic:iterate>
 		</table>
@@ -161,18 +163,20 @@
 			</tr>
 			<logic:iterate id="choreography" name="choreographies">
 				<tr>
-					<td><nexus:link
+					<td title="${choreography.name}"><nexus:link
 							href="ChoreographyView.do?nxChoreographyId=${choreography.nxChoreographyId}"
 							styleClass="NexusLink">
-						<bean:write name="choreography" property="name" />
+						${choreography.name}
 					</nexus:link></td>
-					<td>
+					<td title="${lastInboundPerChoreography[choreography.name]}">
 						${lastInboundPerChoreography[choreography.name]}
 					</td>
-					<td>
+					<td title="${lastOutboundPerChoreography[choreography.name]}">
 						${lastOutboundPerChoreography[choreography.name]}
 					</td>
-					<td><div class="chart" id="${choreography.nxChoreographyId}"></div></td>
+					<td>
+						<div class="chart" id="${choreography.nxChoreographyId}"></div>
+					</td>
 				</tr>
 			</logic:iterate>
 		</table>
@@ -193,9 +197,9 @@
 		<logic:iterate id="partner" name="certificatesPerPartner">
 			<c:forEach var = "cert" items="${partner.value}">
 				<tr>
-					<td>${partner.key}</td>
-					<td>${cert.name}</td>
-					<td>${cert.remaining}</td>
+					<td title="${partner.key}">${partner.key}</td>
+					<td title="${cert.name}">${cert.name}</td>
+					<td title="${cert.remaining}">${cert.remaining}</td>
 				</tr>
 			</c:forEach>
 		</logic:iterate>
