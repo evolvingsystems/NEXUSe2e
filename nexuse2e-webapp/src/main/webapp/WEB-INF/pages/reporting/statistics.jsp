@@ -39,76 +39,78 @@
 </table>
 
 <div class="statistics">
-	<section class="statistics">
-		<h2>Conversations (last 24h)</h2>
-		<c:choose>
-			<c:when test="${not empty conversationStatusCounts}">
-				<div class="chart" id="conversations"></div>
-			</c:when>
-			<c:otherwise>
-				no conversations
-			</c:otherwise>
-		</c:choose>
-
-		<h2>Failed Messages</h2>
-		<c:choose>
-		<c:when test="${not empty messages}">
-			<table class="NEXUS_TABLE fixed-table" style="width: 100%">
-				<colgroup>
-					<col>
-					<col style="width: 10%">
-					<col style="width: 30%">
-					<col style="width: 30%">
-					<col style="width: 78px">
-				</colgroup>
-				<tr>
-					<th class="NEXUSSection">Time</th>
-					<th class="NEXUSSection">Choreography</th>
-					<th class="NEXUSSection">Conversation ID</th>
-					<th class="NEXUSSection">Message ID</th>
-					<th class="NEXUSSection"></th>
-				</tr>
-				<logic:iterate id="message" name="messages">
-					<tr class="${message.messageId}">
-						<td  title="${message.createdDate}">
-							<bean:write name="message" property="createdDate" />
-						</td>
-						<td  title="${message.choreographyId}">
-							<bean:write name="message" property="choreographyId" />
-						</td>
-						<td  title="${message.conversationId}">
-							<nexus:link
-								href="ConversationView.do?convId=${message.nxConversationId}"
-								styleClass="NexusLink">
-								<bean:write name="message" property="conversationId" />
-							</nexus:link>
-						</td>
-						<td  title="${message.messageId}">
-							<nexus:link
-								href="MessageView.do?mId=${message.messageId}"
-								styleClass="NexusLink">
-								<bean:write name="message" property="messageId" />
-							</nexus:link>
-						</td>
-						<td><button onclick="console.log(${message.messageId})">
-							<nexus:link href="ModifyMessage.do?noReset&refresh&type=transaction&origin=dashboard&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}">
-								Requeue
-							</nexus:link>
-						</button></td>
-					</tr>
-				</logic:iterate>
-			</table>
-			<nexus:link href="ProcessConversationReport.do?noReset=true">
-				<button class="full-width">Show more</button>
-			</nexus:link>
+	<h2>Conversations (last 24h)</h2>
+	<c:choose>
+		<c:when test="${not empty conversationStatusCounts}">
+			<div class="chart" id="conversations"></div>
 		</c:when>
 		<c:otherwise>
-			no messages
+			no conversations
 		</c:otherwise>
-		</c:choose>
+	</c:choose>
 
-		<h2>Partners</h2>
-		<table class="NEXUS_TABLE fixed-table" style="width: 100%">
+	<h2>Failed Messages</h2>
+	<c:choose>
+	<c:when test="${not empty messages}">
+		<table class="NEXUS_TABLE fixed-table">
+			<colgroup>
+				<col>
+				<col style="width: 10%">
+				<col style="width: 30%">
+				<col style="width: 30%">
+				<col style="width: 78px">
+			</colgroup>
+			<tr>
+				<th class="NEXUSSection">Time</th>
+				<th class="NEXUSSection">Choreography</th>
+				<th class="NEXUSSection">Conversation ID</th>
+				<th class="NEXUSSection">Message ID</th>
+				<th class="NEXUSSection"></th>
+			</tr>
+			<logic:iterate id="message" name="messages">
+				<tr class="${message.messageId}">
+					<td  title="${message.createdDate}">
+						<bean:write name="message" property="createdDate" />
+					</td>
+					<td  title="${message.choreographyId}">
+						<bean:write name="message" property="choreographyId" />
+					</td>
+					<td  title="${message.conversationId}">
+						<nexus:link
+							href="ConversationView.do?convId=${message.nxConversationId}"
+							styleClass="NexusLink">
+							<bean:write name="message" property="conversationId" />
+						</nexus:link>
+					</td>
+					<td  title="${message.messageId}">
+						<nexus:link
+							href="MessageView.do?mId=${message.messageId}"
+							styleClass="NexusLink">
+							<bean:write name="message" property="messageId" />
+						</nexus:link>
+					</td>
+					<td><button onClick="this.disabled = true; setContentUrl('ModifyMessage.do?&origin=dashboard&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}');">
+						Requeue
+					</button></td>
+				</tr>
+			</logic:iterate>
+		</table>
+		<nexus:link href="ProcessConversationReport.do?noReset=true">
+			<button class="full-width">Show more</button>
+		</nexus:link>
+	</c:when>
+	<c:otherwise>
+		no messages
+	</c:otherwise>
+	</c:choose>
+
+	<div class="tab">
+		<button class="tablinks" onclick="openTab(event, 'partners')">Partners</button>
+		<button class="tablinks" onclick="openTab(event, 'choreographies')">Choreographies</button>
+		<button class="tablinks" onclick="openTab(event, 'certificates')">Certificates</button>
+	</div>
+
+	<table class="NEXUS_TABLE fixed-table tabcontent" id="partners">
 			<colgroup>
 				<col>
 				<col>
@@ -139,8 +141,7 @@
 			</logic:iterate>
 		</table>
 
-		<h2>Choreographies</h2>
-		<table class="NEXUS_TABLE fixed-table" style="width: 100%">
+	<table class="NEXUS_TABLE fixed-table tabcontent" id="choreographies">
 			<colgroup>
 				<col>
 				<col>
@@ -171,34 +172,50 @@
 			</logic:iterate>
 		</table>
 
-		<h2>Certificates</h2>
-		<table class="NEXUS_TABLE fixed-table" style="width: 100%">
-			<tr>
-				<th class="NEXUSSection">Configured For</th>
-				<th class="NEXUSSection">Certificate Name</th>
-				<th class="NEXUSSection">Time Remaining</th>
+	<table class="NEXUS_TABLE fixed-table tabcontent" id="certificates">
+		<tr>
+			<th class="NEXUSSection">Configured For</th>
+			<th class="NEXUSSection">Certificate Name</th>
+			<th class="NEXUSSection">Time Remaining</th>
+		</tr>
+		<logic:iterate id="cert" name="localCertificates">
+			<tr class="local">
+				<td class="NEXUSName">Local</td>
+				<td class="NEXUSName">${cert.name}</td>
+				<td class="NEXUSName">${cert.remaining}</td>
 			</tr>
-			<logic:iterate id="cert" name="localCertificates">
-				<tr class="local">
-					<td>Local</td>
-					<td>${cert.name}</td>
-					<td>${cert.remaining}</td>
-				</tr>
-			</logic:iterate>
-			<logic:iterate id="partner" name="certificatesPerPartner">
+		</logic:iterate>
+		<logic:iterate id="partner" name="certificatesPerPartner">
+			<c:forEach var = "cert" items="${partner.value}">
 				<tr>
-				<c:forEach var = "cert" items="${partner.value}">
 					<td>${partner.key}</td>
 					<td>${cert.name}</td>
 					<td>${cert.remaining}</td>
-				</c:forEach>
 				</tr>
-			</logic:iterate>
-		</table>
+			</c:forEach>
+		</logic:iterate>
+	</table>
 </div>
+
 
 <script>
 window.statistics = window.statistics || {};
+document.querySelector('.tablinks').click();
+
+function openTab(evt, contentId) {
+	let tabContent = document.getElementsByClassName("tabcontent");
+	for (let i = 0; i < tabContent.length; i++) {
+		tabContent[i].style.display = "none";
+	}
+
+	let tabLinks = document.getElementsByClassName("tablinks");
+	for (let i = 0; i < tabLinks.length; i++) {
+		tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+	}
+
+	document.getElementById(contentId).style.display = "table";
+	evt.currentTarget.className += " active";
+}
 
 (function () {
 	"use strict";
@@ -229,7 +246,7 @@ window.statistics = window.statistics || {};
 
 	const createSegments = function (chart) {
 		const counts = chartData[chart.id];
-		Object.keys(counts).forEach((name) => {
+		for (let name in counts) {
 			const segment = document.createElement('div');
 			const width = (counts[name] / total[chart.id] * 100);
 			segment.style.background = chartColors[name]
@@ -247,49 +264,50 @@ window.statistics = window.statistics || {};
 			if (segment.offsetWidth < 30) {
 				segment.classList.add('hidden-text');
 			}
-		});
-	}
-
-	const sortDescending = function(obj) {
-		const sortable = [];
-		for (const element in obj) {
-			if (obj.hasOwnProperty(element)) {
-				sortable.push([element, obj[element]]);
-			}
 		}
-
-		sortable.sort(function(a, b) {
-			return b[1] - a[1];
-		});
-
-		return sortable;
-	}
-
-	const sortChartData = function() {
-		Object.keys(chartData).forEach((name) => {
-		    const sortedObj = {};
-		    const sortedArray = sortDescending(chartData[name]);
-            sortedArray.forEach(function(item){
-                sortedObj[item[0]] = item[1]
-            })
-            chartData[name] = sortedObj;
-		})
 	}
 
 	const populateCharts = function() {
 		const charts = document.querySelectorAll('.chart');
-		for (const chart of charts) {
+		for (let i = 0; i < charts.length; i++) {
+			let chart = charts[i];
 			if (chartData[chart.id]) {
-				total[chart.id] = Object.values(chartData[chart.id]).reduce((a, b) => a + b, 0);
+				total[chart.id] = 0;
+				for (let status in chartData[chart.id]) {
+					total[chart.id] += chartData[chart.id][status];
+				}
 				createSegments(chart);
 			}
 		}
 	};
 
-	const disableLine = function(messageId) {
-		const line = document.querySelector('.' + messageId);
-		console.log(messageId);
-		console.log(line);
+	const sortDescending = function(obj) {
+		const sortable = [];
+		for (let element in obj) {
+			sortable.push([element, obj[element]]);
+		}
+
+		if (sortable.length > 1) {
+			sortable.sort(function(a, b) {
+				return b[1] - a[1];
+			});
+		}
+
+		return sortable;
+	}
+
+	const sortChartData = function() {
+		const keys = Object.keys(chartData);
+		for (let i = 0; i < keys.length; i++) {
+			const name = keys[i];
+			const sortedObj = {};
+			const sortedArray = sortDescending(chartData[name]);
+			for (let j = 0; j < sortedArray.length; j++) {
+				const item = sortedArray[j];
+				sortedObj[item[0]] = item[1];
+			}
+			chartData[name] = sortedObj;
+		}
 	}
 
 	sortChartData();

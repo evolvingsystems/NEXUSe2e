@@ -505,6 +505,9 @@ td.BUTTON_RIGHT {
 
 .statistics {
 	text-align: left;
+	margin: 30px 0;
+	padding: 20px;
+	box-shadow: 0 0 3px rgb(184, 177, 177);
 }
 
 .statistics h2:first-child {
@@ -515,6 +518,7 @@ td.BUTTON_RIGHT {
 	width: 100%;
 	border: 1px solid #eee;
 	padding: 5px;
+	margin-bottom: 0;
 }
 
 .statistics table th {
@@ -533,15 +537,8 @@ td.BUTTON_RIGHT {
 	margin: 20px 0;
 }
 
-.statistics section {
-	margin: 30px 0;
-	padding: 20px;
-	box-shadow: 0 0 3px rgb(184, 177, 177);
-}
-
 .statistics .full-width {
 	width: 100%;
-	margin-top: -16px;
 	border-radius: 0 0 3px 3px;
 	border: 1px solid gray;
 	cursor: pointer;
@@ -579,7 +576,7 @@ td.BUTTON_RIGHT {
 }
 
 .statistics .segment:hover {
-	min-width: 100%;
+	min-width: 100px;
 	filter: brightness(1.1);
 }
 
@@ -597,7 +594,6 @@ td.BUTTON_RIGHT {
 }
 
 .statistics #conversations {
-	border: 6px solid #eee;
 	box-sizing: border-box;
 }
 
@@ -623,4 +619,31 @@ td.BUTTON_RIGHT {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.statistics .tab {
+	margin-top: 20px;
+	overflow: hidden;
+}
+
+.statistics .tab button {
+	background-color: #acacac;
+	color: white;
+	float: left;
+	font-weight: bold;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 5px 9px 2px 9px;
+	transition: 0.3s;
+	border-radius: 15px 15px 0 0;
+}
+
+.statistics .tab button.active {
+	background-color: #eee;
+	color: black;
+}
+
+.statistics .tabcontent {
+	display: none;
 }
