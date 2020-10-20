@@ -91,7 +91,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         List<StatisticsMessage> statisticMessages = statistics.getMessages();
 
         List<ConversationPojo> conversations = statistics.getConversations();
-        Map<String, Integer> conversationStatusCounts = getConversationCounts(conversations);
+        List<Entry> conversationStatusCounts = getConversationCounts(conversations);
 
         List<PartnerPojo> partnerPojos = engineConfiguration.getPartners(
                 Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
@@ -153,18 +153,20 @@ public class ReportingStatisticsAction extends ReportingAction {
         return choreographies;
     }
 
-    private Map<String, Integer> getConversationCounts(List<ConversationPojo> conversations) {
-        Map<String, Integer> conversationStatusCounts = new HashMap<>();
+    private List<Entry> getConversationCounts(List<ConversationPojo> conversations) {
+        List<Entry> statusCounts = new LinkedList<>();
         for (ConversationPojo conversation : conversations) {
             String status = conversation.getStatusName().toLowerCase();
-            Integer count = conversationStatusCounts.get(status);
-            if (count == null) {
-                conversationStatusCounts.put(status, 1);
+            Entry searchEntry = new Entry(status);
+            int index = statusCounts.indexOf(searchEntry);
+            if (index == -1) {
+                statusCounts.add(searchEntry);
             } else {
-                conversationStatusCounts.put(status, ++count);
+                statusCounts.get(index).increment();
             }
         }
-        return conversationStatusCounts;
+        Collections.sort(statusCounts);
+        return statusCounts;
     }
 
     private String getLastSentMessageTimeDiff(PartnerPojo partner, boolean outbound) {
@@ -184,6 +186,54 @@ public class ReportingStatisticsAction extends ReportingAction {
             return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
         } else {
             return "never";
+        }
+    }
+
+    public static class Entry implements Comparable<Entry> {
+        private String key;
+        private Integer value;
+
+        public Entry(String key, Integer value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public Entry(String key) {
+            this(key, 1);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof Entry) {
+                Entry e = (Entry) o;
+                return Objects.equals(key, e.key);
+            }
+            return false;
+        }
+
+        @Override
+        public int compareTo(Entry entry) {
+            return entry.value - this.value;
+        }
+
+        public void increment() {
+            this.value++;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public void setValue(Integer value) {
+            this.value = value;
         }
     }
 }
