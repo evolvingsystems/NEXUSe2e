@@ -654,3 +654,15 @@ td.BUTTON_RIGHT {
 .statistics p.no-data {
 	padding: 5px;
 }
+
+.statistics .info-icon {
+	display: inline-block;
+	border-radius: 50%;
+	background: #acacac;
+	margin-left: 5px;
+	height: 16px;
+	width: 16px;
+	color: white;
+	padding: 1px 0 0 4px;
+	box-sizing: border-box;
+}

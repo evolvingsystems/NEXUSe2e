@@ -296,7 +296,7 @@ public interface TransactionDAO {
     public abstract List<MessagePojo> getMessagesByPartnerAndDirection( PartnerPojo partner, boolean outbound,
             int field, boolean ascending ) throws NexusException;
 
-    public abstract MessagePojo getLastMessageByStatusPartnerAndDirection(int status, PartnerPojo partner, boolean outbound);
+    public abstract MessagePojo getLastSuccessfulMessageByPartnerAndDirection(PartnerPojo partner, boolean outbound);
 
     public abstract List<MessagePojo> getMessagesByActionPartnerDirectionAndStatus( ActionPojo action,
             PartnerPojo partner, boolean outbound, int status, int field, boolean ascending );
@@ -311,7 +311,7 @@ public interface TransactionDAO {
     public abstract List<MessagePojo> getMessagesByChoreographyAndPartner( ChoreographyPojo choreography,
             PartnerPojo partner, int field, boolean ascending );
 
-    public abstract MessagePojo getLastMessageByStatusChoreographyAndDirection(int status, ChoreographyPojo choreography, boolean outbound);
+    public abstract MessagePojo getLastSuccessfulMessageByChoreographyAndDirection(ChoreographyPojo choreography, boolean outbound);
 
     /**
      * @param choreography

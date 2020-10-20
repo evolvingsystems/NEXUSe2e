@@ -139,8 +139,14 @@
 				</colgroup>
 				<tr>
 					<th class="NEXUSSection">Partner ID</th>
-					<th class="NEXUSSection">Last Inbound</th>
-					<th class="NEXUSSection">Last Outbound</th>
+					<th class="NEXUSSection">
+						Last Inbound
+						<div class="info-icon" title="Last successfully sent message (excluding acknowledgements)">?</div>
+					</th>
+					<th class="NEXUSSection">
+						Last Outbound
+						<div class="info-icon" title="Last successfully sent message (excluding acknowledgements)">?</div>
+					</th>
 				</tr>
 				<logic:iterate id="partner" name="partners">
 					<tr>
@@ -176,8 +182,14 @@
 			</colgroup>
 			<tr>
 				<th class="NEXUSSection">Choreography</th>
-				<th class="NEXUSSection">Last Inbound</th>
-				<th class="NEXUSSection">Last Outbound</th>
+				<th class="NEXUSSection">
+					Last Inbound
+					<div class="info-icon" title="Last successfully sent message (excluding acknowledgements)">?</div>
+				</th>
+				<th class="NEXUSSection">
+					Last Outbound
+					<div class="info-icon" title="Last successfully sent message (excluding acknowledgements)">?</div>
+				</th>
 			</tr>
 			<logic:iterate id="choreography" name="choreographies">
 				<tr>

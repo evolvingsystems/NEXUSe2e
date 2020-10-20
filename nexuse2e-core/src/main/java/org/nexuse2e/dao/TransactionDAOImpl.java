@@ -45,6 +45,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static org.nexuse2e.messaging.Constants.*;
+
 /**
  * Data access object (DAO) to provide persistence services for transaction related entities.
  *
@@ -100,11 +102,11 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
     private String getType(int messageType) {
         switch (messageType) {
-            case org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_NORMAL:
+            case INT_MESSAGE_TYPE_NORMAL:
                 return "normal";
-            case org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK:
+            case INT_MESSAGE_TYPE_ACK:
                 return "acknowledgement";
-            case org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR:
+            case INT_MESSAGE_TYPE_ERROR:
                 return "error";
         }
         return "unknown";
@@ -1194,22 +1196,24 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         return (List<MessagePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
-    public MessagePojo getLastMessageByStatusChoreographyAndDirection(int status, ChoreographyPojo choreography, boolean outbound) {
+    public MessagePojo getLastSuccessfulMessageByChoreographyAndDirection(ChoreographyPojo choreography, boolean outbound) {
         DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
         criteria.createCriteria("conversation").createCriteria("choreography").add(Restrictions.eq("nxChoreographyId", choreography.getNxChoreographyId()));
         criteria.add(Restrictions.eq("outbound", outbound));
-        criteria.add(Restrictions.eq("status", status));
+        criteria.add(Restrictions.eq("status", MessageStatus.SENT.getOrdinal()));
+        criteria.add(Restrictions.eq("type", INT_MESSAGE_TYPE_NORMAL));
         criteria.addOrder(Order.desc("createdDate"));
 
         List<?> results = getListThroughSessionFind(criteria, 0, 1);
         return results.isEmpty() ? null : (MessagePojo) results.get(0);
     }
 
-    public MessagePojo getLastMessageByStatusPartnerAndDirection(int status, PartnerPojo partner, boolean outbound) {
+    public MessagePojo getLastSuccessfulMessageByPartnerAndDirection(PartnerPojo partner, boolean outbound) {
         DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
         criteria.createCriteria("conversation").createCriteria("partner").add(Restrictions.eq("nxPartnerId", partner.getNxPartnerId()));
         criteria.add(Restrictions.eq("outbound", outbound));
-        criteria.add(Restrictions.eq("status", status));
+        criteria.add(Restrictions.eq("status",  MessageStatus.SENT.getOrdinal()));
+        criteria.add(Restrictions.eq("type", INT_MESSAGE_TYPE_NORMAL));
         criteria.addOrder(Order.desc("createdDate"));
 
         List<?> results = getListThroughSessionFind(criteria, 0, 1);

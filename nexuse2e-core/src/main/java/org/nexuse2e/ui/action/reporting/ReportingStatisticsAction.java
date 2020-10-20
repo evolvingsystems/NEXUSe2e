@@ -169,7 +169,7 @@ public class ReportingStatisticsAction extends ReportingAction {
 
     private String getLastSentMessageTimeDiff(PartnerPojo partner, boolean outbound) {
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusPartnerAndDirection(3, partner, outbound);
+        MessagePojo lastMessage = transactionDAO.getLastSuccessfulMessageByPartnerAndDirection(partner, outbound);
         if (lastMessage != null) {
             return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
         } else {
@@ -179,7 +179,7 @@ public class ReportingStatisticsAction extends ReportingAction {
 
     private String getLastSentMessageTimeDiff(ChoreographyPojo choreography, boolean outbound) {
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusChoreographyAndDirection(3, choreography, outbound);
+        MessagePojo lastMessage = transactionDAO.getLastSuccessfulMessageByChoreographyAndDirection(choreography, outbound);
         if (lastMessage != null) {
             return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
         } else {
