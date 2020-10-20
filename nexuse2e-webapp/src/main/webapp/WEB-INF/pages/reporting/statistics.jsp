@@ -225,16 +225,26 @@
 				</tr>
 				<logic:iterate id="cert" name="localCertificates">
 					<tr class="local">
-						<td class="NEXUSName">Local</td>
-						<td class="NEXUSName">${cert.name}</td>
-						<td class="NEXUSName">${cert.remaining}</td>
+						<td class="NEXUSName" title="Local">Local</td>
+						<td class="NEXUSName" title="${cert.name}">
+							<nexus:link styleClass="NexusLink"
+										href="StagingCertificateView.do?nxCertificateId=${cert.nxCertificateId}">
+								${cert.name}
+							</nexus:link>
+						</td>
+						<td class="NEXUSName" title="${cert.remaining}">${cert.remaining}</td>
 					</tr>
 				</logic:iterate>
 				<logic:iterate id="partner" name="partners">
 					<c:forEach var = "cert" items="${partner.certificates}">
 						<tr>
 							<td title="${partner.name}">${partner.name}</td>
-							<td title="${cert.name}">${cert.name}</td>
+							<td title="${cert.name}">
+								<nexus:link styleClass="NexusLink"
+											href="PartnerCertificateView.do?nxPartnerId=${partner.nxPartnerId}&nxCertificateId=${cert.nxCertificateId}">
+									${cert.name}
+								</nexus:link>
+							</td>
 							<td title="${cert.remaining}">${cert.remaining}</td>
 						</tr>
 					</c:forEach>
