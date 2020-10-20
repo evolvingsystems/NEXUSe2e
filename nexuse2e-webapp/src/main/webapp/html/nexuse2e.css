@@ -553,10 +553,6 @@ td.BUTTON_RIGHT {
 	table-layout: fixed;
 }
 
-.statistics .fixed-table td:last-child {
-	text-align: right;
-}
-
 .statistics .chart {
 	background: #efefef;
 	width: 100%;
@@ -599,7 +595,7 @@ td.BUTTON_RIGHT {
 }
 
 .statistics #conversations .segment {
-	padding: 10px 0;
+	padding: 10px 5px;
 }
 
 .statistics .cert-box {
@@ -647,4 +643,14 @@ td.BUTTON_RIGHT {
 
 .statistics .tabcontent {
 	display: none;
+}
+
+.statistics .no-data {
+	background: #eee;
+	text-align: center;
+	font-style: italic;
+}
+
+.statistics p.no-data {
+	padding: 5px;
 }

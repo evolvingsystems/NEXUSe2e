@@ -39,7 +39,6 @@ import org.nexuse2e.util.DateUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.nexuse2e.util.CertificateUtil.getIncludedCertificates;
@@ -51,6 +50,24 @@ import static org.nexuse2e.util.CertificateUtil.getIncludedCertificates;
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
 public class ReportingStatisticsAction extends NexusE2EAction {
+
+    private static final Map<String, String> COLOR_MAP = buildColorMap();
+
+    private static Map<String, String> buildColorMap() {
+        Map<String, String> colorMap = new HashMap<>();
+        colorMap.put("error", "#FB5012");
+        colorMap.put("awaiting_ack", "#305252");
+        colorMap.put("unknown", "#B6B6B6");
+        colorMap.put("created", "#58A4B0");
+        colorMap.put("processing", "#305252");
+        colorMap.put("idle", "#58A4B0");
+        colorMap.put("sending_ack", "#58A4B0");
+        colorMap.put("ack_sent_awaiting_backend", "");
+        colorMap.put("awaiting_backend", "#305252");
+        colorMap.put("backend_sent_sending_ack", "#305252");
+        colorMap.put("completed", "#6DA34D");
+        return colorMap;
+    }
 
     @Override
     public ActionForward executeNexusE2EAction( ActionMapping actionMapping,
@@ -69,8 +86,11 @@ public class ReportingStatisticsAction extends NexusE2EAction {
         List<MessageStub> messageStubs = statistics.getMessages();
         request.setAttribute("messages", messageStubs);
 
-        Map<String, Integer> conversationStatusCounts = getConversationCounts(statistics);
-        request.setAttribute("conversationStatusCounts", toJson(conversationStatusCounts));
+        List<ConversationPojo> conversations = statistics.getConversations();
+        Map<String, Integer> conversationStatusCounts = getConversationCounts(conversations);
+        request.setAttribute("conversationStatusTotal", conversations.size());
+        request.setAttribute("conversationStatusCounts", conversationStatusCounts);
+        request.setAttribute("colors", COLOR_MAP);
 
         List<PartnerPojo> partners = engineConfiguration.getPartners(
                 Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
@@ -123,8 +143,7 @@ public class ReportingStatisticsAction extends NexusE2EAction {
         return actionMapping.findForward( ACTION_FORWARD_SUCCESS );
     }
 
-    private Map<String, Integer> getConversationCounts(Statistics statistics) {
-        List<ConversationPojo> conversations = statistics.getConversations();
+    private Map<String, Integer> getConversationCounts(List<ConversationPojo> conversations) {
         Map<String, Integer> conversationStatusCounts = new HashMap<>();
         for (ConversationPojo conversation : conversations) {
             String status = conversation.getStatusName().toLowerCase();
@@ -140,8 +159,7 @@ public class ReportingStatisticsAction extends NexusE2EAction {
 
     private String getLastSentMessageTimeDiff(PartnerPojo partner, boolean outbound) {
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        // TODO set status to 3
-        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusPartnerAndDirection(-1, partner, outbound);
+        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusPartnerAndDirection(3, partner, outbound);
         if (lastMessage != null) {
             return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
         } else {
@@ -151,32 +169,11 @@ public class ReportingStatisticsAction extends NexusE2EAction {
 
     private String getLastSentMessageTimeDiff(ChoreographyPojo choreography, boolean outbound) {
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        // TODO set status to 3
-        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusChoreographyAndDirection(-1, choreography, outbound);
+        MessagePojo lastMessage = transactionDAO.getLastMessageByStatusChoreographyAndDirection(3, choreography, outbound);
         if (lastMessage != null) {
             return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
         } else {
             return "never";
         }
-    }
-
-    private String toJson(Map<?, Integer> map) {
-        StringBuilder result = new StringBuilder("{");
-        for (Map.Entry<?, Integer> entry : map.entrySet()) {
-            if (result.length() > 1) {
-                result.append(",");
-            }
-            Object key = entry.getKey();
-            if (key instanceof Date) {
-                SimpleDateFormat ebXMLDateFormat = new SimpleDateFormat( "ddMMyyyy'T'HHmmss'Z'" );
-                key = ebXMLDateFormat.format(key);
-            }
-            result.append("'");
-            result.append(key);
-            result.append("':");
-            result.append(entry.getValue());
-        }
-        result.append("}");
-        return result.toString();
     }
 }

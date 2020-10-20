@@ -42,10 +42,26 @@
 	<h2>Conversations (last 24h)</h2>
 	<c:choose>
 		<c:when test="${not empty conversationStatusCounts}">
-			<div class="chart" id="conversations"></div>
+			<div class="chart" id="conversations">
+				<logic:iterate id="statusCount" name="conversationStatusCounts">
+					<c:set var="percentage" value="${statusCount.value / conversationStatusTotal * 100}" />
+					<c:if test="${percentage > 0}">
+						<div class="segment"
+							 style="width: ${percentage}%; background: ${colors[statusCount.key]};"
+							 title="${statusCount.key} ${statusCount.value}">
+							<span class="status-name">
+								${statusCount.key}
+							</span>
+							<span class="count-label">
+								${statusCount.value}
+							</span>
+						</div>
+					</c:if>
+				</logic:iterate>
+			</div>
 		</c:when>
 		<c:otherwise>
-			no conversations
+			<p class="no-data">no conversations</p>
 		</c:otherwise>
 	</c:choose>
 
@@ -100,12 +116,10 @@
 				</tr>
 			</logic:iterate>
 		</table>
-		<nexus:link href="ProcessConversationReport.do?noReset=true">
-			<button class="full-width">Show more</button>
-		</nexus:link>
+		<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">Show more</button>
 	</c:when>
 	<c:otherwise>
-		no messages
+		<p class="no-data">no failed messages</p>
 	</c:otherwise>
 	</c:choose>
 
@@ -116,39 +130,50 @@
 	</div>
 
 	<table class="NEXUS_TABLE fixed-table tabcontent" id="partners">
-			<colgroup>
-				<col>
-				<col>
-				<col>
-				<col style="width: 30%">
-			</colgroup>
-			<tr>
-				<th class="NEXUSSection">Partner ID</th>
-				<th class="NEXUSSection">Inbound</th>
-				<th class="NEXUSSection">Outbound</th>
-				<th class="NEXUSSection"></th>
-			</tr>
-			<logic:iterate id="partner" name="partners">
+		<c:choose>
+			<c:when test="${not empty partners}">
+				<colgroup>
+					<col>
+					<col>
+					<col>
+					<col style="width: 30%">
+				</colgroup>
 				<tr>
-					<td title="${partner.partnerId}"><nexus:link
-							href="PartnerInfoView.do?nxPartnerId=${partner.nxPartnerId}&type=2"
-							styleClass="NexusLink">
-						${partner.partnerId} (${partner.name})
-					</nexus:link></td>
-					<td title="${lastInboundPerPartner[partner.partnerId]}">
-						${lastInboundPerPartner[partner.partnerId]}
-					</td>
-					<td title="${lastOutboundPerPartner[partner.partnerId]}">
-						${lastOutboundPerPartner[partner.partnerId]}
-					</td>
-					<td>
-						<div class="chart" id="${partner.partnerId}"></div>
-					</td>
+					<th class="NEXUSSection">Partner ID</th>
+					<th class="NEXUSSection">Inbound</th>
+					<th class="NEXUSSection">Outbound</th>
+					<th class="NEXUSSection"></th>
 				</tr>
-			</logic:iterate>
-		</table>
+				<logic:iterate id="partner" name="partners">
+					<tr>
+						<td title="${partner.partnerId}"><nexus:link
+								href="PartnerInfoView.do?nxPartnerId=${partner.nxPartnerId}&type=2"
+								styleClass="NexusLink">
+							${partner.partnerId} (${partner.name})
+						</nexus:link></td>
+						<td title="${lastInboundPerPartner[partner.partnerId]}">
+							${lastInboundPerPartner[partner.partnerId]}
+						</td>
+						<td title="${lastOutboundPerPartner[partner.partnerId]}">
+							${lastOutboundPerPartner[partner.partnerId]}
+						</td>
+						<td>
+							<div class="chart" id="${partner.partnerId}"></div>
+						</td>
+					</tr>
+				</logic:iterate>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td class="no-data">no partners</td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
+	</table>
 
 	<table class="NEXUS_TABLE fixed-table tabcontent" id="choreographies">
+		<c:choose>
+			<c:when test="${not empty choreographies}">
 			<colgroup>
 				<col>
 				<col>
@@ -179,151 +204,69 @@
 					</td>
 				</tr>
 			</logic:iterate>
-		</table>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td class="no-data">no choreographies</td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
+	</table>
 
 	<table class="NEXUS_TABLE fixed-table tabcontent" id="certificates">
-		<tr>
-			<th class="NEXUSSection">Configured For</th>
-			<th class="NEXUSSection">Certificate Name</th>
-			<th class="NEXUSSection">Time Remaining</th>
-		</tr>
-		<logic:iterate id="cert" name="localCertificates">
-			<tr class="local">
-				<td class="NEXUSName">Local</td>
-				<td class="NEXUSName">${cert.name}</td>
-				<td class="NEXUSName">${cert.remaining}</td>
-			</tr>
-		</logic:iterate>
-		<logic:iterate id="partner" name="certificatesPerPartner">
-			<c:forEach var = "cert" items="${partner.value}">
+		<c:choose>
+			<c:when test="${not empty localCertficates or not empty certificatesPerPartner}">
 				<tr>
-					<td title="${partner.key}">${partner.key}</td>
-					<td title="${cert.name}">${cert.name}</td>
-					<td title="${cert.remaining}">${cert.remaining}</td>
+					<th class="NEXUSSection">Configured For</th>
+					<th class="NEXUSSection">Certificate Name</th>
+					<th class="NEXUSSection">Time Remaining</th>
 				</tr>
-			</c:forEach>
-		</logic:iterate>
+				<logic:iterate id="cert" name="localCertificates">
+					<tr class="local">
+						<td class="NEXUSName">Local</td>
+						<td class="NEXUSName">${cert.name}</td>
+						<td class="NEXUSName">${cert.remaining}</td>
+					</tr>
+				</logic:iterate>
+				<logic:iterate id="partner" name="certificatesPerPartner">
+					<c:forEach var = "cert" items="${partner.value}">
+						<tr>
+							<td title="${partner.key}">${partner.key}</td>
+							<td title="${cert.name}">${cert.name}</td>
+							<td title="${cert.remaining}">${cert.remaining}</td>
+						</tr>
+					</c:forEach>
+				</logic:iterate>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td class="no-data">no certificates</td>
+				</tr>
+			</c:otherwise>
+		</c:choose>
 	</table>
 </div>
 
 
 <script>
-window.statistics = window.statistics || {};
-document.querySelector('.tablinks').click();
-
 function openTab(evt, contentId) {
-	let tabContent = document.getElementsByClassName("tabcontent");
-	for (let i = 0; i < tabContent.length; i++) {
+	var tabContent = document.querySelectorAll(".tabcontent");
+	for (var i = 0; i < tabContent.length; i++) {
 		tabContent[i].style.display = "none";
 	}
 
-	let tabLinks = document.getElementsByClassName("tablinks");
-	for (let i = 0; i < tabLinks.length; i++) {
+	var tabLinks = document.querySelectorAll(".tablinks");
+	for (var i = 0; i < tabLinks.length; i++) {
 		tabLinks[i].className = tabLinks[i].className.replace(" active", "");
 	}
 
 	document.getElementById(contentId).style.display = "table";
-	evt.currentTarget.className += " active";
+	var target = (evt.currentTarget) ? evt.currentTarget : evt.srcElement;
+	target.className += " active";
 }
 
-(function () {
-	"use strict";
-	const chartData = {
-		'conversations': ${conversationStatusCounts},
-	};
-
-	const total = {};
-
-	const chartColors = {
-		'failed': '#FB5012',
-		'error': '#FB5012',
-		'retrying': '#58A4B0',
-		'outbound': '#58A4B0',
-		'inbound': '#305252',
-		'queued': '#305252',
-		'sent': '#6DA34D',
-		'stopped': '#3B252C',
-		'unknown': '#B6B6B6',
-		'created': '#58A4B0',
-		'processing': '#305252',
-		'awaiting_ack': '#305252',
-		'acksent': '#305252',
-		'sendingack': '#58A4B0',
-		'idle': '#58A4B0',
-		'completed': '#6DA34D'
-	}
-
-	const createSegments = function (chart) {
-		const counts = chartData[chart.id];
-		for (let name in counts) {
-			const segment = document.createElement('div');
-			const width = (counts[name] / total[chart.id] * 100);
-			segment.style.background = chartColors[name]
-			segment.style.width = width + '%';
-			segment.innerHTML = '&nbsp;&nbsp;' + name;
-			const countLabel = document.createElement('span');
-			countLabel.innerHTML = counts[name] + '&nbsp;&nbsp;';
-			countLabel.classList.add('count-label');
-			segment.appendChild(countLabel);
-			segment.classList.add('segment');
-			if (width === 0) {
-				segment.style.padding = '0';
-			}
-			chart.appendChild(segment);
-			if (segment.offsetWidth < 30) {
-				segment.classList.add('hidden-text');
-			}
-		}
-	}
-
-	const populateCharts = function() {
-		const charts = document.querySelectorAll('.chart');
-		for (let i = 0; i < charts.length; i++) {
-			let chart = charts[i];
-			if (chartData[chart.id]) {
-				total[chart.id] = 0;
-				for (let status in chartData[chart.id]) {
-					total[chart.id] += chartData[chart.id][status];
-				}
-				createSegments(chart);
-			}
-		}
-	};
-
-	const sortDescending = function(obj) {
-		const sortable = [];
-		for (let element in obj) {
-			sortable.push([element, obj[element]]);
-		}
-
-		if (sortable.length > 1) {
-			sortable.sort(function(a, b) {
-				return b[1] - a[1];
-			});
-		}
-
-		return sortable;
-	}
-
-	const sortChartData = function() {
-		const keys = Object.keys(chartData);
-		for (let i = 0; i < keys.length; i++) {
-			const name = keys[i];
-			const sortedObj = {};
-			const sortedArray = sortDescending(chartData[name]);
-			for (let j = 0; j < sortedArray.length; j++) {
-				const item = sortedArray[j];
-				sortedObj[item[0]] = item[1];
-			}
-			chartData[name] = sortedObj;
-		}
-	}
-
-	sortChartData();
-	populateCharts();
-})(statistics);
+document.querySelector('.tablinks').click();
 </script>
-
 
 <logic:messagesPresent>
 	<div class="NexusError"><html:errors /></div>
