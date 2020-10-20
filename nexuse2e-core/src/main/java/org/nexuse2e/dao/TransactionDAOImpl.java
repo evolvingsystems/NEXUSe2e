@@ -36,7 +36,7 @@ import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.dao.UpdateTransactionOperation.UpdateScope;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.*;
-import org.nexuse2e.reporting.MessageStub;
+import org.nexuse2e.reporting.StatisticsMessage;
 import org.nexuse2e.reporting.Statistics;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -259,7 +259,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         List<Object[]> resultset = query.list();
 
         for (Object[] record : resultset) {
-            MessageStub line = new MessageStub(record);
+            StatisticsMessage line = new StatisticsMessage(record);
             result.getMessages().add(line);
         }
 

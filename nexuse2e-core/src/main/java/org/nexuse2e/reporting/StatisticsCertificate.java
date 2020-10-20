@@ -4,11 +4,11 @@ import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.ui.form.CertificatePropertiesForm;
 import org.nexuse2e.ui.form.CollaborationPartnerForm;
 
-public class CertificateStub {
+public class StatisticsCertificate {
     private String name;
     private String remaining;
 
-    public CertificateStub(CertificatePojo certificatePojo) {
+    public StatisticsCertificate(CertificatePojo certificatePojo) {
         CollaborationPartnerForm form = new CollaborationPartnerForm();
         CollaborationPartnerForm.Certificate certificate = form.new Certificate();
         certificate.setProperties(certificatePojo);
@@ -16,7 +16,7 @@ public class CertificateStub {
         this.name = certificatePojo.getName();
     }
 
-    public CertificateStub(CertificatePropertiesForm certificatePropertiesForm) {
+    public StatisticsCertificate(CertificatePropertiesForm certificatePropertiesForm) {
         this.remaining = removeBrackets(certificatePropertiesForm.getTimeRemaining());
         this.name = certificatePropertiesForm.getCommonName();
     }

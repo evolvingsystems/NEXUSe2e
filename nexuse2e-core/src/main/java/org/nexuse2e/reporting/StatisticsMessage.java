@@ -4,7 +4,7 @@ import org.nexuse2e.MessageStatus;
 
 import java.util.Date;
 
-public class MessageStub {
+public class StatisticsMessage {
 
     private String messageId;
     private String choreographyId;
@@ -17,7 +17,7 @@ public class MessageStub {
     private Integer nxConversationId;
     private String partnerId;
 
-    public MessageStub(Object[] record) {
+    public StatisticsMessage(Object[] record) {
         messageId = (String) record[0];
         actionId = (String) record[1];
         choreographyId = (String) record[2];

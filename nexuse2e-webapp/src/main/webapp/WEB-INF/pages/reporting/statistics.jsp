@@ -136,13 +136,11 @@
 					<col>
 					<col>
 					<col>
-					<col style="width: 30%">
 				</colgroup>
 				<tr>
 					<th class="NEXUSSection">Partner ID</th>
-					<th class="NEXUSSection">Inbound</th>
-					<th class="NEXUSSection">Outbound</th>
-					<th class="NEXUSSection"></th>
+					<th class="NEXUSSection">Last Inbound</th>
+					<th class="NEXUSSection">Last Outbound</th>
 				</tr>
 				<logic:iterate id="partner" name="partners">
 					<tr>
@@ -151,14 +149,11 @@
 								styleClass="NexusLink">
 							${partner.partnerId} (${partner.name})
 						</nexus:link></td>
-						<td title="${lastInboundPerPartner[partner.partnerId]}">
-							${lastInboundPerPartner[partner.partnerId]}
+						<td title="${partner.lastInboundTime}">
+							${partner.lastInboundTime}
 						</td>
-						<td title="${lastOutboundPerPartner[partner.partnerId]}">
-							${lastOutboundPerPartner[partner.partnerId]}
-						</td>
-						<td>
-							<div class="chart" id="${partner.partnerId}"></div>
+						<td title="${partner.lastOutboundTime}">
+							${partner.lastOutboundTime}
 						</td>
 					</tr>
 				</logic:iterate>
@@ -178,13 +173,11 @@
 				<col>
 				<col>
 				<col>
-				<col style="width: 30%">
 			</colgroup>
 			<tr>
 				<th class="NEXUSSection">Choreography</th>
 				<th class="NEXUSSection">Last Inbound</th>
 				<th class="NEXUSSection">Last Outbound</th>
-				<th class="NEXUSSection"></th>
 			</tr>
 			<logic:iterate id="choreography" name="choreographies">
 				<tr>
@@ -193,14 +186,11 @@
 							styleClass="NexusLink">
 						${choreography.name}
 					</nexus:link></td>
-					<td title="${lastInboundPerChoreography[choreography.name]}">
-						${lastInboundPerChoreography[choreography.name]}
+					<td title="${choreography.lastInboundTime}">
+						${choreography.lastInboundTime}
 					</td>
-					<td title="${lastOutboundPerChoreography[choreography.name]}">
-						${lastOutboundPerChoreography[choreography.name]}
-					</td>
-					<td>
-						<div class="chart" id="${choreography.nxChoreographyId}"></div>
+					<td title="${choreography.lastOutboundTime}">
+						${choreography.lastOutboundTime}
 					</td>
 				</tr>
 			</logic:iterate>
@@ -215,7 +205,7 @@
 
 	<table class="NEXUS_TABLE fixed-table tabcontent" id="certificates">
 		<c:choose>
-			<c:when test="${not empty localCertficates or not empty certificatesPerPartner}">
+			<c:when test="${atLeastOneCertificateConfigured}">
 				<tr>
 					<th class="NEXUSSection">Configured For</th>
 					<th class="NEXUSSection">Certificate Name</th>
@@ -228,10 +218,10 @@
 						<td class="NEXUSName">${cert.remaining}</td>
 					</tr>
 				</logic:iterate>
-				<logic:iterate id="partner" name="certificatesPerPartner">
-					<c:forEach var = "cert" items="${partner.value}">
+				<logic:iterate id="partner" name="partners">
+					<c:forEach var = "cert" items="${partner.certificates}">
 						<tr>
-							<td title="${partner.key}">${partner.key}</td>
+							<td title="${partner.name}">${partner.name}</td>
 							<td title="${cert.name}">${cert.name}</td>
 							<td title="${cert.remaining}">${cert.remaining}</td>
 						</tr>
@@ -240,7 +230,7 @@
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<td class="no-data">no certificates</td>
+					<td class="no-data">no certificates configured or staged</td>
 				</tr>
 			</c:otherwise>
 		</c:choose>

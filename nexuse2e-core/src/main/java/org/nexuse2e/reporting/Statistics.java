@@ -8,7 +8,7 @@ public class Statistics {
 
     private Date startDate;
     private Date endDate;
-    private List<MessageStub> messages = new ArrayList<>();
+    private List<StatisticsMessage> messages = new ArrayList<>();
     private List<ConversationPojo> conversations = new ArrayList<>();
 
 
@@ -28,11 +28,11 @@ public class Statistics {
         this.endDate = endDate;
     }
 
-    public List<MessageStub> getMessages() {
+    public List<StatisticsMessage> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<MessageStub> messages) {
+    public void setMessages(List<StatisticsMessage> messages) {
         this.messages = messages;
     }
 
