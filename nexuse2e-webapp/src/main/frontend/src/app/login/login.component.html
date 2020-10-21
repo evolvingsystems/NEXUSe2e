@@ -1,3 +1,4 @@
+<div *ngIf="!isHttps">You are trying to log in using an insecure connection. Using HTTPS is recommended.</div>
 <form name="login">
   <label>
     <input name="user" type="text" required [(ngModel)]="user">
