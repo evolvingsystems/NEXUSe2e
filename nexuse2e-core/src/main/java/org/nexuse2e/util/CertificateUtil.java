@@ -19,53 +19,6 @@
  */
 package org.nexuse2e.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertPathBuilder;
-import java.security.cert.CertPathBuilderException;
-import java.security.cert.CertStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.CollectionCertStoreParameters;
-import java.security.cert.PKIXBuilderParameters;
-import java.security.cert.PKIXCertPathBuilderResult;
-import java.security.cert.TrustAnchor;
-import java.security.cert.X509CertSelector;
-import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.x500.X500Principal;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -87,7 +40,23 @@ import org.bouncycastle.util.encoders.Hex;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
+import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.CertificatePojo;
+import org.nexuse2e.ui.form.CertificatePropertiesForm;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.x500.X500Principal;
+import java.io.*;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.*;
+import java.security.interfaces.RSAPublicKey;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Utility class to work with certificates (mostly instances of <code>X509Certificate</code>).
@@ -507,9 +476,9 @@ public class CertificateUtil {
                     if (remMonth > 24) {
                         long year = month * 12;
                         long remYears = div / year;
-                        remaining = "(~ " + remYears + " Years remaining)";
+                        remaining = "(~ " + remYears + " years remaining)";
                     } else {
-                        remaining = "(~ " + remMonth + " Month remaining)";
+                        remaining = "(~ " + remMonth + " months remaining)";
                     }
                 } else {
                     remaining = "(~ " + remWeeks + " weeks remaining)";
@@ -1182,4 +1151,153 @@ public class CertificateUtil {
         }
         return trustmanagers;
     }
+
+    public static List<CertificatePojo> getDuplicates(EngineConfiguration engineConfiguration, CertificateType type, X509Certificate cert) throws NexusException, CertificateEncodingException, IOException {
+        List<CertificatePojo> duplicates = new ArrayList<>();
+        List<CertificatePojo> allCertificates = engineConfiguration.getCertificates(type.getOrdinal(), null);
+        X509Certificate certificate;
+        for (CertificatePojo cPojo : allCertificates) {
+            certificate = getX509Certificate(cPojo);
+            if (certificate != null
+                    && (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
+                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate))) {
+                duplicates.add(cPojo);
+            }
+        }
+
+        return duplicates;
+    }
+
+    public static boolean hasSameMD5FingerPrint(X509Certificate cert1, X509Certificate cert2) {
+        if (cert1 != null && cert2 != null) {
+            try {
+                String fingerPrint = getMD5Fingerprint(cert1);
+                if (StringUtils.isNotBlank(fingerPrint)) {
+                    return fingerPrint.equals(getMD5Fingerprint(cert2));
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing md5 fingerprint.", e);
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasSameSHA1FingerPrint(X509Certificate cert1, X509Certificate cert2) {
+        if (cert1 != null && cert2 != null) {
+            try {
+                String fingerPrint = getSHA1Fingerprint(cert1);
+                if (StringUtils.isNotBlank(fingerPrint)) {
+                    return fingerPrint.equals(getSHA1Fingerprint(cert2));
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing sha1 fingerprint.", e);
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasSameDistinguishedName(X509Certificate cert1, X509Certificate cert2) {
+        if (cert1 != null && cert2 != null) {
+            try {
+                X500Principal principal = cert1.getSubjectX500Principal();
+                if (principal != null && StringUtils.isNotBlank(principal.getName())) {
+                    return principal.equals(cert2.getSubjectX500Principal());
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing distinguished name.", e);
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasSameSubjectKeyIdentifier(X509Certificate cert1, X509Certificate cert2) {
+        if (cert1 != null && cert2 != null) {
+            try {
+                String ski = getSubjectKeyIdentifier(cert1);
+                if (StringUtils.isNotBlank(ski)) {
+                    return ski.equals(getSubjectKeyIdentifier(cert2));
+                }
+            } catch (Exception e) {
+                LOG.info("Error while comparing subject key identifier.", e);
+            }
+        }
+        return false;
+    }
+
+    public static String getDistinguishedName(X509Certificate cert) {
+        X500Principal principal = cert.getSubjectX500Principal();
+        if (principal != null) {
+            return principal.toString();
+        }
+        return null;
+    }
+
+    public static String getSubjectKeyIdentifier(X509Certificate cert) {
+        byte[] extensionValue = cert.getExtensionValue("2.5.29.14");
+        if (extensionValue != null) {
+            try {
+                /**
+                 * Strip away first four bytes from the extensionValue.
+                 * The first two bytes are the tag and length of the extensionValue OCTET STRING,
+                 * and the next two bytes are the tag and length of the ski OCTET STRING.
+                 */
+                byte[] skiValue = new byte[extensionValue.length - 4];
+                System.arraycopy(extensionValue, 4, skiValue, 0, skiValue.length);
+                return new String(Hex.encode(skiValue));
+            } catch (RuntimeException e) {
+                LOG.warn("Error while determining Subject Key Identifier (SKI) for cert", e);
+            }
+        }
+        return null;
+    }
+
+    public static Vector<CertificatePropertiesForm> getIncludedCertificates(List<CertificatePojo> certPojos) throws KeyStoreException, NoSuchProviderException, IOException, NoSuchAlgorithmException, CertificateException {
+        Certificate[] certsArray;
+        CertificatePropertiesForm form;
+        Vector<CertificatePropertiesForm> certs = new Vector<>();
+        if (certPojos != null) {
+            for (CertificatePojo certificate : certPojos) {
+                byte[] data = certificate.getBinaryData();
+                if (data != null) {
+
+                    KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+                    jks.load(new ByteArrayInputStream(data), EncryptionUtil.decryptString(certificate.getPassword()).toCharArray());
+
+                    Enumeration<String> aliases = jks.aliases();
+                    if (!aliases.hasMoreElements()) {
+                        LOG.info("No certificate aliases found!");
+                        continue;
+                    }
+
+                    while (aliases.hasMoreElements()) {
+                        String alias = aliases.nextElement();
+                        if (jks.isKeyEntry(alias)) {
+                            certsArray = jks.getCertificateChain(alias);
+                            // LOG.trace( "Cert alias: " + alias );
+
+                            if ((certsArray != null) && (certsArray.length != 0)) {
+                                form = new CertificatePropertiesForm();
+                                form.setCertificateProperties((X509Certificate) certsArray[0]);
+                                form.setNxCertificateId(certificate.getNxCertificateId());
+                                Date date = certificate.getCreatedDate();
+                                SimpleDateFormat databaseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                form.setCreated(databaseDateFormat.format(date));
+                                String issuerCN = CertificateUtil.getIssuer((X509Certificate) certsArray[certsArray.length - 1], X509Name.CN);
+                                form.setIssuerCN(issuerCN);
+                                certs.addElement(form);
+
+                                break;
+                            }
+                        }
+                    } // while
+                } else {
+                    LOG.error("Certificate entry does not contain any binary data: " + certificate.getName());
+                }
+            } // while
+        } else {
+            LOG.info("no certs found");
+        }
+        return certs;
+    }
+
 }

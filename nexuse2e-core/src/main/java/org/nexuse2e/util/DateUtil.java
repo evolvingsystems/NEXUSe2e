@@ -102,24 +102,24 @@ public class DateUtil {
                                 if ( remMonth > 24 ) {
                                     long year = month * 12;
                                     long remYears = div / year;
-                                    diff = "~ " + remYears + " Years";
+                                    diff = "~ " + remYears + " years";
                                 } else {
-                                    diff = "~ " + remMonth + " Month";
+                                    diff = "~ " + remMonth + " months";
                                 }
                             } else {
-                                diff = "~ " + remWeeks + " Weeks";
+                                diff = "~ " + remWeeks + " weeks";
                             }
                         } else {
-                            diff = "~ " + remDays + " Days";
+                            diff = "~ " + remDays + " days";
                         }
                     } else {
-                        diff = "~ " + remHours + " Hours";
+                        diff = "~ " + remHours + " hours";
                     }
                 } else {
-                    diff = "~ " + remMins + " Minutes";
+                    diff = "~ " + remMins + " minutes";
                 }
             } else {
-                diff = "~ " + remSecs + " Seconds";
+                diff = "~ " + remSecs + " seconds";
             }
         }
         return diff;

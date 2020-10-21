@@ -19,23 +19,17 @@
  */
 package org.nexuse2e.dao;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.Level;
 import org.hibernate.Session;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.controller.StateTransitionException;
-import org.nexuse2e.pojo.ActionPojo;
-import org.nexuse2e.pojo.ChoreographyPojo;
-import org.nexuse2e.pojo.ConversationPojo;
-import org.nexuse2e.pojo.LogPojo;
-import org.nexuse2e.pojo.MessagePayloadPojo;
-import org.nexuse2e.pojo.MessagePojo;
-import org.nexuse2e.pojo.PartnerPojo;
+import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.Statistics;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public interface TransactionDAO {
 
@@ -302,6 +296,8 @@ public interface TransactionDAO {
     public abstract List<MessagePojo> getMessagesByPartnerAndDirection( PartnerPojo partner, boolean outbound,
             int field, boolean ascending ) throws NexusException;
 
+    public abstract MessagePojo getLastSuccessfulMessageByPartnerAndDirection(PartnerPojo partner, boolean outbound);
+
     public abstract List<MessagePojo> getMessagesByActionPartnerDirectionAndStatus( ActionPojo action,
             PartnerPojo partner, boolean outbound, int status, int field, boolean ascending );
 
@@ -314,6 +310,8 @@ public interface TransactionDAO {
      */
     public abstract List<MessagePojo> getMessagesByChoreographyAndPartner( ChoreographyPojo choreography,
             PartnerPojo partner, int field, boolean ascending );
+
+    public abstract MessagePojo getLastSuccessfulMessageByChoreographyAndDirection(ChoreographyPojo choreography, boolean outbound);
 
     /**
      * @param choreography
@@ -402,6 +400,4 @@ public interface TransactionDAO {
      * @param session The session to be released.
      */
     public void releaseDBSession( Session session );
-
-
 }

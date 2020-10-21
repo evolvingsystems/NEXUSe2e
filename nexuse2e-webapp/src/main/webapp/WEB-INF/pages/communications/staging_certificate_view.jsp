@@ -115,8 +115,16 @@
                 </td>
             </tr>
             <tr>
-                <td class="NEXUSName">Fingerprint</td>
+                <td class="NEXUSName">SubjectKeyIdentifier</td>
+                <td class="NEXUSValue"><bean:write name="cert" property="subjectKeyIdentifier"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">MD5 Fingerprint</td>
                 <td class="NEXUSValue"><bean:write name="cert" property="fingerprint"/></td>
+            </tr>
+            <tr>
+                <td class="NEXUSName">SHA1 Fingerprint</td>
+                <td class="NEXUSValue"><bean:write name="cert" property="sha1Fingerprint"/></td>
             </tr>
         </table>
         </logic:iterate>

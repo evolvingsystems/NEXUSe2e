@@ -38,6 +38,9 @@
 <LINK REL="SHORTCUT ICON" HREF="./favicon.ico">
 
 <link type="text/css" rel="stylesheet" href="html/nexuse2e.css">
+<!--[if lte IE 9 ]>
+<link type="text/css" rel="stylesheet" href="html/ie.css">
+<![endif]-->
 <!-- dojo/dijit library -->
 <tiles:insert attribute="dojo"/>
 <!-- dojo/dijit styles -->
@@ -51,18 +54,9 @@
 <script src="javascript/Generic.js" language="JavaScript"
 	type="text/javascript">
     </script>
-<script src="javascript/CPA.js" language="JavaScript"
-	type="text/javascript">
-    </script>
 <script src="javascript/Choreography.js" language="JavaScript"
 	type="text/javascript">
     </script>
-
-	<script src="javascript/moment.min.js" language="JavaScript"
-			type="text/javascript"></script>
-	<script src="javascript/Chart.min.js" language="JavaScript"
-			type="text/javascript"></script>
-
 <script>
     	/*
 			 * Allows display of debug messages.

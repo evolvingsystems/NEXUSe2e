@@ -55,7 +55,7 @@ window.open('DataSaveAs.do?type=cacerts','Save as...')
 	<logic:iterate id="cert" name="collection">
 		<tr>
 			<td class="NEXUSName"><nexus:link styleClass="NexusLink"
-				href="CACertificateView.do?alias=${cert.alias}">
+				href="CACertificateView.do?nxCertificateId=${cert.nxCertificateId}">
 				<logic:empty name="cert" property="alias">n/a</logic:empty>
 				<logic:notEmpty name="cert" property="alias"><bean:write name="cert" property="alias" /></logic:notEmpty>
 			</nexus:link></td>

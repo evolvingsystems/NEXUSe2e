@@ -105,11 +105,47 @@ public class DataSaveAsAction extends NexusE2EAction {
                 try {
                     jks.store(baos, pwd.toCharArray());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOG.error("Error while storing ca certs keystore to output stream.", e);
                 }
                 response.setHeader("Content-Disposition", "attachment; filename=\"cacerts\"");
 
                 byte[] data = baos.toByteArray();
+                response.setContentType(contentType);
+                response.setContentLength(data.length);
+                OutputStream os = response.getOutputStream();
+                os.write(data);
+                os.flush();
+            } else if (request.getParameter("type").equals("cacert")) {
+                byte[] data = new byte[0];
+
+                ProtectedFileAccessForm form = (ProtectedFileAccessForm) request.getSession().getAttribute("protectedFileAccessForm");
+
+                int format = form.getFormat();
+                int nxCertificateId = form.getNxCertificateId();
+                String filename = "unknown";
+                if (format == ProtectedFileAccessForm.PEM) {
+                    filename = "certificate.pem";
+                } else {
+                    filename = "certificate.der";
+                }
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+
+                try {
+
+                    CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.CA.getOrdinal(), nxCertificateId);
+                    if (cPojo == null) {
+                        return null;
+                    }
+
+                    X509Certificate cert = CertificateUtil.getX509Certificate(cPojo);
+                    if (format == ProtectedFileAccessForm.PEM) {
+                        data = CertificateUtil.getPemData(cert).getBytes();
+                    } else if (format == ProtectedFileAccessForm.DER) {
+                        data = cert.getEncoded();
+                    }
+                } catch (Exception e) {
+                    LOG.error("Error while retrieving ca cert data.", e);
+                }
                 response.setContentType(contentType);
                 response.setContentLength(data.length);
                 OutputStream os = response.getOutputStream();
@@ -194,7 +230,7 @@ public class DataSaveAsAction extends NexusE2EAction {
                                 digest.doFinal(responseBuf, 0);
                                 fingerprint = new String(Hex.encode(responseBuf));
                             } catch (CertificateEncodingException e1) {
-                                e1.printStackTrace();
+                                LOG.error("Error while creating fingerprint.", e1);
                             }
 
                             ZipEntry ze = new ZipEntry(certName + ext);
@@ -238,9 +274,8 @@ public class DataSaveAsAction extends NexusE2EAction {
 
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOG.error("Error while exporting staged certificate.", e);
                 }
-                // }
                 response.setContentType(contentType);
                 response.setContentLength(data.length);
                 OutputStream os = response.getOutputStream();
@@ -351,7 +386,7 @@ public class DataSaveAsAction extends NexusE2EAction {
                 os.flush();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Error while exporting certificate.", e);
         }
         return null;
     }

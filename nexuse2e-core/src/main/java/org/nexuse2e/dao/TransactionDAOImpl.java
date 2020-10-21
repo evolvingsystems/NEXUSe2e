@@ -36,7 +36,7 @@ import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.dao.UpdateTransactionOperation.UpdateScope;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.*;
-import org.nexuse2e.reporting.MessageStub;
+import org.nexuse2e.reporting.StatisticsMessage;
 import org.nexuse2e.reporting.Statistics;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
+
+import static org.nexuse2e.messaging.Constants.*;
 
 /**
  * Data access object (DAO) to provide persistence services for transaction related entities.
@@ -100,11 +102,11 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
     private String getType(int messageType) {
         switch (messageType) {
-            case org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_NORMAL:
+            case INT_MESSAGE_TYPE_NORMAL:
                 return "normal";
-            case org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK:
+            case INT_MESSAGE_TYPE_ACK:
                 return "acknowledgement";
-            case org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR:
+            case INT_MESSAGE_TYPE_ERROR:
                 return "error";
         }
         return "unknown";
@@ -225,9 +227,9 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
         Statistics result = new Statistics();
         result.setStartDate(startDate);
-        result.setEndDAte(endDate);
+        result.setEndDate(endDate);
 
-        StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status\n" +
+        StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status, nx_conversation.conversation_id, nx_message.nx_message_id, nx_conversation.nx_conversation_id, nx_partner.partner_id\n" +
                 " FROM nx_message " +
                 " INNER JOIN nx_conversation " +
                 " ON nx_conversation.nx_conversation_id = nx_message.nx_conversation_id " +
@@ -236,11 +238,11 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
                 " INNER JOIN nx_choreography " +
                 " ON nx_conversation.nx_choreography_id = nx_choreography.nx_choreography_id " +
                 " INNER JOIN nx_partner " +
-                " ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id ");
+                " ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id " +
+                " WHERE nx_message.status = -1 ");
 
-        if ( startDate != null || endDate != null) {
-
-            sqlQuery.append(" WHERE ");
+        if (startDate != null || endDate != null) {
+            sqlQuery.append(" AND ");
             String prefix = "";
             if (startDate != null) {
                 sqlQuery.append("nx_message.created_date >= :start");
@@ -248,7 +250,6 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
             }
             if (endDate != null) {
                 sqlQuery.append(prefix + " nx_message.created_date <= :end");
-                prefix = " AND ";
             }
         }
 
@@ -256,12 +257,21 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());
         setTimestampFields(startDate, endDate, query);
 
+        query.setMaxResults(10);
         List<Object[]> resultset = query.list();
 
         for (Object[] record : resultset) {
-            MessageStub line = new MessageStub(record);
+            StatisticsMessage line = new StatisticsMessage(record);
             result.getMessages().add(line);
         }
+
+        try {
+            List<ConversationPojo> conversations = getConversationsForReport(null, 0, 0, null, startDate, endDate, 500, 1, 0, false);
+            result.setConversations(conversations);
+        } catch (NexusException e) {
+            LOG.error( "Error getting conversations for statistics", e);
+        }
+
         return result;
 
     }
@@ -1184,6 +1194,30 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         }
 
         return (List<MessagePojo>) getListThroughSessionFind(dc, 0, 0);
+    }
+
+    public MessagePojo getLastSuccessfulMessageByChoreographyAndDirection(ChoreographyPojo choreography, boolean outbound) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
+        criteria.createCriteria("conversation").createCriteria("choreography").add(Restrictions.eq("nxChoreographyId", choreography.getNxChoreographyId()));
+        criteria.add(Restrictions.eq("outbound", outbound));
+        criteria.add(Restrictions.eq("status", MessageStatus.SENT.getOrdinal()));
+        criteria.add(Restrictions.eq("type", INT_MESSAGE_TYPE_NORMAL));
+        criteria.addOrder(Order.desc("createdDate"));
+
+        List<?> results = getListThroughSessionFind(criteria, 0, 1);
+        return results.isEmpty() ? null : (MessagePojo) results.get(0);
+    }
+
+    public MessagePojo getLastSuccessfulMessageByPartnerAndDirection(PartnerPojo partner, boolean outbound) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
+        criteria.createCriteria("conversation").createCriteria("partner").add(Restrictions.eq("nxPartnerId", partner.getNxPartnerId()));
+        criteria.add(Restrictions.eq("outbound", outbound));
+        criteria.add(Restrictions.eq("status",  MessageStatus.SENT.getOrdinal()));
+        criteria.add(Restrictions.eq("type", INT_MESSAGE_TYPE_NORMAL));
+        criteria.addOrder(Order.desc("createdDate"));
+
+        List<?> results = getListThroughSessionFind(criteria, 0, 1);
+        return results.isEmpty() ? null : (MessagePojo) results.get(0);
     }
 
     /* (non-Javadoc)

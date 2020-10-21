@@ -19,24 +19,28 @@
  */
 package org.nexuse2e.ui.action.reporting;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.nexuse2e.Engine;
-import org.nexuse2e.MessageStatus;
+import org.nexuse2e.configuration.CertificateType;
+import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.reporting.MessageStub;
-import org.nexuse2e.reporting.Statistics;
-import org.nexuse2e.ui.action.NexusE2EAction;
+import org.nexuse2e.dao.TransactionDAO;
+import org.nexuse2e.pojo.*;
+import org.nexuse2e.reporting.*;
+import org.nexuse2e.ui.form.CertificatePropertiesForm;
+import org.nexuse2e.ui.form.ReportingPropertiesForm;
+import org.nexuse2e.ui.form.ReportingSettingsForm;
+import org.nexuse2e.util.DateUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.*;
+
+import static org.nexuse2e.util.CertificateUtil.getIncludedCertificates;
 
 /**
  * Fills the context for the statistics report(s).
@@ -44,103 +48,192 @@ import org.nexuse2e.ui.action.NexusE2EAction;
  * @author Jonas Reese
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
-public class ReportingStatisticsAction extends NexusE2EAction {
+public class ReportingStatisticsAction extends ReportingAction {
+
+    private static final Map<String, String> COLOR_MAP = buildColorMap();
+
+    private static Map<String, String> buildColorMap() {
+        Map<String, String> colorMap = new HashMap<>();
+        colorMap.put("error", "#FB5012");
+        colorMap.put("awaiting_ack", "#305252");
+        colorMap.put("unknown", "#B6B6B6");
+        colorMap.put("created", "#58A4B0");
+        colorMap.put("processing", "#305252");
+        colorMap.put("idle", "#58A4B0");
+        colorMap.put("sending_ack", "#58A4B0");
+        colorMap.put("ack_sent_awaiting_backend", "#305252");
+        colorMap.put("awaiting_backend", "#305252");
+        colorMap.put("backend_sent_sending_ack", "#305252");
+        colorMap.put("completed", "#6DA34D");
+        return colorMap;
+    }
+
+    private boolean atLeastOneCertificateConfigured;
 
     @Override
-    public ActionForward executeNexusE2EAction( ActionMapping actionMapping,
+    public ActionForward executeNexusE2EAction(ActionMapping actionMapping,
             ActionForm actionForm, HttpServletRequest request,
             HttpServletResponse response,
             EngineConfiguration engineConfiguration,
             ActionMessages errors,
-            ActionMessages messages ) throws Exception {
+            ActionMessages messages) throws Exception {
 
         Calendar cal = Calendar.getInstance();
-        cal.add( Calendar.DATE, -1 );
-        Timestamp timestamp = new Timestamp( cal.getTimeInMillis() );
-        
-        // check if there are any messages that have been created after timestamp
-        request.setAttribute( "messageCount", Engine.getInstance().getTransactionService().getCreatedMessagesSinceCount( timestamp ) );
-        Statistics statistics = Engine.getInstance().getTransactionService().getTransactionDao().getStatistics(timestamp,null);
-        request.setAttribute( "statistics", statistics );
+        cal.add(Calendar.DATE, -1);
+        Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null);
 
-        Map<String, Integer> choreographyCounts = new HashMap<>();
-        for (MessageStub message : statistics.getMessages()) {
-            Integer count = choreographyCounts.get(message.getChoreographyId());
-            if(count == null) {
-                choreographyCounts.put(message.getChoreographyId(),1);
-            } else {
-                choreographyCounts.put(message.getChoreographyId(), ++count);
-            }
+        ReportingSettingsForm reportingSettings = new ReportingSettingsForm();
+        ReportingPropertiesForm form = (ReportingPropertiesForm) actionForm;
+        fillForm(engineConfiguration, reportingSettings, form);
+
+        List<StatisticsMessage> statisticMessages = statistics.getMessages();
+
+        List<ConversationPojo> conversations = statistics.getConversations();
+        List<Entry> conversationStatusCounts = getConversationCounts(conversations);
+
+        List<PartnerPojo> partnerPojos = engineConfiguration.getPartners(
+                Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
+        List<StatisticsPartner> partners = getStatisticsPartners(partnerPojos);
+
+        List<CertificatePojo> stagedCertificates = engineConfiguration.getCertificates(CertificateType.STAGING.getOrdinal(), Constants.CERTIFICATECOMPARATOR);
+        Vector<CertificatePropertiesForm> certificatePropertiesForms = getIncludedCertificates(stagedCertificates);
+        List<StatisticsCertificate> localCertificates = new LinkedList<>();
+
+        for (CertificatePropertiesForm certificatePropertiesForm : certificatePropertiesForms) {
+            localCertificates.add(new StatisticsCertificate(certificatePropertiesForm));
+            atLeastOneCertificateConfigured = true;
         }
-        String[] values = toJsonArray(choreographyCounts);
 
-        request.setAttribute( "choreographies", values[0] );
-        request.setAttribute( "choreographyCounts", values[1] );
+        List<StatisticsChoreography> choreographies = getStatisticsChoreographies(engineConfiguration);
 
+        request.setAttribute("colors", COLOR_MAP);
+        request.setAttribute("choreographies", choreographies);
+        request.setAttribute("conversationStatusCounts", conversationStatusCounts);
+        request.setAttribute("conversationStatusTotal", conversations.size());
+        request.setAttribute("localCertificates", localCertificates);
+        request.setAttribute("messages", statisticMessages);
+        request.setAttribute("atLeastOneCertificateConfigured", atLeastOneCertificateConfigured);
+        request.setAttribute("partners", partners);
 
-        Map<String, Integer> statusCounts = new HashMap<>();
-        for (MessageStub message : statistics.getMessages()) {
-            Integer count = statusCounts.get(message.getStatus().toString());
-            if(count == null) {
-                statusCounts.put(message.getStatus().toString(),1);
-            } else {
-                statusCounts.put(message.getStatus().toString(), ++count);
-            }
-        }
-        values = toJsonArray(statusCounts);
-
-        request.setAttribute( "status", values[0] );
-        request.setAttribute( "statusCounts", values[1] );
-
-        Map<Date, Integer> timeCounts = new HashMap<>();
-        for (MessageStub message : statistics.getMessages()) {
-
-            Date truncated = DateUtils.truncate(message.getCreatedDate(), Calendar.HOUR);
-
-            Integer count = timeCounts.get(truncated);
-            if(count == null) {
-                timeCounts.put(truncated,1);
-            } else {
-                timeCounts.put(truncated, ++count);
-            }
-        }
-        values = toJsonArrayDate(timeCounts);
-
-        request.setAttribute( "times", values[0] );
-        request.setAttribute( "timeCounts", values[1] );
-
-
-        return actionMapping.findForward( ACTION_FORWARD_SUCCESS );
-    }
-    private String[] toJsonArrayDate(Map<Date, Integer> timeCounts) {
-        SimpleDateFormat ebXMLDateFormat = new SimpleDateFormat( "ddMMyyyy'T'HHmmss'Z'" );
-//        SimpleDateFormat ebXMLDateFormat = new SimpleDateFormat( "yyyyMMdd'T'HHmmss'Z'" );
-
-        StringBuilder names = new StringBuilder();
-        StringBuilder counts = new StringBuilder();
-        for (Map.Entry<Date, Integer> dateIntegerEntry : timeCounts.entrySet()) {
-            if(names.length() > 0){
-                names.append(",");
-                counts.append(",");
-            }
-
-            names.append("'"+ebXMLDateFormat.format(dateIntegerEntry.getKey())+"'");
-            counts.append(dateIntegerEntry.getValue());
-        }
-        return new String[] {names.toString(),counts.toString()};
-    }
-    private String[] toJsonArray(Map<String, Integer> choreographyCounts) {
-        StringBuilder names = new StringBuilder();
-        StringBuilder counts = new StringBuilder();
-        for (Map.Entry<String, Integer> stringIntegerEntry : choreographyCounts.entrySet()) {
-            if(names.length() > 0){
-                names.append(",");
-                counts.append(",");
-            }
-            names.append("'"+stringIntegerEntry.getKey()+"'");
-            counts.append(stringIntegerEntry.getValue());
-        }
-        return new String[] {names.toString(),counts.toString()};
+        return actionMapping.findForward(ACTION_FORWARD_SUCCESS);
     }
 
+    private List<StatisticsPartner> getStatisticsPartners(List<PartnerPojo> partnerPojos) {
+        List<StatisticsPartner> partners = new LinkedList<>();
+        for (PartnerPojo partnerPojo : partnerPojos) {
+            StatisticsPartner partner = new StatisticsPartner(partnerPojo);
+            Set<ConnectionPojo> connections = partnerPojo.getConnections();
+            List<StatisticsCertificate> certificates = new LinkedList<>();
+            for (ConnectionPojo connection : connections) {
+                CertificatePojo certificate = connection.getCertificate();
+                if (certificate != null) {
+                    certificates.add(new StatisticsCertificate(certificate));
+                    atLeastOneCertificateConfigured = true;
+                }
+            }
+            partner.setCertificates(certificates);
+            partner.setLastInboundTime(getLastSentMessageTimeDiff(partnerPojo, false));
+            partner.setLastOutboundTime(getLastSentMessageTimeDiff(partnerPojo, true));
+            partners.add(partner);
+        }
+        return partners;
+    }
+
+    private List<StatisticsChoreography> getStatisticsChoreographies(EngineConfiguration engineConfiguration) {
+        List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
+        List<StatisticsChoreography> choreographies = new LinkedList<>();
+        for (ChoreographyPojo choreographyPojo : choreographyPojos) {
+            StatisticsChoreography choreography = new StatisticsChoreography(choreographyPojo);
+            choreography.setLastInboundTime(getLastSentMessageTimeDiff(choreographyPojo, false));
+            choreography.setLastOutboundTime(getLastSentMessageTimeDiff(choreographyPojo, true));
+            choreographies.add(choreography);
+        }
+        return choreographies;
+    }
+
+    private List<Entry> getConversationCounts(List<ConversationPojo> conversations) {
+        List<Entry> statusCounts = new LinkedList<>();
+        for (ConversationPojo conversation : conversations) {
+            String status = conversation.getStatusName().toLowerCase();
+            Entry searchEntry = new Entry(status);
+            int index = statusCounts.indexOf(searchEntry);
+            if (index == -1) {
+                statusCounts.add(searchEntry);
+            } else {
+                statusCounts.get(index).increment();
+            }
+        }
+        Collections.sort(statusCounts);
+        return statusCounts;
+    }
+
+    private String getLastSentMessageTimeDiff(PartnerPojo partner, boolean outbound) {
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        MessagePojo lastMessage = transactionDAO.getLastSuccessfulMessageByPartnerAndDirection(partner, outbound);
+        if (lastMessage != null) {
+            return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
+        } else {
+            return "never";
+        }
+    }
+
+    private String getLastSentMessageTimeDiff(ChoreographyPojo choreography, boolean outbound) {
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        MessagePojo lastMessage = transactionDAO.getLastSuccessfulMessageByChoreographyAndDirection(choreography, outbound);
+        if (lastMessage != null) {
+            return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
+        } else {
+            return "never";
+        }
+    }
+
+    public static class Entry implements Comparable<Entry> {
+        private String key;
+        private Integer value;
+
+        public Entry(String key, Integer value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public Entry(String key) {
+            this(key, 1);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof Entry) {
+                Entry e = (Entry) o;
+                return Objects.equals(key, e.key);
+            }
+            return false;
+        }
+
+        @Override
+        public int compareTo(Entry entry) {
+            return entry.value - this.value;
+        }
+
+        public void increment() {
+            this.value++;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public void setValue(Integer value) {
+            this.value = value;
+        }
+    }
 }
