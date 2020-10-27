@@ -666,3 +666,47 @@ td.BUTTON_RIGHT {
 	padding: 1px 0 0 4px;
 	box-sizing: border-box;
 }
+
+.statistics .error {
+	background: #FB5012;
+}
+
+.statistics .awaiting_ack {
+	background: #305252;
+}
+
+.statistics .unknown {
+	background: #B6B6B6;
+}
+
+.statistics .created {
+	background: #58A4B0;
+}
+
+.statistics .processing {
+	background: #305252;
+}
+
+.statistics .idle {
+	background: #58A4B0;
+}
+
+.statistics .sending_ack {
+	background: #58A4B0;
+}
+
+.statistics .ack_sent_awaiting_backend {
+	background: #305252;
+}
+
+.statistics .awaiting_backend {
+	background: #305252;
+}
+
+.statistics .backend_sent_sending_ack {
+	background: #305252;
+}
+
+.statistics .completed {
+	background: #6DA34D;
+}

@@ -30,19 +30,6 @@ public class StatisticsMessage {
         partnerId = (String) record[9];
     }
 
-    public String toString() {
-        return "{'messageId': '" + messageId + "'," +
-                "'actionId': '" + actionId + "'," +
-                "'choreographyId': '" + choreographyId + "'," +
-                "'createdDate': '" + createdDate + "'," +
-                "'type': " + type + "," +
-                "'status': '" + status + "'," +
-                "'nxMessageId': " + nxMessageId + "," +
-                "'nxConversationId': " + nxConversationId + "," +
-                "'partnerId': " + partnerId + "," +
-                "'conversationId': '" + conversationId + "'}";
-    }
-
     public String getMessageId() {
         return messageId;
     }

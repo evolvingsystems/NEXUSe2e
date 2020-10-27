@@ -50,24 +50,6 @@ import static org.nexuse2e.util.CertificateUtil.getIncludedCertificates;
  */
 public class ReportingStatisticsAction extends ReportingAction {
 
-    private static final Map<String, String> COLOR_MAP = buildColorMap();
-
-    private static Map<String, String> buildColorMap() {
-        Map<String, String> colorMap = new HashMap<>();
-        colorMap.put("error", "#FB5012");
-        colorMap.put("awaiting_ack", "#305252");
-        colorMap.put("unknown", "#B6B6B6");
-        colorMap.put("created", "#58A4B0");
-        colorMap.put("processing", "#305252");
-        colorMap.put("idle", "#58A4B0");
-        colorMap.put("sending_ack", "#58A4B0");
-        colorMap.put("ack_sent_awaiting_backend", "#305252");
-        colorMap.put("awaiting_backend", "#305252");
-        colorMap.put("backend_sent_sending_ack", "#305252");
-        colorMap.put("completed", "#6DA34D");
-        return colorMap;
-    }
-
     private boolean atLeastOneCertificateConfigured;
 
     @Override
@@ -108,7 +90,6 @@ public class ReportingStatisticsAction extends ReportingAction {
 
         List<StatisticsChoreography> choreographies = getStatisticsChoreographies(engineConfiguration);
 
-        request.setAttribute("colors", COLOR_MAP);
         request.setAttribute("choreographies", choreographies);
         request.setAttribute("conversationStatusCounts", conversationStatusCounts);
         request.setAttribute("conversationStatusTotal", conversations.size());

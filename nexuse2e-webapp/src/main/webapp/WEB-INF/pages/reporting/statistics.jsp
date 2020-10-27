@@ -24,7 +24,7 @@
 <%@ taglib uri="/tags/struts-nested" prefix="nested"%>
 <%@ taglib uri="/tags/struts-tiles" prefix="tiles"%>
 <%@ taglib uri="/tags/struts-logic" prefix="logic"%>
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="/tags/nexus" prefix="nexus"%>
 
 <% /*<nexus:helpBar helpDoc="documentation/NEXUSe2e.html" /> */ %>
@@ -46,8 +46,8 @@
 				<logic:iterate id="statusCount" name="conversationStatusCounts">
 					<c:set var="percentage" value="${statusCount.value / conversationStatusTotal * 100}" />
 					<c:if test="${percentage > 0}">
-						<div class="segment"
-							 style="width: ${percentage}%; background: ${colors[statusCount.key]};"
+						<div class="segment ${statusCount.key}"
+							 style="width: ${percentage}%;"
 							 title="${statusCount.key} ${statusCount.value}">
 							<span class="status-name">
 								${statusCount.key}
@@ -86,12 +86,12 @@
 				<th class="NEXUSSection"></th>
 			</tr>
 			<logic:iterate id="message" name="messages">
-				<tr class="${message.messageId}">
+				<tr>
 					<td title="${message.createdDate}">
 						${message.createdDate}
 					</td>
 					<td title="${message.partnerId}">
-							${message.partnerId}
+						${message.partnerId}
 					</td>
 					<td title="${message.choreographyId}">
 						${message.choreographyId}
@@ -232,7 +232,7 @@
 								${cert.name}
 							</nexus:link>
 						</td>
-						<td class="NEXUSName" title="${cert.remaining}">${cert.remaining}</td>
+						<td class="NEXUSName" title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
 					</tr>
 				</logic:iterate>
 				<logic:iterate id="partner" name="partners">
@@ -245,7 +245,7 @@
 									${cert.name}
 								</nexus:link>
 							</td>
-							<td title="${cert.remaining}">${cert.remaining}</td>
+							<td title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
 						</tr>
 					</c:forEach>
 				</logic:iterate>
@@ -277,6 +277,7 @@ function openTab(evt, contentId) {
 	target.className += " active";
 }
 
+/* Open first tab on page load */
 document.querySelector('.tablinks').click();
 </script>
 

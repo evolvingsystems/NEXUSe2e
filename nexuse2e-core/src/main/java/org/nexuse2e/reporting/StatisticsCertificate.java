@@ -6,20 +6,20 @@ import org.nexuse2e.ui.form.CollaborationPartnerForm;
 
 public class StatisticsCertificate {
     private String name;
-    private String remaining;
+    private String timeUntilExpiry;
     private int nxCertificateId;
 
     public StatisticsCertificate(CertificatePojo certificatePojo) {
         CollaborationPartnerForm form = new CollaborationPartnerForm();
         CollaborationPartnerForm.Certificate certificate = form.new Certificate();
         certificate.setProperties(certificatePojo);
-        this.remaining = removeBrackets(certificate.getRemaining());
+        this.timeUntilExpiry = removeBrackets(certificate.getRemaining());
         this.name = certificatePojo.getName();
         this.nxCertificateId = certificatePojo.getNxCertificateId();
     }
 
     public StatisticsCertificate(CertificatePropertiesForm certificatePropertiesForm) {
-        this.remaining = removeBrackets(certificatePropertiesForm.getTimeRemaining());
+        this.timeUntilExpiry = removeBrackets(certificatePropertiesForm.getTimeRemaining());
         this.name = certificatePropertiesForm.getCommonName();
         this.nxCertificateId = certificatePropertiesForm.getNxCertificateId();
     }
@@ -28,8 +28,8 @@ public class StatisticsCertificate {
         return name;
     }
 
-    public String getRemaining() {
-        return remaining;
+    public String getTimeUntilExpiry() {
+        return timeUntilExpiry;
     }
 
     public int getNxCertificateId() {

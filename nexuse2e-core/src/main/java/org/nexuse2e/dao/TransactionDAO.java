@@ -73,7 +73,7 @@ public interface TransactionDAO {
             String messageId, Date startDate, Date endDate ) throws NexusException;
 
 
-    public abstract Statistics getStatistics(Date startDate, Date endDate);
+    public abstract Statistics getStatistics(Date startDate, Date endDate) throws NexusException;
 
 
         /**
