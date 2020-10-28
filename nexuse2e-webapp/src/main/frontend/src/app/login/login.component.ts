@@ -1,7 +1,7 @@
 import {Component, Injectable, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {environment} from "../../environments/environment";
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
