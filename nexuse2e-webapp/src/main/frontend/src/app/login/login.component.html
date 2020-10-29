@@ -7,5 +7,7 @@
     <input name="password" type="password" required [(ngModel)]="password">
   </label>
 </form>
-<div *ngIf="loginError">Wrong login data. Please try again.</div>
+<div *ngIf="loginError">
+  Wrong login data. Please try again.
+</div>
 <button type="button" (click)="login()">Login</button>
