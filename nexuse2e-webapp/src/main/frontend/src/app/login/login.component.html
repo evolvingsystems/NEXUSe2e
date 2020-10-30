@@ -1,4 +1,6 @@
-<div *ngIf="!isHttps">You are trying to log in using an insecure connection. Using HTTPS is recommended.</div>
+<div class="http-warning" *ngIf="!isHttps">You are trying to log in using an insecure connection. Using HTTPS is
+  recommended.
+</div>
 <form name="login">
   <label>
     <input name="user" type="text" required [(ngModel)]="user">
@@ -7,7 +9,9 @@
     <input name="password" type="password" required [(ngModel)]="password">
   </label>
 </form>
-<div *ngIf="loginError">
+<div class="login-error" *ngIf="loginError">
   Wrong login data. Please try again.
 </div>
-<button type="button" (click)="login()">Login</button>
+<button class="login-button" type="button" (click)="onSubmit()">
+  Login
+</button>

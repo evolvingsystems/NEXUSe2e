@@ -8,7 +8,7 @@ import {environment} from '../../environments/environment';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class LoginComponent implements OnInit {
   private returnUrl: string;
   isHttps: boolean;
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     this.isHttps = location.protocol === 'https';
   }
 
-  async login() {
+  async onSubmit() {
     this.loginError = false;
 
     const loginData = {
@@ -34,11 +34,15 @@ export class LoginComponent implements OnInit {
     };
 
     try {
-      await this.http.post(environment.API_URL + '/login', loginData).toPromise();
-      await this.router.navigateByUrl(this.returnUrl);
+      await this.login(loginData);
     } catch {
       this.loginError = true;
     }
+  }
+
+  async login(loginData) {
+    await this.http.post(environment.API_URL + '/login', loginData).toPromise();
+    await this.router.navigateByUrl(this.returnUrl);
   }
 
 }
