@@ -212,6 +212,213 @@ a.button {
 	border-style: none;
 }
 
+.statistics {
+	text-align: left;
+	margin: 30px 0;
+	padding: 20px;
+	box-shadow: 0 0 3px rgb(184, 177, 177);
+}
+
+.statistics h2:first-child {
+	margin-top: 0;
+}
+
+.statistics table {
+	width: 100%;
+	border: 1px solid #eee;
+	padding: 5px;
+	margin-bottom: 0;
+}
+
+.statistics table th {
+	text-align: left;
+	padding: 6px 2px;
+}
+
+.statistics td, .statistics th {
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.statistics hr {
+	border: none;
+	border-bottom: 1px solid #efefef;
+	margin: 20px 0;
+}
+
+.statistics .full-width {
+	width: 100%;
+	border-radius: 0 0 3px 3px;
+	border: 1px solid gray;
+	cursor: pointer;
+	outline: none;
+}
+
+.statistics .full-width:hover {
+	filter: brightness(0.96);
+}
+
+.statistics .fixed-table {
+	table-layout: fixed;
+}
+
+.statistics .chart {
+	background: #efefef;
+	width: 100%;
+	display: flex;
+}
+
+.statistics .segment {
+	min-width: 0;
+	box-sizing: border-box;
+	padding: 5px 0;
+	color: white;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-transform: capitalize;
+	transition: all 0.3s;
+}
+
+.statistics .segment:hover {
+	min-width: 100px;
+	filter: brightness(1.1);
+}
+
+.statistics .hidden-text {
+	color: transparent;
+}
+
+.statistics .hidden-text:hover {
+	color: white;
+}
+
+.statistics .count-label {
+	margin-left: 5px;
+	opacity: 0.7;
+}
+
+.statistics #conversations {
+	box-sizing: border-box;
+	border: 5px solid #eee;
+}
+
+.statistics #conversations .segment {
+	padding: 10px 5px;
+}
+
+.statistics .cert-box {
+	display: inline-block;
+	background: #6DA34D;
+	color: white;
+	text-align: center;
+	padding: 20px;
+	cursor: pointer;
+}
+
+.statistics .cert-box:hover {
+	box-shadow: 0 0 3px rgb(184, 177, 177);
+}
+
+.statistics .cert-name {
+	font-size: larger;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.statistics .tab {
+	margin-top: 20px;
+	overflow: hidden;
+}
+
+.statistics .tab button {
+	background-color: #acacac;
+	color: white;
+	float: left;
+	font-weight: bold;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 5px 9px 2px 9px;
+	transition: 0.3s;
+	border-radius: 15px 15px 0 0;
+}
+
+.statistics .tab button.active {
+	background-color: #eee;
+	color: black;
+}
+
+.statistics .tabcontent {
+	display: none;
+}
+
+.statistics .no-data {
+	background: #eee;
+	text-align: center;
+	font-style: italic;
+}
+
+.statistics p.no-data {
+	padding: 5px;
+}
+
+.statistics .info-icon {
+	display: inline-block;
+	border-radius: 50%;
+	background: #acacac;
+	margin-left: 5px;
+	height: 16px;
+	width: 16px;
+	color: white;
+	padding: 1px 0 0 4px;
+	box-sizing: border-box;
+}
+
+.statistics .error {
+	background: #FB5012;
+}
+
+.statistics .awaiting_ack {
+	background: #305252;
+}
+
+.statistics .unknown {
+	background: #B6B6B6;
+}
+
+.statistics .created {
+	background: #58A4B0;
+}
+
+.statistics .processing {
+	background: #305252;
+}
+
+.statistics .idle {
+	background: #58A4B0;
+}
+
+.statistics .sending_ack {
+	background: #58A4B0;
+}
+
+.statistics .ack_sent_awaiting_backend {
+	background: #305252;
+}
+
+.statistics .awaiting_backend {
+	background: #305252;
+}
+
+.statistics .backend_sent_sending_ack {
+	background: #305252;
+}
+
+.statistics .completed {
+	background: #6DA34D;
+}
 
 /*
  * ================
@@ -501,212 +708,4 @@ td.BUTTON_RIGHT {
 
 .NexusMessage {
 	background-color: #CCFFCC;
-}
-
-.statistics {
-	text-align: left;
-	margin: 30px 0;
-	padding: 20px;
-	box-shadow: 0 0 3px rgb(184, 177, 177);
-}
-
-.statistics h2:first-child {
-	margin-top: 0;
-}
-
-.statistics table {
-	width: 100%;
-	border: 1px solid #eee;
-	padding: 5px;
-	margin-bottom: 0;
-}
-
-.statistics table th {
-	text-align: left;
-	padding: 6px 2px;
-}
-
-.statistics td, .statistics th {
-	white-space: nowrap;
-	overflow: hidden;
-}
-
-.statistics hr {
-	border: none;
-	border-bottom: 1px solid #efefef;
-	margin: 20px 0;
-}
-
-.statistics .full-width {
-	width: 100%;
-	border-radius: 0 0 3px 3px;
-	border: 1px solid gray;
-	cursor: pointer;
-	outline: none;
-}
-
-.statistics .full-width:hover {
-	filter: brightness(0.96);
-}
-
-.statistics .fixed-table {
-	table-layout: fixed;
-}
-
-.statistics .chart {
-	background: #efefef;
-	width: 100%;
-	display: flex;
-}
-
-.statistics .segment {
-	min-width: 0;
-	box-sizing: border-box;
-	padding: 5px 0;
-	color: white;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	text-transform: capitalize;
-	transition: all 0.3s;
-}
-
-.statistics .segment:hover {
-	min-width: 100px;
-	filter: brightness(1.1);
-}
-
-.statistics .hidden-text {
-	color: transparent;
-}
-
-.statistics .hidden-text:hover {
-	color: white;
-}
-
-.statistics .count-label {
-	margin-left: 5px;
-	opacity: 0.7;
-}
-
-.statistics #conversations {
-	box-sizing: border-box;
-	border: 5px solid #eee;
-}
-
-.statistics #conversations .segment {
-	padding: 10px 5px;
-}
-
-.statistics .cert-box {
-	display: inline-block;
-	background: #6DA34D;
-	color: white;
-	text-align: center;
-	padding: 20px;
-	cursor: pointer;
-}
-
-.statistics .cert-box:hover {
-	box-shadow: 0 0 3px rgb(184, 177, 177);
-}
-
-.statistics .cert-name {
-	font-size: larger;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.statistics .tab {
-	margin-top: 20px;
-	overflow: hidden;
-}
-
-.statistics .tab button {
-	background-color: #acacac;
-	color: white;
-	float: left;
-	font-weight: bold;
-	border: none;
-	outline: none;
-	cursor: pointer;
-	padding: 5px 9px 2px 9px;
-	transition: 0.3s;
-	border-radius: 15px 15px 0 0;
-}
-
-.statistics .tab button.active {
-	background-color: #eee;
-	color: black;
-}
-
-.statistics .tabcontent {
-	display: none;
-}
-
-.statistics .no-data {
-	background: #eee;
-	text-align: center;
-	font-style: italic;
-}
-
-.statistics p.no-data {
-	padding: 5px;
-}
-
-.statistics .info-icon {
-	display: inline-block;
-	border-radius: 50%;
-	background: #acacac;
-	margin-left: 5px;
-	height: 16px;
-	width: 16px;
-	color: white;
-	padding: 1px 0 0 4px;
-	box-sizing: border-box;
-}
-
-.statistics .error {
-	background: #FB5012;
-}
-
-.statistics .awaiting_ack {
-	background: #305252;
-}
-
-.statistics .unknown {
-	background: #B6B6B6;
-}
-
-.statistics .created {
-	background: #58A4B0;
-}
-
-.statistics .processing {
-	background: #305252;
-}
-
-.statistics .idle {
-	background: #58A4B0;
-}
-
-.statistics .sending_ack {
-	background: #58A4B0;
-}
-
-.statistics .ack_sent_awaiting_backend {
-	background: #305252;
-}
-
-.statistics .awaiting_backend {
-	background: #305252;
-}
-
-.statistics .backend_sent_sending_ack {
-	background: #305252;
-}
-
-.statistics .completed {
-	background: #6DA34D;
 }
