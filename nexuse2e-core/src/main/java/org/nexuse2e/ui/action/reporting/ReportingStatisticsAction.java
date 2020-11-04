@@ -119,10 +119,10 @@ public class ReportingStatisticsAction extends ReportingAction {
                 CertificatePojo partnerCertificate = connection.getCertificate();
                 CertificatePojo localCertificate = participantPojo.getLocalCertificate();
                 if (localCertificate != null) {
-                    certificates.add(new StatisticsCertificate(localCertificate));
+                    certificates.add(new StatisticsCertificate(localCertificate, true));
                 }
                 if (partnerCertificate != null) {
-                    certificates.add(new StatisticsCertificate(partnerCertificate));
+                    certificates.add(new StatisticsCertificate(partnerCertificate, false));
                 }
             }
         }

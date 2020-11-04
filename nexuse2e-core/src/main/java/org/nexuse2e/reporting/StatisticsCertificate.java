@@ -11,19 +11,19 @@ public class StatisticsCertificate implements Comparable<StatisticsCertificate> 
     private final String configuredFor;
     private int nxPartnerId;
 
-    public StatisticsCertificate(CertificatePojo certificatePojo) {
+    public StatisticsCertificate(CertificatePojo certificatePojo, boolean local) {
         CollaborationPartnerForm form = new CollaborationPartnerForm();
         CollaborationPartnerForm.Certificate certificate = form.new Certificate();
         certificate.setProperties(certificatePojo);
         this.timeUntilExpiry = format(certificate.getRemaining());
         this.name = certificatePojo.getName();
         this.nxCertificateId = certificatePojo.getNxCertificateId();
-        PartnerPojo partner = certificatePojo.getPartner();
-        if (partner != null) {
+        if (local) {
+            this.configuredFor = "Local";
+        } else {
+            PartnerPojo partner = certificatePojo.getPartner();
             this.configuredFor = partner.getName();
             this.nxPartnerId = partner.getNxPartnerId();
-        } else {
-            this.configuredFor = "Local";
         }
     }
 
