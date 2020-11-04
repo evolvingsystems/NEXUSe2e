@@ -374,6 +374,9 @@ a.button {
 	color: white;
 	padding: 1px 0 0 4px;
 	box-sizing: border-box;
+	font-weight: bold;
+	font-size: 100%;
+	cursor: help;
 }
 
 .statistics .error {

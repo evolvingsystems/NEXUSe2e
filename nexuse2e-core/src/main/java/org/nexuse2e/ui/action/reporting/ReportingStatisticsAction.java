@@ -24,13 +24,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessages;
 import org.nexuse2e.Engine;
-import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.*;
-import org.nexuse2e.ui.form.CertificatePropertiesForm;
 import org.nexuse2e.ui.form.ReportingPropertiesForm;
 import org.nexuse2e.ui.form.ReportingSettingsForm;
 import org.nexuse2e.util.DateUtil;
@@ -40,8 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static org.nexuse2e.util.CertificateUtil.getIncludedCertificates;
-
 /**
  * Fills the context for the statistics report(s).
  *
@@ -49,8 +45,6 @@ import static org.nexuse2e.util.CertificateUtil.getIncludedCertificates;
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
 public class ReportingStatisticsAction extends ReportingAction {
-
-    private boolean atLeastOneCertificateConfigured;
 
     @Override
     public ActionForward executeNexusE2EAction(ActionMapping actionMapping,
@@ -79,23 +73,16 @@ public class ReportingStatisticsAction extends ReportingAction {
                 Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
         List<StatisticsPartner> partners = getStatisticsPartners(partnerPojos);
 
-        List<CertificatePojo> stagedCertificates = engineConfiguration.getCertificates(CertificateType.STAGING.getOrdinal(), Constants.CERTIFICATECOMPARATOR);
-        Vector<CertificatePropertiesForm> certificatePropertiesForms = getIncludedCertificates(stagedCertificates);
-        List<StatisticsCertificate> localCertificates = new LinkedList<>();
+        List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
+        List<StatisticsChoreography> choreographies = getStatisticsChoreographies(choreographyPojos);
 
-        for (CertificatePropertiesForm certificatePropertiesForm : certificatePropertiesForms) {
-            localCertificates.add(new StatisticsCertificate(certificatePropertiesForm));
-            atLeastOneCertificateConfigured = true;
-        }
-
-        List<StatisticsChoreography> choreographies = getStatisticsChoreographies(engineConfiguration);
+        Set<StatisticsCertificate> certificates = getStatisticsCertificates(choreographyPojos);
 
         request.setAttribute("choreographies", choreographies);
         request.setAttribute("conversationStatusCounts", conversationStatusCounts);
         request.setAttribute("conversationStatusTotal", conversations.size());
-        request.setAttribute("localCertificates", localCertificates);
         request.setAttribute("messages", statisticMessages);
-        request.setAttribute("atLeastOneCertificateConfigured", atLeastOneCertificateConfigured);
+        request.setAttribute("certificates", certificates);
         request.setAttribute("partners", partners);
 
         return actionMapping.findForward(ACTION_FORWARD_SUCCESS);
@@ -105,16 +92,6 @@ public class ReportingStatisticsAction extends ReportingAction {
         List<StatisticsPartner> partners = new LinkedList<>();
         for (PartnerPojo partnerPojo : partnerPojos) {
             StatisticsPartner partner = new StatisticsPartner(partnerPojo);
-            Set<ConnectionPojo> connections = partnerPojo.getConnections();
-            List<StatisticsCertificate> certificates = new LinkedList<>();
-            for (ConnectionPojo connection : connections) {
-                CertificatePojo certificate = connection.getCertificate();
-                if (certificate != null) {
-                    certificates.add(new StatisticsCertificate(certificate));
-                    atLeastOneCertificateConfigured = true;
-                }
-            }
-            partner.setCertificates(certificates);
             partner.setLastInboundTime(getLastSentMessageTimeDiff(partnerPojo, false));
             partner.setLastOutboundTime(getLastSentMessageTimeDiff(partnerPojo, true));
             partners.add(partner);
@@ -122,8 +99,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         return partners;
     }
 
-    private List<StatisticsChoreography> getStatisticsChoreographies(EngineConfiguration engineConfiguration) {
-        List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
+    private List<StatisticsChoreography> getStatisticsChoreographies(List<ChoreographyPojo> choreographyPojos) {
         List<StatisticsChoreography> choreographies = new LinkedList<>();
         for (ChoreographyPojo choreographyPojo : choreographyPojos) {
             StatisticsChoreography choreography = new StatisticsChoreography(choreographyPojo);
@@ -132,6 +108,25 @@ public class ReportingStatisticsAction extends ReportingAction {
             choreographies.add(choreography);
         }
         return choreographies;
+    }
+
+    private Set<StatisticsCertificate> getStatisticsCertificates(List<ChoreographyPojo> choreographyPojos) {
+        Set<StatisticsCertificate> certificates = new TreeSet<>();
+        for (ChoreographyPojo choreographyPojo : choreographyPojos) {
+            List<ParticipantPojo> participants = choreographyPojo.getParticipants();
+            for (ParticipantPojo participantPojo : participants) {
+                ConnectionPojo connection = participantPojo.getConnection();
+                CertificatePojo partnerCertificate = connection.getCertificate();
+                CertificatePojo localCertificate = participantPojo.getLocalCertificate();
+                if (localCertificate != null) {
+                    certificates.add(new StatisticsCertificate(localCertificate));
+                }
+                if (partnerCertificate != null) {
+                    certificates.add(new StatisticsCertificate(partnerCertificate));
+                }
+            }
+        }
+        return certificates;
     }
 
     private List<Entry> getConversationCounts(List<ConversationPojo> conversations) {

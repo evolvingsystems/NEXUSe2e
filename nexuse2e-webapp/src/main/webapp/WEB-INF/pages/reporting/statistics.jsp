@@ -65,7 +65,7 @@
 		</c:otherwise>
 	</c:choose>
 
-	<h2>Failed Messages</h2>
+	<h2>Failed Messages (last 24h)</h2>
 	<c:choose>
 	<c:when test="${not empty messages}">
 		<table class="NEXUS_TABLE fixed-table">
@@ -124,9 +124,8 @@
 	</c:choose>
 
 	<div class="tab">
-		<button class="tablinks" onclick="openTab(event, 'certificates')">Certificates</button>
-		<button class="tablinks" onclick="openTab(event, 'partners')">Partners</button>
 		<button class="tablinks" onclick="openTab(event, 'choreographies')">Choreographies</button>
+		<button class="tablinks" onclick="openTab(event, 'partners')">Partners</button>
 	</div>
 
 	<table class="NEXUS_TABLE fixed-table tabcontent" id="partners">
@@ -215,44 +214,48 @@
 		</c:choose>
 	</table>
 
-	<table class="NEXUS_TABLE fixed-table tabcontent" id="certificates">
+	<h2 style="display: inline-block;">Certificates</h2>
+	<div class="info-icon" title="Certificates used in connections">?</div>
+	<table class="NEXUS_TABLE fixed-table" id="certificates">
 		<c:choose>
-			<c:when test="${atLeastOneCertificateConfigured}">
+			<c:when test="${not empty certificates}">
 				<tr>
 					<th class="NEXUSSection">Configured For</th>
 					<th class="NEXUSSection">Certificate Name</th>
 					<th class="NEXUSSection">Time Remaining</th>
 				</tr>
-				<logic:iterate id="cert" name="localCertificates">
-					<tr class="local">
-						<td class="NEXUSName" title="Local">Local</td>
-						<td class="NEXUSName" title="${cert.name}">
-							<nexus:link styleClass="NexusLink"
-										href="StagingCertificateView.do?nxCertificateId=${cert.nxCertificateId}">
-								${cert.name}
-							</nexus:link>
-						</td>
-						<td class="NEXUSName" title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
-					</tr>
-				</logic:iterate>
-				<logic:iterate id="partner" name="partners">
-					<c:forEach var = "cert" items="${partner.certificates}">
-						<tr>
-							<td title="${partner.name}">${partner.name}</td>
-							<td title="${cert.name}">
-								<nexus:link styleClass="NexusLink"
-											href="PartnerCertificateView.do?nxPartnerId=${partner.nxPartnerId}&nxCertificateId=${cert.nxCertificateId}">
-									${cert.name}
-								</nexus:link>
-							</td>
-							<td title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
-						</tr>
-					</c:forEach>
+				<logic:iterate id="cert" name="certificates">
+					<c:choose>
+						<c:when test="${cert.configuredFor == 'Local'}">
+							<tr class="local">
+								<td class="NEXUSName" title="Local">Local</td>
+								<td class="NEXUSName" title="${cert.name}">
+									<nexus:link styleClass="NexusLink"
+												href="StagingCertificateView.do?nxCertificateId=${cert.nxCertificateId}">
+										${cert.name}
+									</nexus:link>
+								</td>
+								<td class="NEXUSName" title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td title="${cert.configuredFor}">${cert.configuredFor}</td>
+								<td title="${cert.name}">
+									<nexus:link styleClass="NexusLink"
+												href="PartnerCertificateView.do?nxPartnerId=${cert.nxPartnerId}&nxCertificateId=${cert.nxCertificateId}">
+										${cert.name}
+									</nexus:link>
+								</td>
+								<td title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
 				</logic:iterate>
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<td class="no-data">no certificates configured or staged</td>
+					<td class="no-data">no certificates in use</td>
 				</tr>
 			</c:otherwise>
 		</c:choose>
