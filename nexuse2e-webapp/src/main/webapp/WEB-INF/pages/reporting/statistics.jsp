@@ -24,7 +24,7 @@
 <%@ taglib uri="/tags/struts-nested" prefix="nested"%>
 <%@ taglib uri="/tags/struts-tiles" prefix="tiles"%>
 <%@ taglib uri="/tags/struts-logic" prefix="logic"%>
-<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="/tags/nexus" prefix="nexus"%>
 
 <% /*<nexus:helpBar helpDoc="documentation/NEXUSe2e.html" /> */ %>
@@ -46,8 +46,8 @@
 				<logic:iterate id="statusCount" name="conversationStatusCounts">
 					<c:set var="percentage" value="${statusCount.value / conversationStatusTotal * 100}" />
 					<c:if test="${percentage > 0}">
-						<div class="segment"
-							 style="width: ${percentage}%; background: ${colors[statusCount.key]};"
+						<div class="segment ${statusCount.key}"
+							 style="width: ${percentage}%;"
 							 title="${statusCount.key} ${statusCount.value}">
 							<span class="status-name">
 								${statusCount.key}
@@ -65,7 +65,7 @@
 		</c:otherwise>
 	</c:choose>
 
-	<h2>Failed Messages</h2>
+	<h2>Failed Messages (last 24h)</h2>
 	<c:choose>
 	<c:when test="${not empty messages}">
 		<table class="NEXUS_TABLE fixed-table">
@@ -86,12 +86,12 @@
 				<th class="NEXUSSection"></th>
 			</tr>
 			<logic:iterate id="message" name="messages">
-				<tr class="${message.messageId}">
+				<tr>
 					<td title="${message.createdDate}">
 						${message.createdDate}
 					</td>
 					<td title="${message.partnerId}">
-							${message.partnerId}
+						${message.partnerId}
 					</td>
 					<td title="${message.choreographyId}">
 						${message.choreographyId}
@@ -124,9 +124,8 @@
 	</c:choose>
 
 	<div class="tab">
-		<button class="tablinks" onclick="openTab(event, 'certificates')">Certificates</button>
-		<button class="tablinks" onclick="openTab(event, 'partners')">Partners</button>
 		<button class="tablinks" onclick="openTab(event, 'choreographies')">Choreographies</button>
+		<button class="tablinks" onclick="openTab(event, 'partners')">Partners</button>
 	</div>
 
 	<table class="NEXUS_TABLE fixed-table tabcontent" id="partners">
@@ -215,44 +214,48 @@
 		</c:choose>
 	</table>
 
-	<table class="NEXUS_TABLE fixed-table tabcontent" id="certificates">
+	<h2 style="display: inline-block;">Certificates</h2>
+	<div class="info-icon" title="Certificates used in connections">?</div>
+	<table class="NEXUS_TABLE fixed-table" id="certificates">
 		<c:choose>
-			<c:when test="${atLeastOneCertificateConfigured}">
+			<c:when test="${not empty certificates}">
 				<tr>
 					<th class="NEXUSSection">Configured For</th>
 					<th class="NEXUSSection">Certificate Name</th>
 					<th class="NEXUSSection">Time Remaining</th>
 				</tr>
-				<logic:iterate id="cert" name="localCertificates">
-					<tr class="local">
-						<td class="NEXUSName" title="Local">Local</td>
-						<td class="NEXUSName" title="${cert.name}">
-							<nexus:link styleClass="NexusLink"
-										href="StagingCertificateView.do?nxCertificateId=${cert.nxCertificateId}">
-								${cert.name}
-							</nexus:link>
-						</td>
-						<td class="NEXUSName" title="${cert.remaining}">${cert.remaining}</td>
-					</tr>
-				</logic:iterate>
-				<logic:iterate id="partner" name="partners">
-					<c:forEach var = "cert" items="${partner.certificates}">
-						<tr>
-							<td title="${partner.name}">${partner.name}</td>
-							<td title="${cert.name}">
-								<nexus:link styleClass="NexusLink"
-											href="PartnerCertificateView.do?nxPartnerId=${partner.nxPartnerId}&nxCertificateId=${cert.nxCertificateId}">
-									${cert.name}
-								</nexus:link>
-							</td>
-							<td title="${cert.remaining}">${cert.remaining}</td>
-						</tr>
-					</c:forEach>
+				<logic:iterate id="cert" name="certificates">
+					<c:choose>
+						<c:when test="${cert.configuredFor == 'Local'}">
+							<tr class="local">
+								<td class="NEXUSName" title="Local">Local</td>
+								<td class="NEXUSName" title="${cert.name}">
+									<nexus:link styleClass="NexusLink"
+												href="StagingCertificateView.do?nxCertificateId=${cert.nxCertificateId}">
+										${cert.name}
+									</nexus:link>
+								</td>
+								<td class="NEXUSName" title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<tr>
+								<td title="${cert.configuredFor}">${cert.configuredFor}</td>
+								<td title="${cert.name}">
+									<nexus:link styleClass="NexusLink"
+												href="PartnerCertificateView.do?nxPartnerId=${cert.nxPartnerId}&nxCertificateId=${cert.nxCertificateId}">
+										${cert.name}
+									</nexus:link>
+								</td>
+								<td title="${cert.timeUntilExpiry}">${cert.timeUntilExpiry}</td>
+							</tr>
+						</c:otherwise>
+					</c:choose>
 				</logic:iterate>
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<td class="no-data">no certificates configured or staged</td>
+					<td class="no-data">no certificates in use</td>
 				</tr>
 			</c:otherwise>
 		</c:choose>
@@ -277,6 +280,7 @@ function openTab(evt, contentId) {
 	target.className += " active";
 }
 
+/* Open first tab on page load */
 document.querySelector('.tablinks').click();
 </script>
 

@@ -2,15 +2,12 @@ package org.nexuse2e.reporting;
 
 import org.nexuse2e.pojo.PartnerPojo;
 
-import java.util.List;
-
 public class StatisticsPartner {
     private String partnerId;
     private int nxPartnerId;
     private String name;
     private String lastInboundTime;
     private String lastOutboundTime;
-    private List<StatisticsCertificate> certificates;
 
     public StatisticsPartner(PartnerPojo partnerPojo) {
         this.partnerId = partnerPojo.getPartnerId();
@@ -56,13 +53,5 @@ public class StatisticsPartner {
 
     public void setLastOutboundTime(String lastOutboundTime) {
         this.lastOutboundTime = lastOutboundTime;
-    }
-
-    public List<StatisticsCertificate> getCertificates() {
-        return certificates;
-    }
-
-    public void setCertificates(List<StatisticsCertificate> certificates) {
-        this.certificates = certificates;
     }
 }

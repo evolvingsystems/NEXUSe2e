@@ -223,12 +223,33 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
                 conversationId, messageId, null, startDate, endDate, 0, false));
     }
 
-    public Statistics getStatistics(Date startDate, Date endDate) {
+    public Statistics getStatistics(Date startDate, Date endDate) throws NexusException {
 
         Statistics result = new Statistics();
         result.setStartDate(startDate);
         result.setEndDate(endDate);
 
+        String statisticsQuery = buildStatisticsQuery(startDate, endDate);
+
+        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(statisticsQuery);
+        setTimestampFields(startDate, endDate, query);
+
+        query.setMaxResults(10);
+        List<Object[]> resultset = query.list();
+
+        for (Object[] record : resultset) {
+            StatisticsMessage line = new StatisticsMessage(record);
+            result.getMessages().add(line);
+        }
+
+        List<ConversationPojo> conversations = getConversationsForReport(null, 0, 0, null, startDate, endDate, 500, 1, 0, false);
+        result.setConversations(conversations);
+
+        return result;
+
+    }
+
+    private String buildStatisticsQuery(Date startDate, Date endDate) {
         StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status, nx_conversation.conversation_id, nx_message.nx_message_id, nx_conversation.nx_conversation_id, nx_partner.partner_id\n" +
                 " FROM nx_message " +
                 " INNER JOIN nx_conversation " +
@@ -245,35 +266,16 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
             sqlQuery.append(" AND ");
             String prefix = "";
             if (startDate != null) {
-                sqlQuery.append("nx_message.created_date >= :start");
+                sqlQuery.append(" nx_message.created_date >= :start ");
                 prefix = " AND ";
             }
             if (endDate != null) {
-                sqlQuery.append(prefix + " nx_message.created_date <= :end");
+                sqlQuery.append(prefix).append(" nx_message.created_date <= :end ");
             }
         }
 
         sqlQuery.append(" ORDER by nx_message.created_date DESC");
-        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());
-        setTimestampFields(startDate, endDate, query);
-
-        query.setMaxResults(10);
-        List<Object[]> resultset = query.list();
-
-        for (Object[] record : resultset) {
-            StatisticsMessage line = new StatisticsMessage(record);
-            result.getMessages().add(line);
-        }
-
-        try {
-            List<ConversationPojo> conversations = getConversationsForReport(null, 0, 0, null, startDate, endDate, 500, 1, 0, false);
-            result.setConversations(conversations);
-        } catch (NexusException e) {
-            LOG.error( "Error getting conversations for statistics", e);
-        }
-
-        return result;
-
+        return sqlQuery.toString();
     }
 
     /* (non-Javadoc)
@@ -1199,20 +1201,18 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
     public MessagePojo getLastSuccessfulMessageByChoreographyAndDirection(ChoreographyPojo choreography, boolean outbound) {
         DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
         criteria.createCriteria("conversation").createCriteria("choreography").add(Restrictions.eq("nxChoreographyId", choreography.getNxChoreographyId()));
-        criteria.add(Restrictions.eq("outbound", outbound));
-        criteria.add(Restrictions.eq("status", MessageStatus.SENT.getOrdinal()));
-        criteria.add(Restrictions.eq("type", INT_MESSAGE_TYPE_NORMAL));
-        criteria.addOrder(Order.desc("createdDate"));
-
-        List<?> results = getListThroughSessionFind(criteria, 0, 1);
-        return results.isEmpty() ? null : (MessagePojo) results.get(0);
+        return getLastSuccessfulMessageByCriteriaAndDirection(criteria, outbound);
     }
 
     public MessagePojo getLastSuccessfulMessageByPartnerAndDirection(PartnerPojo partner, boolean outbound) {
         DetachedCriteria criteria = DetachedCriteria.forClass(MessagePojo.class);
         criteria.createCriteria("conversation").createCriteria("partner").add(Restrictions.eq("nxPartnerId", partner.getNxPartnerId()));
+        return getLastSuccessfulMessageByCriteriaAndDirection(criteria, outbound);
+    }
+
+    private MessagePojo getLastSuccessfulMessageByCriteriaAndDirection(DetachedCriteria criteria, boolean outbound) {
         criteria.add(Restrictions.eq("outbound", outbound));
-        criteria.add(Restrictions.eq("status",  MessageStatus.SENT.getOrdinal()));
+        criteria.add(Restrictions.eq("status", MessageStatus.SENT.getOrdinal()));
         criteria.add(Restrictions.eq("type", INT_MESSAGE_TYPE_NORMAL));
         criteria.addOrder(Order.desc("createdDate"));
 
