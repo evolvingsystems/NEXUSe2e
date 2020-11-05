@@ -379,6 +379,15 @@ a.button {
 	cursor: help;
 }
 
+.statistics .reload-button {
+	height: 30px;
+	padding-top: 10px;
+}
+
+.statistics .reload-button a {
+	float: right;
+}
+
 .statistics .error {
 	background: #FB5012;
 }
