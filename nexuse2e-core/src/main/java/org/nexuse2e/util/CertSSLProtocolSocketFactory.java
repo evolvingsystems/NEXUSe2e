@@ -145,32 +145,49 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
      * @return The initialized socket, or a new socket object that wraps-up the given socket.
      */
     protected Socket init(Socket socket) throws IOException {
-
         if (socket instanceof SSLSocket) {
             SSLSocket sslSocket = (SSLSocket) socket;
+
+            String[] configuredProtocols = null;
+            String protocolConfigSource = "N/A";
             if (StringUtils.isNotBlank(tlsProtocols)) {
-                String[] supportedProtocols = getSSLContext().getSupportedSSLParameters().getProtocols();
-                String[] configuredProtocols = tlsProtocols.trim().split("\\s*,\\s*");
-                if (!Arrays.asList(supportedProtocols).containsAll(Arrays.asList(configuredProtocols))) {
-                    throw new IllegalArgumentException("Unsupported tls protocols selected: " + Arrays.toString(configuredProtocols) + " (supported protocols: " + Arrays.toString(supportedProtocols) + ")");
-                }
-                sslSocket.setEnabledProtocols(configuredProtocols);
+                configuredProtocols = tlsProtocols.trim().split("\\s*,\\s*");
+                protocolConfigSource = "connection configuration";
             } else {
                 String httpsProtocols = System.getProperty("https.protocols");
                 if (httpsProtocols != null) {
-                    sslSocket.setEnabledProtocols(httpsProtocols.split(","));
+                    configuredProtocols = httpsProtocols.trim().split("\\s*,\\s*");
+                    protocolConfigSource = "JVM options";
                 }
             }
-            if (StringUtils.isNotBlank(tlsCiphers)) {
-                String[] supportedCipherSuites = getSSLContext().getSupportedSSLParameters().getCipherSuites();
-                String[] configuredCipherSuites = tlsCiphers.trim().split("\\s*,\\s*");
-                if (!Arrays.asList(supportedCipherSuites).containsAll(Arrays.asList(configuredCipherSuites))) {
-                    throw new IOException("Unsupported tls cipher suites selected: " + Arrays.toString(configuredCipherSuites) + " (supported cipher suites: " + Arrays.toString(supportedCipherSuites) + ")");
+            if (configuredProtocols != null) {
+                String[] supportedProtocols = getSSLContext().getSupportedSSLParameters().getProtocols();
+                if (!Arrays.asList(supportedProtocols).containsAll(Arrays.asList(configuredProtocols))) {
+                    throw new IOException("Unsupported tls protocols configured via " + protocolConfigSource + ": " + Arrays.toString(configuredProtocols) + " (supported protocols: " + Arrays.toString(supportedProtocols) + ")");
                 }
-                sslSocket.setEnabledCipherSuites(configuredCipherSuites);
+                sslSocket.setEnabledProtocols(configuredProtocols);
+            }
+
+            String[] configuredCipherSuites = null;
+            String cipherConfigSource = "N/A";
+            if (StringUtils.isNotBlank(tlsCiphers)) {
+                configuredCipherSuites = tlsCiphers.trim().split("\\s*,\\s*");
+                cipherConfigSource = "connection configuration";
+            } else {
+                String cipherSuites = System.getProperty("https.cipherSuites");
+                if (StringUtils.isNotBlank(cipherSuites)) {
+                    configuredCipherSuites = cipherSuites.trim().split("\\s*,\\s*");
+                    cipherConfigSource = "JVM options";
+                }
+            }
+            if (configuredCipherSuites != null) {
+                try {
+                    sslSocket.setEnabledCipherSuites(configuredCipherSuites);
+                } catch (IllegalArgumentException e) {
+                    throw new IOException("Unsupported tls cipher suites configured via " + cipherConfigSource + ": " + Arrays.toString(configuredCipherSuites) + ".", e);
+                }
             }
         }
-
         return socket;
     }
 
