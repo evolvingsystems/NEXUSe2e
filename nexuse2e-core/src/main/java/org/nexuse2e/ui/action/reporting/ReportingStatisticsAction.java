@@ -46,13 +46,15 @@ import java.util.*;
  */
 public class ReportingStatisticsAction extends ReportingAction {
 
+    private static final int WEEKS_GOING_BACK = 2;
+
     @Override
     public ActionForward executeNexusE2EAction(ActionMapping actionMapping,
-            ActionForm actionForm, HttpServletRequest request,
-            HttpServletResponse response,
-            EngineConfiguration engineConfiguration,
-            ActionMessages errors,
-            ActionMessages messages) throws Exception {
+                                               ActionForm actionForm, HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               EngineConfiguration engineConfiguration,
+                                               ActionMessages errors,
+                                               ActionMessages messages) throws Exception {
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
@@ -92,9 +94,13 @@ public class ReportingStatisticsAction extends ReportingAction {
         List<StatisticsPartner> partners = new LinkedList<>();
         for (PartnerPojo partnerPojo : partnerPojos) {
             StatisticsPartner partner = new StatisticsPartner(partnerPojo);
-            partner.setLastInboundTime(getLastSentMessageTimeDiff(partnerPojo, false));
-            partner.setLastOutboundTime(getLastSentMessageTimeDiff(partnerPojo, true));
-            partners.add(partner);
+            Date lastInboundMessageTime = getLastSentMessageTime(partnerPojo, false);
+            Date lastOutboundMessageTime = getLastSentMessageTime(partnerPojo, true);
+            if (!neverOrTooLongAgo(lastInboundMessageTime) || !neverOrTooLongAgo(lastOutboundMessageTime)) {
+                partner.setLastInboundTime(formatTimeDifference(lastInboundMessageTime));
+                partner.setLastOutboundTime(formatTimeDifference(lastOutboundMessageTime));
+                partners.add(partner);
+            }
         }
         return partners;
     }
@@ -103,11 +109,32 @@ public class ReportingStatisticsAction extends ReportingAction {
         List<StatisticsChoreography> choreographies = new LinkedList<>();
         for (ChoreographyPojo choreographyPojo : choreographyPojos) {
             StatisticsChoreography choreography = new StatisticsChoreography(choreographyPojo);
-            choreography.setLastInboundTime(getLastSentMessageTimeDiff(choreographyPojo, false));
-            choreography.setLastOutboundTime(getLastSentMessageTimeDiff(choreographyPojo, true));
-            choreographies.add(choreography);
+            Date lastInboundMessageTime = getLastSentMessageTime(choreographyPojo, false);
+            Date lastOutboundMessageTime = getLastSentMessageTime(choreographyPojo, true);
+            if (!neverOrTooLongAgo(lastInboundMessageTime) || !neverOrTooLongAgo(lastOutboundMessageTime)) {
+                choreography.setLastInboundTime(formatTimeDifference(lastInboundMessageTime));
+                choreography.setLastOutboundTime(formatTimeDifference(lastOutboundMessageTime));
+                choreographies.add(choreography);
+            }
         }
         return choreographies;
+    }
+
+    private String formatTimeDifference(Date date) {
+        if (neverOrTooLongAgo(date)) {
+            return "no messages in " + WEEKS_GOING_BACK + " weeks";
+        }
+        return DateUtil.getDiffTimeRounded(date, new Date()) + " ago";
+    }
+
+    private boolean neverOrTooLongAgo(Date date) {
+        return date == null || date.before(getCurrentDateMinusWeeks(WEEKS_GOING_BACK));
+    }
+
+    private Date getCurrentDateMinusWeeks(int weeks) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -weeks * 7);
+        return calendar.getTime();
     }
 
     private Set<StatisticsCertificate> getStatisticsCertificates(List<ChoreographyPojo> choreographyPojos) {
@@ -145,23 +172,23 @@ public class ReportingStatisticsAction extends ReportingAction {
         return statusCounts;
     }
 
-    private String getLastSentMessageTimeDiff(PartnerPojo partner, boolean outbound) {
+    private Date getLastSentMessageTime(PartnerPojo partner, boolean outbound) {
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
         MessagePojo lastMessage = transactionDAO.getLastSuccessfulMessageByPartnerAndDirection(partner, outbound);
         if (lastMessage != null) {
-            return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
+            return lastMessage.getCreatedDate();
         } else {
-            return "never";
+            return null;
         }
     }
 
-    private String getLastSentMessageTimeDiff(ChoreographyPojo choreography, boolean outbound) {
+    private Date getLastSentMessageTime(ChoreographyPojo choreography, boolean outbound) {
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
         MessagePojo lastMessage = transactionDAO.getLastSuccessfulMessageByChoreographyAndDirection(choreography, outbound);
         if (lastMessage != null) {
-            return DateUtil.getDiffTimeRounded(lastMessage.getCreatedDate(), new Date()) + " ago";
+            return lastMessage.getCreatedDate();
         } else {
-            return "never";
+            return null;
         }
     }
 

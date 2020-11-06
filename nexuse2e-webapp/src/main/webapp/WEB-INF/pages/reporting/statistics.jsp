@@ -134,6 +134,8 @@
 		</c:otherwise>
 	</c:choose>
 
+	<h2>Successful Messages (last 2 weeks)</h2>
+
 	<div class="tab">
 		<button class="tablinks" onclick="openTab(event, 'choreographies')">Choreographies</button>
 		<button class="tablinks" onclick="openTab(event, 'partners')">Partners</button>
@@ -176,7 +178,7 @@
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<td class="no-data">no partners</td>
+					<td class="no-data">no sent messages</td>
 				</tr>
 			</c:otherwise>
 		</c:choose>
@@ -219,14 +221,14 @@
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<td class="no-data">no choreographies</td>
+					<td class="no-data">no sent messages</td>
 				</tr>
 			</c:otherwise>
 		</c:choose>
 	</table>
 
 	<h2 style="display: inline-block;">Certificates</h2>
-	<div class="info-icon" title="Certificates used in connections">?</div>
+	<div class="info-icon" title="Certificates referenced in your participant configuration">?</div>
 	<table class="NEXUS_TABLE fixed-table" id="certificates">
 		<c:choose>
 			<c:when test="${not empty certificates}">

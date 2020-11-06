@@ -376,7 +376,7 @@ a.button {
 	box-sizing: border-box;
 	font-weight: bold;
 	font-size: 100%;
-	cursor: help;
+	cursor: default;
 }
 
 .statistics .reload-button {
@@ -389,47 +389,47 @@ a.button {
 }
 
 .statistics .error {
-	background: #FB5012;
+	background: #f04f0b;
 }
 
 .statistics .awaiting_ack {
-	background: #305252;
+	background: #4a5656;
 }
 
 .statistics .unknown {
-	background: #B6B6B6;
+	background: #b6b6b6;
 }
 
 .statistics .created {
-	background: #58A4B0;
+	background: #6aaca5;
 }
 
 .statistics .processing {
-	background: #305252;
+	background: #467272;
 }
 
 .statistics .idle {
-	background: #58A4B0;
+	background: #e9b41a;
 }
 
 .statistics .sending_ack {
-	background: #58A4B0;
+	background: #63a4b0;
 }
 
 .statistics .ack_sent_awaiting_backend {
-	background: #305252;
+	background: #547d7d;
 }
 
 .statistics .awaiting_backend {
-	background: #305252;
+	background: #3e5c5c;
 }
 
 .statistics .backend_sent_sending_ack {
-	background: #305252;
+	background: #334b4b;
 }
 
 .statistics .completed {
-	background: #6DA34D;
+	background: #74a34a;
 }
 
 /*
