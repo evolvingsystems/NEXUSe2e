@@ -61,67 +61,80 @@
 			</div>
 		</c:when>
 		<c:otherwise>
-			<p class="no-data">no conversations</p>
+			<table class="NEXUS_TABLE fixed-table">
+				<tr>
+					<td class="no-data">no conversations</td>
+				</tr>
+			</table>
 		</c:otherwise>
 	</c:choose>
 
 	<h2>Failed Messages (last 24h)</h2>
 	<c:choose>
-	<c:when test="${not empty messages}">
-		<table class="NEXUS_TABLE fixed-table">
-			<colgroup>
-				<col>
-				<col style="width: 6%">
-				<col style="width: 10%">
-				<col style="width: 30%">
-				<col style="width: 30%">
-				<col style="width: 78px">
-			</colgroup>
-			<tr>
-				<th class="NEXUSSection">Time</th>
-				<th class="NEXUSSection">Partner</th>
-				<th class="NEXUSSection">Choreography</th>
-				<th class="NEXUSSection">Conversation</th>
-				<th class="NEXUSSection">Message</th>
-				<th class="NEXUSSection"></th>
-			</tr>
-			<logic:iterate id="message" name="messages">
+		<c:when test="${not empty messages}">
+			<table class="NEXUS_TABLE fixed-table">
+				<colgroup>
+					<col>
+					<col style="width: 6%">
+					<col style="width: 10%">
+					<col style="width: 30%">
+					<col style="width: 30%">
+					<col style="width: 78px">
+				</colgroup>
 				<tr>
-					<td title="${message.createdDate}">
-						${message.createdDate}
-					</td>
-					<td title="${message.partnerId}">
-						${message.partnerId}
-					</td>
-					<td title="${message.choreographyId}">
-						${message.choreographyId}
-					</td>
-					<td title="${message.conversationId}">
-						<nexus:link
-							href="ConversationView.do?convId=${message.nxConversationId}"
-							styleClass="NexusLink">
-							${message.conversationId}
-						</nexus:link>
-					</td>
-					<td title="${message.messageId}">
-						<nexus:link
-							href="MessageView.do?mId=${message.messageId}"
-							styleClass="NexusLink">
-							${message.messageId}
-						</nexus:link>
-					</td>
-					<td><button onClick="this.disabled = true; setContentUrl('ModifyMessage.do?&origin=dashboard&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}');">
-						Requeue
-					</button></td>
+					<th class="NEXUSSection">Time</th>
+					<th class="NEXUSSection">Partner</th>
+					<th class="NEXUSSection">Choreography</th>
+					<th class="NEXUSSection">Conversation</th>
+					<th class="NEXUSSection">Message</th>
+					<th class="NEXUSSection"></th>
 				</tr>
-			</logic:iterate>
-		</table>
-		<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">Show more</button>
-	</c:when>
-	<c:otherwise>
-		<p class="no-data">no failed messages</p>
-	</c:otherwise>
+				<logic:iterate id="message" name="messages">
+					<tr>
+						<td title="${message.createdDate}">
+								${message.createdDate}
+						</td>
+						<td title="${message.partnerId}">
+								${message.partnerId}
+						</td>
+						<td title="${message.choreographyId}">
+								${message.choreographyId}
+						</td>
+						<td title="${message.conversationId}">
+							<nexus:link
+									href="ConversationView.do?convId=${message.nxConversationId}"
+									styleClass="NexusLink">
+								${message.conversationId}
+							</nexus:link>
+						</td>
+						<td title="${message.messageId}">
+							<nexus:link
+									href="MessageView.do?mId=${message.messageId}"
+									styleClass="NexusLink">
+								${message.messageId}
+							</nexus:link>
+						</td>
+						<td>
+							<button onClick="this.disabled = true; setContentUrl('ModifyMessage.do?&origin=dashboard&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}');">
+								Requeue
+							</button>
+						</td>
+					</tr>
+				</logic:iterate>
+			</table>
+			<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">Show more
+			</button>
+		</c:when>
+		<c:otherwise>
+			<table class="NEXUS_TABLE fixed-table">
+				<tr>
+					<td class="no-data">no failed messages</td>
+				</tr>
+			</table>
+		</c:otherwise>
 	</c:choose>
+
+	<h2>Successful Messages (last 2 weeks)</h2>
 
 	<div class="tab">
 		<button class="tablinks" onclick="openTab(event, 'choreographies')">Choreographies</button>
@@ -165,7 +178,7 @@
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<td class="no-data">no partners</td>
+					<td class="no-data">no sent messages</td>
 				</tr>
 			</c:otherwise>
 		</c:choose>
@@ -208,14 +221,14 @@
 			</c:when>
 			<c:otherwise>
 				<tr>
-					<td class="no-data">no choreographies</td>
+					<td class="no-data">no sent messages</td>
 				</tr>
 			</c:otherwise>
 		</c:choose>
 	</table>
 
 	<h2 style="display: inline-block;">Certificates</h2>
-	<div class="info-icon" title="Certificates used in connections">?</div>
+	<div class="info-icon" title="Certificates referenced in your participant configuration">?</div>
 	<table class="NEXUS_TABLE fixed-table" id="certificates">
 		<c:choose>
 			<c:when test="${not empty certificates}">
@@ -260,15 +273,22 @@
 			</c:otherwise>
 		</c:choose>
 	</table>
+
+	<div class="reload-button">
+		<nexus:link styleClass="button"
+					href="ReportingStatistics.do">
+			<img src="images/icons/arrow_rotate_anticlockwise.png" name="reloadButton" class="button">Reload
+		</nexus:link>
+	</div>
 </div>
 
 
 <script>
-function openTab(evt, contentId) {
-	var tabContent = document.querySelectorAll(".tabcontent");
-	for (var i = 0; i < tabContent.length; i++) {
-		tabContent[i].style.display = "none";
-	}
+	function openTab(evt, contentId) {
+		var tabContent = document.querySelectorAll(".tabcontent");
+		for (var i = 0; i < tabContent.length; i++) {
+			tabContent[i].style.display = "none";
+		}
 
 	var tabLinks = document.querySelectorAll(".tablinks");
 	for (var i = 0; i < tabLinks.length; i++) {
