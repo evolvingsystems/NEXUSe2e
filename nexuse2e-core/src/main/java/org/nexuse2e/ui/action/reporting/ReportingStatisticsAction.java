@@ -27,6 +27,7 @@ import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.dao.TransactionDAO;
+import org.nexuse2e.integration.info.wsdl.ConversationStatus;
 import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.*;
 import org.nexuse2e.ui.form.ReportingPropertiesForm;
@@ -75,7 +76,7 @@ public class ReportingStatisticsAction extends ReportingAction {
 
         List<ConversationPojo> conversations = statistics.getConversations();
         List<StatisticsConversation> idleConversations = filterIdleConversations(statistics.getIdleConversations());
-        List<Entry> conversationStatusCounts = getConversationCounts(conversations);
+        Map<String, Integer> conversationStatusCounts = getConversationCounts(conversations);
 
         List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
         List<StatisticsChoreography> choreographies = getStatisticsChoreographies(choreographyPojos);
@@ -175,19 +176,15 @@ public class ReportingStatisticsAction extends ReportingAction {
         return certificates;
     }
 
-    private List<Entry> getConversationCounts(List<ConversationPojo> conversations) {
-        List<Entry> statusCounts = new LinkedList<>();
+    private Map<String, Integer> getConversationCounts(List<ConversationPojo> conversations) {
+        LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
+        for (ConversationStatus conversionStatus : ConversationStatus.values()) {
+            statusCounts.put(conversionStatus.name().toLowerCase(), 0);
+        }
         for (ConversationPojo conversation : conversations) {
             String status = conversation.getStatusName().toLowerCase();
-            Entry searchEntry = new Entry(status);
-            int index = statusCounts.indexOf(searchEntry);
-            if (index == -1) {
-                statusCounts.add(searchEntry);
-            } else {
-                statusCounts.get(index).increment();
-            }
+            statusCounts.put(status, statusCounts.get(status) + 1);
         }
-        Collections.sort(statusCounts);
         return statusCounts;
     }
 
@@ -208,54 +205,6 @@ public class ReportingStatisticsAction extends ReportingAction {
             return lastMessage.getCreatedDate();
         } else {
             return null;
-        }
-    }
-
-    public static class Entry implements Comparable<Entry> {
-        private String key;
-        private Integer value;
-
-        public Entry(String key, Integer value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public Entry(String key) {
-            this(key, 1);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o instanceof Entry) {
-                Entry e = (Entry) o;
-                return Objects.equals(key, e.key);
-            }
-            return false;
-        }
-
-        @Override
-        public int compareTo(Entry entry) {
-            return entry.value - this.value;
-        }
-
-        public void increment() {
-            this.value++;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public Integer getValue() {
-            return value;
-        }
-
-        public void setValue(Integer value) {
-            this.value = value;
         }
     }
 }
