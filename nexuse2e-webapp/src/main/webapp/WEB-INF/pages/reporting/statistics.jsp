@@ -134,6 +134,56 @@
 		</c:otherwise>
 	</c:choose>
 
+	<h2>Idle (for more than ${thresholdMinutes} minutes)</h2>
+	<c:choose>
+		<c:when test="${not empty idleConversations}">
+			<table class="NEXUS_TABLE fixed-table">
+				<colgroup>
+					<col style="width: 25%">
+					<col style="width: 40%">
+					<col>
+					<col>
+				</colgroup>
+				<tr>
+					<th class="NEXUSSection">Idle since</th>
+					<th class="NEXUSSection">Conversation</th>
+					<th class="NEXUSSection">Partner</th>
+					<th class="NEXUSSection">Choreography</th>
+				</tr>
+				<logic:iterate id="conversation" name="idleConversations">
+					<tr>
+						<td title="${conversation.modifiedDate}">
+								${conversation.modifiedDate}
+						</td>
+						<td title="${conversation.conversationId}">
+							<nexus:link
+									href="ConversationView.do?convId=${conversation.nxConversationId}"
+									styleClass="NexusLink">
+								${conversation.conversationId}
+							</nexus:link>
+						</td>
+						<td title="${conversation.partnerId}">
+								${conversation.partnerId}
+						</td>
+						<td title="${conversation.choreographyId}">
+								${conversation.choreographyId}
+						</td>
+					</tr>
+				</logic:iterate>
+			</table>
+			<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">
+				Show more
+			</button>
+		</c:when>
+		<c:otherwise>
+			<table class="NEXUS_TABLE fixed-table">
+				<tr>
+					<td class="no-data">no idle conversations</td>
+				</tr>
+			</table>
+		</c:otherwise>
+	</c:choose>
+
 	<h2>Successful Messages (last 2 weeks)</h2>
 
 	<div class="tab">

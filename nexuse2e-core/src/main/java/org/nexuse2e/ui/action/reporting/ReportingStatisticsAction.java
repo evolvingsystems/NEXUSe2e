@@ -46,7 +46,8 @@ import java.util.*;
  */
 public class ReportingStatisticsAction extends ReportingAction {
 
-    private static final int WEEKS_GOING_BACK = 2;
+    private static final int TRANSMISSION_AGO_THRESHOLD_WEEKS = 2;
+    private static final int CONV_IDLE_THRESHOLD_MINUTES = 10;
 
     @Override
     public ActionForward executeNexusE2EAction(ActionMapping actionMapping,
@@ -68,12 +69,13 @@ public class ReportingStatisticsAction extends ReportingAction {
 
         List<StatisticsMessage> statisticMessages = statistics.getMessages();
 
-        List<ConversationPojo> conversations = statistics.getConversations();
-        List<Entry> conversationStatusCounts = getConversationCounts(conversations);
-
         List<PartnerPojo> partnerPojos = engineConfiguration.getPartners(
                 Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);
         List<StatisticsPartner> partners = getStatisticsPartners(partnerPojos);
+
+        List<ConversationPojo> conversations = statistics.getConversations();
+        List<StatisticsConversation> idleConversations = filterIdleConversations(statistics.getIdleConversations());
+        List<Entry> conversationStatusCounts = getConversationCounts(conversations);
 
         List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
         List<StatisticsChoreography> choreographies = getStatisticsChoreographies(choreographyPojos);
@@ -83,11 +85,28 @@ public class ReportingStatisticsAction extends ReportingAction {
         request.setAttribute("choreographies", choreographies);
         request.setAttribute("conversationStatusCounts", conversationStatusCounts);
         request.setAttribute("conversationStatusTotal", conversations.size());
+        request.setAttribute("idleConversations", idleConversations);
+        request.setAttribute("thresholdMinutes", CONV_IDLE_THRESHOLD_MINUTES);
         request.setAttribute("messages", statisticMessages);
         request.setAttribute("certificates", certificates);
         request.setAttribute("partners", partners);
 
         return actionMapping.findForward(ACTION_FORWARD_SUCCESS);
+    }
+
+    private List<StatisticsConversation> filterIdleConversations(List<StatisticsConversation> conversations) {
+        List<StatisticsConversation> idleForTooLongConversations = new LinkedList<>();
+        for (StatisticsConversation conversation : conversations) {
+            if (isIdleForTooLong(conversation)) {
+                idleForTooLongConversations.add(conversation);
+            }
+        }
+        return idleForTooLongConversations;
+    }
+
+    private boolean isIdleForTooLong(StatisticsConversation conversation) {
+        Date thresholdDate = getCurrentDateMinus(Calendar.MINUTE, CONV_IDLE_THRESHOLD_MINUTES);
+        return conversation.getModifiedDate().before(thresholdDate);
     }
 
     private List<StatisticsPartner> getStatisticsPartners(List<PartnerPojo> partnerPojos) {
@@ -122,18 +141,18 @@ public class ReportingStatisticsAction extends ReportingAction {
 
     private String formatTimeDifference(Date date) {
         if (neverOrTooLongAgo(date)) {
-            return "no messages in " + WEEKS_GOING_BACK + " weeks";
+            return "no messages in " + TRANSMISSION_AGO_THRESHOLD_WEEKS + " weeks";
         }
         return DateUtil.getDiffTimeRounded(date, new Date()) + " ago";
     }
 
     private boolean neverOrTooLongAgo(Date date) {
-        return date == null || date.before(getCurrentDateMinusWeeks(WEEKS_GOING_BACK));
+        return date == null || date.before(getCurrentDateMinus(Calendar.DATE, TRANSMISSION_AGO_THRESHOLD_WEEKS));
     }
 
-    private Date getCurrentDateMinusWeeks(int weeks) {
+    private Date getCurrentDateMinus(int field, int amount) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -weeks * 7);
+        calendar.add(field, -amount * 7);
         return calendar.getTime();
     }
 

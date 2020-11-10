@@ -238,6 +238,7 @@ a.button {
 .statistics td, .statistics th {
 	white-space: nowrap;
 	overflow: hidden;
+	line-height: 22px;
 }
 
 .statistics hr {

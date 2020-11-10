@@ -36,8 +36,9 @@ import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.dao.UpdateTransactionOperation.UpdateScope;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.*;
-import org.nexuse2e.reporting.StatisticsMessage;
 import org.nexuse2e.reporting.Statistics;
+import org.nexuse2e.reporting.StatisticsConversation;
+import org.nexuse2e.reporting.StatisticsMessage;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,8 +58,8 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
     protected static Logger LOG = Logger.getLogger(TransactionDAOImpl.class);
 
-    private static Map<Integer, int[]> followUpConversationStates;
-    private static Map<Integer, int[]> followUpMessageStates;
+    private static final Map<Integer, int[]> followUpConversationStates;
+    private static final Map<Integer, int[]> followUpMessageStates;
 
     static {
         followUpConversationStates = new HashMap<Integer, int[]>();
@@ -229,27 +230,63 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         result.setStartDate(startDate);
         result.setEndDate(endDate);
 
-        String statisticsQuery = buildStatisticsQuery(startDate, endDate);
+        String errorMessageQueryString = buildErrorMessageQuery(startDate, endDate);
 
-        SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(statisticsQuery);
-        setTimestampFields(startDate, endDate, query);
+        SQLQuery messageQuery = sessionFactory.getCurrentSession().createSQLQuery(errorMessageQueryString);
+        setTimestampFields(startDate, endDate, messageQuery);
 
-        query.setMaxResults(10);
-        List<Object[]> resultset = query.list();
+        messageQuery.setMaxResults(10);
+        List<Object[]> messageResultSet = messageQuery.list();
 
-        for (Object[] record : resultset) {
+        for (Object[] record : messageResultSet) {
             StatisticsMessage line = new StatisticsMessage(record);
             result.getMessages().add(line);
+        }
+
+        String idleConversationQueryString = buildIdleConversationQuery(startDate, endDate);
+        SQLQuery idleConversationQuery = sessionFactory.getCurrentSession().createSQLQuery(idleConversationQueryString);
+        setTimestampFields(startDate, endDate, idleConversationQuery);
+
+        idleConversationQuery.setMaxResults(10);
+        List<Object[]> idleConversationResultSet = idleConversationQuery.list();
+
+        for (Object[] record : idleConversationResultSet) {
+            StatisticsConversation conversation = new StatisticsConversation(record);
+            result.getIdleConversations().add(conversation);
         }
 
         List<ConversationPojo> conversations = getConversationsForReport(null, 0, 0, null, startDate, endDate, 500, 1, 0, false);
         result.setConversations(conversations);
 
         return result;
-
     }
 
-    private String buildStatisticsQuery(Date startDate, Date endDate) {
+    private String buildIdleConversationQuery(Date startDate, Date endDate) {
+        StringBuilder sqlQuery = new StringBuilder("SELECT nx_conversation.conversation_id, nx_conversation.created_date, nx_conversation.modified_date, nx_conversation.status, nx_conversation.nx_conversation_id, nx_choreography.name as choreography, nx_partner.partner_id\n" +
+                " FROM nx_conversation " +
+                " INNER JOIN nx_choreography " +
+                " ON nx_conversation.nx_choreography_id = nx_choreography.nx_choreography_id " +
+                " INNER JOIN nx_partner " +
+                " ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id " +
+                " WHERE nx_conversation.status = 4 ");
+
+        if (startDate != null || endDate != null) {
+            sqlQuery.append(" AND ");
+            String prefix = "";
+            if (startDate != null) {
+                sqlQuery.append(" nx_conversation.created_date >= :start ");
+                prefix = " AND ";
+            }
+            if (endDate != null) {
+                sqlQuery.append(prefix).append(" nx_conversation.created_date <= :end ");
+            }
+        }
+
+        sqlQuery.append(" ORDER by nx_conversation.modified_date DESC");
+        return sqlQuery.toString();
+    }
+
+    private String buildErrorMessageQuery(Date startDate, Date endDate) {
         StringBuilder sqlQuery = new StringBuilder("SELECT message_id, nx_action.name as action, nx_choreography.name as choreography, nx_message.created_date, nx_message.type, nx_message.status, nx_conversation.conversation_id, nx_message.nx_message_id, nx_conversation.nx_conversation_id, nx_partner.partner_id\n" +
                 " FROM nx_message " +
                 " INNER JOIN nx_conversation " +
@@ -1660,7 +1697,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         for (Object o : l) {
             String[] kv = new String[]{
                     (((Object[]) o)[0]).toString(),
-                    ((Number) ((Object[]) o)[1]).toString()
+                    ((Object[]) o)[1].toString()
             };
             list.add(kv);
         }

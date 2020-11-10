@@ -2,13 +2,16 @@ package org.nexuse2e.reporting;
 
 import org.nexuse2e.pojo.ConversationPojo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class Statistics {
 
     private Date startDate;
     private Date endDate;
     private List<StatisticsMessage> messages = new ArrayList<>();
+    private List<StatisticsConversation> idleConversations = new ArrayList<>();
     private List<ConversationPojo> conversations = new ArrayList<>();
 
 
@@ -34,6 +37,14 @@ public class Statistics {
 
     public void setMessages(List<StatisticsMessage> messages) {
         this.messages = messages;
+    }
+
+    public List<StatisticsConversation> getIdleConversations() {
+        return idleConversations;
+    }
+
+    public void setIdleConversations(List<StatisticsConversation> idleConversations) {
+        this.idleConversations = idleConversations;
     }
 
     public List<ConversationPojo> getConversations() {
