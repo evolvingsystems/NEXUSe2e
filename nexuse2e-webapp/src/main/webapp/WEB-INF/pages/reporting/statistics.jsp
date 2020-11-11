@@ -41,16 +41,16 @@
 <div class="statistics">
 	<h2>Conversations (last 24h)</h2>
 	<c:choose>
-		<c:when test="${not empty conversationStatusCounts}">
+		<c:when test="${conversationStatusTotal > 0}">
 			<div class="chart" id="conversations">
 				<logic:iterate id="statusCount" name="conversationStatusCounts">
-					<c:set var="percentage" value="${statusCount.value / conversationStatusTotal * 100}" />
+					<c:set var="percentage" value="${statusCount.value / conversationStatusTotal * 100}"/>
 					<c:if test="${percentage > 0}">
 						<div class="segment ${statusCount.key}"
 							 style="width: ${percentage}%;"
 							 title="${statusCount.key} ${statusCount.value}">
 							<span class="status-name">
-								${statusCount.key}
+									${statusCount.key}
 							</span>
 							<span class="count-label">
 								${statusCount.value}

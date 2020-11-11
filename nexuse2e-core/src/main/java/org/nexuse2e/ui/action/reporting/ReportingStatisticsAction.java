@@ -178,8 +178,9 @@ public class ReportingStatisticsAction extends ReportingAction {
 
     private Map<String, Integer> getConversationCounts(List<ConversationPojo> conversations) {
         LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
-        for (ConversationStatus conversionStatus : ConversationStatus.values()) {
-            statusCounts.put(conversionStatus.name().toLowerCase(), 0);
+        ConversationStatus[] statuses = ConversationStatus.values();
+        for (int i = statuses.length - 1; i >= 0; i--) {
+            statusCounts.put(statuses[i].name().toLowerCase(), 0);
         }
         for (ConversationPojo conversation : conversations) {
             String status = conversation.getStatusName().toLowerCase();
