@@ -106,8 +106,8 @@ public class ReportingStatisticsAction extends ReportingAction {
     }
 
     private boolean isIdleForTooLong(StatisticsConversation conversation) {
-        Date thresholdDate = getCurrentDateMinus(Calendar.MINUTE, CONV_IDLE_THRESHOLD_MINUTES);
-        return conversation.getModifiedDate().before(thresholdDate);
+        long timeDifference = System.currentTimeMillis() - conversation.getModifiedDate().getTime();
+        return timeDifference > CONV_IDLE_THRESHOLD_MINUTES * 60000;
     }
 
     private List<StatisticsPartner> getStatisticsPartners(List<PartnerPojo> partnerPojos) {

@@ -25,6 +25,7 @@
 <%@ taglib uri="/tags/struts-tiles" prefix="tiles"%>
 <%@ taglib uri="/tags/struts-logic" prefix="logic"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="/tags/nexus" prefix="nexus"%>
 
 <% /*<nexus:helpBar helpDoc="documentation/NEXUSe2e.html" /> */ %>
@@ -122,8 +123,11 @@
 					</tr>
 				</logic:iterate>
 			</table>
-			<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">Show more
-			</button>
+			<c:if test="${fn:length(messages) == 10}">
+				<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">
+					Show more
+				</button>
+			</c:if>
 		</c:when>
 		<c:otherwise>
 			<table class="NEXUS_TABLE fixed-table">
@@ -171,9 +175,11 @@
 					</tr>
 				</logic:iterate>
 			</table>
-			<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">
-				Show more
-			</button>
+			<c:if test="${fn:length(idleConversations) == 10}">
+				<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">
+					Show more
+				</button>
+			</c:if>
 		</c:when>
 		<c:otherwise>
 			<table class="NEXUS_TABLE fixed-table">
