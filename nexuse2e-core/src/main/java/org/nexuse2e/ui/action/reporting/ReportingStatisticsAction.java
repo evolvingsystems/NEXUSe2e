@@ -62,7 +62,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         cal.add(Calendar.DATE, -1);
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        Statistics statistics = transactionDAO.getStatistics(timestamp, null);
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null,CONV_IDLE_THRESHOLD_MINUTES);
 
         ReportingSettingsForm reportingSettings = new ReportingSettingsForm();
         ReportingPropertiesForm form = (ReportingPropertiesForm) actionForm;
@@ -75,7 +75,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         List<StatisticsPartner> partners = getStatisticsPartners(partnerPojos);
 
         List<ConversationPojo> conversations = statistics.getConversations();
-        List<StatisticsConversation> idleConversations = filterIdleConversations(statistics.getIdleConversations());
+        List<StatisticsConversation> idleConversations = statistics.getIdleConversations();
         Map<String, Integer> conversationStatusCounts = getConversationCounts(conversations);
 
         List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
@@ -95,20 +95,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         return actionMapping.findForward(ACTION_FORWARD_SUCCESS);
     }
 
-    private List<StatisticsConversation> filterIdleConversations(List<StatisticsConversation> conversations) {
-        List<StatisticsConversation> idleForTooLongConversations = new LinkedList<>();
-        for (StatisticsConversation conversation : conversations) {
-            if (isIdleForTooLong(conversation)) {
-                idleForTooLongConversations.add(conversation);
-            }
-        }
-        return idleForTooLongConversations;
-    }
 
-    private boolean isIdleForTooLong(StatisticsConversation conversation) {
-        long timeDifference = System.currentTimeMillis() - conversation.getModifiedDate().getTime();
-        return timeDifference > CONV_IDLE_THRESHOLD_MINUTES * 60000;
-    }
 
     private List<StatisticsPartner> getStatisticsPartners(List<PartnerPojo> partnerPojos) {
         List<StatisticsPartner> partners = new LinkedList<>();
