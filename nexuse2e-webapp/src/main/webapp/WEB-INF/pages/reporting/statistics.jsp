@@ -90,40 +90,42 @@
 					<th class="NEXUSSection">Message</th>
 					<th class="NEXUSSection"></th>
 				</tr>
-				<logic:iterate id="message" name="messages">
-					<tr>
-						<td title="${message.createdDate}">
-								${message.createdDate}
-						</td>
-						<td title="${message.partnerId}">
-								${message.partnerId}
-						</td>
-						<td title="${message.choreographyId}">
-								${message.choreographyId}
-						</td>
-						<td title="${message.conversationId}">
-							<nexus:link
-									href="ConversationView.do?convId=${message.nxConversationId}"
-									styleClass="NexusLink">
-								${message.conversationId}
-							</nexus:link>
-						</td>
-						<td title="${message.messageId}">
-							<nexus:link
-									href="MessageView.do?mId=${message.messageId}"
-									styleClass="NexusLink">
-								${message.messageId}
-							</nexus:link>
-						</td>
-						<td>
-							<button onClick="this.disabled = true; setContentUrl('ModifyMessage.do?&origin=dashboard&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}');">
-								Requeue
-							</button>
-						</td>
-					</tr>
+				<logic:iterate id="message" name="messages" indexId="index">
+					<c:if test="${index lt 10}" >
+						<tr>
+							<td title="${message.createdDate}">
+									${message.createdDate}
+							</td>
+							<td title="${message.partnerId}">
+									${message.partnerId}
+							</td>
+							<td title="${message.choreographyId}">
+									${message.choreographyId}
+							</td>
+							<td title="${message.conversationId}">
+								<nexus:link
+										href="ConversationView.do?convId=${message.nxConversationId}"
+										styleClass="NexusLink">
+									${message.conversationId}
+								</nexus:link>
+							</td>
+							<td title="${message.messageId}">
+								<nexus:link
+										href="MessageView.do?mId=${message.messageId}"
+										styleClass="NexusLink">
+									${message.messageId}
+								</nexus:link>
+							</td>
+							<td>
+								<button onClick="this.disabled = true; setContentUrl('ModifyMessage.do?&origin=dashboard&command=requeue&conversationId=${message.conversationId}&messageId=${message.messageId}');">
+									Requeue
+								</button>
+							</td>
+						</tr>
+					</c:if>
 				</logic:iterate>
 			</table>
-			<c:if test="${fn:length(messages) == 10}">
+			<c:if test="${fn:length(messages) gt 10}">
 				<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">
 					Show more
 				</button>
@@ -138,7 +140,7 @@
 		</c:otherwise>
 	</c:choose>
 
-	<h2>Idle (for more than ${thresholdMinutes} minutes)</h2>
+	<h2>Idle (last 24h and > ${thresholdMinutes} minutes idle)</h2>
 	<c:choose>
 		<c:when test="${not empty idleConversations}">
 			<table class="NEXUS_TABLE fixed-table">
@@ -154,28 +156,31 @@
 					<th class="NEXUSSection">Partner</th>
 					<th class="NEXUSSection">Choreography</th>
 				</tr>
-				<logic:iterate id="conversation" name="idleConversations">
-					<tr>
-						<td title="${conversation.modifiedDate}">
-								${conversation.modifiedDate}
-						</td>
-						<td title="${conversation.conversationId}">
-							<nexus:link
-									href="ConversationView.do?convId=${conversation.nxConversationId}"
-									styleClass="NexusLink">
-								${conversation.conversationId}
-							</nexus:link>
-						</td>
-						<td title="${conversation.partnerId}">
-								${conversation.partnerId}
-						</td>
-						<td title="${conversation.choreographyId}">
-								${conversation.choreographyId}
-						</td>
-					</tr>
+				<logic:iterate id="conversation" name="idleConversations" indexId="index">
+					<c:if test="${index lt 10}" >
+						<tr>
+							<td title="${conversation.modifiedDate}">
+									${conversation.modifiedDate}
+							</td>
+							<td title="${conversation.conversationId}">
+								<nexus:link
+										href="ConversationView.do?convId=${conversation.nxConversationId}"
+										styleClass="NexusLink">
+									${conversation.conversationId}
+								</nexus:link>
+							</td>
+							<td title="${conversation.partnerId}">
+									${conversation.partnerId}
+							</td>
+							<td title="${conversation.choreographyId}">
+									${conversation.choreographyId}
+							</td>
+						</tr>
+					</c:if>
 				</logic:iterate>
+
 			</table>
-			<c:if test="${fn:length(idleConversations) == 10}">
+			<c:if test="${fn:length(idleConversations) gt 10}">
 				<button onClick="setContentUrl('ProcessConversationReport.do?noReset=true')" class="full-width">
 					Show more
 				</button>
@@ -209,7 +214,7 @@
 					<th class="NEXUSSection">Partner ID</th>
 					<th class="NEXUSSection">
 						Last Inbound
-						<div class="info-icon" title="Last successfully sent message (excluding acknowledgements)">?</div>
+						<div class="info-icon" title="Last successfully received message (excluding acknowledgements)">?</div>
 					</th>
 					<th class="NEXUSSection">
 						Last Outbound
@@ -252,7 +257,7 @@
 				<th class="NEXUSSection">Choreography</th>
 				<th class="NEXUSSection">
 					Last Inbound
-					<div class="info-icon" title="Last successfully sent message (excluding acknowledgements)">?</div>
+					<div class="info-icon" title="Last successfully received message (excluding acknowledgements)">?</div>
 				</th>
 				<th class="NEXUSSection">
 					Last Outbound

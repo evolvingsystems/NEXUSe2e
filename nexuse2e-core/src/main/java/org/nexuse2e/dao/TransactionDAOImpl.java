@@ -235,7 +235,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         SQLQuery messageQuery = sessionFactory.getCurrentSession().createSQLQuery(errorMessageQueryString);
         setTimestampFields(startDate, endDate, messageQuery);
 
-        messageQuery.setMaxResults(10);
+        messageQuery.setMaxResults(11);
         List<Object[]> messageResultSet = messageQuery.list();
 
         for (Object[] record : messageResultSet) {
@@ -252,7 +252,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         SQLQuery idleConversationQuery = sessionFactory.getCurrentSession().createSQLQuery(idleConversationQueryString);
         setTimestampFields(startDate, modifiedEndDate, idleConversationQuery);
 
-        idleConversationQuery.setMaxResults(10);
+        idleConversationQuery.setMaxResults(11);
         List<Object[]> idleConversationResultSet = idleConversationQuery.list();
 
         for (Object[] record : idleConversationResultSet) {
