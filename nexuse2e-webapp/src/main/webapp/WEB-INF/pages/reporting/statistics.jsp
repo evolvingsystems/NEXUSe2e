@@ -140,7 +140,7 @@
 		</c:otherwise>
 	</c:choose>
 
-	<h2>Idle (last 24h and > ${thresholdMinutes} minutes idle)</h2>
+	<h2>Idle (last 24h and > ${idleGracePeriodInMinutes} minutes idle)</h2>
 	<c:choose>
 		<c:when test="${not empty idleConversations}">
 			<table class="NEXUS_TABLE fixed-table">
@@ -195,7 +195,7 @@
 		</c:otherwise>
 	</c:choose>
 
-	<h2>Successful Messages (last 2 weeks)</h2>
+	<h2>Successful Messages (last ${transactionActivityTimeframeInWeeks} weeks)</h2>
 
 	<div class="tab">
 		<button class="tablinks" onclick="openTab(event, 'choreographies')">Choreographies</button>

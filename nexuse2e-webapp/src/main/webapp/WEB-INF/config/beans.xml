@@ -107,7 +107,8 @@
   	<property name="passwordValidation" value="${password.validation}" />    
     <property name="messageWorker" ref="messageWorker" />
     <property name="defaultCharEncoding" value="${default.charEncoding}" />
-    <property name="advancedRetryLogging" value="true" />
+    <property name="idleGracePeriodInMinutes" value="10" />
+    <property name="TransactionActivityTimeframeInWeeks" value="2" />
     <property name="retryLoggingTemplate">
       <value>
         Dear admin,
@@ -125,6 +126,8 @@
         Retries:      {retries}
       </value>
     </property>
+    <property name="advancedRetryLogging" value="true" />
+
   </bean>
 
 

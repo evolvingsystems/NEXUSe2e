@@ -47,8 +47,7 @@ import java.util.*;
  */
 public class ReportingStatisticsAction extends ReportingAction {
 
-    private static final int TRANSMISSION_AGO_THRESHOLD_WEEKS = 2;
-    private static final int CONV_IDLE_THRESHOLD_MINUTES = 10;
+    private int transactionActivityTimeframeInWeeks = 2;
 
     @Override
     public ActionForward executeNexusE2EAction(ActionMapping actionMapping,
@@ -62,7 +61,11 @@ public class ReportingStatisticsAction extends ReportingAction {
         cal.add(Calendar.DATE, -1);
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        Statistics statistics = transactionDAO.getStatistics(timestamp, null,CONV_IDLE_THRESHOLD_MINUTES);
+
+        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
+        transactionActivityTimeframeInWeeks = Engine.getInstance().getTransactionActivityTimeframeInWeeks();
+
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null,idleGracePeriodInMinutes);
 
         ReportingSettingsForm reportingSettings = new ReportingSettingsForm();
         ReportingPropertiesForm form = (ReportingPropertiesForm) actionForm;
@@ -87,7 +90,8 @@ public class ReportingStatisticsAction extends ReportingAction {
         request.setAttribute("conversationStatusCounts", conversationStatusCounts);
         request.setAttribute("conversationStatusTotal", conversations.size());
         request.setAttribute("idleConversations", idleConversations);
-        request.setAttribute("thresholdMinutes", CONV_IDLE_THRESHOLD_MINUTES);
+        request.setAttribute("idleGracePeriodInMinutes", idleGracePeriodInMinutes);
+        request.setAttribute("transactionActivityTimeframeInWeeks", transactionActivityTimeframeInWeeks);
         request.setAttribute("messages", statisticMessages);
         request.setAttribute("certificates", certificates);
         request.setAttribute("partners", partners);
@@ -129,13 +133,13 @@ public class ReportingStatisticsAction extends ReportingAction {
 
     private String formatTimeDifference(Date date) {
         if (neverOrTooLongAgo(date)) {
-            return "no messages in " + TRANSMISSION_AGO_THRESHOLD_WEEKS + " weeks";
+            return "no messages in " + transactionActivityTimeframeInWeeks + " weeks";
         }
         return DateUtil.getDiffTimeRounded(date, new Date()) + " ago";
     }
 
     private boolean neverOrTooLongAgo(Date date) {
-        return date == null || date.before(getCurrentDateMinus(Calendar.DATE, TRANSMISSION_AGO_THRESHOLD_WEEKS));
+        return date == null || date.before(getCurrentDateMinus(Calendar.DATE, transactionActivityTimeframeInWeeks));
     }
 
     private Date getCurrentDateMinus(int field, int amount) {
