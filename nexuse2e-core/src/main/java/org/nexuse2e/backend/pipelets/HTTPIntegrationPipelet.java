@@ -21,8 +21,10 @@ package org.nexuse2e.backend.pipelets;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -33,6 +35,7 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.pipelets.helper.RequestResponseData;
@@ -55,6 +58,7 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
 
     public static final String URL            = "URL";
     public static final String SEND_AS_PARAM  = "SendAsParameters";
+    public static final String HEADERS        = "Headers";
     public static final String INCLUDE_LABELS = "IncludeLabels";
     public static final String LABEL_PREFIX   = "LabelPrefix";
     public static final String DEBUG          = "Debug";
@@ -71,6 +75,8 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
                 "The URL that inbound messages are forwarded to.", DEFAULT_URL ) );
         parameterMap.put( SEND_AS_PARAM, new ParameterDescriptor( ParameterType.BOOLEAN, "Send content URL-encoded",
                 "Send the content as a URL-encoded HTTP parameter.", Boolean.TRUE ) );
+        parameterMap.put( HEADERS, new ParameterDescriptor( ParameterType.STRING, "Headers",
+                "Additional headers (optional, key:value pairs separated by semicolon).", "" ) );
         parameterMap.put( USER, new ParameterDescriptor( ParameterType.STRING, "User name",
                 "User name required for legacy system (optional).", "" ) );
         parameterMap.put( PASSWORD, new ParameterDescriptor( ParameterType.PASSWORD, "Password",
@@ -96,6 +102,21 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
         MessagePojo messagePojo = messageContext.getMessagePojo();
         //MessageLabelPojo messageLabelPojo = null;
         List<MessageLabelPojo> messageLabels = null;
+
+        String headerParamValue = getParameter(HEADERS);
+        Map<String, String> headers = null;
+        if (StringUtils.isNotBlank(headerParamValue)) {
+            headers = new HashMap<>();
+            String[] headerStrings = headerParamValue.trim().split("\\s*;\\s*");
+            for (String header : headerStrings) {
+                String[] headerParts = header.trim().split("\\s*:\\s*");
+                if (headerParts.length == 2) {
+                    headers.put(headerParts[0], headerParts[1]);
+                } else {
+                    LOG.warn(new LogMessage("Invalid header key:value pair: '" + headerParts));
+                }
+            }
+        }
 
         Boolean includeLabelsBoolean = getParameter( SEND_AS_PARAM );
         if ( includeLabelsBoolean.booleanValue() ) {
@@ -138,6 +159,12 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
         httpMethodParams.setCookiePolicy( CookiePolicy.IGNORE_COOKIES );
         httpMethodParams.setContentCharset("UTF-8");
         post.setParams( httpMethodParams );
+
+        if (headers != null && headers.size() > 0) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                post.setRequestHeader(header.getKey(), header.getValue());
+            }
+        }
 
         HttpClient httpclient = new HttpClient();
 
