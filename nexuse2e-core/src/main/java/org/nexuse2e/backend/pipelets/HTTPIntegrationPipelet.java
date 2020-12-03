@@ -75,8 +75,8 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
                 "The URL that inbound messages are forwarded to.", DEFAULT_URL ) );
         parameterMap.put( SEND_AS_PARAM, new ParameterDescriptor( ParameterType.BOOLEAN, "Send content URL-encoded",
                 "Send the content as a URL-encoded HTTP parameter.", Boolean.TRUE ) );
-        parameterMap.put( HEADERS, new ParameterDescriptor( ParameterType.STRING, "Headers",
-                "Additional headers (optional, key:value pairs separated by semicolon).", "" ) );
+        parameterMap.put( HEADERS, new ParameterDescriptor( ParameterType.TEXT, "Headers",
+                "Additional headers (optional, one key:value pair per line).", "" ) );
         parameterMap.put( USER, new ParameterDescriptor( ParameterType.STRING, "User name",
                 "User name required for legacy system (optional).", "" ) );
         parameterMap.put( PASSWORD, new ParameterDescriptor( ParameterType.PASSWORD, "Password",
@@ -107,13 +107,13 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
         Map<String, String> headers = null;
         if (StringUtils.isNotBlank(headerParamValue)) {
             headers = new HashMap<>();
-            String[] headerStrings = headerParamValue.trim().split("\\s*;\\s*");
+            String[] headerStrings = headerParamValue.split("\n");
             for (String header : headerStrings) {
                 String[] headerParts = header.trim().split("\\s*:\\s*");
                 if (headerParts.length == 2) {
                     headers.put(headerParts[0], headerParts[1]);
                 } else {
-                    LOG.warn(new LogMessage("Invalid header key:value pair: '" + headerParts));
+                    LOG.warn(new LogMessage("Invalid header key:value pair: " + header, messagePojo));
                 }
             }
         }
