@@ -111,7 +111,11 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
             for (String header : headerStrings) {
                 String[] headerParts = header.trim().split("\\s*:\\s*");
                 if (headerParts.length == 2) {
-                    headers.put(headerParts[0], headerParts[1]);
+                    String value = headerParts[1];
+                    if (headers.containsKey(headerParts[0])) {
+                        value = headers.get(headerParts[0]) + ", " + headerParts[1];
+                    }
+                    headers.put(headerParts[0], value);
                 } else {
                     LOG.warn(new LogMessage("Invalid header key:value pair: " + header, messagePojo));
                 }
