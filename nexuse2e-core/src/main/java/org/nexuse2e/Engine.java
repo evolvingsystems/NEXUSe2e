@@ -129,6 +129,9 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     private boolean                          advancedRetryLogging           = false;
     private String                           retryLoggingTemplate;
 
+    private int                              idleGracePeriodInMinutes       = 10;
+    private int                              transactionActivityTimeframeInWeeks = 2;
+
     static {
         // Make sure we have the right JCE provider available...
         BouncyCastleProvider bcp = new BouncyCastleProvider();
@@ -505,6 +508,22 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     public String getRetryLoggingTemplate() {
         return retryLoggingTemplate;
+    }
+
+    public int getIdleGracePeriodInMinutes() {
+        return idleGracePeriodInMinutes;
+    }
+
+    public void setIdleGracePeriodInMinutes(int idleGracePeriodInMinutes) {
+        this.idleGracePeriodInMinutes = idleGracePeriodInMinutes;
+    }
+
+    public int getTransactionActivityTimeframeInWeeks() {
+        return transactionActivityTimeframeInWeeks;
+    }
+
+    public void setTransactionActivityTimeframeInWeeks(int transactionActivityTimeframeInWeeks) {
+        this.transactionActivityTimeframeInWeeks = transactionActivityTimeframeInWeeks;
     }
 
     /**

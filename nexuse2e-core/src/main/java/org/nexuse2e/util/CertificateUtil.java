@@ -42,6 +42,7 @@ import org.nexuse2e.configuration.CertificateType;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.CertificatePojo;
+import org.nexuse2e.ui.form.CertificatePropertiesForm;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
@@ -54,6 +55,7 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.*;
 import java.security.interfaces.RSAPublicKey;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -474,9 +476,9 @@ public class CertificateUtil {
                     if (remMonth > 24) {
                         long year = month * 12;
                         long remYears = div / year;
-                        remaining = "(~ " + remYears + " Years remaining)";
+                        remaining = "(~ " + remYears + " years remaining)";
                     } else {
-                        remaining = "(~ " + remMonth + " Month remaining)";
+                        remaining = "(~ " + remMonth + " months remaining)";
                     }
                 } else {
                     remaining = "(~ " + remWeeks + " weeks remaining)";
@@ -1248,4 +1250,54 @@ public class CertificateUtil {
         }
         return null;
     }
+
+    public static Vector<CertificatePropertiesForm> getIncludedCertificates(List<CertificatePojo> certPojos) throws KeyStoreException, NoSuchProviderException, IOException, NoSuchAlgorithmException, CertificateException {
+        Certificate[] certsArray;
+        CertificatePropertiesForm form;
+        Vector<CertificatePropertiesForm> certs = new Vector<>();
+        if (certPojos != null) {
+            for (CertificatePojo certificate : certPojos) {
+                byte[] data = certificate.getBinaryData();
+                if (data != null) {
+
+                    KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
+                    jks.load(new ByteArrayInputStream(data), EncryptionUtil.decryptString(certificate.getPassword()).toCharArray());
+
+                    Enumeration<String> aliases = jks.aliases();
+                    if (!aliases.hasMoreElements()) {
+                        LOG.info("No certificate aliases found!");
+                        continue;
+                    }
+
+                    while (aliases.hasMoreElements()) {
+                        String alias = aliases.nextElement();
+                        if (jks.isKeyEntry(alias)) {
+                            certsArray = jks.getCertificateChain(alias);
+                            // LOG.trace( "Cert alias: " + alias );
+
+                            if ((certsArray != null) && (certsArray.length != 0)) {
+                                form = new CertificatePropertiesForm();
+                                form.setCertificateProperties((X509Certificate) certsArray[0]);
+                                form.setNxCertificateId(certificate.getNxCertificateId());
+                                Date date = certificate.getCreatedDate();
+                                SimpleDateFormat databaseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                form.setCreated(databaseDateFormat.format(date));
+                                String issuerCN = CertificateUtil.getIssuer((X509Certificate) certsArray[certsArray.length - 1], X509Name.CN);
+                                form.setIssuerCN(issuerCN);
+                                certs.addElement(form);
+
+                                break;
+                            }
+                        }
+                    } // while
+                } else {
+                    LOG.error("Certificate entry does not contain any binary data: " + certificate.getName());
+                }
+            } // while
+        } else {
+            LOG.info("no certs found");
+        }
+        return certs;
+    }
+
 }

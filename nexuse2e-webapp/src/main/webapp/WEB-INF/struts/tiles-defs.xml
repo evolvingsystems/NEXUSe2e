@@ -67,7 +67,7 @@
 	</definition>
   
   <definition name="admin.content.tile" extends="layout.default">
-		<put name="document" value="/WEB-INF/pages/home.jsp" />
+		<put name="document" value="/WEB-INF/pages/reporting/statistics.jsp" />
 	</definition>
   <definition name="admin.page" extends="skeleton">
 		<put name="content" value="admin.content.tile" />

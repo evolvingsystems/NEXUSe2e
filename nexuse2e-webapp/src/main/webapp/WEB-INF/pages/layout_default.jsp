@@ -149,8 +149,8 @@
    * Displays an error.
    */
   function displayError(message) {
-  	alert(message);
-		hideInProgress();
+	hideInProgress();
+	window.console.error(message);
   }
 
   /*
@@ -231,11 +231,8 @@
 			separator = "&";
 		}
 		contentUrl = contentUrl + separator+"dummy="+Math.random();
-		// alert( 'Form: '  );
 		showInProgress();
 
-		//debug(form);
-		// alert( 'Action: ' + form.action );
 	 	dojo.xhrGet({
 				url: contentUrl,
 				handleAs: "text",
@@ -255,11 +252,8 @@
 	 * the result in the document pane. 
 	 */
 	function submitForm(form) {
-		// alert( 'Form: '  );
 		showInProgress();
 
-		//debug(form);
-		// alert( 'Action: ' + form.action );
 	 	dojo.xhrPost({
 				handleAs: "text",
 				form: form,

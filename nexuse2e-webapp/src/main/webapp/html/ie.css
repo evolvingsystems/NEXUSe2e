@@ -1,0 +1,15 @@
+.statistics {
+    padding: 0;
+}
+
+.statistics #conversations {
+    height: 45px;
+}
+
+.statistics .segment {
+    float: left;
+}
+
+.statistics .segment:hover {
+    min-width: 0 !important;
+}

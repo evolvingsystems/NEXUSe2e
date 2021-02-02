@@ -129,7 +129,7 @@
     <action path="/Banner" type="org.apache.struts.actions.ForwardAction" parameter="/WEB-INF/pages/banner.jsp">
     </action>
     
-    <action path="/NexusE2EAdmin" type="org.nexuse2e.ui.action.NoOpAction">
+    <action path="/NexusE2EAdmin" type="org.nexuse2e.ui.action.reporting.ReportingStatisticsAction">
       <forward name="success" path="admin.page"/>
     </action>
 
