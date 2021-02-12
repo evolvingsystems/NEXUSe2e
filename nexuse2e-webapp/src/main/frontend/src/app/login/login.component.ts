@@ -1,7 +1,11 @@
 import {Component, Injectable, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataService} from "../data/data.service";
+
+interface LoginData {
+  user: string;
+  password: string;
+}
 
 @Component({
   selector: 'app-login',
@@ -10,13 +14,13 @@ import {DataService} from "../data/data.service";
 })
 @Injectable({providedIn: 'root'})
 export class LoginComponent implements OnInit {
-  private returnUrl: string;
-  isHttps: boolean;
-  loginError: boolean;
-  user: string;
-  password: string;
+  returnUrl!: string;
+  isHttps?: boolean;
+  loginError?: boolean;
+  user?: string;
+  password?: string;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, private dataService: DataService) {
+  constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) {
   }
 
   ngOnInit() {
@@ -26,21 +30,22 @@ export class LoginComponent implements OnInit {
   }
 
   async onSubmit() {
-    this.loginError = false;
+    if (this.user && this.password) {
+      this.loginError = false;
+      const loginData: LoginData = {
+        user: this.user,
+        password: this.password
+      };
 
-    const loginData = {
-      user: this.user,
-      password: this.password
-    };
-
-    try {
-      await this.login(loginData);
-    } catch {
-      this.loginError = true;
+      try {
+        await this.login(loginData);
+      } catch {
+        this.loginError = true;
+      }
     }
   }
 
-  async login(loginData) {
+  async login(loginData: LoginData) {
     await this.dataService.post('/login', loginData);
     await this.router.navigateByUrl(this.returnUrl);
   }
