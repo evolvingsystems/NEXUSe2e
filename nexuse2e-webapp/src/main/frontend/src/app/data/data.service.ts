@@ -12,7 +12,7 @@ export class DataService {
     if (environment.API_URL.length) {
       this.API_URL = environment.API_URL;
     } else {
-      const pathArray = window.location.pathname.split("/ui/");
+      const pathArray = window.location.pathname.split("/ui");
       this.API_URL = pathArray[0] + "/api";
     }
   }
@@ -21,6 +21,7 @@ export class DataService {
     return this.http.get(this.API_URL + path).toPromise();
   }
 
+  // eslint-disable-next-line
   post(path: string, body: any) {
     return this.http.post(this.API_URL + path, body).toPromise();
   }

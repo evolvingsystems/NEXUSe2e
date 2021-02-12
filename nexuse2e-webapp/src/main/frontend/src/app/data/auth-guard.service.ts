@@ -21,7 +21,7 @@ export class AuthGuardService implements CanActivate {
       await this.dataService.get("/loggedIn");
     } catch {
       await this.router.navigate(["/login"], {
-        queryParams: { returnUrl: state.url, route: route },
+        queryParams: { returnUrl: state.url },
       });
       return false;
     }
