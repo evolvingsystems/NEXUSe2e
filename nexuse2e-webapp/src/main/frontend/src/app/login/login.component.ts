@@ -1,7 +1,7 @@
 import {Component, Injectable, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {environment} from '../../environments/environment';
+import {DataService} from "../data/data.service";
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   user: string;
   password: string;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {
+  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, private dataService: DataService) {
   }
 
   ngOnInit() {
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
   }
 
   async login(loginData) {
-    await this.http.post(environment.API_URL + '/login', loginData).toPromise();
+    await this.dataService.post('/login', loginData);
     await this.router.navigateByUrl(this.returnUrl);
   }
 
