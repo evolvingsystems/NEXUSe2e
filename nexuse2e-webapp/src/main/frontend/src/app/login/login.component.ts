@@ -1,6 +1,6 @@
-import {Component, Injectable, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {DataService} from "../data/data.service";
+import { Component, Injectable, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { DataService } from "../data/data.service";
 
 interface LoginData {
   user: string;
@@ -8,11 +8,11 @@ interface LoginData {
 }
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"],
 })
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: "root" })
 export class LoginComponent implements OnInit {
   returnUrl!: string;
   isHttps?: boolean;
@@ -20,13 +20,16 @@ export class LoginComponent implements OnInit {
   user?: string;
   password?: string;
 
-  constructor(private route: ActivatedRoute, private router: Router, private dataService: DataService) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private dataService: DataService
+  ) {}
 
   ngOnInit() {
-    const returnUrl = 'returnUrl';
-    this.returnUrl = this.route.snapshot.queryParams[returnUrl] || '/';
-    this.isHttps = location.protocol === 'https';
+    const returnUrl = "returnUrl";
+    this.returnUrl = this.route.snapshot.queryParams[returnUrl] || "/";
+    this.isHttps = location.protocol === "https";
   }
 
   async onSubmit() {
@@ -34,7 +37,7 @@ export class LoginComponent implements OnInit {
       this.loginError = false;
       const loginData: LoginData = {
         user: this.user,
-        password: this.password
+        password: this.password,
       };
 
       try {
@@ -46,8 +49,7 @@ export class LoginComponent implements OnInit {
   }
 
   async login(loginData: LoginData) {
-    await this.dataService.post('/login', loginData);
+    await this.dataService.post("/login", loginData);
     await this.router.navigateByUrl(this.returnUrl);
   }
-
 }

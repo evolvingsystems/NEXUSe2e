@@ -3,21 +3,17 @@ module.exports = {
     browser: true,
     es2021: true,
     jest: true,
-    jasmine: true
+    jasmine: true,
   },
-  extends: [
-    'eslint:recommended'
-  ],
-  parser: '@typescript-eslint/parser',
+  extends: ["eslint:recommended", "prettier"],
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: 'module'
+    sourceType: "module",
   },
-  plugins: [
-    '@typescript-eslint'
-  ],
+  plugins: ["@typescript-eslint"],
   rules: {
-    'no-unused-vars': 0,
-    '@typescript-eslint/no-unused-vars-experimental': 2
+    "no-unused-vars": 0,
+    "@typescript-eslint/no-unused-vars-experimental": 2,
   },
-}
+};
