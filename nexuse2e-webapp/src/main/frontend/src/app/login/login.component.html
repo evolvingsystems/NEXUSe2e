@@ -9,8 +9,8 @@
   <label>
     <input name="password" type="password" required [(ngModel)]="password" />
   </label>
+  <button (click)="onSubmit()" class="login-button" type="submit">Login</button>
 </form>
 <div class="login-error" *ngIf="loginError">
   Wrong login data. Please try again.
 </div>
-<button class="login-button" type="button" (click)="onSubmit()">Login</button>
