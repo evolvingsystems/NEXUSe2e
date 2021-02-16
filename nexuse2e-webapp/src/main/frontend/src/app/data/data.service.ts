@@ -12,8 +12,7 @@ export class DataService {
     if (environment.API_URL.length) {
       this.API_URL = environment.API_URL;
     } else {
-      const pathArray = window.location.pathname.split("/ui");
-      this.API_URL = pathArray[0] + "/api";
+      this.API_URL = "../api";
     }
   }
 
