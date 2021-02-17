@@ -1,0 +1,29 @@
+.mat-form-field {
+  display: block;
+}
+
+.mat-flat-button {
+  width: 100%;
+}
+
+img {
+  width: 120px;
+  margin: 25px auto 25px auto;
+  display: block;
+  border-radius: 4px;
+}
+
+.warning {
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 25px;
+  background: #ffdacf;
+  color: #cc570c;
+}
+
+@media(min-width: 501px) {
+  .centered {
+    max-width: 350px;
+    margin-top: 110px;
+  }
+}

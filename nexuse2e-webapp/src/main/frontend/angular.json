@@ -22,7 +22,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/en.json"
+              "src/en.json",
+              "src/logo.png"
             ],
             "styles": [
               "src/custom-theme.scss",

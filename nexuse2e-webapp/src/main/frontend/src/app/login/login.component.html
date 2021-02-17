@@ -1,17 +1,37 @@
-<div class="http-warning" *ngIf="!isHttps">
-  {{ 'login.httpWarning' | translate }}
-</div>
-<form name="login">
-  <label>
-    <input name="user" type="text" required [(ngModel)]="user" />
-  </label>
-  <label>
-    <input name="password" type="password" required [(ngModel)]="password" />
-  </label>
-  <button (click)="onSubmit()" class="login-button" type="submit">
-    {{ 'buttons.login' | translate }}
-  </button>
-</form>
-<div class="login-error" *ngIf="loginError">
-  {{ 'login.wrongCredentials' | translate }}
+<div class="padded centered">
+  <img src="logo.png" alt="{{ 'labels.nexuse2e' | translate }}">
+  <div class="warning" *ngIf="!isHttps">
+    {{ 'login.httpWarning' | translate }}
+  </div>
+  <div class="warning" *ngIf="loginError">
+    {{ "login.wrongCredentials" | translate }}
+  </div>
+  <form name="login">
+    <mat-form-field>
+      <input matInput
+             placeholder="{{ 'labels.user' | translate }}"
+             name="user"
+             type="text"
+             required
+             [(ngModel)]="user"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput
+             placeholder="{{ 'labels.password' | translate }}"
+             name="password"
+             type="password"
+             required
+             [(ngModel)]="password"
+      />
+    </mat-form-field>
+    <button mat-flat-button
+            (click)="onSubmit()"
+            class="login-button"
+            type="submit"
+            color="accent"
+    >
+      {{ "buttons.login" | translate }}
+    </button>
+  </form>
 </div>

@@ -12,6 +12,9 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -49,8 +52,17 @@ export function HttpLoaderFactory(http: HttpClient) {
     RouterModule.forRoot(routes, { useHash: true }),
     FormsModule,
     NoopAnimationsModule,
+    MatInputModule,
+    MatButtonModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: "outline",
+      },
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

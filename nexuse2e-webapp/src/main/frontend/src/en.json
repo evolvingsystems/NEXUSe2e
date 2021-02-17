@@ -1,12 +1,13 @@
 {
   "login": {
-    "httpWarning": "You are trying to log in using an insecure connection. Using HTTPS is recommended.",
+    "httpWarning": "You are trying to log in using an insecure connection. Using HTTPS is strongly advised.",
     "wrongCredentials": "Wrong login data. Please try again."
   },
   "buttons": {
     "login": "Login"
   },
   "labels": {
+    "nexuse2e": "NEXUSe2e",
     "user": "User",
     "password": "Password"
   }
