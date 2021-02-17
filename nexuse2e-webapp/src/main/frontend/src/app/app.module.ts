@@ -9,6 +9,7 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
 import { AuthGuardService } from "./data/auth-guard.service";
 import { FormsModule } from "@angular/forms";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -33,6 +34,7 @@ const routes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(routes, { useHash: true }),
     FormsModule,
+    NoopAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
