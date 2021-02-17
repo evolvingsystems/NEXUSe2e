@@ -1,0 +1,13 @@
+{
+  "login": {
+    "httpWarning": "You are trying to log in using an insecure connection. Using HTTPS is recommended.",
+    "wrongCredentials": "Wrong login data. Please try again."
+  },
+  "buttons": {
+    "login": "Login"
+  },
+  "labels": {
+    "user": "User",
+    "password": "Password"
+  }
+}
