@@ -21,7 +21,7 @@ public class UIServlet extends HttpServlet {
         String outputFilename = ENTRY_POINT;
         if (path != null) {
             if (!FilenameUtils.getExtension(path).isEmpty()) {
-                outputFilename = FilenameUtils.getName(path);
+                outputFilename = path;
             }
         }
         handleResponse(response, outputFilename);
