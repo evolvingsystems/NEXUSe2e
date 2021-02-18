@@ -18,7 +18,7 @@ export class AuthGuardService implements CanActivate {
     state: RouterStateSnapshot
   ): Promise<boolean> {
     try {
-      await this.dataService.get("/loggedIn");
+      await this.dataService.get("/logged-in");
     } catch {
       await this.router.navigate(["/login"], {
         queryParams: { returnUrl: state.url },

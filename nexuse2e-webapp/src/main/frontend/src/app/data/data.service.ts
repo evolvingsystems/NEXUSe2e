@@ -16,8 +16,8 @@ export class DataService {
     }
   }
 
-  get(path: string) {
-    return this.http.get(this.API_URL + path).toPromise();
+  get<T>(path: string): Promise<T> {
+    return this.http.get<T>(this.API_URL + path).toPromise<T>();
   }
 
   // eslint-disable-next-line

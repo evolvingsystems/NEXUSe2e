@@ -9,6 +9,10 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+h1, h2 {
+  color: #808080;
+}
+
 button {
   text-transform: uppercase;
 }

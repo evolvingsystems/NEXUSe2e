@@ -17,6 +17,7 @@ public class RestDispatcherServlet extends HttpServlet {
 
     public RestDispatcherServlet() {
         this.handlers.add(new LoginHandler());
+        this.handlers.add(new ConfigHandler());
     }
 
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {

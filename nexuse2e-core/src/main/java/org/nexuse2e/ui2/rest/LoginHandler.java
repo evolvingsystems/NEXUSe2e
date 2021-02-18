@@ -35,7 +35,7 @@ public class LoginHandler implements Handler {
     @Override
     public boolean canHandle(String path, String method) {
         return ("POST".equalsIgnoreCase(method) && "/login".equalsIgnoreCase(path))
-                || ("GET".equalsIgnoreCase(method) && "/loggedIn".equalsIgnoreCase(path));
+                || ("GET".equalsIgnoreCase(method) && "/logged-in".equalsIgnoreCase(path));
     }
 
     @Override

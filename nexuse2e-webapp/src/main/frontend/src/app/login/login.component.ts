@@ -16,6 +16,7 @@ interface LoginData {
 export class LoginComponent implements OnInit {
   returnUrl!: string;
   isHttps?: boolean;
+  machineName?: string;
   loginError?: boolean;
   user?: string;
   password?: string;
@@ -24,7 +25,11 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dataService: DataService
-  ) {}
+  ) {
+    this.dataService
+      .get<string>("/machine-name")
+      .then((name) => (this.machineName = name));
+  }
 
   ngOnInit() {
     const returnUrl = "returnUrl";
