@@ -22,9 +22,6 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     // note you must disable the base rule as it can report incorrect errors
     "no-empty-function": "off",
-    "@typescript-eslint/no-empty-function": [
-      "error",
-      { allow: ["private-constructors"] },
-    ],
+    "@typescript-eslint/no-empty-function": "off",
   },
 };

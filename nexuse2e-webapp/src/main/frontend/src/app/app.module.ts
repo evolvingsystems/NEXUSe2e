@@ -15,6 +15,8 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { HeaderComponent } from "./header/header.component";
+import { NavigationComponent } from "./navigation/navigation.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -37,6 +39,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoginComponent,
     DashboardComponent,
     PageNotFoundComponent,
+    HeaderComponent,
+    NavigationComponent,
   ],
   imports: [
     BrowserModule,

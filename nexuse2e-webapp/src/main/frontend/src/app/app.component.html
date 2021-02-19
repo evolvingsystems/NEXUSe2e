@@ -1,1 +1,3 @@
-<router-outlet></router-outlet>
+<app-header *ngIf="!hiddenHeaderNav"></app-header>
+<app-navigation *ngIf="!hiddenHeaderNav"></app-navigation>
+<router-outlet (activate)='determineVisibility($event)'></router-outlet>

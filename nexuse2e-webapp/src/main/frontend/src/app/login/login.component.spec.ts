@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { LoginComponent } from "./login.component";
-import { HttpClient, HttpHandler } from "@angular/common/http";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { of } from "rxjs";
 import { DataService } from "../data/data.service";
+import { TranslateModule } from "@ngx-translate/core";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpClient } from "@angular/common/http";
 
 describe("LoginComponent (rendering)", () => {
   let component: LoginComponent;
@@ -14,11 +16,14 @@ describe("LoginComponent (rendering)", () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule, FormsModule],
+        imports: [
+          RouterTestingModule,
+          FormsModule,
+          HttpClientTestingModule,
+          TranslateModule.forRoot(),
+        ],
         declarations: [LoginComponent],
         providers: [
-          HttpClient,
-          HttpHandler,
           {
             provide: ActivatedRoute,
             useValue: {
@@ -53,15 +58,15 @@ describe("LoginComponent (rendering)", () => {
 
   it("should show an error message after a failed login attempt", () => {
     spyOn(component, "login").and.throwError("login failed");
-    let userInput = fixture.nativeElement.querySelector('input[name="user"]');
+    const userInput = fixture.nativeElement.querySelector('input[name="user"]');
     userInput.value = "wrongUser";
     userInput.dispatchEvent(new Event("input"));
-    let passwordInput = fixture.nativeElement.querySelector(
+    const passwordInput = fixture.nativeElement.querySelector(
       'input[name="password"]'
     );
     passwordInput.value = "wrongPassword";
     passwordInput.dispatchEvent(new Event("input"));
-    let button = fixture.nativeElement.querySelector(".login-button");
+    const button = fixture.nativeElement.querySelector(".login-button");
     button.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector(".login-error")).toBeTruthy();
@@ -75,22 +80,23 @@ describe("LoginComponent (rendering)", () => {
 
 describe("LoginComponent (logic)", () => {
   let component: LoginComponent;
-  let httpClient: HttpClient;
   let activatedRoute: ActivatedRoute;
   let router: Router;
+  let httpClientSpy: { post: jasmine.Spy; get: jasmine.Spy };
 
   beforeEach(
     waitForAsync(() => {
       router = jasmine.createSpyObj("Router", {
         navigateByUrl: function () {},
       });
-      // @ts-ignore
-      httpClient = new HttpClient(null);
+      httpClientSpy = jasmine.createSpyObj("HttpClient", ["get", "post"]);
+      httpClientSpy.post.and.returnValue(of(true));
+      httpClientSpy.get.and.returnValue(of(true));
       activatedRoute = new ActivatedRoute();
       component = new LoginComponent(
         activatedRoute,
         router,
-        new DataService(httpClient)
+        new DataService((httpClientSpy as unknown) as HttpClient)
       );
     })
   );
@@ -100,7 +106,6 @@ describe("LoginComponent (logic)", () => {
   });
 
   it("should redirect after successful login", async () => {
-    spyOn(httpClient, "post").and.returnValue(of(true));
     await component.login({
       user: "user",
       password: "password",
