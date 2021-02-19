@@ -31,10 +31,15 @@ export class LoginComponent implements OnInit {
       .then((name) => (this.machineName = name));
   }
 
-  ngOnInit() {
-    const returnUrl = "returnUrl";
-    this.returnUrl = this.route.snapshot.queryParams[returnUrl] || "/";
-    this.isHttps = location.protocol === "https";
+  async ngOnInit() {
+    try {
+      await this.dataService.get("/logged-in");
+      await this.router.navigate(["/dashboard"]);
+    } catch {
+      const returnUrl = "returnUrl";
+      this.returnUrl = this.route.snapshot.queryParams[returnUrl] || "/";
+      this.isHttps = location.protocol === "https";
+    }
   }
 
   async onSubmit() {
