@@ -10,7 +10,7 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 })
 export class AppComponent {
   title = "frontend";
-  hiddenHeaderNav = false;
+  showHeaderNav = false;
 
   constructor(translate: TranslateService) {
     translate.use("en");
@@ -18,7 +18,8 @@ export class AppComponent {
 
   // eslint-disable-next-line
   determineVisibility(event: any) {
-    this.hiddenHeaderNav =
-      event instanceof LoginComponent || event instanceof PageNotFoundComponent;
+    this.showHeaderNav = !(
+      event instanceof LoginComponent || event instanceof PageNotFoundComponent
+    );
   }
 }

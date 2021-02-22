@@ -1,3 +1,5 @@
-<app-header *ngIf="!hiddenHeaderNav"></app-header>
-<app-navigation *ngIf="!hiddenHeaderNav"></app-navigation>
-<router-outlet (activate)='determineVisibility($event)'></router-outlet>
+<app-header *ngIf="showHeaderNav"></app-header>
+<app-navigation *ngIf="showHeaderNav" class="float-left full-height"></app-navigation>
+<div [ngClass]="{ 'content-container': showHeaderNav }" class="padded full-height">
+  <router-outlet (activate)='determineVisibility($event)'></router-outlet>
+</div>

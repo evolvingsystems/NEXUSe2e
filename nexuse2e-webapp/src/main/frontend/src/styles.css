@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files. Please
 */
+
 html, body {
   height: 100%;
 }
@@ -17,6 +18,12 @@ button {
   text-transform: uppercase;
 }
 
+.mat-form-field-infix {
+  border-top: 5px solid transparent;
+}
+
+/* UTILITY */
+
 .padded {
   padding: 10px;
 }
@@ -26,6 +33,14 @@ button {
   margin: 0 auto;
 }
 
-.mat-form-field-infix {
-  border-top: 5px solid transparent;
+.full-height {
+  height: 100%;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
 }
