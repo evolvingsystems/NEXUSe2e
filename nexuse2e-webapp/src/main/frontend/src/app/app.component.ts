@@ -6,7 +6,7 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
+  styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
   title = "frontend";
