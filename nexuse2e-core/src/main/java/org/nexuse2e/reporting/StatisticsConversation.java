@@ -12,7 +12,7 @@ public class StatisticsConversation {
     public StatisticsConversation(Object[] record) {
         this.choreographyId = (String) record[5];
         this.conversationId = (String) record[0];
-        this.nxConversationId = (int) record[4];
+        this.nxConversationId = ((Number) record[4]).intValue();
         this.partnerId = (String) record[6];
         this.modifiedDate = (Date) record[2];
     }

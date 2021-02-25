@@ -22,11 +22,11 @@ public class StatisticsMessage {
         actionId = (String) record[1];
         choreographyId = (String) record[2];
         createdDate = (Date) record[3];
-        type = (Integer) record[4];
-        status = MessageStatus.getByOrdinal((int) record[5]);
+        type = ((Number) record[4]).intValue();
+        status = MessageStatus.getByOrdinal(((Number) record[5]).intValue());
         conversationId = (String) record[6];
-        nxMessageId = (Integer) record[7];
-        nxConversationId = (Integer) record[8];
+        nxMessageId = ((Number) record[7]).intValue();
+        nxConversationId = ((Number) record[8]).intValue();
         partnerId = (String) record[9];
     }
 

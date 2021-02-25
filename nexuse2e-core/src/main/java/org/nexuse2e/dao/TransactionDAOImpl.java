@@ -306,8 +306,8 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         List<ConversationPojo> results = new ArrayList<>();
         for(Object[] row : rowList) {
             ConversationPojo entry = new ConversationPojo();
-            entry.setNxConversationId((Integer) row[0]);
-            entry.setStatus((Integer) row[1]);
+            entry.setNxConversationId(((Number) row[0]).intValue());
+            entry.setStatus(((Number) row[1]).intValue());
             entry.setConversationId((String) row[2]);
             results.add(entry);
         }
@@ -483,11 +483,8 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         Integer[] ids = new Integer[idList.size()];
         for (int i = 0; i < idList.size(); i++) {
             Object value = idList.get(i);
-            if (value instanceof BigDecimal) { // stupid oracle behavior
-                ids[i] = ((BigDecimal) value).intValue();
-            } else { // default
-                ids[i] = (Integer) value;
-            }
+            // value is returned as BigDecimal from OracleDB and as Integer from other databases
+            ids[i] = ((Number) value).intValue();
         }
         return ids;
     }
