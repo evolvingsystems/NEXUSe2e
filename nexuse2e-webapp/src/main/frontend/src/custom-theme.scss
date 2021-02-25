@@ -99,3 +99,7 @@ $frontend-theme: mat-light-theme((
 // that you are using.
 @include angular-material-theme($frontend-theme);
 
+.accent-color {
+  color: mat-color($frontend-accent);
+}
+

@@ -9,5 +9,22 @@ header {
     width: 50px;
     height: 50px;
     color: white;
+    float: left;
+  }
+
+  .nexus-info {
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .machine-name {
+      color: white;
+    }
+
+    .version {
+      color: #bbb;
+      font-size: 13px;
+    }
   }
 }
