@@ -1,17 +1,5 @@
 <div [ngClass]="{ 'expanded': expanded }" class="navigation">
-  <div class="session-panel">
-    <div class="login-info">
-      <div class="user-label">
-        Logged in as
-      </div>
-      <div class="user-name accent-color">
-        Admin
-      </div>
-    </div>
-    <button color="accent" mat-flat-button>
-      Logout
-    </button>
-  </div>
+  <app-session-panel></app-session-panel>
   <div class="nav-items">
     <button>Dashboard</button>
     <button>Reporting</button>

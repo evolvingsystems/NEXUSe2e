@@ -1,6 +1,7 @@
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -34,16 +35,26 @@ public class LoginHandler implements Handler {
 
     @Override
     public boolean canHandle(String path, String method) {
-        return ("POST".equalsIgnoreCase(method) && "/login".equalsIgnoreCase(path))
-                || ("GET".equalsIgnoreCase(method) && "/logged-in".equalsIgnoreCase(path));
+        return ("POST".equalsIgnoreCase(method) && "/login".equalsIgnoreCase(path)) ||
+                ("POST".equalsIgnoreCase(method) && "/logout".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/logged-in".equalsIgnoreCase(path));
     }
 
     @Override
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        if ("/login".equalsIgnoreCase(req.getPathInfo())) {
-            login(req, resp);
-        } else {
-            probeLogin(req, resp);
+        String path = req.getPathInfo();
+        if (path != null) {
+            switch (StringUtils.lowerCase(path)) {
+                case "/login":
+                    login(req, resp);
+                    break;
+                case "/logged-in":
+                    probeLogin(req, resp);
+                    break;
+                case "/logout":
+                    logout(req, resp);
+                    break;
+            }
         }
     }
 
@@ -78,6 +89,13 @@ public class LoginHandler implements Handler {
         } else {
             response.setStatus(401);
         }
+    }
+
+    private void logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        session.removeAttribute(NexusE2EAction.ATTRIBUTE_USER);
+        session.removeAttribute("patchManagementForm"); // remove patches
+        response.setStatus(200);
     }
 
     private byte[] parseHexString(final String s) {

@@ -18,6 +18,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { HeaderComponent } from "./header/header.component";
 import { NavigationComponent } from "./navigation/navigation.component";
 import { MatIconModule } from "@angular/material/icon";
+import { SessionPanelComponent } from "./session-panel/session-panel.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -42,6 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageNotFoundComponent,
     HeaderComponent,
     NavigationComponent,
+    SessionPanelComponent,
   ],
   imports: [
     BrowserModule,
