@@ -11,6 +11,7 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 export class AppComponent {
   title = "frontend";
   showHeaderNav = false;
+  navExpanded = false;
 
   constructor(translate: TranslateService) {
     translate.use("en");

@@ -8,6 +8,7 @@ import { DataService } from "../data/data.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClient } from "@angular/common/http";
+import { CacheService } from "../data/cache.service";
 
 describe("LoginComponent (rendering)", () => {
   let component: LoginComponent;
@@ -82,6 +83,8 @@ describe("LoginComponent (logic)", () => {
   let component: LoginComponent;
   let activatedRoute: ActivatedRoute;
   let router: Router;
+  let dataService: DataService;
+  let cacheService: CacheService;
   let httpClientSpy: { post: jasmine.Spy; get: jasmine.Spy };
 
   beforeEach(
@@ -93,10 +96,13 @@ describe("LoginComponent (logic)", () => {
       httpClientSpy.post.and.returnValue(of(true));
       httpClientSpy.get.and.returnValue(of(true));
       activatedRoute = new ActivatedRoute();
+      dataService = new DataService((httpClientSpy as unknown) as HttpClient);
+      cacheService = new CacheService(dataService);
       component = new LoginComponent(
         activatedRoute,
         router,
-        new DataService((httpClientSpy as unknown) as HttpClient)
+        dataService,
+        cacheService
       );
     })
   );

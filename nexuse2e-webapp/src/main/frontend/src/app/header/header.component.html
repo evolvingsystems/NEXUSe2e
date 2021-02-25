@@ -1,1 +1,5 @@
-<header></header>
+<header>
+  <button (click)="toggleNav()" mat-icon-button>
+    <mat-icon>{{ navOpen ? "clear" : "menu" }}</mat-icon>
+  </button>
+</header>

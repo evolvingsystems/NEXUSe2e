@@ -17,6 +17,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { HeaderComponent } from "./header/header.component";
 import { NavigationComponent } from "./navigation/navigation.component";
+import { MatIconModule } from "@angular/material/icon";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -58,6 +59,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NoopAnimationsModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
   ],
   providers: [
     {

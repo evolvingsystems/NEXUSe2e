@@ -1,6 +1,7 @@
 import { Component, Injectable, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../data/data.service";
+import { CacheService } from "../data/cache.service";
 
 interface LoginData {
   user: string;
@@ -24,12 +25,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private dataService: DataService
-  ) {
-    this.dataService
-      .get<string>("/machine-name")
-      .then((name) => (this.machineName = name));
-  }
+    private dataService: DataService,
+    private cacheService: CacheService
+  ) {}
 
   async ngOnInit() {
     try {
@@ -39,6 +37,9 @@ export class LoginComponent implements OnInit {
       const returnUrl = "returnUrl";
       this.returnUrl = this.route.snapshot.queryParams[returnUrl] || "/";
       this.isHttps = location.protocol === "https";
+      this.cacheService
+        .get<string>("/machine-name")
+        .then((name) => (this.machineName = name));
     }
   }
 
