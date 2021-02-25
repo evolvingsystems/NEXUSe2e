@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
     } catch {
       const returnUrl = "returnUrl";
       this.returnUrl = this.route.snapshot.queryParams[returnUrl] || "/";
-      this.isHttps = location.protocol === "https";
+      this.isHttps = location.protocol === "https:";
       this.cacheService
         .get<string>("/machine-name")
         .then((name) => (this.machineName = name));
