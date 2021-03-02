@@ -19,6 +19,10 @@ import { HeaderComponent } from "./header/header.component";
 import { NavigationComponent } from "./navigation/navigation.component";
 import { MatIconModule } from "@angular/material/icon";
 import { SessionPanelComponent } from "./session-panel/session-panel.component";
+import { ReportingComponent } from "./reporting/reporting.component";
+import { TransactionReportingComponent } from "./transaction-reporting/transaction-reporting.component";
+import { EngineLogComponent } from "./engine-log/engine-log.component";
+import { MenuItemComponent } from "./menu-item/menu-item.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -27,6 +31,33 @@ const routes: Routes = [
     path: "dashboard",
     component: DashboardComponent,
     canActivate: [AuthGuardService],
+    data: {
+      title: "Dashboard",
+    },
+  },
+  {
+    path: "reporting",
+    component: ReportingComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      title: "Reporting",
+    },
+    children: [
+      {
+        path: "transaction-reporting",
+        component: TransactionReportingComponent,
+        data: {
+          title: "Transaction Reporting",
+        },
+      },
+      {
+        path: "engine-log",
+        component: EngineLogComponent,
+        data: {
+          title: "Engine Log",
+        },
+      },
+    ],
   },
   { path: "**", component: PageNotFoundComponent },
 ];
@@ -44,6 +75,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     HeaderComponent,
     NavigationComponent,
     SessionPanelComponent,
+    ReportingComponent,
+    TransactionReportingComponent,
+    EngineLogComponent,
+    MenuItemComponent,
   ],
   imports: [
     BrowserModule,

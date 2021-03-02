@@ -9,7 +9,6 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  title = "frontend";
   showHeaderNav = false;
   navExpanded = false;
 

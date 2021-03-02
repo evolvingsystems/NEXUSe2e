@@ -3,26 +3,9 @@
     <app-session-panel></app-session-panel>
   </div>
   <div [style.margin-bottom]="calculateMargin()" class="nav-items">
-    <button>Dashboard</button>
-    <button>Reporting</button>
-    <button>Transaction Reporting</button>
-    <button>Engine Log</button>
-    <button>Dashboard</button>
-    <button>Reporting</button>
-    <button>Transaction Reporting</button>
-    <button>Engine Log</button>
-    <button>Dashboard</button>
-    <button>Reporting</button>
-    <button>Transaction Reporting</button>
-    <button>Engine Log</button>
-    <button>Dashboard</button>
-    <button>Reporting</button>
-    <button>Transaction Reporting</button>
-    <button>Engine Log</button>
-    <button>Dashboard</button>
-    <button>Reporting</button>
-    <button>Transaction Reporting</button>
-    <button>Engine Log</button>
+    <div *ngFor="let route of router.config">
+      <app-menu-item [route]="route" fullPath=""></app-menu-item>
+    </div>
   </div>
   <div class="version-info padded">
     <p *ngFor="let line of version">

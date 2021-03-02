@@ -1,0 +1,17 @@
+<div *ngIf="route.data?.title" class="menu-item">
+  <button
+    (click)="route.children ? toggleChildren(): onClick()"
+    [style.padding-left]="level * 16 + 'px'"
+  >
+    {{ route.data?.title }}
+  </button>
+  <div *ngIf="route.children && expanded">
+    <div *ngFor="let child of route.children" class="child">
+      <app-menu-item
+        [fullPath]="fullPath"
+        [level]="level + 1"
+        [route]="child">
+      </app-menu-item>
+    </div>
+  </div>
+</div>

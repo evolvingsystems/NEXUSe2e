@@ -9,6 +9,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClient } from "@angular/common/http";
 import { CacheService } from "../data/cache.service";
+import { NavigationService } from "../navigation/navigation.service";
 
 describe("LoginComponent (rendering)", () => {
   let component: LoginComponent;
@@ -85,6 +86,7 @@ describe("LoginComponent (logic)", () => {
   let router: Router;
   let dataService: DataService;
   let cacheService: CacheService;
+  let navigationService: NavigationService;
   let httpClientSpy: { post: jasmine.Spy; get: jasmine.Spy };
 
   beforeEach(
@@ -98,11 +100,13 @@ describe("LoginComponent (logic)", () => {
       activatedRoute = new ActivatedRoute();
       dataService = new DataService((httpClientSpy as unknown) as HttpClient);
       cacheService = new CacheService(dataService);
+      navigationService = new NavigationService();
       component = new LoginComponent(
         activatedRoute,
         router,
         dataService,
-        cacheService
+        cacheService,
+        navigationService
       );
     })
   );

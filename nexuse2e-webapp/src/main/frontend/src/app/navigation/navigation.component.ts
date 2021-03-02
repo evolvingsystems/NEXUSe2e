@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationService } from "./navigation.service";
 import { CacheService } from "../data/cache.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-navigation",
@@ -12,14 +13,15 @@ export class NavigationComponent implements OnInit {
 
   constructor(
     public navigationService: NavigationService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    public router: Router
   ) {
     this.cacheService
       .get<string[]>("/version")
       .then((version) => (this.version = version));
   }
 
-  ngOnInit(): void {}
+  ngOnInit() {}
 
   calculateMargin() {
     return this.version ? 20 + this.version.length * 20 + "px" : 0;
