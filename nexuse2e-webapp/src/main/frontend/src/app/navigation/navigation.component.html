@@ -2,7 +2,7 @@
   <div class="session-panel">
     <app-session-panel></app-session-panel>
   </div>
-  <div class="nav-items">
+  <div [style.margin-bottom]="calculateMargin()" class="nav-items">
     <button>Dashboard</button>
     <button>Reporting</button>
     <button>Transaction Reporting</button>
@@ -25,8 +25,8 @@
     <button>Engine Log</button>
   </div>
   <div class="version-info padded">
-    4.2.4<br>
-    Revision: 982<br>
-    Build: 14 2020-03-18_16-49-06
+    <p *ngFor="let line of version">
+      {{ line }}
+    </p>
   </div>
 </div>

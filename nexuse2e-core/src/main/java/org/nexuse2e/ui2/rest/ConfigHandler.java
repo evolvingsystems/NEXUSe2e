@@ -36,7 +36,8 @@ public class ConfigHandler implements Handler {
     }
 
     private void getVersion(HttpServletResponse response) throws IOException {
-        response.getOutputStream().print(new Gson().toJson(Version.getVersion()));
+        String version = Version.getVersion();
+        response.getOutputStream().print(new Gson().toJson(version.split(", ")));
     }
 
     private void getMachineName(HttpServletRequest req, HttpServletResponse response) throws IOException {

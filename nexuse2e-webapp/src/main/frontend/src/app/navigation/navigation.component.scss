@@ -19,7 +19,6 @@
   }
 
   .nav-items {
-    margin-bottom: 90px;
     box-shadow: 0 1px 5px 0 rgb(0, 0, 0, 0.3);
 
     button {
@@ -45,6 +44,14 @@
     bottom: 0;
     color: #b9b9b9;
     z-index: -1;
+
+    p {
+      margin: 0;
+
+      &:not(:first-child) {
+        text-transform: capitalize;
+      }
+    }
   }
 }
 

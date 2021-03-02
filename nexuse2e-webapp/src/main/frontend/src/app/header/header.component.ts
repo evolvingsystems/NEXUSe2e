@@ -19,8 +19,8 @@ export class HeaderComponent implements OnInit {
       .get<string>("/machine-name")
       .then((name) => (this.machineName = name));
     this.cacheService
-      .get<string>("/version")
-      .then((version) => (this.version = version));
+      .get<string[]>("/version")
+      .then((version) => (this.version = version[0]));
   }
 
   ngOnInit(): void {}
