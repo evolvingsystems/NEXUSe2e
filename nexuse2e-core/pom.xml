@@ -851,9 +851,7 @@
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.TXT</exclude>
                         <exclude>**/lgpl.*</exclude>
-                        <exclude>**/*.properties</exclude>
                         <exclude>**/*.ts</exclude>
-                        <exclude>**/*.sql</exclude>
                         <exclude>**/*.xsd</exclude>
                     </excludes>
                     <useDefaultMapping>true</useDefaultMapping>

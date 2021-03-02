@@ -100,7 +100,7 @@
                     <header>LICENSE.TXT</header>
                     <properties>
                         <!-- change this property yearly -->
-                        <year>2000-2010</year>
+                        <year>2000-2021</year>
                     </properties>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <excludes>
@@ -117,9 +117,13 @@
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/struts*</exclude>
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/fmt*</exclude>
                         <exclude>work/**</exclude>
+                        <exclude>**/*.js</exclude>
+                        <exclude>**/*.map</exclude>
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.TXT</exclude>
                         <exclude>**/lgpl.*</exclude>
+                        <exclude>**/*.ts</exclude>
+                        <exclude>**/*.xsd</exclude>
                     </excludes>
                     <useDefaultMapping>true</useDefaultMapping>
                     <encoding>UTF-8</encoding>
