@@ -1,9 +1,19 @@
 <header>
-  <button (click)="toggleNav()" mat-icon-button>
-    <mat-icon>{{ navOpen ? "clear" : "menu" }}</mat-icon>
-  </button>
-  <div class="nexus-info">
-    <div class="machine-name">{{ machineName }}</div>
-    <div class="version">4.3.0</div>
+  <div class="left-section">
+    <div class="shadow-bottom">
+      <button (click)="toggleNav()" mat-icon-button>
+        <mat-icon>{{ navOpen ? "clear" : "menu" }}</mat-icon>
+      </button>
+      <div class="logo">
+        <img alt="{{ 'labels.nexuse2e' | translate }}" src="assets/img/logo.png">
+      </div>
+      <div class="nexus-info">
+        <div class="machine-name">{{ machineName }}</div>
+        <div class="version">4.3.0</div>
+      </div>
+    </div>
+  </div>
+  <div class="right-section">
+    <app-session-panel></app-session-panel>
   </div>
 </header>

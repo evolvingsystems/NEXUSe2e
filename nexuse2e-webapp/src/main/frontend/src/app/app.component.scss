@@ -4,3 +4,10 @@
   height: 100vh;
   overflow: scroll;
 }
+
+@media(min-width: 980px) {
+  .content-container {
+    margin-left: 350px;
+    padding-top: 80px;
+  }
+}

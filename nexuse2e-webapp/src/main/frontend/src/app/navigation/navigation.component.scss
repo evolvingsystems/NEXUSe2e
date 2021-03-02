@@ -10,6 +10,14 @@
   transition: margin-left 0.5s;
   z-index: 90;
 
+  .session-panel {
+    background: #e8e8e8;
+    width: 100%;
+    box-shadow: 0 1px 5px 0 rgb(0, 0, 0, 0.08);
+    border-bottom: 1px #ccc solid;
+    position: relative;
+  }
+
   .nav-items {
     margin-bottom: 90px;
     box-shadow: 0 1px 5px 0 rgb(0, 0, 0, 0.3);
@@ -42,4 +50,29 @@
 
 .expanded {
   margin-left: 0;
+}
+
+@media(min-width: 750px) {
+  .navigation {
+    width: 350px;
+    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.05);
+    border-right: 1px solid #e4d3d3;
+
+    .version-info {
+      width: 350px;
+    }
+  }
+}
+
+@media(min-width: 980px) {
+  .navigation {
+    padding-top: 75px;
+    box-shadow: none;
+    border: none;
+    margin-left: 0;
+
+    .session-panel {
+      display: none;
+    }
+  }
 }
