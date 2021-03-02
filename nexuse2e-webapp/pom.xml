@@ -116,13 +116,15 @@
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/c*</exclude>
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/struts*</exclude>
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/fmt*</exclude>
-                        <exclude>work/**</exclude>
                         <exclude>**/*.js</exclude>
                         <exclude>**/*.map</exclude>
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.TXT</exclude>
                         <exclude>**/lgpl.*</exclude>
+                        <exclude>**/*.properties</exclude>
                         <exclude>**/*.ts</exclude>
+                        <exclude>**/*.sql</exclude>
+                        <exclude>**/*.sh</exclude>
                         <exclude>**/*.xsd</exclude>
                     </excludes>
                     <useDefaultMapping>true</useDefaultMapping>
