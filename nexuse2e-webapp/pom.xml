@@ -104,6 +104,7 @@
                     </properties>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <excludes>
+                        <exclude>work/**</exclude>
                         <exclude>.*</exclude>
                         <exclude>**/.*</exclude>
                         <exclude>src/main/webapp/javascript/dijit/**</exclude>
