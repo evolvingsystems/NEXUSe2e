@@ -10,7 +10,7 @@
 
     <licenses>
         <license>
-            <name>GNU LESSER GENERAL PUBLIC LICENSE (LGPL), Version 2.1</name>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE (LGPL), Version 3</name>
             <url>http://www.fsf.org/licensing/licenses/lgpl.txt</url>
             <distribution>repo</distribution>
             <comments>OSS license that permits inclusion in commercial products.</comments>
