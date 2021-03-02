@@ -3,6 +3,7 @@ package org.nexuse2e.ui2.rest;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.nexuse2e.Version;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,12 +15,28 @@ public class ConfigHandler implements Handler {
 
     @Override
     public boolean canHandle(String path, String method) {
-        return ("GET".equalsIgnoreCase(method) && "/machine-name".equalsIgnoreCase(path));
+        return ("GET".equalsIgnoreCase(method) && "/machine-name".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/version".equalsIgnoreCase(path));
     }
 
     @Override
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        getMachineName(req, resp);
+        String path = req.getPathInfo();
+        if (path != null) {
+            switch (path) {
+                case "/machine-name":
+                    getMachineName(req, resp);
+                    break;
+                case "/version":
+                    getVersion(resp);
+                    break;
+            }
+        }
+
+    }
+
+    private void getVersion(HttpServletResponse response) throws IOException {
+        response.getOutputStream().print(new Gson().toJson(Version.getVersion()));
     }
 
     private void getMachineName(HttpServletRequest req, HttpServletResponse response) throws IOException {
