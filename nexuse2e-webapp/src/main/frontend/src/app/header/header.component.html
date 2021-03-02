@@ -1,8 +1,8 @@
 <header>
   <div class="left-section">
     <div class="shadow-bottom">
-      <button (click)="toggleNav()" mat-icon-button>
-        <mat-icon>{{ navOpen ? "clear" : "menu" }}</mat-icon>
+      <button (click)="navigationService.toggleNavigation()" mat-icon-button>
+        <mat-icon>{{ navigationService.isExpanded() ? "clear" : "menu" }}</mat-icon>
       </button>
       <div class="logo">
         <img alt="{{ 'labels.nexuse2e' | translate }}" src="assets/img/logo.png">

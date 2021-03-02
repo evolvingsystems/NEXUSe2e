@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { NavigationService } from "./navigation.service";
 
 @Component({
   selector: "app-navigation",
@@ -6,9 +7,7 @@ import { Component, Input, OnInit } from "@angular/core";
   styleUrls: ["./navigation.component.scss"],
 })
 export class NavigationComponent implements OnInit {
-  @Input() expanded = false;
-
-  constructor() {}
+  constructor(public navigationService: NavigationService) {}
 
   ngOnInit(): void {}
 }

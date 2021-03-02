@@ -1,5 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CacheService } from "../data/cache.service";
+import { NavigationService } from "../navigation/navigation.service";
 
 @Component({
   selector: "app-header",
@@ -7,12 +8,13 @@ import { CacheService } from "../data/cache.service";
   styleUrls: ["./header.component.scss"],
 })
 export class HeaderComponent implements OnInit {
-  @Output() navToggle = new EventEmitter();
-  navOpen = false;
   machineName?: string;
   version?: string;
 
-  constructor(private cacheService: CacheService) {
+  constructor(
+    private cacheService: CacheService,
+    public navigationService: NavigationService
+  ) {
     this.cacheService
       .get<string>("/machine-name")
       .then((name) => (this.machineName = name));
@@ -22,9 +24,4 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {}
-
-  toggleNav() {
-    this.navOpen = !this.navOpen;
-    this.navToggle.emit();
-  }
 }

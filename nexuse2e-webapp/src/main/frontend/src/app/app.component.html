@@ -1,5 +1,5 @@
-<app-header (navToggle)="navExpanded = !navExpanded" *ngIf="showHeaderNav"></app-header>
-<app-navigation *ngIf="showHeaderNav" [expanded]="navExpanded"></app-navigation>
+<app-header *ngIf="showHeaderNav"></app-header>
+<app-navigation *ngIf="showHeaderNav"></app-navigation>
 <div [ngClass]="{ 'content-container': showHeaderNav }" class="padded">
   <router-outlet (activate)='determineVisibility($event)'></router-outlet>
 </div>

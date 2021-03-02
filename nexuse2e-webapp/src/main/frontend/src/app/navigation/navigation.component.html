@@ -1,4 +1,4 @@
-<div [ngClass]="{ 'expanded': expanded }" class="navigation">
+<div [ngClass]="{ 'expanded': navigationService.isExpanded() }" class="navigation">
   <div class="session-panel">
     <app-session-panel></app-session-panel>
   </div>

@@ -2,6 +2,7 @@ import { Component, Injectable, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../data/data.service";
 import { CacheService } from "../data/cache.service";
+import { NavigationService } from "../navigation/navigation.service";
 
 interface LoginData {
   user: string;
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dataService: DataService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private navigationService: NavigationService
   ) {}
 
   async ngOnInit() {
@@ -61,6 +63,7 @@ export class LoginComponent implements OnInit {
 
   async login(loginData: LoginData) {
     await this.dataService.post("/login", loginData);
+    this.navigationService.hideNavigation();
     await this.router.navigateByUrl(this.returnUrl);
   }
 }
