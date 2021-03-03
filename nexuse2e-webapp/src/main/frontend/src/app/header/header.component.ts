@@ -15,13 +15,21 @@ export class HeaderComponent implements OnInit {
     private cacheService: CacheService,
     public navigationService: NavigationService
   ) {
+    this.getMachineName();
+    this.getVersionNumber();
+  }
+
+  ngOnInit(): void {}
+
+  getMachineName(): void {
     this.cacheService
       .get<string>("/machine-name")
       .then((name) => (this.machineName = name));
+  }
+
+  getVersionNumber(): void {
     this.cacheService
       .get<string[]>("/version")
       .then((version) => (this.version = version[0]));
   }
-
-  ngOnInit(): void {}
 }
