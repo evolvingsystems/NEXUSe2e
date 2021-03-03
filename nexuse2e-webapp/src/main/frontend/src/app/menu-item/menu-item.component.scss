@@ -1,14 +1,16 @@
+@import '../../styles.scss';
+
 .menu-item {
   button {
-    color: #494949;
-    width: 100%;
+    color: $gray1;
     height: 50px;
-    border-radius: 0;
-    background: #e8e8e8;
+    background: $gray5;
     text-transform: capitalize;
     border: none;
-    border-bottom: 1px #ccc solid;
+    border-radius: 0;
+    border-bottom: 1px solid $gray3;
     outline: none;
     text-align: left;
+    cursor: pointer;
   }
 }

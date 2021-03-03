@@ -1,5 +1,7 @@
+@import '../../styles.scss';
+
 header {
-  background: #333;
+  background: $gray1;
   height: 50px;
   width: 100%;
   position: fixed;
@@ -15,7 +17,7 @@ header {
       .mat-icon-button {
         width: 50px;
         height: 50px;
-        color: white;
+        color: $white;
         float: left;
       }
 
@@ -30,11 +32,11 @@ header {
         justify-content: center;
 
         .machine-name {
-          color: white;
+          color: $white;
         }
 
         .version {
-          color: #bbb;
+          color: $gray4;
           font-size: 13px;
         }
       }
@@ -48,7 +50,7 @@ header {
 
 @media(min-width: 980px) {
   header {
-    background: #f8f8f8;
+    background: $gray6;
     height: 75px;
     display: flex;
     justify-content: space-between;
@@ -62,8 +64,8 @@ header {
 
       .shadow-bottom {
         width: 350px;
-        background: #e8e8e8;
-        border-bottom: 1px solid #c4c4c4;
+        background: $gray5;
+        border-bottom: 1px solid $gray4;
         box-shadow: 0 1px 5px rgba(0, 0, 0, 0.12);
 
         .mat-icon-button {
@@ -82,13 +84,13 @@ header {
 
         .nexus-info {
           .machine-name {
-            color: #333;
+            color: $gray1;
             font-weight: bold;
             font-size: 16px;
           }
 
           .version {
-            color: #797979;
+            color: $gray4;
           }
         }
       }

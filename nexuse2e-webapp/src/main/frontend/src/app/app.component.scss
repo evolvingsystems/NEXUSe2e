@@ -2,7 +2,8 @@
   padding-top: 60px;
   box-sizing: border-box;
   height: 100vh;
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 @media(min-width: 980px) {

@@ -1,5 +1,6 @@
 <div *ngIf="route.data?.title" class="menu-item">
   <button
+    class="full-width"
     (click)="route.children ? toggleChildren(): onClick()"
     [style.padding-left]="level * 16 + 'px'"
   >

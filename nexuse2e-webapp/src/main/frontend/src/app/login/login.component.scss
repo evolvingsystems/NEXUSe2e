@@ -1,3 +1,5 @@
+@import '../../styles.scss';
+
 .mat-form-field {
   display: block;
 }
@@ -22,8 +24,8 @@ h2 {
   padding: 10px;
   border-radius: 4px;
   margin-bottom: 25px;
-  background: #ffdacf;
-  color: #cc570c;
+  background: $errorBackground;
+  color: $textError;
 }
 
 @media (min-width: 501px) {
