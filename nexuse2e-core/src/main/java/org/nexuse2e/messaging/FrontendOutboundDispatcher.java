@@ -68,12 +68,14 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
         ParticipantPojo participantPojo = messageContext.getMessagePojo().getParticipant();
 
-        LOG.info( new LogMessage(
-                "Sending " + messageContext.getMessagePojo().getTypeName()
-                + " message (" + messageContext.getMessagePojo().getMessageId()
-                + ") to " + participantPojo.getPartner().getPartnerId() + " for "
-                + messageContext.getChoreography().getName() + "/"
-                + messageContext.getMessagePojo().getAction().getName(), messageContext.getMessagePojo() ) );
+        if (messageContext.isFirstTimeInQueue() || messageContext.getMessagePojo().getRetries() < retries) {
+            LOG.info( new LogMessage(
+                    "Sending " + messageContext.getMessagePojo().getTypeName()
+                            + " message (" + messageContext.getMessagePojo().getMessageId()
+                            + ") to " + participantPojo.getPartner().getPartnerId() + " for "
+                            + messageContext.getChoreography().getName() + "/"
+                            + messageContext.getMessagePojo().getAction().getName(), messageContext.getMessagePojo() ) );
+        }
 
         // Request an conversation lock in order to not disallow parallel i/o, and processing activity in this conversation.
         // If everything goes alright, the lock will be released in the message sender thread after the message was sent,
