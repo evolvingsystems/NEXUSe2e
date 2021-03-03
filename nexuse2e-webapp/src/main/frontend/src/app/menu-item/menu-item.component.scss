@@ -8,6 +8,10 @@
   border-bottom: 1px $gray3 solid;
   display: flex;
 
+  &:hover {
+    filter: brightness(1.03);
+  }
+
   button {
     cursor: pointer;
     height: inherit;
