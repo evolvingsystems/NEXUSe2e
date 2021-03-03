@@ -6,6 +6,10 @@
   border-bottom: 1px #ccc solid;
   display: flex;
 
+  &:hover {
+    filter: brightness(1.03);
+  }
+
   button {
     cursor: pointer;
     height: inherit;
