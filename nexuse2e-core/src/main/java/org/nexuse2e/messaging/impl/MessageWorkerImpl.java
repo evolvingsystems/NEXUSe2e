@@ -107,7 +107,7 @@ public class MessageWorkerImpl implements MessageWorker {
             }
         }
 
-        if (messageContext.getMessagePojo().isOutbound() && worker.retries > 0) {
+        if (messageContext.getMessagePojo().isOutbound() && worker.retries >= 0) {
             worker.handle = threadPool.scheduleWithFixedDelay(worker, initialDelay, worker.interval, TimeUnit.SECONDS);
             Engine.getInstance().getTransactionService().registerProcessingMessage(messageContext.getMessagePojo(), worker.handle);
         } else {
