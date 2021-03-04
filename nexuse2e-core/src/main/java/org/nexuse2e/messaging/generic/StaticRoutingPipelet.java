@@ -45,6 +45,7 @@ public class StaticRoutingPipelet extends AbstractPipelet {
 
     public static final String CHOREOGRAPHY_PARAM_NAME = "choreographyId";
     public static final String ACTION_PARAM_NAME       = "actionId";
+    public static final String PARTICIPANT_PARAM_NAME  = "participantId";
 
     public StaticRoutingPipelet() {
 
@@ -55,6 +56,8 @@ public class StaticRoutingPipelet extends AbstractPipelet {
                 "The choreography to set on the processed message", "" ) );
         parameterMap.put( ACTION_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Action",
                 "The action to set on the processed message", "" ) );
+        parameterMap.put( PARTICIPANT_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Participant",
+                "The participant to set on the processed message", "" ) );
     }
 
     /* (non-Javadoc)
@@ -79,16 +82,18 @@ public class StaticRoutingPipelet extends AbstractPipelet {
                 String originalConversationId = ( message.getConversation() != null ? message.getConversation().getConversationId() : null );
                 String originalChoreography = ( messageContext.getChoreography() != null ? messageContext.getChoreography().getName() : null );  
                 String originalAction = ( message.getAction() != null ? message.getAction().getName() : null );
+                String originalParticipant = ( messageContext.getPartner() != null ? messageContext.getPartner().getPartnerId() : null );
                 
                 String newAction = getParameter( ACTION_PARAM_NAME );
                 String newChoreography = getParameter( CHOREOGRAPHY_PARAM_NAME );
+                String newParticipant = getParameter( PARTICIPANT_PARAM_NAME );
                 
                 Engine.getInstance().getTransactionService().initializeMessage(
                         message,
                         ( StringUtils.isNotEmpty( originalMessageId ) ? originalMessageId : messageIdGenerator.getId() ),
                         ( StringUtils.isNotEmpty( originalConversationId ) ? originalConversationId : conversationIdGenerator.getId() ),
                         ( StringUtils.isNotEmpty( newAction ) ? newAction : originalAction ),
-                        messageContext.getPartner().getPartnerId(),
+                        ( StringUtils.isNotEmpty( newParticipant ) ? newParticipant : originalParticipant ),
                         ( StringUtils.isNotEmpty( newChoreography ) ? newChoreography : originalChoreography ) );
                 return messageContext;
             } else {
