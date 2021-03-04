@@ -1,3 +1,5 @@
+@import '../styles.scss';
+
 .content-container {
   padding-top: 60px;
   box-sizing: border-box;
@@ -6,7 +8,7 @@
   overflow-y: auto;
 }
 
-@media(min-width: 980px) {
+@media(min-width: $desktopBreakpoint) {
   .content-container {
     margin-left: 350px;
     padding-top: 80px;

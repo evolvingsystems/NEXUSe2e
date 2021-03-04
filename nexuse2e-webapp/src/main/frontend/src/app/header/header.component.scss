@@ -48,7 +48,7 @@ header {
   }
 }
 
-@media(min-width: 980px) {
+@media(min-width: $desktopBreakpoint) {
   header {
     background: $gray6;
     height: 75px;
