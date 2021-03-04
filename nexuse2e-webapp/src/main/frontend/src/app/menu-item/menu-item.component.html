@@ -6,7 +6,7 @@
   >
     {{ route.data?.title }}
   </button>
-  <button (click)="toggleChildren()" *ngIf="route.children" class="toggle">
+  <button (click)="toggleChildren()" *ngIf="route.children?.length" class="toggle">
     <mat-icon>{{ expanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
   </button>
 </div>

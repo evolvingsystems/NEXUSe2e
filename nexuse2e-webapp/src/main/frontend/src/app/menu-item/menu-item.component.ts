@@ -19,6 +19,10 @@ export class MenuItemComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.assemblePath();
+  }
+
+  assemblePath() {
     this.fullPath += "/" + this.route.path;
   }
 
