@@ -17,7 +17,7 @@
     <!-- license -->
     <licenses>
         <license>
-            <name>GNU LESSER GENERAL PUBLIC LICENSE (LGPL), Version 2.1</name>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE (LGPL), Version 3</name>
             <url>http://www.fsf.org/licensing/licenses/lgpl.txt</url>
             <distribution>repo</distribution>
             <comments>OSS license that permits inclusion in commercial products.</comments>
@@ -829,10 +829,11 @@
                     <header>LICENSE.TXT</header>
                     <properties>
                         <!-- change this property yearly -->
-                        <year>2000-2010</year>
+                        <year>2000-2021</year>
                     </properties>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <excludes>
+                        <exclude>work/**</exclude>
                         <exclude>.*</exclude>
                         <exclude>**/.*</exclude>
                         <exclude>src/main/webapp/javascript/dijit/**</exclude>
@@ -845,10 +846,17 @@
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/c*</exclude>
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/struts*</exclude>
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/fmt*</exclude>
-                        <exclude>work/**</exclude>
+                        <exclude>src/main/java/org/nexuse2e/integration/info/wsdl/**</exclude>
+                        <exclude>src/main/java/org/nexuse2e/service/ws/aggateway/wsdl/**</exclude>
+                        <exclude>**/*.js</exclude>
+                        <exclude>**/*.map</exclude>
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.TXT</exclude>
                         <exclude>**/lgpl.*</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.ts</exclude>
+                        <exclude>**/*.sql</exclude>
+                        <exclude>**/*.sh</exclude>
                     </excludes>
                     <useDefaultMapping>true</useDefaultMapping>
                     <encoding>UTF-8</encoding>
