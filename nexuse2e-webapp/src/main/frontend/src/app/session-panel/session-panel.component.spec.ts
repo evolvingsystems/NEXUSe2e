@@ -5,6 +5,7 @@ import { DataService } from "../data/data.service";
 import { SessionPanelComponent } from "./session-panel.component";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
+import { By } from "@angular/platform-browser";
 
 describe("SessionPanelComponent", () => {
   let component: SessionPanelComponent;
@@ -40,7 +41,8 @@ describe("SessionPanelComponent", () => {
     await component.getUsername();
 
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector(".user-name")).toBeTruthy();
+    const userName = fixture.debugElement.query(By.css(".user-name"));
+    expect(userName.nativeElement.textContent.trim()).toBe("Administrator");
   });
 
   it("should redirect to login after logout", async () => {

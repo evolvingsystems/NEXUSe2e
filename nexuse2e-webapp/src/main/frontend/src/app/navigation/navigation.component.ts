@@ -16,12 +16,16 @@ export class NavigationComponent implements OnInit {
     private cacheService: CacheService,
     public router: Router
   ) {
+    this.getVersionInfo();
+  }
+
+  ngOnInit() {}
+
+  getVersionInfo() {
     this.cacheService
       .get<string[]>("/version")
       .then((version) => (this.version = version));
   }
-
-  ngOnInit() {}
 
   calculateMargin() {
     return this.version ? 20 + this.version.length * 20 + "px" : 0;

@@ -3,6 +3,7 @@ import { HeaderComponent } from "./header.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { CacheService } from "../data/cache.service";
+import { By } from "@angular/platform-browser";
 
 describe("HeaderComponent", () => {
   let component: HeaderComponent;
@@ -30,7 +31,7 @@ describe("HeaderComponent", () => {
   it("should show machine name and version number", async () => {
     spyOn(cacheService, "get")
       .withArgs("/machine-name")
-      .and.returnValue(Promise.resolve("Hallo Welt"))
+      .and.returnValue(Promise.resolve("Machine Name"))
       .withArgs("/version")
       .and.returnValue(
         Promise.resolve(["5.9.0", "Revision: 2.4.2", "Build: 14.2.4"])
@@ -39,7 +40,9 @@ describe("HeaderComponent", () => {
     await component.getVersionNumber();
 
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector(".machine-name")).toBeTruthy();
-    expect(fixture.nativeElement.querySelector(".version")).toBeTruthy();
+    const machineName = fixture.debugElement.query(By.css(".machine-name"));
+    const version = fixture.debugElement.query(By.css(".version"));
+    expect(machineName.nativeElement.textContent).toBe("Machine Name");
+    expect(version.nativeElement.textContent).toBe("5.9.0");
   });
 });

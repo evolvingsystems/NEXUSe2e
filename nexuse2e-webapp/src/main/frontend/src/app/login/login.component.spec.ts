@@ -3,17 +3,15 @@ import { LoginComponent } from "./login.component";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
-import { of } from "rxjs";
 import { DataService } from "../data/data.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { HttpClient } from "@angular/common/http";
-import { CacheService } from "../data/cache.service";
-import { NavigationService } from "../navigation/navigation.service";
 
-describe("LoginComponent (rendering)", () => {
+describe("LoginComponent", () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
+  let router: Router;
+  let dataService: DataService;
 
   beforeEach(
     waitForAsync(() => {
@@ -40,9 +38,15 @@ describe("LoginComponent (rendering)", () => {
       });
       fixture = TestBed.createComponent(LoginComponent);
       component = fixture.componentInstance;
+      router = TestBed.inject(Router);
+      dataService = TestBed.inject(DataService);
       fixture.detectChanges();
     })
   );
+
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
 
   it("should render user and password fields", () => {
     const userField = fixture.nativeElement.querySelector('input[name="user"]');
@@ -78,48 +82,15 @@ describe("LoginComponent (rendering)", () => {
     component.isHttps = false;
     expect(fixture.nativeElement.querySelector(".http-warning")).toBeTruthy();
   });
-});
-
-describe("LoginComponent (logic)", () => {
-  let component: LoginComponent;
-  let activatedRoute: ActivatedRoute;
-  let router: Router;
-  let dataService: DataService;
-  let cacheService: CacheService;
-  let navigationService: NavigationService;
-  let httpClientSpy: { post: jasmine.Spy; get: jasmine.Spy };
-
-  beforeEach(
-    waitForAsync(() => {
-      router = jasmine.createSpyObj("Router", {
-        navigateByUrl: function () {},
-      });
-      httpClientSpy = jasmine.createSpyObj("HttpClient", ["get", "post"]);
-      httpClientSpy.post.and.returnValue(of(true));
-      httpClientSpy.get.and.returnValue(of(true));
-      activatedRoute = new ActivatedRoute();
-      dataService = new DataService((httpClientSpy as unknown) as HttpClient);
-      cacheService = new CacheService(dataService);
-      navigationService = new NavigationService();
-      component = new LoginComponent(
-        activatedRoute,
-        router,
-        dataService,
-        cacheService,
-        navigationService
-      );
-    })
-  );
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
 
   it("should redirect after successful login", async () => {
+    spyOn(dataService, "post").and.returnValue(Promise.resolve("200"));
+    spyOn(router, "navigateByUrl");
     await component.login({
-      user: "user",
+      user: "admin",
       password: "password",
     });
+
     expect(router.navigateByUrl).toHaveBeenCalled();
   });
 });
