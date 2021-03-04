@@ -4,10 +4,10 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { CacheService } from "../data/cache.service";
 
-fdescribe("HeaderComponent", () => {
+describe("HeaderComponent", () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  let cacheService: any;
+  let cacheService: CacheService;
 
   beforeEach(
     waitForAsync(() => {
