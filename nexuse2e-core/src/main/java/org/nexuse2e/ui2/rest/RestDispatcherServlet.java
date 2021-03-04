@@ -14,8 +14,11 @@ public class RestDispatcherServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(RestDispatcherServlet.class);
 
     private final List<Handler> handlers = new ArrayList<>();
+    private final List<Handler> protectedHandlers = new ArrayList<>();
 
     public RestDispatcherServlet() {
+        this.protectedHandlers.add(new UserHandler());
+        this.handlers.add(new NoAnonymousAccessHandler(this.protectedHandlers));
         this.handlers.add(new LoginHandler());
         this.handlers.add(new ConfigHandler());
     }

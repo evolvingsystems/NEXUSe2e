@@ -8,7 +8,13 @@ import { Router } from "@angular/router";
   styleUrls: ["./session-panel.component.scss"],
 })
 export class SessionPanelComponent implements OnInit {
-  constructor(private dataService: DataService, private router: Router) {}
+  username?: string;
+
+  constructor(private dataService: DataService, private router: Router) {
+    this.dataService
+      .get<string>("/full-username")
+      .then((username) => (this.username = username));
+  }
 
   ngOnInit(): void {}
 
