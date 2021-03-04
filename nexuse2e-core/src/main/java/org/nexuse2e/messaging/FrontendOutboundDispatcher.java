@@ -68,12 +68,14 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
         ParticipantPojo participantPojo = messageContext.getMessagePojo().getParticipant();
 
-        LOG.info( new LogMessage(
-                "Sending " + messageContext.getMessagePojo().getTypeName()
-                + " message (" + messageContext.getMessagePojo().getMessageId()
-                + ") to " + participantPojo.getPartner().getPartnerId() + " for "
-                + messageContext.getChoreography().getName() + "/"
-                + messageContext.getMessagePojo().getAction().getName(), messageContext.getMessagePojo() ) );
+        if (messageContext.isFirstTimeInQueue() || messageContext.getMessagePojo().getRetries() < retries) {
+            LOG.info( new LogMessage(
+                    "Sending " + messageContext.getMessagePojo().getTypeName()
+                            + " message (" + messageContext.getMessagePojo().getMessageId()
+                            + ") to " + participantPojo.getPartner().getPartnerId() + " for "
+                            + messageContext.getChoreography().getName() + "/"
+                            + messageContext.getMessagePojo().getAction().getName(), messageContext.getMessagePojo() ) );
+        }
 
         // Request an conversation lock in order to not disallow parallel i/o, and processing activity in this conversation.
         // If everything goes alright, the lock will be released in the message sender thread after the message was sent,
@@ -203,18 +205,21 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
                 LOG.debug( new LogMessage( "Message sent.", messagePojo ) );
             } catch ( Throwable e ) {
-                // Persist retry count changes
+                LOG.error(new LogMessage("Error sending message", messagePojo, e), e);
+
                 try {
                     if ( messagePojo.isAck()) {
                         messageContext.getStateMachine().sentMessage(); // mark ack message as "sent" - normal message will be re-sent by partner
                     } else {
+                        // Persist retry count changes
                         Engine.getInstance().getTransactionService().updateRetryCount( messagePojo );
+                        if (retries == 0 || messagePojo.getRetries() >= retries) {
+                            handleErrorState(messageContext, messagePojo);
+                        }
                     }
                 } catch ( Exception e1 ) {
                     LOG.error(new LogMessage("Error saving message", messagePojo, e1), e1);
                 }
-
-                LOG.error(new LogMessage("Error sending message", messagePojo, e), e);
             }
 
             if ( ( returnedMessageContext != null ) && !returnedMessageContext.equals( messageContext ) ) {
@@ -227,47 +232,51 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
             }
 
         } else {
-            if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
-
-                if(Engine.getInstance().getAdvancedRetryLogging() && StringUtils.isNotBlank(Engine.getInstance().getRetryLoggingTemplate())) {
-
-                    try {
-                        String choreographyName = messagePojo.getConversation().getChoreography().getName();
-                        String partnerId = messagePojo.getConversation().getPartner().getPartnerId();
-                        String fileName = messageContext.getMessagePojo().getMessagePayloads().get(0).getContentId();
-
-
-                        String message = Engine.getInstance().getRetryLoggingTemplate();
-                        message = message.replace("{filename}",fileName);
-                        message = message.replace("{partnerId}",partnerId);
-                        message = message.replace("{choreographyId}",choreographyName);
-                        message = message.replace("{actionId}",messagePojo.getAction().getName());
-                        message = message.replace("{connectionUrl}",messagePojo.getParticipant().getConnection().getUri());
-                        message = message.replace("{retries}",""+messagePojo.getRetries());
-                        message = message.replace("{messageStatus}",messagePojo.getStatusName());
-                        message = message.replace("{messageId}",messagePojo.getMessageId());
-                        message = message.replace("{conversationId}",messagePojo.getConversation().getConversationId());
-
-                        LOG.error(new LogMessage(message,messagePojo));
-
-
-                    } catch (Exception e) {
-                        LOG.error(new LogMessage(
-                            "(Templating failed) - Maximum number of retries reached without receiving acknowledgment - choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
-
-                    }
-
-                } else {
-
-                    LOG.error(new LogMessage(
-                        "Maximum number of retries reached without receiving acknowledgment - choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
-                }
-            } else {
-                LOG.debug( new LogMessage( "Max number of retries reached!", messagePojo ) );
-            }
-            cancelRetrying(messageContext);
+            handleErrorState(messageContext, messagePojo);
         }
     } // run
+
+    private void handleErrorState(MessageContext messageContext, MessagePojo messagePojo) {
+        if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
+
+            if(Engine.getInstance().getAdvancedRetryLogging() && StringUtils.isNotBlank(Engine.getInstance().getRetryLoggingTemplate())) {
+
+                try {
+                    String choreographyName = messagePojo.getConversation().getChoreography().getName();
+                    String partnerId = messagePojo.getConversation().getPartner().getPartnerId();
+                    String fileName = messageContext.getMessagePojo().getMessagePayloads().get(0).getContentId();
+
+
+                    String message = Engine.getInstance().getRetryLoggingTemplate();
+                    message = message.replace("{filename}",fileName);
+                    message = message.replace("{partnerId}",partnerId);
+                    message = message.replace("{choreographyId}",choreographyName);
+                    message = message.replace("{actionId}", messagePojo.getAction().getName());
+                    message = message.replace("{connectionUrl}", messagePojo.getParticipant().getConnection().getUri());
+                    message = message.replace("{retries}",""+ messagePojo.getRetries());
+                    message = message.replace("{messageStatus}", messagePojo.getStatusName());
+                    message = message.replace("{messageId}", messagePojo.getMessageId());
+                    message = message.replace("{conversationId}", messagePojo.getConversation().getConversationId());
+
+                    LOG.error(new LogMessage(message, messagePojo));
+
+
+                } catch (Exception e) {
+                    LOG.error(new LogMessage(
+                        "(Templating failed) - Maximum number of retries reached without receiving acknowledgment - choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
+
+                }
+
+            } else {
+
+                LOG.error(new LogMessage(
+                    "Maximum number of retries reached without receiving acknowledgment - choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
+            }
+        } else {
+            LOG.debug( new LogMessage( "Max number of retries reached!", messagePojo) );
+        }
+        cancelRetrying(messageContext);
+    }
 
     /**
      * Stop the thread for resending the message based on its reliability parameters
