@@ -846,6 +846,8 @@
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/c*</exclude>
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/struts*</exclude>
                         <exclude>src/main/webapp/WEB-INF/struts/taglibs/fmt*</exclude>
+                        <exclude>src/main/java/org/nexuse2e/integration/info/wsdl/**</exclude>
+                        <exclude>src/main/java/org/nexuse2e/service/ws/aggateway/wsdl/**</exclude>
                         <exclude>**/*.js</exclude>
                         <exclude>**/*.map</exclude>
                         <exclude>**/*.txt</exclude>
@@ -855,7 +857,6 @@
                         <exclude>**/*.ts</exclude>
                         <exclude>**/*.sql</exclude>
                         <exclude>**/*.sh</exclude>
-                        <exclude>**/*.xsd</exclude>
                     </excludes>
                     <useDefaultMapping>true</useDefaultMapping>
                     <encoding>UTF-8</encoding>
