@@ -19,19 +19,20 @@
  */
 package org.nexuse2e.ui.ajax;
 
-import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
-import org.nexuse2e.ui.ajax.dojo.TreeProvider;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.Enumeration;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
+import org.nexuse2e.ui.ajax.dojo.TreeProvider;
 
 /**
  * @author Sebastian Schulze
@@ -40,7 +41,7 @@ import java.util.Enumeration;
 public class AjaxServlet extends HttpServlet {
 
     /**
-     *
+     * 
      */
     private static final long   serialVersionUID = -6583444281593200091L;
 
