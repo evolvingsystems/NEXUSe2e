@@ -23,6 +23,8 @@ import { ReportingComponent } from "./reporting/reporting.component";
 import { TransactionReportingComponent } from "./transaction-reporting/transaction-reporting.component";
 import { EngineLogComponent } from "./engine-log/engine-log.component";
 import { MenuItemComponent } from "./menu-item/menu-item.component";
+import { MessageListComponent } from "./message-list/message-list.component";
+import { ConversationListComponent } from "./conversation-list/conversation-list.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -49,6 +51,22 @@ const routes: Routes = [
         data: {
           title: "Transaction Reporting",
         },
+        children: [
+          {
+            path: "conversations",
+            component: ConversationListComponent,
+            data: {
+              title: "Conversations",
+            },
+          },
+          {
+            path: "messages",
+            component: MessageListComponent,
+            data: {
+              title: "Messages",
+            },
+          },
+        ],
       },
       {
         path: "engine-log",
@@ -79,6 +97,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TransactionReportingComponent,
     EngineLogComponent,
     MenuItemComponent,
+    MessageListComponent,
+    ConversationListComponent,
   ],
   imports: [
     BrowserModule,
