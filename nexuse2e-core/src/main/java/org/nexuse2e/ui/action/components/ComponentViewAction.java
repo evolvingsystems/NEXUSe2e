@@ -1,10 +1,10 @@
 /**
  *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2009, Tamgroup and X-ioma GmbH
+ *  Copyright 2000-2021, direkt gruppe GmbH
  *
  *  This is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 2.1 of
+ *  published by the Free Software Foundation version 3 of
  *  the License.
  *
  *  This software is distributed in the hope that it will be useful,

@@ -1,21 +1,21 @@
-/*
- * Copyright (c) 2014 solutions direkt Gesellschaft für Lösungsentwicklung mbH
+/**
+ *  NEXUSe2e Business Messaging Open Source
+ *  Copyright 2000-2021, direkt gruppe GmbH
  *
- * Eigentum der solutions direkt GmbH.
- * Alle Rechte vorbehalten.
+ *  This is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation version 3 of
+ *  the License.
  *
- * Property of solutions direkt GmbH.
- * All rights reserved.
+ *  This software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
  *
- * solutions direkt Gesellschaft für Lösungsentwicklung mbH
- * Griegstraße 75, Haus 26
- * 22763 Hamburg
- * Deutschland / Germany
- *
- * Phone: +49 40 88155-0
- * Fax: +49 40 88155-5400
- * Email: info@direkt-gruppe.de
- * Web: http://www.direkt-gruppe.de
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this software; if not, write to the Free
+ *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.integration.secure;
 

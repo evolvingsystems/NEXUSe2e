@@ -1,21 +1,21 @@
 /**
- * NEXUSe2e Business Messaging Open Source
- * Copyright 2000-2009, Tamgroup and X-ioma GmbH
- * <p/>
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation version 2.1 of
- * the License.
- * <p/>
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ *  NEXUSe2e Business Messaging Open Source
+ *  Copyright 2000-2021, direkt gruppe GmbH
+ *
+ *  This is free software; you can redistribute it and/or modify it
+ *  under the terms of the GNU Lesser General Public License as
+ *  published by the Free Software Foundation version 3 of
+ *  the License.
+ *
+ *  This software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this software; if not, write to the Free
+ *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.dao;
 
@@ -306,8 +306,8 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         List<ConversationPojo> results = new ArrayList<>();
         for(Object[] row : rowList) {
             ConversationPojo entry = new ConversationPojo();
-            entry.setNxConversationId((Integer) row[0]);
-            entry.setStatus((Integer) row[1]);
+            entry.setNxConversationId(((Number) row[0]).intValue());
+            entry.setStatus(((Number) row[1]).intValue());
             entry.setConversationId((String) row[2]);
             results.add(entry);
         }
@@ -483,11 +483,8 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         Integer[] ids = new Integer[idList.size()];
         for (int i = 0; i < idList.size(); i++) {
             Object value = idList.get(i);
-            if (value instanceof BigDecimal) { // stupid oracle behavior
-                ids[i] = ((BigDecimal) value).intValue();
-            } else { // default
-                ids[i] = (Integer) value;
-            }
+            // value is returned as BigDecimal from OracleDB and as Integer from other databases
+            ids[i] = ((Number) value).intValue();
         }
         return ids;
     }
