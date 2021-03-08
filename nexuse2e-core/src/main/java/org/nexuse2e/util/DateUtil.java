@@ -1,4 +1,4 @@
-/**
+/*
  *  NEXUSe2e Business Messaging Open Source
  *  Copyright 2000-2009, Tamgroup and X-ioma GmbH
  *
@@ -20,6 +20,7 @@
 package org.nexuse2e.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -30,13 +31,13 @@ import java.util.TimeZone;
 public class DateUtil {
 
     public static final String  dbFormat      = "yyyyMMddHHmmssSSS";
-    
+
     /**
-     * Converts local Date to displayable String using the given Timezone and a optional pattern 
-     * 
-     * @param time
+     * Converts local Date to displayable String using the given Timezone and a optional pattern
+     *
+     * @param time     the time
      * @param timeZone java TimeZone Ids (e.g. GMT+8)
-     * @param pattern format pattern (SimpleDateFormat) (null = default)
+     * @param pattern  format pattern (SimpleDateFormat) (null = default)
      * @return display formated String
      */
     public static String localTimeToTimezone( Date time, String timeZone, String pattern ) {
@@ -59,19 +60,18 @@ public class DateUtil {
 
     /**
      *  Static method returns the current date in String format used by Nexus 3.x.
-     *  @returns java.lang.String Representings Local Date String
+     *  @return java.lang.String Representings Local Date String
      */
     public static String getFormatedNowString() {
 
         Date date = new Date();
         SimpleDateFormat databaseDateFormat = new SimpleDateFormat( dbFormat );
-        String stringDate = databaseDateFormat.format( date );
-        return stringDate;
+        return databaseDateFormat.format(date );
     }
-    
+
     /**
-     * @param createdDate
-     * @param endDate
+     * @param createdDate creation date
+     * @param endDate end date
      * @return rounded human readable String, e.g '~6 Seconds' or '~8 years'
      */
     public static String getDiffTimeRounded( Date createdDate, Date endDate ) {
@@ -123,5 +123,11 @@ public class DateUtil {
             }
         }
         return diff;
+    }
+
+    public static Date getCurrentDateMinusWeeks(int amount) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -amount * 7);
+        return calendar.getTime();
     }
 }

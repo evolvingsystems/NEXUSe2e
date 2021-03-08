@@ -6,5 +6,5 @@ import javax.servlet.http.HttpServletResponse;
 public interface Handler {
     boolean canHandle(String path, String method);
 
-    void handle(HttpServletRequest req, HttpServletResponse resp) throws Exception;
+    void handle(HttpServletRequest request, HttpServletResponse response) throws Exception;
 }
