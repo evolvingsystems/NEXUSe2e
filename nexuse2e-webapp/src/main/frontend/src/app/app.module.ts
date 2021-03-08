@@ -52,6 +52,7 @@ const routes: Routes = [
           title: "Transaction Reporting",
         },
         children: [
+          {path: '', redirectTo: 'conversations', pathMatch: 'full'},
           {
             path: "conversations",
             component: ConversationListComponent,
