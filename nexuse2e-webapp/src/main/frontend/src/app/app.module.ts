@@ -9,7 +9,7 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
 import { AuthGuardService } from "./data/auth-guard.service";
 import { FormsModule } from "@angular/forms";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { MatInputModule } from "@angular/material/input";
@@ -25,6 +25,7 @@ import { EngineLogComponent } from "./engine-log/engine-log.component";
 import { MenuItemComponent } from "./menu-item/menu-item.component";
 import { MessageListComponent } from "./message-list/message-list.component";
 import { ConversationListComponent } from "./conversation-list/conversation-list.component";
+import { MatTabsModule } from "@angular/material/tabs";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -45,17 +46,20 @@ const routes: Routes = [
       title: "Reporting",
     },
     children: [
+      { path: '', redirectTo: 'transaction-reporting', pathMatch: 'full' },
       {
         path: "transaction-reporting",
         component: TransactionReportingComponent,
+        canActivate: [AuthGuardService],
         data: {
           title: "Transaction Reporting",
         },
         children: [
-          {path: '', redirectTo: 'conversations', pathMatch: 'full'},
+          { path: '', redirectTo: 'conversations', pathMatch: 'full' },
           {
             path: "conversations",
             component: ConversationListComponent,
+            canActivate: [AuthGuardService],
             data: {
               title: "Conversations",
             },
@@ -63,6 +67,7 @@ const routes: Routes = [
           {
             path: "messages",
             component: MessageListComponent,
+            canActivate: [AuthGuardService],
             data: {
               title: "Messages",
             },
@@ -72,6 +77,7 @@ const routes: Routes = [
       {
         path: "engine-log",
         component: EngineLogComponent,
+        canActivate: [AuthGuardService],
         data: {
           title: "Engine Log",
         },
@@ -103,6 +109,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     TranslateModule.forRoot({
       defaultLanguage: "en",
       loader: {
@@ -114,10 +121,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpClientModule,
     RouterModule.forRoot(routes, { useHash: true }),
     FormsModule,
-    NoopAnimationsModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatTabsModule
   ],
   providers: [
     {
@@ -129,4 +136,5 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}
