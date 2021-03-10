@@ -2,6 +2,7 @@ package org.nexuse2e.reporting;
 
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.util.DateUtil;
 
 import java.util.Date;
 
@@ -11,6 +12,7 @@ public class StatisticsMessage {
     private String choreographyId;
     private String actionId;
     private Date createdDate;
+    private String createdDateString;
     private Integer type;
     private String typeName;
     private MessageStatus status;
@@ -36,6 +38,7 @@ public class StatisticsMessage {
         messageId = message.getMessageId();
         actionId = message.getAction().getName();
         createdDate = message.getCreatedDate();
+        createdDateString = DateUtil.localTimeToTimezone(createdDate, DateUtil.getTimezone(), "yyyy-MM-dd HH:mm:ss z");
         type = message.getType();
         typeName = message.getTypeName();
         status = MessageStatus.getByOrdinal(message.getStatus());
@@ -75,6 +78,14 @@ public class StatisticsMessage {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getCreatedDateString() {
+        return createdDateString;
+    }
+
+    public void setCreatedDateString(String createdDateString) {
+        this.createdDateString = createdDateString;
     }
 
     public Integer getType() {

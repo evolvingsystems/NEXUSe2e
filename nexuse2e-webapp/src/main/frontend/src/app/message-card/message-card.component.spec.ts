@@ -28,7 +28,7 @@ describe('MessageCardComponent', () => {
     component.message = {
       messageId: "sdasdad-sadsadasda-asdsadada",
       actionId: "SendFile",
-      createdDate: new Date(),
+      createdDateString: "03-02-2018 15:07:34 GMT",
       typeName: "Normal",
       status: "Sent",
       conversationId: "dsfsdfs-dsfsdfdf-dsfsdfsf",
@@ -59,6 +59,4 @@ describe('MessageCardComponent', () => {
     expect(linkToConversation).toBeTruthy();
     expect(linkToConversation.nativeElement.textContent).toBeTruthy();
   });
-
-  it("should show a label for the time zone");
 });

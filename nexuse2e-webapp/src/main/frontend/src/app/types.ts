@@ -1,7 +1,7 @@
 export interface Message {
   messageId: string;
   actionId: string;
-  createdDate: Date;
+  createdDateString: string;
   typeName: string;
   status: string;
   conversationId: string;

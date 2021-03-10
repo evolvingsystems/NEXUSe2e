@@ -19,6 +19,9 @@
  */
 package org.nexuse2e.util;
 
+import org.nexuse2e.Engine;
+import org.nexuse2e.configuration.ParameterType;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,11 +29,15 @@ import java.util.TimeZone;
 
 /**
  * @author gesch
- *
  */
 public class DateUtil {
 
-    public static final String  dbFormat      = "yyyyMMddHHmmssSSS";
+    public static final String dbFormat = "yyyyMMddHHmmssSSS";
+
+    public static String getTimezone() {
+        return (String) Engine.getInstance().getActiveConfigurationAccessService()
+                .getGenericParameter("log_display_configuration", "timezone", ParameterType.STRING, null);
+    }
 
     /**
      * Converts local Date to displayable String using the given Timezone and a optional pattern
@@ -40,16 +47,16 @@ public class DateUtil {
      * @param pattern  format pattern (SimpleDateFormat) (null = default)
      * @return display formated String
      */
-    public static String localTimeToTimezone( Date time, String timeZone, String pattern ) {
+    public static String localTimeToTimezone(Date time, String timeZone, String pattern) {
 
         try {
-            if ( pattern == null ) {
+            if (pattern == null) {
                 pattern = "yyyy-MM-dd HH:mm:ss.SSS z";
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat( pattern );
-            if ( timeZone != null && !timeZone.equals( "" ) ) {
-                sdf.setTimeZone( TimeZone.getTimeZone( timeZone ) );
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+            if (timeZone != null && !timeZone.equals("")) {
+                sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
             }
             return sdf.format( time );
         } catch ( Exception e ) {
