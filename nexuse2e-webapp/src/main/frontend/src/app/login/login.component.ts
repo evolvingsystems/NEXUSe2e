@@ -16,7 +16,6 @@ interface LoginData {
 })
 @Injectable({ providedIn: "root" })
 export class LoginComponent implements OnInit {
-  returnUrl!: string;
   isHttps?: boolean;
   machineName?: string;
   loginError?: boolean;
@@ -36,12 +35,8 @@ export class LoginComponent implements OnInit {
       await this.dataService.get("/logged-in");
       await this.router.navigate(["/dashboard"]);
     } catch {
-      const returnUrl = "returnUrl";
-      this.returnUrl = this.route.snapshot.queryParams[returnUrl] || "/";
       this.isHttps = location.protocol === "https:";
-      this.cacheService
-        .get<string>("/machine-name")
-        .then((name) => (this.machineName = name));
+      this.machineName = await this.cacheService.get<string>("/machine-name");
     }
   }
 
@@ -64,6 +59,7 @@ export class LoginComponent implements OnInit {
   async login(loginData: LoginData) {
     await this.dataService.post("/login", loginData);
     this.navigationService.hideNavigation();
-    await this.router.navigateByUrl(this.returnUrl);
+    const returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
+    await this.router.navigateByUrl(returnUrl);
   }
 }

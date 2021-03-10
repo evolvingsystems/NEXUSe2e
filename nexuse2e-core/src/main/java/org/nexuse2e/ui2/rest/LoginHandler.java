@@ -85,9 +85,9 @@ public class LoginHandler implements Handler {
         if (userInstance != null && constantTimeCompare(userInstance.getPassword(), password)) {
             HttpSession session = request.getSession();
             session.setAttribute(NexusE2EAction.ATTRIBUTE_USER, userInstance);
-            response.setStatus(200);
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.setStatus(401);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
@@ -95,7 +95,7 @@ public class LoginHandler implements Handler {
         HttpSession session = request.getSession();
         session.removeAttribute(NexusE2EAction.ATTRIBUTE_USER);
         session.removeAttribute("patchManagementForm"); // remove patches
-        response.setStatus(200);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     private byte[] parseHexString(final String s) {

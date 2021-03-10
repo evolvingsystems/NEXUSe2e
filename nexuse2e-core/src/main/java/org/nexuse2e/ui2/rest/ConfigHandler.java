@@ -49,11 +49,14 @@ public class ConfigHandler implements Handler {
                 response.getOutputStream().print(message);
             } catch (IOException e) {
                 LOG.warn(e);
+                response.sendError(404, "Machine Name not configured");
             }
         } else {
-            try (InputStream in = req.getSession(true).getServletContext().getResourceAsStream(CONFIG_BASE + "machine_name.txt");
-                 InputStreamReader isr = new InputStreamReader(in);
-                 BufferedReader br = new BufferedReader(isr)) {
+            try (
+                    InputStream in = req.getSession(true).getServletContext().getResourceAsStream(CONFIG_BASE + "machine_name.txt");
+                    InputStreamReader isr = new InputStreamReader(in);
+                    BufferedReader br = new BufferedReader(isr)
+            ) {
                 String message = new Gson().toJson(br.readLine());
                 response.getOutputStream().print(message);
             }

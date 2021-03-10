@@ -1,9 +1,4 @@
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-} from "@angular/router";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { DataService } from "./data.service";
 
@@ -18,6 +13,8 @@ export class AuthGuardService implements CanActivate {
     state: RouterStateSnapshot
   ): Promise<boolean> {
     try {
+      // This response should not be cached because otherwise,
+      // the user would not be logged out if their session expires
       await this.dataService.get("/logged-in");
     } catch {
       await this.router.navigate(["/login"], {
