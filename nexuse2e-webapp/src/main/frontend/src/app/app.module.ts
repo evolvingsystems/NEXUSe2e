@@ -26,6 +26,9 @@ import { MenuItemComponent } from "./menu-item/menu-item.component";
 import { MessageListComponent } from "./message-list/message-list.component";
 import { ConversationListComponent } from "./conversation-list/conversation-list.component";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MessageCardComponent } from './message-card/message-card.component';
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -106,6 +109,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MenuItemComponent,
     MessageListComponent,
     ConversationListComponent,
+    MessageCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -124,7 +128,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatCardModule,
+    MatCheckboxModule
   ],
   providers: [
     {

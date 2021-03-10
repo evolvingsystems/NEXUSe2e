@@ -18,6 +18,13 @@
     "loggedInAs": "Logged in as",
     "transactionReporting": "Transaction Reporting",
     "messages": "Messages",
-    "conversations": "Conversations"
+    "conversations": "Conversations",
+    "messageId": "Message ID",
+    "conversationId": "Conversation ID",
+    "participantId": "Participant ID",
+    "messageType": "Message Type",
+    "action": "Action",
+    "createdDate": "Date created",
+    "status": "Status"
   }
 }
