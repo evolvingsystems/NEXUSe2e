@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Message } from "../types";
 import { DataService } from "../data/data.service";
+import { PageEvent } from "@angular/material/paginator";
 
 @Component({
   selector: "app-message-list",
@@ -8,12 +9,25 @@ import { DataService } from "../data/data.service";
   styleUrls: ["./message-list.component.scss"],
 })
 export class MessageListComponent implements OnInit {
+  totalMessageCount?: number;
   messages?: Message[];
+  pageSize = 20;
+  pageIndex = 0;
 
   constructor(private dataService: DataService) {
   }
 
   async ngOnInit() {
-    this.messages = await this.dataService.getAllMessages();
+    this.totalMessageCount = await this.dataService.getMessagesCount();
+    await this.loadPage(this.pageIndex);
+  }
+
+  async onPageChange(pageEvent: PageEvent) {
+    this.pageIndex = pageEvent.pageIndex;
+    await this.loadPage(this.pageIndex);
+  }
+
+  async loadPage(pageIndex: number) {
+    this.messages = await this.dataService.getMessages(pageIndex, this.pageSize);
   }
 }

@@ -29,10 +29,6 @@ export class DataService {
     return this.http.get<T>(this.API_URL + path).toPromise<T>();
   }
 
-  getAllMessages(): Promise<Message[]> {
-    return this.get<Message[]>("/messages", false);
-  }
-
   getFullUsername(): Promise<string> {
     return this.get<string>("/full-username", true);
   }
@@ -45,6 +41,18 @@ export class DataService {
 
   getMachineName(): Promise<string> {
     return this.get<string>("/machine-name", true);
+  }
+
+  getMessages(pageIndex: number, itemsPerPage: number): Promise<Message[]> {
+    const params = {
+      "pageIndex": String(pageIndex),
+      "itemsPerPage": String(itemsPerPage)
+    }
+    return this.http.get<Message[]>(this.API_URL + "/messages", { params: params }).toPromise();
+  }
+
+  getMessagesCount(): Promise<number> {
+    return this.get<number>("/messages-count", false);
   }
 
   getVersion(): Promise<string[]> {

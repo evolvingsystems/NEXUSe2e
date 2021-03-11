@@ -29,6 +29,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MessageCardComponent } from './message-card/message-card.component';
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatPaginatorModule } from "@angular/material/paginator";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -130,7 +131,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     MatTabsModule,
     MatCardModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatPaginatorModule
   ],
   providers: [
     {
