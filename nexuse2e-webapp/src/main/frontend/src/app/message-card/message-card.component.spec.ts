@@ -28,7 +28,7 @@ describe('MessageCardComponent', () => {
     component.message = {
       messageId: "sdasdad-sadsadasda-asdsadada",
       actionId: "SendFile",
-      createdDateString: "03-02-2018 15:07:34 GMT",
+      createdDate: "03-02-2018 15:07:34 GMT",
       typeName: "Normal",
       status: "Sent",
       conversationId: "dsfsdfs-dsfsdfdf-dsfsdfsf",

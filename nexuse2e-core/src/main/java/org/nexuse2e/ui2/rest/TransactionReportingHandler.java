@@ -1,10 +1,12 @@
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.nexuse2e.Engine;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.reporting.StatisticsMessage;
+import org.nexuse2e.util.DateWithTimezoneSerializer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +32,8 @@ public class TransactionReportingHandler implements Handler {
         for (MessagePojo messagePojo : reportMessages) {
             messages.add(new StatisticsMessage(messagePojo));
         }
-        String messageJson = new Gson().toJson(messages);
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+        String messageJson = gson.toJson(messages);
         response.getOutputStream().print(messageJson);
     }
 }
