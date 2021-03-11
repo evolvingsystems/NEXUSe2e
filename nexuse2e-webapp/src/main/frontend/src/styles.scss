@@ -1,0 +1,78 @@
+/* VARIABLES */
+$gray1: #333333;
+$gray2: #666666;
+$gray3: #CCCCCC;
+$gray4: #C4C4C4;
+$gray5: #E8E8E8;
+$gray6: #F8F8F8;
+$orangeDark: #E66009;
+$orangeBright: #FF914C;
+$orangeFaded: #FFC29A;
+$errorBackground: #FFDACF;
+$messageBackground: #CCFFCC;
+$success: #7BD37A;
+$error: #FF1F00;
+$warning: #FAF11B;
+$info: #CCCCCC;
+$textBlack: #000000;
+$textGrey: #AAAAAA;
+$textOrange: #E56009;
+$textError: #cc570c;
+$white: #FFFFFF;
+$desktopBreakpoint: 980px;
+$tabletBreakpoint: 750px;
+$mobileBreakpoint: 501px;
+
+/* GENERAL */
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+h1, h2 {
+  color: $gray2;
+}
+
+button {
+  text-transform: uppercase;
+}
+
+.mat-form-field-infix {
+  border-top: 5px solid transparent;
+}
+
+a {
+  color: $orangeDark;
+  text-decoration: none;
+}
+
+/* UTILITY */
+
+.padded {
+  padding: 10px;
+}
+
+.centered {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}

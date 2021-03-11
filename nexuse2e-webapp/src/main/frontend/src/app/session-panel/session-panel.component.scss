@@ -1,0 +1,30 @@
+@import '../../styles.scss';
+
+.session-panel {
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 15px 16px;
+
+  .login-info {
+    padding-right: 15px;
+
+    .user-label {
+      color: $gray1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 11px;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+  }
+
+  button {
+    line-height: 0;
+    height: 30px;
+  }
+}

@@ -1,0 +1,13 @@
+<div class="session-panel">
+  <div class="login-info">
+    <div class="user-label">
+      {{ 'labels.loggedInAs' | translate }}
+    </div>
+    <div class="user-name accent-color">
+      {{ username }}
+    </div>
+  </div>
+  <button (click)="logout()" color="accent" mat-flat-button>
+    {{ 'buttons.logout' | translate }}
+  </button>
+</div>

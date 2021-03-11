@@ -1,0 +1,38 @@
+<div class="padded centered">
+  <img src="assets/img/logo.png" alt="{{ 'labels.nexuse2e' | translate }}">
+  <h2>{{ machineName }}</h2>
+  <div *ngIf="!isHttps" class="http-warning warning">
+    {{ 'login.httpWarning' | translate }}
+  </div>
+  <div *ngIf="loginError" class="login-error warning">
+    {{ "login.wrongCredentials" | translate }}
+  </div>
+  <form name="login">
+    <mat-form-field>
+      <input matInput
+             placeholder="{{ 'labels.user' | translate }}"
+             name="user"
+             type="text"
+             required
+             [(ngModel)]="user"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput
+             placeholder="{{ 'labels.password' | translate }}"
+             name="password"
+             type="password"
+             required
+             [(ngModel)]="password"
+      />
+    </mat-form-field>
+    <button mat-flat-button
+            (click)="onSubmit()"
+            class="login-button"
+            type="submit"
+            color="accent"
+    >
+      {{ "buttons.login" | translate }}
+    </button>
+  </form>
+</div>

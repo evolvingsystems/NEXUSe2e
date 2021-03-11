@@ -11,7 +11,7 @@
 
     <artifactId>nexuse2e-webapp</artifactId>
     <packaging>war</packaging>
-    <version>5.9.9-SNAPSHOT</version>
+    <version>5.9.10-SNAPSHOT</version>
     <name>NEXUSe2e Server Web Application</name>
     <url>http://www.nexuse2e.org</url>
 
@@ -28,13 +28,12 @@
         <dependency>
             <groupId>org.nexuse2e</groupId>
             <artifactId>nexuse2e-core</artifactId>
-            <version>5.9.9-SNAPSHOT</version>
+            <version>5.9.10-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <!-- build -->
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -194,6 +193,57 @@
     </build>
     <profiles>
         <!-- dependency related -->
+        <profile>
+            <id>with-new-frontend</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.10.0</version>
+
+                        <configuration>
+                            <workingDirectory>src/main/frontend</workingDirectory>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>install-node-and-npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <configuration>
+                                    <nodeVersion>v14.16.0</nodeVersion>
+                                    <npmVersion>7.6.2</npmVersion>
+                                </configuration>
+                                <phase>generate-resources</phase>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>build</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>with-reporting-module</id>
             <activation>

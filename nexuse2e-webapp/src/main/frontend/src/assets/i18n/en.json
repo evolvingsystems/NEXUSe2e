@@ -1,0 +1,20 @@
+{
+  "login": {
+    "httpWarning": "You are trying to log in using an insecure connection. This means that your login data are transmitted without any protection. Using HTTPS is strongly advised.",
+    "wrongCredentials": "Wrong username or password. Please try again."
+  },
+  "pageNotFound": {
+    "text": "404 - Page not found"
+  },
+  "buttons": {
+    "login": "Login",
+    "logout": "Logout",
+    "backToDashboard": "Back to dashboard"
+  },
+  "labels": {
+    "nexuse2e": "NEXUSe2e",
+    "user": "User",
+    "password": "Password",
+    "loggedInAs": "Logged in as"
+  }
+}

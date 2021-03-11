@@ -1,0 +1,16 @@
+@import '../styles.scss';
+
+.content-container {
+  padding-top: 60px;
+  box-sizing: border-box;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media(min-width: $desktopBreakpoint) {
+  .content-container {
+    margin-left: 350px;
+    padding-top: 80px;
+  }
+}

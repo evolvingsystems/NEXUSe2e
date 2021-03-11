@@ -1,0 +1,33 @@
+@import '../../styles.scss';
+
+.menu-item {
+  color: $gray1;
+  width: 100%;
+  height: 50px;
+  background: $gray5;
+  border-bottom: 1px $gray3 solid;
+  display: flex;
+
+  &:hover {
+    filter: brightness(1.03);
+  }
+
+  button {
+    cursor: pointer;
+    height: inherit;
+    background: inherit;
+    border: none;
+    border-radius: 0;
+    outline: none;
+
+    &.link {
+      text-transform: capitalize;
+      text-align: left;
+      width: 100%;
+    }
+
+    &.toggle {
+      padding: 14px;
+    }
+  }
+}
