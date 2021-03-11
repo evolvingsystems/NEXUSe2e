@@ -41,18 +41,18 @@ public class LoginHandler implements Handler {
     }
 
     @Override
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        String path = req.getPathInfo();
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String path = request.getPathInfo();
         if (path != null) {
             switch (StringUtils.lowerCase(path)) {
                 case "/login":
-                    login(req, resp);
+                    login(request, response);
                     break;
                 case "/logged-in":
-                    probeLogin(req, resp);
+                    probeLogin(request, response);
                     break;
                 case "/logout":
-                    logout(req, resp);
+                    logout(request, response);
                     break;
             }
         }

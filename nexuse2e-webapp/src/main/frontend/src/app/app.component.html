@@ -1,5 +1,5 @@
 <app-header *ngIf="showHeaderNav"></app-header>
 <app-navigation *ngIf="showHeaderNav"></app-navigation>
-<div [ngClass]="{ 'content-container': showHeaderNav }" class="padded">
+<div [ngClass]="{ 'content-container': showHeaderNav }" class="padded-desktop">
   <router-outlet (activate)='determineVisibility($event)'></router-outlet>
 </div>

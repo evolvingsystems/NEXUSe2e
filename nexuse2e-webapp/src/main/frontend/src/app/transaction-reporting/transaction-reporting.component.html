@@ -1,2 +1,23 @@
-<p>transaction-reporting works!</p>
-<router-outlet></router-outlet>
+<h1 class="title">{{ "labels.transactionReporting" | translate }}</h1>
+<nav mat-tab-nav-bar
+     disablePagination="true"
+     disableRipple="true"
+     color="accent">
+  <a mat-tab-link
+     routerLink="conversations"
+     routerLinkActive #conversation="routerLinkActive"
+     [active]="conversation.isActive"
+  >
+    {{ "labels.conversations" | translate }}
+  </a>
+  <a mat-tab-link
+     routerLink="messages"
+     routerLinkActive #message="routerLinkActive"
+     [active]="message.isActive"
+  >
+    {{ "labels.messages" | translate }}
+  </a>
+</nav>
+<div class="padded">
+  <router-outlet></router-outlet>
+</div>

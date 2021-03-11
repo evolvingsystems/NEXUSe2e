@@ -20,15 +20,15 @@ public class ConfigHandler implements Handler {
     }
 
     @Override
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        String path = req.getPathInfo();
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String path = request.getPathInfo();
         if (path != null) {
             switch (path) {
                 case "/machine-name":
-                    getMachineName(req, resp);
+                    getMachineName(request, response);
                     break;
                 case "/version":
-                    getVersion(resp);
+                    getVersion(response);
                     break;
             }
         }
@@ -40,7 +40,7 @@ public class ConfigHandler implements Handler {
         response.getOutputStream().print(new Gson().toJson(version.split(", ")));
     }
 
-    private void getMachineName(HttpServletRequest req, HttpServletResponse response) throws IOException {
+    private void getMachineName(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String externalConfig = System.getProperty("externalconfig");
         if (StringUtils.isNotBlank(externalConfig)) {
             File file = new File(externalConfig, "machine_name.txt");
@@ -53,7 +53,7 @@ public class ConfigHandler implements Handler {
             }
         } else {
             try (
-                    InputStream in = req.getSession(true).getServletContext().getResourceAsStream(CONFIG_BASE + "machine_name.txt");
+                    InputStream in = request.getSession(true).getServletContext().getResourceAsStream(CONFIG_BASE + "machine_name.txt");
                     InputStreamReader isr = new InputStreamReader(in);
                     BufferedReader br = new BufferedReader(isr)
             ) {

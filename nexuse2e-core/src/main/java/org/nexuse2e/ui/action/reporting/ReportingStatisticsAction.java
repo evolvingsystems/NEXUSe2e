@@ -1,4 +1,4 @@
-/**
+/*
  *  NEXUSe2e Business Messaging Open Source
  *  Copyright 2000-2021, direkt gruppe GmbH
  *
@@ -38,6 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.util.*;
+
+import static org.nexuse2e.util.DateUtil.getCurrentDateMinusWeeks;
 
 /**
  * Fills the context for the statistics report(s).
@@ -139,13 +141,7 @@ public class ReportingStatisticsAction extends ReportingAction {
     }
 
     private boolean neverOrTooLongAgo(Date date) {
-        return date == null || date.before(getCurrentDateMinus(Calendar.DATE, transactionActivityTimeframeInWeeks));
-    }
-
-    private Date getCurrentDateMinus(int field, int amount) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(field, -amount * 7);
-        return calendar.getTime();
+        return date == null || date.before(getCurrentDateMinusWeeks(transactionActivityTimeframeInWeeks));
     }
 
     private Set<StatisticsCertificate> getStatisticsCertificates(List<ChoreographyPojo> choreographyPojos) {

@@ -28,6 +28,10 @@
 
     &.toggle {
       padding: 14px;
+
+      &:hover {
+        filter: brightness(1.02);
+      }
     }
   }
 }

@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { Message } from "../types";
+import { DataService } from "../data/data.service";
 
 @Component({
   selector: "app-message-list",
@@ -6,7 +8,12 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./message-list.component.scss"],
 })
 export class MessageListComponent implements OnInit {
-  constructor() {}
+  messages?: Message[];
 
-  ngOnInit(): void {}
+  constructor(private dataService: DataService) {
+  }
+
+  async ngOnInit() {
+    this.messages = await this.dataService.get<Message[]>("/messages");
+  }
 }

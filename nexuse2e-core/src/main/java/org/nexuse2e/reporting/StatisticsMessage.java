@@ -20,6 +20,8 @@
 package org.nexuse2e.reporting;
 
 import org.nexuse2e.MessageStatus;
+import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.util.DateUtil;
 
 import java.util.Date;
 
@@ -29,7 +31,9 @@ public class StatisticsMessage {
     private String choreographyId;
     private String actionId;
     private Date createdDate;
+    private String createdDateString;
     private Integer type;
+    private String typeName;
     private MessageStatus status;
     private String conversationId;
     private Integer nxMessageId;
@@ -47,6 +51,20 @@ public class StatisticsMessage {
         nxMessageId = ((Number) record[7]).intValue();
         nxConversationId = ((Number) record[8]).intValue();
         partnerId = (String) record[9];
+    }
+
+    public StatisticsMessage(MessagePojo message) {
+        messageId = message.getMessageId();
+        actionId = message.getAction().getName();
+        createdDate = message.getCreatedDate();
+        createdDateString = DateUtil.localTimeToTimezone(createdDate, DateUtil.getTimezone(), "yyyy-MM-dd HH:mm:ss z");
+        type = message.getType();
+        typeName = message.getTypeName();
+        status = MessageStatus.getByOrdinal(message.getStatus());
+        conversationId = message.getConversation().getConversationId();
+        nxMessageId = message.getNxMessageId();
+        nxConversationId = message.getConversation().getNxConversationId();
+        partnerId = message.getParticipant().getPartner().getPartnerId();
     }
 
     public String getMessageId() {
@@ -81,12 +99,28 @@ public class StatisticsMessage {
         this.createdDate = createdDate;
     }
 
+    public String getCreatedDateString() {
+        return createdDateString;
+    }
+
+    public void setCreatedDateString(String createdDateString) {
+        this.createdDateString = createdDateString;
+    }
+
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public MessageStatus getStatus() {

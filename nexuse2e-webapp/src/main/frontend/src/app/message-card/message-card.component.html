@@ -1,0 +1,34 @@
+<mat-card [class]="message.status | lowercase">
+  <div class="card-header">
+    <mat-checkbox></mat-checkbox>
+    <a [routerLink]="'' + message.nxMessageId">{{ message.messageId }}</a>
+  </div>
+  <table>
+    <tr>
+      <td class="label">{{ "labels.conversationId" | translate }}</td>
+      <td><a [routerLink]="'../conversations/' + message.nxConversationId">{{ message.conversationId }}</a></td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.participantId" | translate }}</td>
+      <td>{{ message.partnerId }}</td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.messageType" | translate }}</td>
+      <td>{{ message.typeName }}</td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.action" | translate }}</td>
+      <td>{{ message.actionId }}</td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.createdDate" | translate }}</td>
+      <td>
+        {{ message.createdDateString }}
+      </td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.status" | translate }}</td>
+      <td>{{ message.status | titlecase }}</td>
+    </tr>
+  </table>
+</mat-card>
