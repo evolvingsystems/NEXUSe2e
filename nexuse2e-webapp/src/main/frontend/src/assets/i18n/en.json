@@ -1,7 +1,7 @@
 {
   "login": {
     "httpWarning": "You are trying to log in using an insecure connection. This means that your login data are transmitted without any protection. Using HTTPS is strongly advised.",
-    "wrongCredentials": "Wrong login data. Please try again."
+    "wrongCredentials": "Wrong username or password. Please try again."
   },
   "pageNotFound": {
     "text": "404 - Page not found"
