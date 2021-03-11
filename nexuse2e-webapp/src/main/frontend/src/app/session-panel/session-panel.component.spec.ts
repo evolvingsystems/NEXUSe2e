@@ -37,10 +37,10 @@ describe("SessionPanelComponent", () => {
   });
 
   it("should show username", async () => {
-    spyOn(dataService, "get").and.returnValue(Promise.resolve("Administrator"));
-    await component.getUsername();
-
+    spyOn(dataService, "getFullUsername").and.returnValue(Promise.resolve("Administrator"));
+    await component.ngOnInit();
     fixture.detectChanges();
+
     const userName = fixture.debugElement.query(By.css(".user-name"));
     expect(userName.nativeElement.textContent.trim()).toBe("Administrator");
   });

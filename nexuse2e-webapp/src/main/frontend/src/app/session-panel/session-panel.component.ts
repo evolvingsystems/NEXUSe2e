@@ -11,19 +11,14 @@ export class SessionPanelComponent implements OnInit {
   username?: string;
 
   constructor(private dataService: DataService, private router: Router) {
-    this.getUsername();
   }
 
-  ngOnInit(): void {}
-
-  getUsername() {
-    this.dataService
-      .get<string>("/full-username")
-      .then((username) => (this.username = username));
+  async ngOnInit() {
+    this.username = await this.dataService.getFullUsername();
   }
 
   async logout() {
-    await this.dataService.post("/logout", {});
+    await this.dataService.postLogout();
     await this.router.navigateByUrl("/login");
   }
 }

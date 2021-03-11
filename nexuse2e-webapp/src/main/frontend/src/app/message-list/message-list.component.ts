@@ -14,6 +14,6 @@ export class MessageListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.messages = await this.dataService.get<Message[]>("/messages");
+    this.messages = await this.dataService.getAllMessages();
   }
 }
