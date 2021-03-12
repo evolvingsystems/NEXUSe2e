@@ -19,7 +19,9 @@ export class MessageListComponent implements OnInit {
 
   async ngOnInit() {
     this.totalMessageCount = await this.dataService.getMessagesCount();
-    await this.loadPage(this.pageIndex);
+    if (this.totalMessageCount > 0) {
+      await this.loadPage(this.pageIndex);
+    }
   }
 
   async onPageChange(pageEvent: PageEvent) {

@@ -1,6 +1,6 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from "@angular/common/http";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AppComponent } from "./app.component";
@@ -30,6 +30,7 @@ import { MessageCardComponent } from './message-card/message-card.component';
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { AuthInterceptor } from "./auth-interceptor";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -141,6 +142,11 @@ export function HttpLoaderFactory(http: HttpClient) {
         appearance: "outline",
       },
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
 })
