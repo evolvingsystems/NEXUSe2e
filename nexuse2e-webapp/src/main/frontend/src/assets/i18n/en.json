@@ -25,6 +25,12 @@
     "messageType": "Message Type",
     "action": "Action",
     "createdDate": "Date created",
-    "status": "Status"
+    "status": "Status",
+    "showingResults": "Showing results",
+    "itemsPerPage": "Items per page",
+    "nextPage": "Next page",
+    "previousPage": "Previous page",
+    "of": "of",
+    "noResultsFound": "No results found."
   }
 }

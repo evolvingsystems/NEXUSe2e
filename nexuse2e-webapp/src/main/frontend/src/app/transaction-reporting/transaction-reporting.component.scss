@@ -2,7 +2,6 @@
 
 ::ng-deep .mat-tab-links {
   background: $gray5;
-  border-bottom: $gray4 solid 1px;
 
   a {
     color: $gray1;
@@ -20,6 +19,5 @@
 @media (min-width: $desktopBreakpoint) {
   ::ng-deep .mat-tab-links {
     background: white;
-    border-bottom: none;
   }
 }

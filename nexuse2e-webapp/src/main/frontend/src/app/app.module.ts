@@ -29,8 +29,9 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MessageCardComponent } from './message-card/message-card.component';
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatPaginatorIntl, MatPaginatorModule } from "@angular/material/paginator";
 import { AuthInterceptor } from "./auth-interceptor";
+import { CustomPaginatorFormatting } from "./custom-paginator-formatting";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -146,6 +147,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
+    },
+    {
+      provide: MatPaginatorIntl,
+      useClass: CustomPaginatorFormatting
     }
   ],
   bootstrap: [AppComponent],

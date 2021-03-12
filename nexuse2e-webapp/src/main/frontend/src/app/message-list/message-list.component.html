@@ -3,15 +3,20 @@
                [pageSize]="pageSize"
                [pageIndex]="pageIndex"
                [hidePageSize]="true"
+               [showFirstLastButtons]="true"
                (page)="onPageChange($event)">
 </mat-paginator>
-<div *ngFor="let message of messages" class="message-card-wrapper">
-  <app-message-card [message]="message"></app-message-card>
+<div class="padded">
+  <div *ngFor="let message of messages" class="message-card-wrapper">
+    <app-message-card [message]="message"></app-message-card>
+  </div>
 </div>
 <mat-paginator *ngIf="messages?.length"
                [length]="totalMessageCount"
                [pageSize]="pageSize"
                [pageIndex]="pageIndex"
-               [hidePageSize]="true"
+               [hidePageSize]="false"
+               [pageSizeOptions]="[10, 20, 50]"
+               [showFirstLastButtons]="true"
                (page)="onPageChange($event)">
 </mat-paginator>

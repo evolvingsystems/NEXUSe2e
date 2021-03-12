@@ -1,0 +1,48 @@
+@import '../../styles.scss';
+
+@media(max-width: $desktopBreakpoint) {
+  ::ng-deep .mat-tab-nav-bar {
+    border-bottom: none;
+  }
+
+  ::ng-deep .mat-paginator-container {
+    padding: 0 !important;
+
+    ::ng-deep .mat-paginator-range-actions {
+      display: inline-block !important;
+      text-align: right;
+      width: 100%;
+
+      ::ng-deep button {
+        box-shadow: 0 2px 1px -1px $gray3, 0 1px 1px 0px $gray4;
+        border-radius: 0;
+        border-top: 1px solid $gray6;
+        margin-top: 10px;
+        margin-bottom: 5px;
+
+        &:first-of-type {
+          border-radius: 4px 0 0 4px;
+        }
+
+        &:last-of-type {
+          border-radius: 0 4px 4px 0;
+          margin-right: 10px;
+        }
+      }
+
+      ::ng-deep .mat-paginator-range-label {
+        background: $gray3;
+        margin: 0 !important;
+        text-align: left;
+        padding: 6px 11px 4px 11px;
+        box-shadow: inset 0 3px 4px 0 $textGrey;
+      }
+    }
+  }
+}
+
+@media(min-width: $desktopBreakpoint) {
+  ::ng-deep .mat-paginator-container {
+    align-items: baseline !important;
+  }
+}
