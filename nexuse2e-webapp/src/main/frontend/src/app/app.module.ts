@@ -32,6 +32,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatPaginatorIntl, MatPaginatorModule } from "@angular/material/paginator";
 import { AuthInterceptor } from "./auth-interceptor";
 import { CustomPaginatorFormatting } from "./custom-paginator-formatting";
+import { PaginatedListComponent } from './paginated-list/paginated-list.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -113,6 +114,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageListComponent,
     ConversationListComponent,
     MessageCardComponent,
+    PaginatedListComponent,
   ],
   imports: [
     BrowserModule,

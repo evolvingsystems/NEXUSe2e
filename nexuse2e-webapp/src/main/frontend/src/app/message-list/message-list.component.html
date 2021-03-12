@@ -1,22 +1,7 @@
-<mat-paginator *ngIf="messages?.length"
-               [length]="totalMessageCount"
-               [pageSize]="pageSize"
-               [pageIndex]="pageIndex"
-               [hidePageSize]="true"
-               [showFirstLastButtons]="true"
-               (page)="onPageChange($event)">
-</mat-paginator>
-<div class="padded">
-  <div *ngFor="let message of messages" class="message-card-wrapper">
-    <app-message-card [message]="message"></app-message-card>
-  </div>
-</div>
-<mat-paginator *ngIf="messages?.length"
-               [length]="totalMessageCount"
-               [pageSize]="pageSize"
-               [pageIndex]="pageIndex"
-               [hidePageSize]="false"
-               [pageSizeOptions]="[10, 20, 50]"
-               [showFirstLastButtons]="true"
-               (page)="onPageChange($event)">
-</mat-paginator>
+<app-paginated-list
+  [totalItemCount]="totalMessageCount"
+  [items]="messages"
+  itemType="message"
+  (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"
+>
+</app-paginated-list>

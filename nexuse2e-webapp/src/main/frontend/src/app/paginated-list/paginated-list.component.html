@@ -1,0 +1,22 @@
+<div id="first">
+  <mat-paginator [length]="totalItemCount"
+                 [pageSize]="pageSize"
+                 [pageIndex]="pageIndex"
+                 [pageSizeOptions]="[10, 20, 50, 100]"
+                 [showFirstLastButtons]="true"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+<div class="padded">
+  <div [ngSwitch]="itemType" *ngFor="let item of items" class="item-card-wrapper">
+    <app-message-card *ngSwitchCase="'message'" [message]="item"></app-message-card>
+  </div>
+</div>
+<mat-paginator *ngIf="items?.length"
+               [length]="totalItemCount"
+               [pageSize]="pageSize"
+               [pageIndex]="pageIndex"
+               [pageSizeOptions]="[10, 20, 50, 100]"
+               [showFirstLastButtons]="true"
+               (page)="onPageChange($event)">
+</mat-paginator>
