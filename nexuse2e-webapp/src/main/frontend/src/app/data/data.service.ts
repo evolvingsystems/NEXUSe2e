@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Message } from "../types";
+import { Conversation, Message } from "../types";
 
 @Injectable({
   providedIn: "root",
@@ -45,14 +45,33 @@ export class DataService {
 
   getMessages(pageIndex: number, itemsPerPage: number): Promise<Message[]> {
     const params = {
-      "pageIndex": String(pageIndex),
-      "itemsPerPage": String(itemsPerPage)
-    }
-    return this.http.get<Message[]>(this.API_URL + "/messages", { params: params }).toPromise();
+      pageIndex: String(pageIndex),
+      itemsPerPage: String(itemsPerPage),
+    };
+    return this.http
+      .get<Message[]>(this.API_URL + "/messages", { params: params })
+      .toPromise();
   }
 
   getMessagesCount(): Promise<number> {
     return this.get<number>("/messages-count", false);
+  }
+
+  getConversations(
+    pageIndex: number,
+    itemsPerPage: number
+  ): Promise<Conversation[]> {
+    const params = {
+      pageIndex: String(pageIndex),
+      itemsPerPage: String(itemsPerPage),
+    };
+    return this.http
+      .get<Conversation[]>(this.API_URL + "/conversations", { params: params })
+      .toPromise();
+  }
+
+  getConversationsCount(): Promise<number> {
+    return this.get<number>("/conversations-count", false);
   }
 
   getVersion(): Promise<string[]> {
@@ -63,7 +82,7 @@ export class DataService {
     return this.http.post(this.API_URL + path, body).toPromise();
   }
 
-  postLogin(body: { user: string, password: string }) {
+  postLogin(body: { user: string; password: string }) {
     return this.post("/login", body);
   }
 

@@ -10,6 +10,7 @@
 <div class="padded">
   <div [ngSwitch]="itemType" *ngFor="let item of items" class="item-card-wrapper">
     <app-message-card *ngSwitchCase="'message'" [message]="item"></app-message-card>
+    <app-conversation-card *ngSwitchCase="'conversation'" [conversation]="item"></app-conversation-card>
   </div>
 </div>
 <mat-paginator *ngIf="items?.length"

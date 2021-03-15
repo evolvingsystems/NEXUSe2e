@@ -1,6 +1,10 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from "@angular/common/http";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AppComponent } from "./app.component";
@@ -26,13 +30,17 @@ import { MenuItemComponent } from "./menu-item/menu-item.component";
 import { MessageListComponent } from "./message-list/message-list.component";
 import { ConversationListComponent } from "./conversation-list/conversation-list.component";
 import { MatTabsModule } from "@angular/material/tabs";
-import { MessageCardComponent } from './message-card/message-card.component';
+import { MessageCardComponent } from "./message-card/message-card.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatPaginatorIntl, MatPaginatorModule } from "@angular/material/paginator";
+import {
+  MatPaginatorIntl,
+  MatPaginatorModule,
+} from "@angular/material/paginator";
 import { AuthInterceptor } from "./auth-interceptor";
 import { CustomPaginatorFormatting } from "./custom-paginator-formatting";
-import { PaginatedListComponent } from './paginated-list/paginated-list.component';
+import { PaginatedListComponent } from "./paginated-list/paginated-list.component";
+import { ConversationCardComponent } from "./conversation-card/conversation-card.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -115,6 +123,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConversationListComponent,
     MessageCardComponent,
     PaginatedListComponent,
+    ConversationCardComponent,
   ],
   imports: [
     BrowserModule,

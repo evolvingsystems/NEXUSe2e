@@ -1,8 +1,8 @@
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
-import org.apache.commons.lang.StringUtils;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.nexuse2e.Engine;
 import org.nexuse2e.dao.TransactionDAO;
@@ -28,7 +28,8 @@ public class TransactionReportingHandler implements Handler {
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/messages-count".equalsIgnoreCase(path)) ||
-                        ("GET".equalsIgnoreCase(method) && "/conversations".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/conversations".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/conversations-count".equalsIgnoreCase(path));
     }
 
     @Override
@@ -39,11 +40,14 @@ public class TransactionReportingHandler implements Handler {
                 case "/messages":
                     this.getMessages(request, response);
                     break;
+                case "/messages-count":
+                    this.getMessagesCount(response);
+                    break;
                 case "/conversations":
                     this.getConversations(request, response);
                     break;
-                case "/messages-count":
-                    this.getMessagesCount(response);
+                case "/conversations-count":
+                    this.getConversationsCount(response);
                     break;
             }
         }
@@ -81,15 +85,34 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
+    private void getConversationsCount(HttpServletResponse response) throws Exception {
+        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(TWO_WEEKS_AGO, new Date());
+        String message = new Gson().toJson(conversationsCount);
+        response.getOutputStream().print(message);
+    }
+
     private void getConversations(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
-                null, 0, 0, null, TWO_WEEKS_AGO, new Date(),
-                20, 0, TransactionDAO.SORT_CREATED, false);
-        List<StatisticsConversation> conversations = new LinkedList<>();
-        for (ConversationPojo conversationPojo : reportConversations) {
-            conversations.add(new StatisticsConversation(conversationPojo));
+        String pageIndex = request.getParameter("pageIndex");
+        String itemsPerPage = request.getParameter("itemsPerPage");
+        if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
+            List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
+                    null, 0, 0, null,
+                    TWO_WEEKS_AGO,
+                    new Date(),
+                    Integer.parseInt(itemsPerPage),
+                    Integer.parseInt(pageIndex),
+                    TransactionDAO.SORT_CREATED,
+                    false);
+            List<StatisticsConversation> conversations = new LinkedList<>();
+            for (ConversationPojo conversationPojo : reportConversations) {
+                conversations.add(new StatisticsConversation(conversationPojo));
+            }
+
+            Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+            String conversationJson = gson.toJson(conversations);
+            response.getOutputStream().print(conversationJson);
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameters: pageIndex and itemsPerPage");
         }
-        String conversationJson = new Gson().toJson(conversations);
-        response.getOutputStream().print(conversationJson);
     }
 }

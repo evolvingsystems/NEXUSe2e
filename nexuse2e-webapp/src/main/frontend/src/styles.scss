@@ -93,3 +93,49 @@ a {
     padding: 15px;
   }
 }
+
+/* Card Element */
+.mat-card {
+  margin-bottom: 15px;
+  border-left: 5px $gray4 solid;
+  padding: 8px;
+
+  .card-header {
+    padding-bottom: 4px;
+    padding-left: 2px;
+    display: flex;
+
+    .mat-checkbox {
+      margin-right: 10px;
+    }
+
+    a {
+      margin-top: 2px;
+    }
+  }
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+
+    td {
+      white-space: nowrap;
+      overflow: hidden;
+
+      &:before {
+        content: "";
+        width: 40px;
+        height: 20px;
+        position: absolute;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0.1), #fff);
+        right: 0;
+      }
+    }
+
+    .label {
+      width: 110px;
+      font-weight: bold;
+      color: $gray2;
+    }
+  }
+}

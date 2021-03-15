@@ -1,13 +1,13 @@
 @import '../../styles.scss';
 
-.failed {
+.error {
   border-left-color: $error;
 }
 
-.stopped, .retrying {
+.unknown, .created, .idle {
   border-left-color: $warning;
 }
 
-.sent {
+.completed {
   border-left-color: $success;
 }

@@ -9,3 +9,12 @@ export interface Message {
   nxConversationId: number;
   partnerId: string;
 }
+
+export interface Conversation {
+  choreographyId: string;
+  conversationId: string;
+  nxConversationId: number;
+  partnerId: string;
+  createdDate: string;
+  status: string;
+}

@@ -1,1 +1,7 @@
-<p>conversation-list works!</p>
+<app-paginated-list
+  [totalItemCount]="totalConversationCount"
+  [items]="conversations"
+  itemType="conversation"
+  (triggerReload)="loadConversations($event.pageIndex, $event.pageSize)"
+>
+</app-paginated-list>
