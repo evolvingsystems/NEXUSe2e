@@ -32,6 +32,8 @@ describe("ConversationCardComponent", () => {
       partnerId: "NexusFriend",
       createdDate: "03-02-2018 15:07:34 GMT",
       status: "Sent",
+      currentAction: "SendFile",
+      turnAroundTime: "Not terminated",
     };
     fixture.detectChanges();
   });

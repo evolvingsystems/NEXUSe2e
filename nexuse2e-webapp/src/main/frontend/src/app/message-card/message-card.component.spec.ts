@@ -1,12 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MessageCardComponent } from './message-card.component';
+import { MessageCardComponent } from "./message-card.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 
-describe('MessageCardComponent', () => {
+describe("MessageCardComponent", () => {
   let component: MessageCardComponent;
   let fixture: ComponentFixture<MessageCardComponent>;
 
@@ -15,11 +15,10 @@ describe('MessageCardComponent', () => {
       imports: [
         RouterTestingModule,
         TranslateModule.forRoot(),
-        MatCheckboxModule
+        MatCheckboxModule,
       ],
-      declarations: [MessageCardComponent]
-    })
-      .compileComponents();
+      declarations: [MessageCardComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -34,17 +33,21 @@ describe('MessageCardComponent', () => {
       conversationId: "dsfsdfs-dsfsdfdf-dsfsdfsf",
       nxMessageId: 25,
       nxConversationId: 12,
-      partnerId: "NexusFriend"
-    }
+      partnerId: "NexusFriend",
+      backendStatus: "QUEUED",
+      turnAroundTime: "Not terminated",
+    };
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
   it("should have a checkbox", () => {
-    const checkbox = fixture.nativeElement.querySelector("input[type='checkbox']");
+    const checkbox = fixture.nativeElement.querySelector(
+      "input[type='checkbox']"
+    );
     expect(checkbox).toBeTruthy();
   });
 
@@ -55,7 +58,9 @@ describe('MessageCardComponent', () => {
   });
 
   it("should have a link to the conversation detail page", () => {
-    const linkToConversation = fixture.debugElement.query(By.css("a[href*='12']"));
+    const linkToConversation = fixture.debugElement.query(
+      By.css("a[href*='12']")
+    );
     expect(linkToConversation).toBeTruthy();
     expect(linkToConversation.nativeElement.textContent).toBeTruthy();
   });
