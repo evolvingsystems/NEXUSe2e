@@ -1,11 +1,14 @@
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 import org.nexuse2e.Engine;
 import org.nexuse2e.dao.TransactionDAO;
+import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.reporting.StatisticsConversation;
 import org.nexuse2e.reporting.StatisticsMessage;
 import org.nexuse2e.util.DateWithTimezoneSerializer;
 
@@ -24,15 +27,25 @@ public class TransactionReportingHandler implements Handler {
     @Override
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/messages-count".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/messages-count".equalsIgnoreCase(path)) ||
+                        ("GET".equalsIgnoreCase(method) && "/conversations".equalsIgnoreCase(path));
     }
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if ("/messages".equalsIgnoreCase(request.getPathInfo())) {
-            this.getMessages(request, response);
-        } else {
-            this.getMessagesCount(response);
+        String path = request.getPathInfo();
+        if (path != null) {
+            switch (StringUtils.lowerCase(path)) {
+                case "/messages":
+                    this.getMessages(request, response);
+                    break;
+                case "/conversations":
+                    this.getConversations(request, response);
+                    break;
+                case "/messages-count":
+                    this.getMessagesCount(response);
+                    break;
+            }
         }
     }
 
@@ -66,5 +79,17 @@ public class TransactionReportingHandler implements Handler {
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameters: pageIndex and itemsPerPage");
         }
+    }
+
+    private void getConversations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
+                null, 0, 0, null, TWO_WEEKS_AGO, new Date(),
+                20, 0, TransactionDAO.SORT_CREATED, false);
+        List<StatisticsConversation> conversations = new LinkedList<>();
+        for (ConversationPojo conversationPojo : reportConversations) {
+            conversations.add(new StatisticsConversation(conversationPojo));
+        }
+        String conversationJson = new Gson().toJson(conversations);
+        response.getOutputStream().print(conversationJson);
     }
 }
