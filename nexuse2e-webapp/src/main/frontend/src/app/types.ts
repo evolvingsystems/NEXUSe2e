@@ -8,6 +8,8 @@ export interface Message {
   nxMessageId: number;
   nxConversationId: number;
   partnerId: string;
+  backendStatus: string;
+  turnAroundTime: string;
 }
 
 export interface Conversation {
@@ -17,4 +19,6 @@ export interface Conversation {
   partnerId: string;
   createdDate: string;
   status: string;
+  currentAction: string;
+  turnAroundTime: string;
 }
