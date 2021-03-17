@@ -1,17 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { PaginatedListComponent } from './paginated-list.component';
+import { PaginatedListComponent } from "./paginated-list.component";
 import { messages } from "../test-data";
 
-describe('PaginatedListComponent', () => {
+describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
   let fixture: ComponentFixture<PaginatedListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PaginatedListComponent]
-    })
-      .compileComponents();
+      declarations: [PaginatedListComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -20,7 +19,7 @@ describe('PaginatedListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
@@ -30,15 +29,29 @@ describe('PaginatedListComponent', () => {
 
     await component.ngOnInit();
 
-    expect(component.triggerReload.emit).toHaveBeenCalledWith({ pageIndex: 0, pageSize: component.pageSize });
+    expect(component.triggerReload.emit).toHaveBeenCalledWith({
+      pageIndex: 0,
+      pageSize: component.pageSize,
+    });
   });
 
-  it("should render one item card for each item on the page", async () => {
+  it("if mobile is true, it should render one item card for each item on the page", async () => {
     component.items = messages;
-
+    spyOn(component, "isMobile").and.returnValue(true);
     fixture.detectChanges();
 
-    const itemCards = fixture.nativeElement.querySelectorAll(".item-card-wrapper");
+    const itemCards = fixture.nativeElement.querySelectorAll(
+      ".item-card-wrapper"
+    );
     expect(itemCards.length).toBe(component.items.length);
+  });
+
+  it("if mobile is false, it should render all items as a table", async () => {
+    spyOn(component, "isMobile").and.returnValue(false);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelectorAll(".items-table-wrapper")
+    ).toBeTruthy();
   });
 });

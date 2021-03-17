@@ -1,6 +1,6 @@
 @import '../../styles.scss';
 
-@media(max-width: $desktopBreakpoint) {
+@media(max-width: $desktopBreakpointForMaxWidth) {
   ::ng-deep .mat-tab-nav-bar {
     border-bottom: none;
   }
