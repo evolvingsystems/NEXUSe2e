@@ -1,10 +1,6 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import {
-  HTTP_INTERCEPTORS,
-  HttpClient,
-  HttpClientModule,
-} from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, } from "@angular/common/http";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AppComponent } from "./app.component";
@@ -33,14 +29,14 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MessageCardComponent } from "./message-card/message-card.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import {
-  MatPaginatorIntl,
-  MatPaginatorModule,
-} from "@angular/material/paginator";
+import { MatPaginatorIntl, MatPaginatorModule, } from "@angular/material/paginator";
 import { AuthInterceptor } from "./auth-interceptor";
 import { CustomPaginatorFormatting } from "./custom-paginator-formatting";
 import { PaginatedListComponent } from "./paginated-list/paginated-list.component";
 import { ConversationCardComponent } from "./conversation-card/conversation-card.component";
+import { FilterPanelComponent } from './filter-panel/filter-panel.component';
+import { MatSelectModule } from "@angular/material/select";
+import { SelectFilterComponent } from './select-filter/select-filter.component';
 import { ConversationTableComponent } from "./conversation-table/conversation-table.component";
 import { MatTableModule } from "@angular/material/table";
 import { MessageTableComponent } from "./message-table/message-table.component";
@@ -64,7 +60,7 @@ const routes: Routes = [
       title: "Reporting",
     },
     children: [
-      { path: "", redirectTo: "transaction-reporting", pathMatch: "full" },
+      { path: '', redirectTo: 'transaction-reporting', pathMatch: 'full' },
       {
         path: "transaction-reporting",
         component: TransactionReportingComponent,
@@ -73,7 +69,7 @@ const routes: Routes = [
           title: "Transaction Reporting",
         },
         children: [
-          { path: "", redirectTo: "conversations", pathMatch: "full" },
+          { path: '', redirectTo: 'conversations', pathMatch: 'full' },
           {
             path: "conversations",
             component: ConversationListComponent,
@@ -127,6 +123,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageCardComponent,
     PaginatedListComponent,
     ConversationCardComponent,
+    FilterPanelComponent,
+    SelectFilterComponent,
     ConversationTableComponent,
     MessageTableComponent,
   ],
@@ -152,6 +150,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatTableModule,
     MatCheckboxModule,
     MatPaginatorModule,
+    MatSelectModule
   ],
   providers: [
     {
@@ -163,12 +162,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true,
+      multi: true
     },
     {
       provide: MatPaginatorIntl,
-      useClass: CustomPaginatorFormatting,
-    },
+      useClass: CustomPaginatorFormatting
+    }
   ],
   bootstrap: [AppComponent],
 })

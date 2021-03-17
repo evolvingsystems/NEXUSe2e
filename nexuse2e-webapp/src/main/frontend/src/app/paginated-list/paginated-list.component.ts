@@ -14,7 +14,7 @@ import { PageEvent } from "@angular/material/paginator";
   styleUrls: ["./paginated-list.component.scss"],
 })
 export class PaginatedListComponent implements OnInit {
-  @Input() totalItemCount!: number;
+  private _totalItemCount!: number;
   @Input() items!: unknown[];
   @Input() itemType!: string;
   @Output() triggerReload: EventEmitter<{
@@ -28,11 +28,20 @@ export class PaginatedListComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+  }
+
+  @Input()
+  set totalItemCount(value: number) {
+    this._totalItemCount = value;
     this.onPageChange({
-      pageIndex: this.pageIndex,
+      pageIndex: 0,
       pageSize: this.pageSize,
       length: this.totalItemCount,
     });
+  }
+
+  get totalItemCount() {
+    return this._totalItemCount;
   }
 
   onPageChange(pageEvent: PageEvent) {

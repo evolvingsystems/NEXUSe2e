@@ -9,7 +9,8 @@
   "buttons": {
     "login": "Login",
     "logout": "Logout",
-    "backToDashboard": "Back to dashboard"
+    "backToDashboard": "Back to dashboard",
+    "filter": "Filter"
   },
   "labels": {
     "nexuse2e": "NEXUSe2e",
@@ -35,6 +36,7 @@
     "nextPage": "Next page",
     "previousPage": "Previous page",
     "of": "of",
-    "noResultsFound": "No results found."
+    "noResultsFound": "No results found.",
+    "all": "All"
   }
 }

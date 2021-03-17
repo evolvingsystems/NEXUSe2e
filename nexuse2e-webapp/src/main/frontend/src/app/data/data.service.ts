@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Conversation, Message } from "../types";
+import { ActiveFilter } from "../filter-panel/filter-panel.component";
 
 @Injectable({
   providedIn: "root",
@@ -43,18 +44,29 @@ export class DataService {
     return this.get<string>("/machine-name", true);
   }
 
-  getMessages(pageIndex: number, itemsPerPage: number): Promise<Message[]> {
-    const params = {
-      pageIndex: String(pageIndex),
-      itemsPerPage: String(itemsPerPage),
-    };
+  buildFilterParams(activeFilters: ActiveFilter[]) {
+    let httpParams = new HttpParams();
+    for (const filter of activeFilters) {
+      if (filter.value) {
+        httpParams = httpParams.append(filter.fieldName, filter.value);
+      }
+    }
+    return httpParams;
+  }
+
+  getMessages(pageIndex: number, itemsPerPage: number, activeFilters: ActiveFilter[]): Promise<Message[]> {
+    let params = this.buildFilterParams(activeFilters);
+    params = params.append("pageIndex", String(pageIndex));
+    params = params.append("itemsPerPage", String(itemsPerPage));
     return this.http
       .get<Message[]>(this.API_URL + "/messages", { params: params })
       .toPromise();
   }
 
-  getMessagesCount(): Promise<number> {
-    return this.get<number>("/messages-count", false);
+  getMessagesCount(activeFilters: ActiveFilter[] = []): Promise<number> {
+    return this.http.get<number>(this.API_URL + "/messages-count", {
+      params: this.buildFilterParams(activeFilters),
+    }).toPromise();
   }
 
   getConversations(

@@ -1,0 +1,22 @@
+<div class="collapsed" *ngIf="!collapsed">
+  <div class="active-filters-badge">{{ activeFilters.length }}</div>
+</div>
+<div class="expanded" *ngIf="collapsed">
+  <div *ngFor="let filter of filters" class="filter">
+    <div [ngSwitch]="filter.filterType">
+      <app-select-filter
+        *ngSwitchCase="getFilterType().SELECT"
+        [allowedValues]="filter.allowedValues"
+        [fieldName]="filter.fieldName"
+        (valueChange)="updateActiveFilters($event)"
+      >
+      </app-select-filter>
+    </div>
+  </div>
+  <button mat-flat-button
+          (click)="filterChange.emit(activeFilters)"
+          color="accent"
+  >
+    {{ "buttons.filter" | translate }}
+  </button>
+</div>
