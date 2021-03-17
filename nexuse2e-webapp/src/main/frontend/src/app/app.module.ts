@@ -41,6 +41,9 @@ import { AuthInterceptor } from "./auth-interceptor";
 import { CustomPaginatorFormatting } from "./custom-paginator-formatting";
 import { PaginatedListComponent } from "./paginated-list/paginated-list.component";
 import { ConversationCardComponent } from "./conversation-card/conversation-card.component";
+import { ConversationTableComponent } from "./conversation-table/conversation-table.component";
+import { MatTableModule } from "@angular/material/table";
+import { MessageTableComponent } from "./message-table/message-table.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -61,7 +64,7 @@ const routes: Routes = [
       title: "Reporting",
     },
     children: [
-      { path: '', redirectTo: 'transaction-reporting', pathMatch: 'full' },
+      { path: "", redirectTo: "transaction-reporting", pathMatch: "full" },
       {
         path: "transaction-reporting",
         component: TransactionReportingComponent,
@@ -70,7 +73,7 @@ const routes: Routes = [
           title: "Transaction Reporting",
         },
         children: [
-          { path: '', redirectTo: 'conversations', pathMatch: 'full' },
+          { path: "", redirectTo: "conversations", pathMatch: "full" },
           {
             path: "conversations",
             component: ConversationListComponent,
@@ -124,6 +127,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageCardComponent,
     PaginatedListComponent,
     ConversationCardComponent,
+    ConversationTableComponent,
+    MessageTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -144,8 +149,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     MatTabsModule,
     MatCardModule,
+    MatTableModule,
     MatCheckboxModule,
-    MatPaginatorModule
+    MatPaginatorModule,
   ],
   providers: [
     {
@@ -157,14 +163,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
+      multi: true,
     },
     {
       provide: MatPaginatorIntl,
-      useClass: CustomPaginatorFormatting
-    }
+      useClass: CustomPaginatorFormatting,
+    },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -20,6 +20,7 @@ $textOrange: #E56009;
 $textError: #cc570c;
 $white: #FFFFFF;
 $desktopBreakpoint: 980px;
+$desktopBreakpointForMaxWidth: 979px;
 $tabletBreakpoint: 750px;
 $mobileBreakpoint: 501px;
 
@@ -37,7 +38,7 @@ h1, h2 {
   color: $gray1;
 }
 
-@media(max-width: $desktopBreakpoint) {
+@media(max-width: $desktopBreakpointForMaxWidth) {
   h1 {
     background: $gray4;
     padding: 3px 15px 0 15px;
@@ -136,6 +137,44 @@ a {
       width: 110px;
       font-weight: bold;
       color: $gray2;
+    }
+  }
+}
+
+/* Scrollable Table */
+.table-scrollable {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+
+  .mat-table {
+    width: 100%;
+    max-width: 100%;
+    display: table;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  .mat-row,
+  .mat-header-row {
+    display: table-row;
+  }
+
+  .mat-cell,
+  .mat-header-cell {
+    word-wrap: initial;
+    display: table-cell;
+    padding: 0 5px;
+    line-break: unset;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+
+    &[class*="-column-messageId"],
+    &[class*="-column-conversationId"] {
+      white-space: normal;
+      min-width: 180px;
     }
   }
 }
