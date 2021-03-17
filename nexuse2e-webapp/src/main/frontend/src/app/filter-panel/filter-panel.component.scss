@@ -1,0 +1,19 @@
+@import '../../styles.scss';
+
+button {
+  display: block;
+  width: 100%;
+}
+
+.expanded {
+  background: $gray5;
+  padding: 10px;
+
+  ::ng-deep .mat-form-field-infix {
+    border-top: 11px solid transparent;
+  }
+
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper {
+    margin-top: 0;
+  }
+}

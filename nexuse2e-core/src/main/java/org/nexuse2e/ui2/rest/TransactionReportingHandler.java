@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.nexuse2e.Engine;
+import org.nexuse2e.MessageStatus;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
@@ -41,7 +42,7 @@ public class TransactionReportingHandler implements Handler {
                     this.getMessages(request, response);
                     break;
                 case "/messages-count":
-                    this.getMessagesCount(response);
+                    this.getMessagesCount(request, response);
                     break;
                 case "/conversations":
                     this.getConversations(request, response);
@@ -53,18 +54,33 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void getMessagesCount(HttpServletResponse response) throws Exception {
-        long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(TWO_WEEKS_AGO, new Date());
+    private void getMessagesCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String status = request.getParameter("status");
+        long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
+                getStatusNumberFromName(status),
+                0, 0, null, null,
+                TWO_WEEKS_AGO,
+                new Date());
         String message = new Gson().toJson(messagesCount);
         response.getOutputStream().print(message);
+    }
+
+    private String getStatusNumberFromName(String statusName) {
+        try {
+            return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void getMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
+        String status = request.getParameter("status");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<MessagePojo> reportMessages = Engine.getInstance().getTransactionService().getMessagesForReport(
-                    null, 0, 0, null, null, null,
+                    getStatusNumberFromName(status),
+                    0, 0, null, null, null,
                     TWO_WEEKS_AGO,
                     new Date(),
                     Integer.parseInt(itemsPerPage),

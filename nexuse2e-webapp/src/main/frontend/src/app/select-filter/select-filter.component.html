@@ -1,0 +1,9 @@
+<mat-form-field>
+  <mat-label>{{ "labels." + fieldName | translate }}</mat-label>
+  <mat-select (selectionChange)="emitValue($event)">
+    <mat-option>{{ "labels.all" | translate }}</mat-option>
+    <mat-option *ngFor="let allowedValue of allowedValues" [value]="allowedValue">
+      {{ allowedValue | titlecase }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
