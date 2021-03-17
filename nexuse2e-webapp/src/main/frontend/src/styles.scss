@@ -177,4 +177,48 @@ a {
       min-width: 180px;
     }
   }
+
+  .mat-cell {
+    &[class*="-column-statusColor"] {
+      max-width: 10px;
+      margin: 0;
+      padding: 0;
+      border-left: 8px solid $gray4;
+
+      &:first-of-type {
+        padding-left: 0;
+      }
+    }
+  }
 }
+
+/* Conversation Status Colors */
+.conversationStatusLeftBorderColor {
+  &.error {
+    border-left-color: $error !important;
+  }
+
+  &.unknown, &.created, &.idle {
+    border-left-color: $warning !important;
+  }
+
+  &.completed {
+    border-left-color: $success !important;
+  }
+}
+
+/* Message Status Colors */
+.messageStatusLeftBorderColor {
+  &.failed {
+    border-left-color: $error !important;
+  }
+
+  &.stopped, &.retrying {
+    border-left-color: $warning !important;
+  }
+
+  &.sent {
+    border-left-color: $success !important;
+  }
+}
+

@@ -9,6 +9,7 @@ import { Conversation } from "../types";
 export class ConversationTableComponent implements OnInit {
   @Input() conversations!: Conversation[];
   displayedColumns: string[] = [
+    "statusColor",
     "select",
     "conversationId",
     "partnerId",
