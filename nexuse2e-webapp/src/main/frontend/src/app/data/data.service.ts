@@ -46,7 +46,7 @@ export class DataService {
 
   buildFilterParams(activeFilters: ActiveFilter[]) {
     let httpParams = new HttpParams();
-    for (let filter of activeFilters) {
+    for (const filter of activeFilters) {
       if (filter.value) {
         httpParams = httpParams.append(filter.fieldName, filter.value);
       }

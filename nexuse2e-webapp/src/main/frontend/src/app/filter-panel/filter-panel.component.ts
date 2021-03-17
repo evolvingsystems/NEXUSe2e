@@ -40,7 +40,7 @@ export class FilterPanelComponent implements OnInit {
   }
 
   updateActiveFilters(activeFilter: ActiveFilter) {
-    let existingFilter = this.activeFilters.find(filter => filter.fieldName === activeFilter.fieldName);
+    const existingFilter = this.activeFilters.find(filter => filter.fieldName === activeFilter.fieldName);
     if (existingFilter) {
       existingFilter.value = activeFilter.value;
     } else {

@@ -2,14 +2,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilterPanelComponent, FilterType } from './filter-panel.component';
 import { By } from "@angular/platform-browser";
+import { TranslateModule } from "@ngx-translate/core";
 
-fdescribe('FilterPanelComponent', () => {
+describe('FilterPanelComponent', () => {
   let component: FilterPanelComponent;
   let fixture: ComponentFixture<FilterPanelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FilterPanelComponent]
+      declarations: [FilterPanelComponent],
+      imports: [TranslateModule.forRoot()]
     })
       .compileComponents();
   });

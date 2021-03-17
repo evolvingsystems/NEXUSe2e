@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectFilterComponent } from './select-filter.component';
+import { TranslateModule } from "@ngx-translate/core";
 
 describe('SelectFilterComponent', () => {
   let component: SelectFilterComponent;
@@ -8,7 +9,8 @@ describe('SelectFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SelectFilterComponent]
+      declarations: [SelectFilterComponent],
+      imports: [TranslateModule.forRoot()]
     })
       .compileComponents();
   });
