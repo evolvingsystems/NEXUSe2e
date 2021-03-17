@@ -286,6 +286,16 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                     // Block for synchronous processing
                     if (participant.getConnection().isSynchronous()) {
                         responseMessageContext = waitForSynchronousResponse(messageContext);
+                        if (responseMessageContext.getMessagePojo().getStatus() != MessageStatus.FAILED.getOrdinal()
+                                && responseMessageContext.getMessagePojo().getBackendStatus() != MessageStatus.FAILED
+                                        .getOrdinal())
+                        {
+                            try {
+                                messageContext.getStateMachine().receivedNonReliableMessage();
+                            } catch (StateTransitionException e) {
+                                LOG.warn(e.getMessage());
+                            }
+                        }
                     }
                 } catch (NexusException e) {
                     LOG.error(new LogMessage(
