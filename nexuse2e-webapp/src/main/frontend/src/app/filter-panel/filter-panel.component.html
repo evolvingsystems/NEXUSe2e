@@ -1,7 +1,4 @@
-<div class="collapsed" *ngIf="!collapsed">
-  <div class="active-filters-badge">{{ activeFilters.length }}</div>
-</div>
-<div class="expanded" *ngIf="collapsed">
+<div class="expanded" [hidden]="!expanded">
   <div *ngFor="let filter of filters" class="filter">
     <div [ngSwitch]="filter.filterType">
       <app-select-filter
@@ -14,9 +11,21 @@
     </div>
   </div>
   <button mat-flat-button
-          (click)="filterChange.emit(activeFilters)"
+          (click)="applyFilters()"
           color="accent"
   >
     {{ "buttons.filter" | translate }}
   </button>
+</div>
+<div (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
+  <div class="collapsed" *ngIf="!expanded">
+    <div *ngIf="activeFilters.length" class="filter-info">
+      <div class="active-filters-badge">{{ activeFilters.length }}</div>
+      {{ (activeFilters.length == 1 ? "labels.filterActive" : "labels.filtersActive") | translate }}
+    </div>
+    <div *ngIf="!activeFilters.length">
+      {{ "labels.noFiltersActive" | translate }}
+    </div>
+  </div>
+  <mat-icon>{{ expanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
 </div>

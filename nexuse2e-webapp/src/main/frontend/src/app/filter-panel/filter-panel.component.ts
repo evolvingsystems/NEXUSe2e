@@ -26,7 +26,7 @@ export interface ActiveFilter {
 export class FilterPanelComponent implements OnInit {
   @Input() filters!: Filter[];
   @Output() filterChange: EventEmitter<ActiveFilter[]> = new EventEmitter();
-  collapsed = true;
+  expanded = false;
   activeFilters: ActiveFilter[] = [];
 
   constructor() {
@@ -39,13 +39,27 @@ export class FilterPanelComponent implements OnInit {
     return FilterType;
   }
 
+  toggleVisibility() {
+    this.expanded = !this.expanded;
+  }
+
   updateActiveFilters(activeFilter: ActiveFilter) {
-    const existingFilter = this.activeFilters.find(filter => filter.fieldName === activeFilter.fieldName);
+    const index = this.activeFilters.findIndex(filter => filter.fieldName === activeFilter.fieldName);
+    const existingFilter = this.activeFilters[index];
     if (existingFilter) {
-      existingFilter.value = activeFilter.value;
+      if (typeof activeFilter.value !== "undefined") {
+        existingFilter.value = activeFilter.value;
+      } else {
+        this.activeFilters.splice(index, 1);
+      }
     } else {
       this.activeFilters.push(activeFilter);
     }
+  }
+
+  applyFilters() {
+    this.filterChange.emit(this.activeFilters);
+    this.expanded = false;
   }
 
 }

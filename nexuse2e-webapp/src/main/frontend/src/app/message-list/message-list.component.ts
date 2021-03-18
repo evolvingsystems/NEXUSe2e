@@ -15,7 +15,7 @@ export class MessageListComponent implements OnInit {
     {
       fieldName: "status",
       filterType: FilterType.SELECT,
-      allowedValues: ["FAILED", "SENT"]
+      allowedValues: ["FAILED", "SENT", "UNKNOWN", "RETRYING", "QUEUED", "STOPPED"]
     },
     {
       fieldName: "conversationId",

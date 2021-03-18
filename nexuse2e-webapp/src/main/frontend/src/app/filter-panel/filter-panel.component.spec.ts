@@ -25,14 +25,7 @@ describe('FilterPanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  xit("should start in a collapsed state", () => {
-    fixture.detectChanges();
-    expect(component.collapsed).toBeTruthy();
-    expect(fixture.nativeElement.querySelector(".expanded")).toBeFalsy();
-    expect(fixture.nativeElement.querySelector(".collapsed")).toBeTruthy();
-  });
-
-  xit("should display the number of active filters when minimized", () => {
+  it("should display the number of active filters when collapsed", () => {
     component.activeFilters = [
       { fieldName: "filter1", value: "2" },
       { fieldName: "filter1", value: "1" }
@@ -44,6 +37,7 @@ describe('FilterPanelComponent', () => {
   });
 
   it("should render all filters specified in the config object", () => {
+    component.toggleVisibility();
     component.filters = [
       {
         fieldName: "status",
@@ -64,9 +58,15 @@ describe('FilterPanelComponent', () => {
     expect(fixture.nativeElement.querySelectorAll(".filter").length).toBe(3);
   });
 
-  it("should allow the user to clear all filters");
+  it("should emit an event including the active filters when the filter button is clicked", () => {
+    component.toggleVisibility();
+    fixture.detectChanges();
+    spyOn(component.filterChange, 'emit');
+    const button = fixture.nativeElement.querySelector("button");
 
-  it("should emit an event when a filter is applied");
+    button.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
 
-  it("should emit a filter object containing the filtered fields and their values when a filter is applied");
+    expect(component.filterChange.emit).toHaveBeenCalledWith(component.activeFilters);
+  });
 });

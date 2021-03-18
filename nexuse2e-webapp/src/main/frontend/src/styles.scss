@@ -16,6 +16,7 @@ $warning: #FAF11B;
 $info: #CCCCCC;
 $textBlack: #000000;
 $textGrey: #AAAAAA;
+$darkerTextGray: #888;
 $textOrange: #E56009;
 $textError: #cc570c;
 $white: #FFFFFF;
@@ -55,6 +56,10 @@ button {
 
 .mat-form-field-infix {
   border-top: 5px solid transparent;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: $gray3 !important;
 }
 
 a {
