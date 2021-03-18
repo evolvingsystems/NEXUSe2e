@@ -7,6 +7,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.dao.TransactionDAO;
+import org.nexuse2e.messaging.Constants;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.reporting.StatisticsConversation;
@@ -56,8 +57,10 @@ public class TransactionReportingHandler implements Handler {
 
     private void getMessagesCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String status = request.getParameter("status");
+        String type = request.getParameter("type");
         long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
                 getStatusNumberFromName(status),
+                getMessageTypeFromName(type),
                 0, 0, null, null,
                 TWO_WEEKS_AGO,
                 new Date());
@@ -73,14 +76,30 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
+    private Integer getMessageTypeFromName(String typeName) {
+        if (typeName != null) {
+            switch (typeName) {
+                case "ACKNOWLEDGEMENT":
+                    return Constants.INT_MESSAGE_TYPE_ACK;
+                case "NORMAL":
+                    return Constants.INT_MESSAGE_TYPE_NORMAL;
+                case "ERROR":
+                    return Constants.INT_MESSAGE_TYPE_ERROR;
+            }
+        }
+        return null;
+    }
+
     private void getMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
         String status = request.getParameter("status");
+        String type = request.getParameter("type");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<MessagePojo> reportMessages = Engine.getInstance().getTransactionService().getMessagesForReport(
                     getStatusNumberFromName(status),
-                    0, 0, null, null, null,
+                    0, 0, null, null,
+                    getMessageTypeFromName(type),
                     TWO_WEEKS_AGO,
                     new Date(),
                     Integer.parseInt(itemsPerPage),

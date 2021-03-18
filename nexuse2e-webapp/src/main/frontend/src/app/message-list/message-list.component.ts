@@ -18,6 +18,11 @@ export class MessageListComponent implements OnInit {
       allowedValues: ["FAILED", "SENT", "UNKNOWN", "RETRYING", "QUEUED", "STOPPED"]
     },
     {
+      fieldName: "type",
+      filterType: FilterType.SELECT,
+      allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"]
+    },
+    {
       fieldName: "conversationId",
       filterType: FilterType.TEXT_FIELD
     },

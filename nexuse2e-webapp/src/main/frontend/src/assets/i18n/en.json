@@ -40,6 +40,7 @@
     "all": "All",
     "filterActive": "Filter Active",
     "filtersActive": "Filters Active",
-    "noFiltersActive": "No Filters Active"
+    "noFiltersActive": "No Filters Active",
+    "type": "Type"
   }
 }

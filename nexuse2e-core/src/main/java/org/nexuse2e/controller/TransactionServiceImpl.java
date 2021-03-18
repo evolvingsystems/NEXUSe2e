@@ -310,23 +310,23 @@ public class TransactionServiceImpl implements TransactionService {
     /* (non-Javadoc)
      * @see org.nexuse2e.controller.TransactionService#getMessagesForReport(java.lang.String, int, int, java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date, int, int, int, boolean)
      */
-    public List<MessagePojo> getMessagesForReport( String status, int nxChoreographyId, int nxPartnerId,
-            String conversationId, String messageId, String type, Date start, Date end, int itemsPerPage, int page,
-            int field, boolean ascending ) throws NexusException {
+    public List<MessagePojo> getMessagesForReport(String status, int nxChoreographyId, int nxPartnerId,
+                                                  String conversationId, String messageId, Integer type, Date start, Date end, int itemsPerPage, int page,
+                                                  int field, boolean ascending) throws NexusException {
 
-        return completeMessages( getTransactionDao().getMessagesForReport(
+        return completeMessages(getTransactionDao().getMessagesForReport(
                 status, nxChoreographyId, nxPartnerId, conversationId, messageId,
-                type, start, end, itemsPerPage, page, field, ascending ) );
+                type, start, end, itemsPerPage, page, field, ascending));
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.controller.TransactionService#getMessagesCount(java.lang.String, int, int, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
      */
-    public int getMessagesCount( String status, int nxChoreographyId, int nxPartnerId, String conversationId,
-            String messageId, Date startDate, Date endDate ) throws NexusException {
+    public int getMessagesCount(String status, Integer type, int nxChoreographyId, int nxPartnerId, String conversationId,
+                                String messageId, Date startDate, Date endDate) throws NexusException {
 
         return getTransactionDao().getMessagesCount(
-                status, nxChoreographyId, nxPartnerId, conversationId, messageId, startDate, endDate );
+                status, type, nxChoreographyId, nxPartnerId, conversationId, messageId, startDate, endDate);
 
     }
 

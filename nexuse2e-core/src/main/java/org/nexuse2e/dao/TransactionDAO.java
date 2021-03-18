@@ -60,17 +60,18 @@ public interface TransactionDAO {
 
     /**
      * @param status
+     * @param type
      * @param nxChoreographyId
      * @param nxPartnerId
-     * @param nxConversationId
+     * @param conversationId
      * @param messageId
      * @param startDate
      * @param endDate
      * @return
      * @throws NexusException
      */
-    public abstract int getMessagesCount( String status, int nxChoreographyId, int nxPartnerId, String conversationId,
-            String messageId, Date startDate, Date endDate ) throws NexusException;
+    public abstract int getMessagesCount(String status, Integer type, int nxChoreographyId, int nxPartnerId, String conversationId,
+                                         String messageId, Date startDate, Date endDate) throws NexusException;
 
 
     public abstract Statistics getStatistics(Date startDate, Date endDate, int idleGracePeriodInMinutes) throws NexusException;
@@ -83,10 +84,10 @@ public interface TransactionDAO {
     public abstract List<MessagePojo> getActiveMessages() throws NexusException; // getActiveMessages
 
     /**
+     * @param nxConversationId
      * @param status
      * @param nxChoreographyId
      * @param nxPartnerId
-     * @param nxConversationId
      * @param messageId
      * @param type
      * @param start
@@ -98,9 +99,9 @@ public interface TransactionDAO {
      * @return
      * @throws NexusException
      */
-    public abstract List<MessagePojo> getMessagesForReport( String status, int nxChoreographyId, int nxPartnerId,
-            String conversationId, String messageId, String type, Date start, Date end, int itemsPerPage, int page,
-            int field, boolean ascending ) throws NexusException;
+    public abstract List<MessagePojo> getMessagesForReport(String status, int nxChoreographyId, int nxPartnerId,
+                                                           String conversationId, String messageId, Integer type, Date start, Date end, int itemsPerPage, int page,
+                                                           int field, boolean ascending) throws NexusException;
 
     /**
      * @param status
