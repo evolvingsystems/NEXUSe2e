@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { PaginatedListComponent } from "./paginated-list.component";
 import { messages } from "../test-data";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { By } from "@angular/platform-browser";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
@@ -9,6 +12,7 @@ describe("PaginatedListComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [MatPaginatorModule, BrowserAnimationsModule],
       declarations: [PaginatedListComponent],
     }).compileComponents();
   });
@@ -53,5 +57,14 @@ describe("PaginatedListComponent", () => {
     expect(
       fixture.nativeElement.querySelectorAll(".items-table-wrapper")
     ).toBeTruthy();
+  });
+
+  it("should display the number of results found", () => {
+    component.totalItemCount = 30;
+
+    fixture.detectChanges();
+
+    const rangeLabel = fixture.debugElement.query(By.css(".mat-paginator-range-label"));
+    expect(rangeLabel.nativeElement.textContent.trim()).toContain("of 30");
   });
 });
