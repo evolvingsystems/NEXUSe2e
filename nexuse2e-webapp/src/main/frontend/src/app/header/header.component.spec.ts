@@ -2,25 +2,25 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { HeaderComponent } from "./header.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { CacheService } from "../data/cache.service";
 import { By } from "@angular/platform-browser";
+import { DataService } from "../data/data.service";
 
 describe("HeaderComponent", () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  let cacheService: CacheService;
+  let dataService: DataService;
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule, TranslateModule.forRoot()],
         declarations: [HeaderComponent],
-        providers: [CacheService],
+        providers: [DataService],
       });
       fixture = TestBed.createComponent(HeaderComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
-      cacheService = TestBed.inject(CacheService);
+      dataService = TestBed.inject(DataService);
     })
   );
 
@@ -29,17 +29,15 @@ describe("HeaderComponent", () => {
   });
 
   it("should show machine name and version number", async () => {
-    spyOn(cacheService, "get")
-      .withArgs("/machine-name")
-      .and.returnValue(Promise.resolve("Machine Name"))
-      .withArgs("/version")
+    spyOn(dataService, "getMachineName")
+      .and.returnValue(Promise.resolve("Machine Name"));
+    spyOn(dataService, "getVersion")
       .and.returnValue(
-        Promise.resolve(["5.9.0", "Revision: 2.4.2", "Build: 14.2.4"])
-      );
-    await component.getMachineName();
-    await component.getVersionNumber();
-
+      Promise.resolve(["5.9.0", "Revision: 2.4.2", "Build: 14.2.4"])
+    );
+    await component.ngOnInit();
     fixture.detectChanges();
+
     const machineName = fixture.debugElement.query(By.css(".machine-name"));
     const version = fixture.debugElement.query(By.css(".version"));
     expect(machineName.nativeElement.textContent).toBe("Machine Name");

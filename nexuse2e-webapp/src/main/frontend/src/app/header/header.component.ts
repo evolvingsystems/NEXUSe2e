@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { CacheService } from "../data/cache.service";
 import { NavigationService } from "../navigation/navigation.service";
+import { DataService } from "../data/data.service";
 
 @Component({
   selector: "app-header",
@@ -12,24 +12,13 @@ export class HeaderComponent implements OnInit {
   version?: string;
 
   constructor(
-    private cacheService: CacheService,
+    private dataService: DataService,
     public navigationService: NavigationService
   ) {
-    this.getMachineName();
-    this.getVersionNumber();
   }
 
-  ngOnInit(): void {}
-
-  getMachineName(): void {
-    this.cacheService
-      .get<string>("/machine-name")
-      .then((name) => (this.machineName = name));
-  }
-
-  getVersionNumber(): void {
-    this.cacheService
-      .get<string[]>("/version")
-      .then((version) => (this.version = version[0]));
+  async ngOnInit() {
+    this.machineName = await this.dataService.getMachineName();
+    this.version = (await this.dataService.getVersion())[0];
   }
 }

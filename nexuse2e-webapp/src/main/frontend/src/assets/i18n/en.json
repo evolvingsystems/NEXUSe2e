@@ -15,6 +15,16 @@
     "nexuse2e": "NEXUSe2e",
     "user": "User",
     "password": "Password",
-    "loggedInAs": "Logged in as"
+    "loggedInAs": "Logged in as",
+    "transactionReporting": "Transaction Reporting",
+    "messages": "Messages",
+    "conversations": "Conversations",
+    "messageId": "Message ID",
+    "conversationId": "Conversation ID",
+    "participantId": "Participant ID",
+    "messageType": "Message Type",
+    "action": "Action",
+    "createdDate": "Date created",
+    "status": "Status"
   }
 }

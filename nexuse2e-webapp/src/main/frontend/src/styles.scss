@@ -34,7 +34,18 @@ body {
 }
 
 h1, h2 {
-  color: $gray2;
+  color: $gray1;
+}
+
+@media(max-width: $desktopBreakpoint) {
+  h1 {
+    background: $gray4;
+    padding: 3px 15px 0 15px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0;
+  }
 }
 
 button {
@@ -75,4 +86,10 @@ a {
 
 .float-right {
   float: right;
+}
+
+@media(min-width: $desktopBreakpoint) {
+  .padded-desktop {
+    padding: 15px;
+  }
 }

@@ -1,1 +1,3 @@
-<p>message-list works!</p>
+<div *ngFor="let message of messages" class="message-card-wrapper">
+  <app-message-card [message]="message"></app-message-card>
+</div>

@@ -23,15 +23,15 @@ public class NoAnonymousAccessHandler implements Handler {
     }
 
     @Override
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        if (req.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER) != null) {
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER) != null) {
             for (Handler handler : handlers) {
-                if (handler.canHandle(req.getPathInfo(), req.getMethod())) {
-                    handler.handle(req, resp);
+                if (handler.canHandle(request.getPathInfo(), request.getMethod())) {
+                    handler.handle(request, response);
                 }
             }
         } else {
-            resp.setStatus(401);
+            response.setStatus(401);
         }
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  *  NEXUSe2e Business Messaging Open Source
  *  Copyright 2000-2021, direkt gruppe GmbH
  *
@@ -19,36 +19,44 @@
  */
 package org.nexuse2e.util;
 
+import org.nexuse2e.Engine;
+import org.nexuse2e.configuration.ParameterType;
+
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
 /**
  * @author gesch
- *
  */
 public class DateUtil {
 
-    public static final String  dbFormat      = "yyyyMMddHHmmssSSS";
-    
+    public static final String dbFormat = "yyyyMMddHHmmssSSS";
+
+    public static String getTimezone() {
+        return (String) Engine.getInstance().getActiveConfigurationAccessService()
+                .getGenericParameter("log_display_configuration", "timezone", ParameterType.STRING, null);
+    }
+
     /**
-     * Converts local Date to displayable String using the given Timezone and a optional pattern 
-     * 
-     * @param time
+     * Converts local Date to displayable String using the given Timezone and a optional pattern
+     *
+     * @param time     the time
      * @param timeZone java TimeZone Ids (e.g. GMT+8)
-     * @param pattern format pattern (SimpleDateFormat) (null = default)
+     * @param pattern  format pattern (SimpleDateFormat) (null = default)
      * @return display formated String
      */
-    public static String localTimeToTimezone( Date time, String timeZone, String pattern ) {
+    public static String localTimeToTimezone(Date time, String timeZone, String pattern) {
 
         try {
-            if ( pattern == null ) {
+            if (pattern == null) {
                 pattern = "yyyy-MM-dd HH:mm:ss.SSS z";
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat( pattern );
-            if ( timeZone != null && !timeZone.equals( "" ) ) {
-                sdf.setTimeZone( TimeZone.getTimeZone( timeZone ) );
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+            if (timeZone != null && !timeZone.equals("")) {
+                sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
             }
             return sdf.format( time );
         } catch ( Exception e ) {
@@ -59,19 +67,18 @@ public class DateUtil {
 
     /**
      *  Static method returns the current date in String format used by Nexus 3.x.
-     *  @returns java.lang.String Representings Local Date String
+     *  @return java.lang.String Representings Local Date String
      */
     public static String getFormatedNowString() {
 
         Date date = new Date();
         SimpleDateFormat databaseDateFormat = new SimpleDateFormat( dbFormat );
-        String stringDate = databaseDateFormat.format( date );
-        return stringDate;
+        return databaseDateFormat.format(date );
     }
-    
+
     /**
-     * @param createdDate
-     * @param endDate
+     * @param createdDate creation date
+     * @param endDate end date
      * @return rounded human readable String, e.g '~6 Seconds' or '~8 years'
      */
     public static String getDiffTimeRounded( Date createdDate, Date endDate ) {
@@ -123,5 +130,11 @@ public class DateUtil {
             }
         }
         return diff;
+    }
+
+    public static Date getCurrentDateMinusWeeks(int amount) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -amount * 7);
+        return calendar.getTime();
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  *  NEXUSe2e Business Messaging Open Source
  *  Copyright 2000-2021, direkt gruppe GmbH
  *
@@ -20,6 +20,7 @@
 package org.nexuse2e.reporting;
 
 import org.nexuse2e.MessageStatus;
+import org.nexuse2e.pojo.MessagePojo;
 
 import java.util.Date;
 
@@ -30,6 +31,7 @@ public class StatisticsMessage {
     private String actionId;
     private Date createdDate;
     private Integer type;
+    private String typeName;
     private MessageStatus status;
     private String conversationId;
     private Integer nxMessageId;
@@ -47,6 +49,19 @@ public class StatisticsMessage {
         nxMessageId = ((Number) record[7]).intValue();
         nxConversationId = ((Number) record[8]).intValue();
         partnerId = (String) record[9];
+    }
+
+    public StatisticsMessage(MessagePojo message) {
+        messageId = message.getMessageId();
+        actionId = message.getAction().getName();
+        createdDate = message.getCreatedDate();
+        type = message.getType();
+        typeName = message.getTypeName();
+        status = MessageStatus.getByOrdinal(message.getStatus());
+        conversationId = message.getConversation().getConversationId();
+        nxMessageId = message.getNxMessageId();
+        nxConversationId = message.getConversation().getNxConversationId();
+        partnerId = message.getParticipant().getPartner().getPartnerId();
     }
 
     public String getMessageId() {
@@ -87,6 +102,14 @@ public class StatisticsMessage {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public MessageStatus getStatus() {

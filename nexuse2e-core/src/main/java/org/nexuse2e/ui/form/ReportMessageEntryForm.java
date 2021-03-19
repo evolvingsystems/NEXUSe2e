@@ -1,4 +1,4 @@
-/**
+/*
  *  NEXUSe2e Business Messaging Open Source
  *  Copyright 2000-2021, direkt gruppe GmbH
  *
@@ -19,24 +19,23 @@
  */
 package org.nexuse2e.ui.form;
 
-import java.util.Date;
-
 import org.apache.struts.action.ActionForm;
-import org.nexuse2e.Engine;
 import org.nexuse2e.MessageBackendStatus;
 import org.nexuse2e.MessageStatus;
-import org.nexuse2e.configuration.ParameterType;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.util.DateUtil;
 
+import java.util.Date;
+
+import static org.nexuse2e.util.DateUtil.getTimezone;
+
 /**
  * @author gesch
- * 
  */
 public class ReportMessageEntryForm extends ActionForm {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 3348518676137301240L;
     private String            choreographyId   = null;
@@ -143,14 +142,9 @@ public class ReportMessageEntryForm extends ActionForm {
         }
     }
 
-    private static String getTimezone() {
-        return (String) Engine.getInstance().getActiveConfigurationAccessService()
-                .getGenericParameter("log_display_configuration", ReportingSettingsForm.PARAM_NAME_TIMEZONE, ParameterType.STRING, null);
-    }
-
     public String getCreatedDate() {
 
-        if (createdDate == null || createdDate.equals("")) {
+        if (createdDate == null) {
             return "";
         }
         return DateUtil.localTimeToTimezone(createdDate, getTimezone(), null);
@@ -298,7 +292,7 @@ public class ReportMessageEntryForm extends ActionForm {
      * @return the endDate
      */
     public String getEndDate() {
-        if (endDate == null || endDate.equals("")) {
+        if (endDate == null) {
             return "";
         }
         return DateUtil.localTimeToTimezone(endDate, getTimezone(), null);

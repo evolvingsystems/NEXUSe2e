@@ -1,7 +1,6 @@
 import { Component, Injectable, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../data/data.service";
-import { CacheService } from "../data/cache.service";
 import { NavigationService } from "../navigation/navigation.service";
 
 interface LoginData {
@@ -26,17 +25,16 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dataService: DataService,
-    private cacheService: CacheService,
     private navigationService: NavigationService
   ) {}
 
   async ngOnInit() {
     try {
-      await this.dataService.get("/logged-in");
+      await this.dataService.getLoggedIn();
       await this.router.navigate(["/dashboard"]);
     } catch {
       this.isHttps = location.protocol === "https:";
-      this.machineName = await this.cacheService.get<string>("/machine-name");
+      this.machineName = await this.dataService.getMachineName();
     }
   }
 
@@ -57,7 +55,7 @@ export class LoginComponent implements OnInit {
   }
 
   async login(loginData: LoginData) {
-    await this.dataService.post("/login", loginData);
+    await this.dataService.postLogin(loginData);
     this.navigationService.hideNavigation();
     const returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
     await this.router.navigateByUrl(returnUrl);

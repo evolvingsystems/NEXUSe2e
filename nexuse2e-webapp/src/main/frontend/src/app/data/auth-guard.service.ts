@@ -13,9 +13,7 @@ export class AuthGuardService implements CanActivate {
     state: RouterStateSnapshot
   ): Promise<boolean> {
     try {
-      // This response should not be cached because otherwise,
-      // the user would not be logged out if their session expires
-      await this.dataService.get("/logged-in");
+      await this.dataService.getLoggedIn();
     } catch {
       await this.router.navigate(["/login"], {
         queryParams: { returnUrl: state.url },
