@@ -28,7 +28,7 @@
     </tr>
     <tr>
       <td class="label">{{ "labels.status" | translate }}</td>
-      <td>{{ message.status | titlecase }}</td>
+      <td>{{ "status." + message.status.toLowerCase() | translate }}</td>
     </tr>
   </table>
 </mat-card>

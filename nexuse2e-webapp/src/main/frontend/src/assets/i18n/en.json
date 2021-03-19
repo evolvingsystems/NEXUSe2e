@@ -42,5 +42,24 @@
     "filtersActive": "Filters Active",
     "noFiltersActive": "No Filters Active",
     "type": "Type"
+  },
+  "status": {
+    "failed": "Failed",
+    "unknown": "Unknown",
+    "retrying": "Retrying",
+    "queued": "Queued",
+    "sent": "Sent",
+    "stopped": "Stopped",
+    "error": "Error",
+    "created": "Created",
+    "processing": "Processing",
+    "awaiting_ack": "Awaiting ack",
+    "idle": "Idle",
+    "sending_ack": "Sending ack",
+    "ack_sent_awaiting_backend": "Ack sent awaiting backend",
+    "awaiting_backend": "Awaiting backend",
+    "backend_sent_sending_ack": "Backend sent sending ack",
+    "completed": "Completed",
+    "outbound": "Outbound"
   }
 }
