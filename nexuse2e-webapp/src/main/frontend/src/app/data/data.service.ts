@@ -9,7 +9,7 @@ import { Message } from "../types";
 export class DataService {
   API_URL: string;
 
-  private cache: { [key: string]: unknown } = {};
+  private cache: { [key: string]: Promise<unknown> } = {};
 
   constructor(private http: HttpClient) {
     if (environment.API_URL.length) {
@@ -19,7 +19,7 @@ export class DataService {
     }
   }
 
-  private get<T>(path: string, cache: boolean): Promise<T> {
+  private get<T>(path: string, cache = true): Promise<T> {
     if (cache) {
       if (this.cache[path]) {
         return this.cache[path] as Promise<T>;
@@ -34,7 +34,7 @@ export class DataService {
   }
 
   getFullUsername(): Promise<string> {
-    return this.get<string>("/full-username", true);
+    return this.get<string>("/full-username");
   }
 
   getLoggedIn() {
@@ -44,22 +44,22 @@ export class DataService {
   }
 
   getMachineName(): Promise<string> {
-    return this.get<string>("/machine-name", true);
+    return this.get<string>("/machine-name");
   }
 
   getVersion(): Promise<string[]> {
-    return this.get<string[]>("/version", true);
+    return this.get<string[]>("/version");
   }
 
-  post(path: string, body: unknown) {
-    return this.http.post(this.API_URL + path, body).toPromise();
+  private post(path: string, body: unknown): Promise<void> {
+    return this.http.post<void>(this.API_URL + path, body).toPromise();
   }
 
-  postLogin(body: { user: string, password: string }) {
+  postLogin(body: { user: string, password: string }): Promise<void> {
     return this.post("/login", body);
   }
 
-  postLogout() {
+  postLogout(): Promise<void> {
     return this.post("/logout", null);
   }
 }

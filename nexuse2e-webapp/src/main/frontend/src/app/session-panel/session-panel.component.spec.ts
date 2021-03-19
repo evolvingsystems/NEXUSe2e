@@ -46,7 +46,7 @@ describe("SessionPanelComponent", () => {
   });
 
   it("should redirect to login after logout", async () => {
-    spyOn(dataService, "post").and.returnValue(Promise.resolve("200"));
+    spyOn(dataService, "postLogout");
     spyOn(router, "navigateByUrl");
     await component.logout();
 
