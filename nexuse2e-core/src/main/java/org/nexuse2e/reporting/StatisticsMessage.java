@@ -21,6 +21,7 @@ package org.nexuse2e.reporting;
 
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.util.DateUtil;
 
 import java.util.Date;
 
@@ -37,6 +38,9 @@ public class StatisticsMessage {
     private Integer nxMessageId;
     private Integer nxConversationId;
     private String partnerId;
+    private String backendStatus;
+    private Date endDate;
+    private String turnAroundTime;
 
     public StatisticsMessage(Object[] record) {
         messageId = (String) record[0];
@@ -62,6 +66,12 @@ public class StatisticsMessage {
         nxMessageId = message.getNxMessageId();
         nxConversationId = message.getConversation().getNxConversationId();
         partnerId = message.getParticipant().getPartner().getPartnerId();
+        backendStatus = message.getBackendStatusName();
+        if(endDate == null) {
+            turnAroundTime = "Not terminated";
+        } else {
+            turnAroundTime = DateUtil.getDiffTimeRounded(createdDate, endDate);
+        }
     }
 
     public String getMessageId() {
@@ -150,5 +160,29 @@ public class StatisticsMessage {
 
     public void setPartnerId(String partnerId) {
         this.partnerId = partnerId;
+    }
+
+    public String getBackendStatus() {
+        return backendStatus;
+    }
+
+    public void setBackendStatus(String backendStatus) {
+        this.backendStatus = backendStatus;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getTurnAroundTime() {
+        return turnAroundTime;
+    }
+
+    public void setTurnAroundTime(String turnAroundTime) {
+        this.turnAroundTime = turnAroundTime;
     }
 }

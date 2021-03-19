@@ -1,0 +1,26 @@
+<mat-card [class]="conversation.status | lowercase" class="conversationStatusLeftBorderColor">
+  <div class="card-header">
+    <mat-checkbox></mat-checkbox>
+    <a [routerLink]="'' + conversation.nxConversationId">{{ conversation.conversationId }}</a>
+  </div>
+  <table>
+    <tr>
+      <td class="label">{{ "labels.choreographyId" | translate }}</td>
+      <td>{{ conversation.choreographyId }}</td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.participantId" | translate }}</td>
+      <td>{{ conversation.partnerId }}</td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.createdDate" | translate }}</td>
+      <td>
+        {{ conversation.createdDate }}
+      </td>
+    </tr>
+    <tr>
+      <td class="label">{{ "labels.status" | translate }}</td>
+      <td>{{ conversation.status | titlecase }}</td>
+    </tr>
+  </table>
+</mat-card>

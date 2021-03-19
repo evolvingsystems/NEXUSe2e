@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { Conversation } from "../types";
+import { DataService } from "../data/data.service";
 
 @Component({
   selector: "app-conversation-list",
@@ -6,7 +8,19 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./conversation-list.component.scss"],
 })
 export class ConversationListComponent implements OnInit {
-  constructor() {}
+  totalConversationCount?: number;
+  conversations: Conversation[] = [];
 
-  ngOnInit(): void {}
+  constructor(private dataService: DataService) {}
+
+  async ngOnInit() {
+    this.totalConversationCount = await this.dataService.getConversationsCount();
+  }
+
+  async loadConversations(pageIndex: number, pageSize: number) {
+    this.conversations = await this.dataService.getConversations(
+      pageIndex,
+      pageSize
+    );
+  }
 }

@@ -9,7 +9,8 @@
   "buttons": {
     "login": "Login",
     "logout": "Logout",
-    "backToDashboard": "Back to dashboard"
+    "backToDashboard": "Back to dashboard",
+    "filter": "Filter"
   },
   "labels": {
     "nexuse2e": "NEXUSe2e",
@@ -22,9 +23,24 @@
     "messageId": "Message ID",
     "conversationId": "Conversation ID",
     "participantId": "Participant ID",
+    "choreographyId": "Choreography ID",
     "messageType": "Message Type",
     "action": "Action",
+    "currentAction": "Current Action",
     "createdDate": "Date created",
-    "status": "Status"
+    "status": "Status",
+    "turnAroundTime": "Turnaround Time",
+    "backendStatus": "Backend Status",
+    "showingResults": "Showing results",
+    "itemsPerPage": "Items per page",
+    "nextPage": "Next page",
+    "previousPage": "Previous page",
+    "of": "of",
+    "noResultsFound": "No results found.",
+    "all": "All",
+    "filterActive": "Filter Active",
+    "filtersActive": "Filters Active",
+    "noFiltersActive": "No Filters Active",
+    "type": "Type"
   }
 }

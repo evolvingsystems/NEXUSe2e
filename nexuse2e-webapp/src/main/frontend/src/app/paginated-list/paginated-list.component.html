@@ -1,0 +1,27 @@
+<div id="first">
+  <mat-paginator [length]="totalItemCount"
+                 [pageSize]="pageSize"
+                 [pageIndex]="pageIndex"
+                 [pageSizeOptions]="[10, 20, 50, 100]"
+                 [showFirstLastButtons]="true"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+<div *ngIf="isMobile()" class="padded">
+  <div [ngSwitch]="itemType" *ngFor="let item of items" class="item-card-wrapper">
+    <app-message-card *ngSwitchCase="'message'" [message]="item"></app-message-card>
+    <app-conversation-card *ngSwitchCase="'conversation'" [conversation]="item"></app-conversation-card>
+  </div>
+</div>
+<div *ngIf="!isMobile()" [ngSwitch]="itemType" class="padded items-table-wrapper">
+  <app-message-table *ngSwitchCase="'message'" [messages]="items"></app-message-table>
+  <app-conversation-table *ngSwitchCase="'conversation'" [conversations]="items"></app-conversation-table>
+</div>
+<mat-paginator *ngIf="items?.length"
+               [length]="totalItemCount"
+               [pageSize]="pageSize"
+               [pageIndex]="pageIndex"
+               [pageSizeOptions]="[10, 20, 50, 100]"
+               [showFirstLastButtons]="true"
+               (page)="onPageChange($event)">
+</mat-paginator>

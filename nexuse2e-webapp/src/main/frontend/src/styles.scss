@@ -16,10 +16,12 @@ $warning: #FAF11B;
 $info: #CCCCCC;
 $textBlack: #000000;
 $textGrey: #AAAAAA;
+$darkerTextGray: #888;
 $textOrange: #E56009;
 $textError: #cc570c;
 $white: #FFFFFF;
 $desktopBreakpoint: 980px;
+$desktopBreakpointForMaxWidth: 979px;
 $tabletBreakpoint: 750px;
 $mobileBreakpoint: 501px;
 
@@ -37,7 +39,7 @@ h1, h2 {
   color: $gray1;
 }
 
-@media(max-width: $desktopBreakpoint) {
+@media(max-width: $desktopBreakpointForMaxWidth) {
   h1 {
     background: $gray4;
     padding: 3px 15px 0 15px;
@@ -54,6 +56,10 @@ button {
 
 .mat-form-field-infix {
   border-top: 5px solid transparent;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: $gray3 !important;
 }
 
 a {
@@ -93,3 +99,131 @@ a {
     padding: 15px;
   }
 }
+
+/* Card Element */
+.mat-card {
+  margin-bottom: 15px;
+  border-left: 5px $gray4 solid;
+  padding: 8px;
+
+  .card-header {
+    padding-bottom: 4px;
+    padding-left: 2px;
+    display: flex;
+
+    .mat-checkbox {
+      margin-right: 10px;
+    }
+
+    a {
+      margin-top: 2px;
+    }
+  }
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+
+    td {
+      white-space: nowrap;
+      overflow: hidden;
+
+      &:before {
+        content: "";
+        width: 40px;
+        height: 20px;
+        position: absolute;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0.1), #fff);
+        right: 0;
+      }
+    }
+
+    .label {
+      width: 120px;
+      font-weight: bold;
+      color: $gray2;
+    }
+  }
+}
+
+/* Scrollable Table */
+.table-scrollable {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+
+  .mat-table {
+    width: 100%;
+    max-width: 100%;
+    display: table;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  .mat-row,
+  .mat-header-row {
+    display: table-row;
+  }
+
+  .mat-cell,
+  .mat-header-cell {
+    word-wrap: initial;
+    display: table-cell;
+    padding: 0 5px;
+    line-break: unset;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+
+    &[class*="-column-messageId"],
+    &[class*="-column-conversationId"] {
+      white-space: normal;
+      min-width: 180px;
+    }
+  }
+
+  .mat-cell {
+    &[class*="-column-statusColor"] {
+      max-width: 10px;
+      margin: 0;
+      padding: 0;
+      border-left: 8px solid $gray4;
+
+      &:first-of-type {
+        padding-left: 0;
+      }
+    }
+  }
+}
+
+/* Conversation Status Colors */
+.conversationStatusLeftBorderColor {
+  &.error {
+    border-left-color: $error !important;
+  }
+
+  &.unknown, &.created, &.idle {
+    border-left-color: $warning !important;
+  }
+
+  &.completed {
+    border-left-color: $success !important;
+  }
+}
+
+/* Message Status Colors */
+.messageStatusLeftBorderColor {
+  &.failed {
+    border-left-color: $error !important;
+  }
+
+  &.stopped, &.retrying {
+    border-left-color: $warning !important;
+  }
+
+  &.sent {
+    border-left-color: $success !important;
+  }
+}
+

@@ -254,7 +254,7 @@ public class ProcessConversationReportAction extends ReportingAction {
         if (searchFor != null && searchFor.equals("message")) {
 
             items = Engine.getInstance().getTransactionService()
-                .getMessagesCount(status, nxChoreographyId, nxPartnerId, conversationId, messageId, getStartDate(form), getEndDate(form));
+                    .getMessagesCount(status, null, nxChoreographyId, nxPartnerId, conversationId, messageId, getStartDate(form), getEndDate(form));
 
             form.setAllItemsCount(items);
             List<MessagePojo> reportMessages = null;

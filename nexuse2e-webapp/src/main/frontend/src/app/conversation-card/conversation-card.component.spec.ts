@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MessageCardComponent } from "./message-card.component";
+import { ConversationCardComponent } from "./conversation-card.component";
+import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { By } from "@angular/platform-browser";
-import { RouterTestingModule } from "@angular/router/testing";
 
-describe("MessageCardComponent", () => {
-  let component: MessageCardComponent;
-  let fixture: ComponentFixture<MessageCardComponent>;
+describe("ConversationCardComponent", () => {
+  let component: ConversationCardComponent;
+  let fixture: ComponentFixture<ConversationCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -17,24 +17,22 @@ describe("MessageCardComponent", () => {
         TranslateModule.forRoot(),
         MatCheckboxModule,
       ],
-      declarations: [MessageCardComponent],
+      declarations: [ConversationCardComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MessageCardComponent);
+    fixture = TestBed.createComponent(ConversationCardComponent);
     component = fixture.componentInstance;
-    component.message = {
-      messageId: "sdasdad-sadsadasda-asdsadada",
-      actionId: "SendFile",
-      createdDate: "03-02-2018 15:07:34 GMT",
-      typeName: "Normal",
-      status: "Sent",
-      conversationId: "dsfsdfs-dsfsdfdf-dsfsdfsf",
-      nxMessageId: 25,
+
+    component.conversation = {
+      choreographyId: "GenericFile",
+      conversationId: "sdasdad-sadsadasda-asdsadada",
       nxConversationId: 12,
       partnerId: "NexusFriend",
-      backendStatus: "QUEUED",
+      createdDate: "03-02-2018 15:07:34 GMT",
+      status: "Sent",
+      currentAction: "SendFile",
       turnAroundTime: "Not terminated",
     };
     fixture.detectChanges();
@@ -49,12 +47,6 @@ describe("MessageCardComponent", () => {
       "input[type='checkbox']"
     );
     expect(checkbox).toBeTruthy();
-  });
-
-  it("should have a link to the message detail page", () => {
-    const linkToMessage = fixture.debugElement.query(By.css("a[href*='25']"));
-    expect(linkToMessage).toBeTruthy();
-    expect(linkToMessage.nativeElement.textContent).toBeTruthy();
   });
 
   it("should have a link to the conversation detail page", () => {

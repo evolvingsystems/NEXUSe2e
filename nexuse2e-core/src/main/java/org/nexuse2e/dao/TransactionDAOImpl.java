@@ -217,11 +217,11 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.TransactionDAO#getMessagesCount(java.lang.String, int, int, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
      */
-    public int getMessagesCount(String status, int nxChoreographyId, int nxPartnerId, String conversationId,
+    public int getMessagesCount(String status, Integer type, int nxChoreographyId, int nxPartnerId, String conversationId,
                                 String messageId, Date startDate, Date endDate) throws NexusException {
 
         return getCountThroughSessionFind(getMessagesForReportCriteria(status, nxChoreographyId, nxPartnerId,
-                conversationId, messageId, null, startDate, endDate, 0, false));
+                conversationId, messageId, type, startDate, endDate, 0, false));
     }
 
     public Statistics getStatistics(Date startDate, Date endDate, int idleGracePeriodInMinutes) throws NexusException {
@@ -392,7 +392,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
      */
     @SuppressWarnings("unchecked")
     public List<MessagePojo> getMessagesForReport(String status, int nxChoreographyId, int nxPartnerId,
-                                                  String conversationId, String messageId, String type, Date start, Date end, int itemsPerPage, int page,
+                                                  String conversationId, String messageId, Integer type, Date start, Date end, int itemsPerPage, int page,
                                                   int field, boolean ascending) throws NexusException {
 
 
@@ -406,7 +406,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
                 "ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id ");
 
         if (StringUtils.isNotEmpty(status) || nxChoreographyId > 0 || nxPartnerId > 0 || StringUtils.isNotEmpty(conversationId)
-                || StringUtils.isNotEmpty(messageId) || start != null || end != null) {
+                || StringUtils.isNotEmpty(messageId) || start != null || end != null || type != null) {
 
             sqlQuery.append(" WHERE ");
             String prefix = "";
@@ -416,6 +416,10 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
             }
             if (end != null) {
                 sqlQuery.append(prefix + " nx_message.created_date <= :end");
+                prefix = " AND ";
+            }
+            if (type != null) {
+                sqlQuery.append(prefix + " nx_message.type = " + type);
                 prefix = " AND ";
             }
             if (StringUtils.isNotBlank(status)) {
@@ -1055,7 +1059,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
      * @return
      */
     private DetachedCriteria getMessagesForReportCriteria(String status, int nxChoreographyId, int nxPartnerId,
-                                                          String conversationId, String messageId, String type, Date start, Date end, int field, boolean ascending) {
+                                                          String conversationId, String messageId, Integer type, Date start, Date end, int field, boolean ascending) {
 
         DetachedCriteria dc = DetachedCriteria.forClass(MessagePojo.class);
 

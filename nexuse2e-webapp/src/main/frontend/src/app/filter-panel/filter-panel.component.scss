@@ -1,0 +1,59 @@
+@import '../../styles.scss';
+
+button {
+  display: block;
+  width: 100%;
+}
+
+.toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-bottom: 1px $gray3 solid;
+  outline: none;
+  text-transform: none;
+  padding: 6px;
+  background: $gray5;
+  color: $gray2;
+  cursor: pointer;
+}
+
+.border {
+  border-top: 1px solid $gray3;
+}
+
+.filter-info {
+  display: flex;
+  align-items: center;
+
+  .active-filters-badge {
+    color: white;
+    padding: 0 8px;
+    background: $orangeDark;
+    border-radius: 10px;
+    margin-right: 5px;
+    font-size: 11px;
+    line-height: 15px;
+  }
+}
+
+.expanded {
+  background: $gray5;
+  padding: 10px;
+
+  ::ng-deep label {
+    color: $gray2;
+    margin-left: 5px;
+  }
+
+  ::ng-deep .mat-form-field-appearance-outline {
+    .mat-form-field-wrapper {
+      margin-top: 0;
+    }
+
+    .mat-select-arrow-wrapper {
+      transform: translateY(0%);
+    }
+  }
+}

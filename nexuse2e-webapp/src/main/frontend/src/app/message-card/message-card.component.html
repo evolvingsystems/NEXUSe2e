@@ -1,4 +1,4 @@
-<mat-card [class]="message.status | lowercase">
+<mat-card [class]="message.status | lowercase" class="messageStatusLeftBorderColor">
   <div class="card-header">
     <mat-checkbox></mat-checkbox>
     <a [routerLink]="'' + message.nxMessageId">{{ message.messageId }}</a>

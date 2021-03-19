@@ -1,0 +1,10 @@
+@import '../../styles.scss';
+
+.mat-form-field {
+  display: block;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  background: $gray6;
+  border-radius: 5px;
+}
