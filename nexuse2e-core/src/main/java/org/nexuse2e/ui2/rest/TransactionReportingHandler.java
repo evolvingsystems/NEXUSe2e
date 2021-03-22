@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.dao.TransactionDAO;
@@ -49,7 +50,7 @@ public class TransactionReportingHandler implements Handler {
                     this.getConversations(request, response);
                     break;
                 case "/conversations-count":
-                    this.getConversationsCount(response);
+                    this.getConversationsCount(request, response);
                     break;
             }
         }
@@ -59,7 +60,7 @@ public class TransactionReportingHandler implements Handler {
         String status = request.getParameter("status");
         String type = request.getParameter("type");
         long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
-                getStatusNumberFromName(status),
+                getMessageStatusNumberFromName(status),
                 getMessageTypeFromName(type),
                 0, 0, null, null,
                 TWO_WEEKS_AGO,
@@ -68,9 +69,17 @@ public class TransactionReportingHandler implements Handler {
         response.getOutputStream().print(message);
     }
 
-    private String getStatusNumberFromName(String statusName) {
+    private String getMessageStatusNumberFromName(String statusName) {
         try {
             return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String getConversationStatusNumberFromName(String statusName) {
+        try {
+            return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
         } catch (Exception e) {
             return null;
         }
@@ -97,7 +106,7 @@ public class TransactionReportingHandler implements Handler {
         String type = request.getParameter("type");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<MessagePojo> reportMessages = Engine.getInstance().getTransactionService().getMessagesForReport(
-                    getStatusNumberFromName(status),
+                    getMessageStatusNumberFromName(status),
                     0, 0, null, null,
                     getMessageTypeFromName(type),
                     TWO_WEEKS_AGO,
@@ -120,8 +129,13 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void getConversationsCount(HttpServletResponse response) throws Exception {
-        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(TWO_WEEKS_AGO, new Date());
+    private void getConversationsCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String status = request.getParameter("status");
+        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
+                getConversationStatusNumberFromName(status),
+                0, 0, null,
+                TWO_WEEKS_AGO, new Date(),
+                0, false);
         String message = new Gson().toJson(conversationsCount);
         response.getOutputStream().print(message);
     }
@@ -129,9 +143,11 @@ public class TransactionReportingHandler implements Handler {
     private void getConversations(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
+        String status = request.getParameter("status");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
-                    null, 0, 0, null,
+                    getConversationStatusNumberFromName(status),
+                    0, 0, null,
                     TWO_WEEKS_AGO,
                     new Date(),
                     Integer.parseInt(itemsPerPage),

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Conversation } from "../types";
 import { DataService } from "../data/data.service";
+import { ActiveFilter, FilterType } from "../filter-panel/filter-panel.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -10,17 +11,38 @@ import { DataService } from "../data/data.service";
 export class ConversationListComponent implements OnInit {
   totalConversationCount?: number;
   conversations: Conversation[] = [];
+  filters = [
+    {
+      fieldName: "status",
+      filterType: FilterType.SELECT,
+      allowedValues: ["ERROR", "UNKNOWN", "CREATED", "PROCESSING", "AWAITING_ACK", "IDLE",
+        "SENDING_ACK", "ACK_SENT_AWAITING_BACKEND", "AWAITING_BACKEND",
+        "BACKEND_SENT_SENDING_ACK", "COMPLETED"]
+    },
+  ];
+  activeFilters: ActiveFilter[] = [];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) {
+  }
 
   async ngOnInit() {
-    this.totalConversationCount = await this.dataService.getConversationsCount();
+    this.totalConversationCount = await this.dataService.getConversationsCount(this.activeFilters);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {
     this.conversations = await this.dataService.getConversations(
       pageIndex,
-      pageSize
+      pageSize,
+      this.activeFilters
     );
+  }
+
+  async refreshConversationCount() {
+    this.totalConversationCount = await this.dataService.getConversationsCount(this.activeFilters);
+  }
+
+  filterMessages(activeFilters: ActiveFilter[]) {
+    this.activeFilters = activeFilters;
+    this.refreshConversationCount();
   }
 }

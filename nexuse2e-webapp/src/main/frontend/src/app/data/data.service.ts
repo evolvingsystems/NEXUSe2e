@@ -71,19 +71,21 @@ export class DataService {
 
   getConversations(
     pageIndex: number,
-    itemsPerPage: number
+    itemsPerPage: number,
+    activeFilters: ActiveFilter[]
   ): Promise<Conversation[]> {
-    const params = {
-      pageIndex: String(pageIndex),
-      itemsPerPage: String(itemsPerPage),
-    };
+    let params = this.buildFilterParams(activeFilters);
+    params = params.append("pageIndex", String(pageIndex));
+    params = params.append("itemsPerPage", String(itemsPerPage));
     return this.http
       .get<Conversation[]>(this.API_URL + "/conversations", { params: params })
       .toPromise();
   }
 
-  getConversationsCount(): Promise<number> {
-    return this.get<number>("/conversations-count", false);
+  getConversationsCount(activeFilters: ActiveFilter[] = []): Promise<number> {
+    return this.http.get<number>(this.API_URL + "/conversations-count", {
+      params: this.buildFilterParams(activeFilters),
+    }).toPromise();
   }
 
   getVersion(): Promise<string[]> {

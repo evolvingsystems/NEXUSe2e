@@ -1,3 +1,7 @@
+<app-filter-panel
+  [filters]="filters"
+  (filterChange)="filterMessages($event)"
+></app-filter-panel>
 <app-paginated-list
   [totalItemCount]="totalConversationCount"
   [items]="conversations"
