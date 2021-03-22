@@ -15,9 +15,7 @@ export class ConversationListComponent implements OnInit {
     {
       fieldName: "status",
       filterType: FilterType.SELECT,
-      allowedValues: ["ERROR", "UNKNOWN", "CREATED", "PROCESSING", "AWAITING_ACK", "IDLE",
-        "SENDING_ACK", "ACK_SENT_AWAITING_BACKEND", "AWAITING_BACKEND",
-        "BACKEND_SENT_SENDING_ACK", "COMPLETED"]
+      allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"]
     },
   ];
   activeFilters: ActiveFilter[] = [];
