@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Message } from "../types";
+import { Conversation, Message } from "../types";
+import { ActiveFilter } from "../filter-panel/filter-panel.component";
 
 @Injectable({
   providedIn: "root",
@@ -19,18 +20,18 @@ export class DataService {
     }
   }
 
-  private get<T>(path: string, cache = true): Promise<T> {
+  private get<T>(path: string, cache = true, params?: HttpParams): Promise<T> {
     if (cache) {
-      if (this.cache[path]) {
-        return this.cache[path] as Promise<T>;
+      let key = path;
+      if (params) {
+        key += JSON.stringify(params);
       }
-      this.cache[path] = this.http.get<T>(this.API_URL + path).toPromise();
+      if (this.cache[key]) {
+        return this.cache[key] as Promise<T>;
+      }
+      this.cache[key] = this.http.get<T>(this.API_URL + path, { params: params }).toPromise();
     }
-    return this.http.get<T>(this.API_URL + path).toPromise<T>();
-  }
-
-  getAllMessages(): Promise<Message[]> {
-    return this.get<Message[]>("/messages", false);
+    return this.http.get<T>(this.API_URL + path, { params: params }).toPromise<T>();
   }
 
   getFullUsername(): Promise<string> {
@@ -47,6 +48,42 @@ export class DataService {
     return this.get<string>("/machine-name");
   }
 
+  private static buildFilterParams(activeFilters: ActiveFilter[]) {
+    let httpParams = new HttpParams();
+    for (const filter of activeFilters) {
+      if (filter.value) {
+        httpParams = httpParams.append(filter.fieldName, filter.value);
+      }
+    }
+    return httpParams;
+  }
+
+  getMessages(pageIndex: number, itemsPerPage: number, activeFilters: ActiveFilter[]): Promise<Message[]> {
+    let params = DataService.buildFilterParams(activeFilters);
+    params = params.append("pageIndex", String(pageIndex));
+    params = params.append("itemsPerPage", String(itemsPerPage));
+    return this.get<Message[]>("/messages", false, params);
+  }
+
+  getMessagesCount(activeFilters: ActiveFilter[] = []): Promise<number> {
+    return this.get<number>("/messages/count",
+      false, DataService.buildFilterParams(activeFilters));
+  }
+
+  getConversations(
+    pageIndex: number,
+    itemsPerPage: number
+  ): Promise<Conversation[]> {
+    let params = new HttpParams();
+    params = params.append("pageIndex", String(pageIndex));
+    params = params.append("itemsPerPage", String(itemsPerPage));
+    return this.get<Conversation[]>("/conversations", false, params);
+  }
+
+  getConversationsCount(): Promise<number> {
+    return this.get<number>("/conversations/count", false);
+  }
+
   getVersion(): Promise<string[]> {
     return this.get<string[]>("/version");
   }
@@ -55,7 +92,7 @@ export class DataService {
     return this.http.post<void>(this.API_URL + path, body).toPromise();
   }
 
-  postLogin(body: { user: string, password: string }): Promise<void> {
+  postLogin(body: { user: string; password: string }): Promise<void> {
     return this.post("/login", body);
   }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Message } from "../types";
 import { DataService } from "../data/data.service";
+import { ActiveFilter, FilterType } from "../filter-panel/filter-panel.component";
 
 @Component({
   selector: "app-message-list",
@@ -8,12 +9,47 @@ import { DataService } from "../data/data.service";
   styleUrls: ["./message-list.component.scss"],
 })
 export class MessageListComponent implements OnInit {
-  messages?: Message[];
+  totalMessageCount?: number;
+  messages: Message[] = [];
+  filters = [
+    {
+      fieldName: "status",
+      filterType: FilterType.SELECT,
+      allowedValues: ["FAILED", "SENT", "UNKNOWN", "RETRYING", "QUEUED", "STOPPED"]
+    },
+    {
+      fieldName: "type",
+      filterType: FilterType.SELECT,
+      allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"]
+    },
+    {
+      fieldName: "conversationId",
+      filterType: FilterType.TEXT_FIELD
+    },
+    {
+      fieldName: "startDate",
+      filterType: FilterType.DATE
+    }
+  ];
+  activeFilters: ActiveFilter[] = [];
 
   constructor(private dataService: DataService) {
   }
 
   async ngOnInit() {
-    this.messages = await this.dataService.getAllMessages();
+    this.refreshMessageCount();
+  }
+
+  async loadMessages(pageIndex: number, pageSize: number) {
+    this.messages = await this.dataService.getMessages(pageIndex, pageSize, this.activeFilters);
+  }
+
+  async refreshMessageCount() {
+    this.totalMessageCount = await this.dataService.getMessagesCount(this.activeFilters);
+  }
+
+  filterMessages(activeFilters: ActiveFilter[]) {
+    this.activeFilters = activeFilters;
+    this.refreshMessageCount();
   }
 }

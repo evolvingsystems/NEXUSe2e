@@ -560,7 +560,7 @@ public class NEXUSe2eInfoServiceImpl implements NEXUSe2EInfo {
         try {
             MessageFilterParams cfp = new MessageFilterParams(messageFilter);
             count = Engine.getInstance().getTransactionService().getMessagesCount(
-                    cfp.status, cfp.nxChoreographyId, cfp.nxPartnerId, cfp.conversationId, cfp.messageId, cfp.afterDate, cfp.beforeDate);
+                    cfp.status, null, cfp.nxChoreographyId, cfp.nxPartnerId, cfp.conversationId, cfp.messageId, cfp.afterDate, cfp.beforeDate);
         } catch (NexusException nex) {
             nex.printStackTrace();
         }

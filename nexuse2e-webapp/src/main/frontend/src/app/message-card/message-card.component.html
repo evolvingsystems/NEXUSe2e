@@ -1,4 +1,4 @@
-<mat-card [class]="message.status | lowercase">
+<mat-card [class]="message.status | lowercase" class="messageStatusLeftBorderColor">
   <div class="card-header">
     <mat-checkbox></mat-checkbox>
     <a [routerLink]="'' + message.nxMessageId">{{ message.messageId }}</a>
@@ -25,10 +25,6 @@
       <td>
         {{ message.createdDate }}
       </td>
-    </tr>
-    <tr>
-      <td class="label">{{ "labels.status" | translate }}</td>
-      <td>{{ message.status | titlecase }}</td>
     </tr>
   </table>
 </mat-card>
