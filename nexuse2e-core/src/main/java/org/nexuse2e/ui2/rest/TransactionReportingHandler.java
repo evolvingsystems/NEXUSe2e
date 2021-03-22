@@ -29,9 +29,9 @@ public class TransactionReportingHandler implements Handler {
     @Override
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/messages-count".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/messages/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversations".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/conversations-count".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/conversations/count".equalsIgnoreCase(path));
     }
 
     @Override
@@ -42,13 +42,13 @@ public class TransactionReportingHandler implements Handler {
                 case "/messages":
                     this.getMessages(request, response);
                     break;
-                case "/messages-count":
+                case "/messages/count":
                     this.getMessagesCount(request, response);
                     break;
                 case "/conversations":
                     this.getConversations(request, response);
                     break;
-                case "/conversations-count":
+                case "/conversations/count":
                     this.getConversationsCount(response);
                     break;
             }

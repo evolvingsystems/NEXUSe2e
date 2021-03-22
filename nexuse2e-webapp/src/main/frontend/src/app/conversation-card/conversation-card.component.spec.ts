@@ -5,6 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { By } from "@angular/platform-browser";
+import { conversations } from "../test-data";
 
 describe("ConversationCardComponent", () => {
   let component: ConversationCardComponent;
@@ -25,16 +26,7 @@ describe("ConversationCardComponent", () => {
     fixture = TestBed.createComponent(ConversationCardComponent);
     component = fixture.componentInstance;
 
-    component.conversation = {
-      choreographyId: "GenericFile",
-      conversationId: "sdasdad-sadsadasda-asdsadada",
-      nxConversationId: 12,
-      partnerId: "NexusFriend",
-      createdDate: "03-02-2018 15:07:34 GMT",
-      status: "Sent",
-      currentAction: "SendFile",
-      turnAroundTime: "Not terminated",
-    };
+    component.conversation = conversations[0];
     fixture.detectChanges();
   });
 
@@ -51,7 +43,7 @@ describe("ConversationCardComponent", () => {
 
   it("should have a link to the conversation detail page", () => {
     const linkToConversation = fixture.debugElement.query(
-      By.css("a[href*='12']")
+      By.css(`a[href*='${component.conversation.nxConversationId}']`)
     );
     expect(linkToConversation).toBeTruthy();
     expect(linkToConversation.nativeElement.textContent).toBeTruthy();

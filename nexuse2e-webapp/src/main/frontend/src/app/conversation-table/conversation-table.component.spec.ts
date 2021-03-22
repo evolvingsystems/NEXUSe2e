@@ -5,6 +5,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatTableModule } from "@angular/material/table";
+import { conversations } from "../test-data";
 
 describe("ConversationTableComponent", () => {
   let component: ConversationTableComponent;
@@ -25,28 +26,7 @@ describe("ConversationTableComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConversationTableComponent);
     component = fixture.componentInstance;
-    component.conversations = [
-      {
-        choreographyId: "GenericFile",
-        conversationId: "sdasdad-sadsadasda-asdsadada",
-        nxConversationId: 12,
-        partnerId: "NexusFriend",
-        createdDate: "03-02-2018 15:07:34 GMT",
-        status: "Sent",
-        currentAction: "SendFile",
-        turnAroundTime: "Not terminated",
-      },
-      {
-        choreographyId: "GenericFile",
-        conversationId: "sdasdad-sadsadasda-asdsadada",
-        nxConversationId: 13,
-        partnerId: "NexusFriend2",
-        createdDate: "03-02-2018 15:07:34 GMT",
-        status: "Queued",
-        currentAction: "SendFile",
-        turnAroundTime: "Not terminated",
-      },
-    ];
+    component.conversations = conversations;
     fixture.detectChanges();
   });
 
@@ -63,12 +43,13 @@ describe("ConversationTableComponent", () => {
 
   it("should show all conversations", () => {
     const rowHtmlElements = fixture.nativeElement.querySelectorAll("tbody tr");
-    expect(rowHtmlElements.length).toBe(2);
+    expect(rowHtmlElements.length).toBe(component.conversations.length);
   });
 
   it("should have a link to the conversation detail page", () => {
+    const firstConversationId = component.conversations[0].nxConversationId;
     const linkToConversation = fixture.debugElement.query(
-      By.css("a[href*='12']")
+      By.css(`a[href*='${firstConversationId}']`)
     );
     expect(linkToConversation).toBeTruthy();
     expect(linkToConversation.nativeElement.textContent).toBeTruthy();

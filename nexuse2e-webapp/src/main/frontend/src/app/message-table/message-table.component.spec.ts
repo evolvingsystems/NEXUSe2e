@@ -6,6 +6,7 @@ import { MatTableModule } from "@angular/material/table";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { RouterTestingModule } from "@angular/router/testing";
+import { messages } from "../test-data";
 
 describe("MessageTableComponent", () => {
   let component: MessageTableComponent;
@@ -26,34 +27,7 @@ describe("MessageTableComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MessageTableComponent);
     component = fixture.componentInstance;
-    component.messages = [
-      {
-        messageId: "sdasdad-sadsadasda-asdsadada",
-        actionId: "SendFile",
-        createdDate: "03-02-2018 15:07:34 GMT",
-        typeName: "Normal",
-        status: "Sent",
-        conversationId: "dsfsdfs-dsfsdfdf-dsfsdfsf",
-        nxMessageId: 25,
-        nxConversationId: 12,
-        partnerId: "NexusFriend",
-        backendStatus: "QUEUED",
-        turnAroundTime: "Not terminated",
-      },
-      {
-        messageId: "sdasdad-sadsadasda-asdsadada",
-        actionId: "SendFile",
-        createdDate: "03-02-2018 15:07:34 GMT",
-        typeName: "Normal",
-        status: "Queued",
-        conversationId: "dsfsdfs-dsfsdfdf-dsfsdfsf",
-        nxMessageId: 26,
-        nxConversationId: 13,
-        partnerId: "NexusFriend2",
-        backendStatus: "QUEUED",
-        turnAroundTime: "Not terminated",
-      },
-    ];
+    component.messages = messages.slice(0, 5);
     fixture.detectChanges();
   });
 
@@ -63,7 +37,7 @@ describe("MessageTableComponent", () => {
 
   it("should show all messages", () => {
     const rowHtmlElements = fixture.nativeElement.querySelectorAll("tbody tr");
-    expect(rowHtmlElements.length).toBe(2);
+    expect(rowHtmlElements.length).toBe(component.messages.length);
   });
 
   it("should have a checkbox", () => {
@@ -74,14 +48,16 @@ describe("MessageTableComponent", () => {
   });
 
   it("should have a link to the message detail page", () => {
-    const linkToMessage = fixture.debugElement.query(By.css("a[href*='1']"));
+    const firstMessageId = component.messages[0].nxMessageId;
+    const linkToMessage = fixture.debugElement.query(By.css(`a[href*='${firstMessageId}']`));
     expect(linkToMessage).toBeTruthy();
     expect(linkToMessage.nativeElement.textContent).toBeTruthy();
   });
 
   it("should have a link to the conversation detail page", () => {
+    const firstConversationId = component.messages[0].nxMessageId;
     const linkToConversation = fixture.debugElement.query(
-      By.css("a[href*='1']")
+      By.css(`a[href*='${firstConversationId}']`)
     );
     expect(linkToConversation).toBeTruthy();
     expect(linkToConversation.nativeElement.textContent).toBeTruthy();
