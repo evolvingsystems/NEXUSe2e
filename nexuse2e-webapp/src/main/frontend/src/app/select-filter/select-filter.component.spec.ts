@@ -44,10 +44,10 @@ describe("SelectFilterComponent", () => {
     component.allowedValues = ["Three", "Four", "Five"];
     fixture.detectChanges();
     const debugElement = fixture.debugElement;
-    const matSelect = debugElement.query(By.css('.mat-select-trigger')).nativeElement;
+    const matSelect = debugElement.query(By.css(".mat-select-trigger")).nativeElement;
     matSelect.click();
     fixture.detectChanges();
-    const matOptions = debugElement.queryAll(By.css('.mat-option'));
+    const matOptions = debugElement.queryAll(By.css(".mat-option"));
     matOptions[1].nativeElement.click();
 
     expect(component.emitValue).toHaveBeenCalled();

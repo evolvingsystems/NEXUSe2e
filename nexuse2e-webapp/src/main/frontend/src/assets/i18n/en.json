@@ -43,7 +43,7 @@
     "noFiltersActive": "No Filters Active",
     "type": "Type"
   },
-  "select": {
+  "status": {
     "FAILED": "Failed",
     "UNKNOWN": "Unknown",
     "RETRYING": "Retrying",
