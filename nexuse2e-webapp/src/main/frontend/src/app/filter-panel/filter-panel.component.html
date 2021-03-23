@@ -4,6 +4,7 @@
       <app-select-filter
         *ngSwitchCase="getFilterType().SELECT"
         [allowedValues]="filter.allowedValues"
+        [defaultValue]="filter.defaultValue"
         [fieldName]="filter.fieldName"
         (valueChange)="updateActiveFilters($event)"
       >

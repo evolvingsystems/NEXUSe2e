@@ -10,6 +10,7 @@ import { MatSelectChange } from "@angular/material/select";
 export class SelectFilterComponent implements OnInit {
   @Input() fieldName!: string;
   @Input() allowedValues!: string[];
+  @Input() defaultValue?: string;
   @Output() valueChange: EventEmitter<ActiveFilter> = new EventEmitter();
 
   constructor() {

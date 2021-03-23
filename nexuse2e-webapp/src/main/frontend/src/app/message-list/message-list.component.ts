@@ -20,7 +20,12 @@ export class MessageListComponent implements OnInit {
     {
       fieldName: "type",
       filterType: FilterType.SELECT,
-      allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"]
+      allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"],
+      defaultValue: "NORMAL"
+    },
+    {
+      fieldName: "messageId",
+      filterType: FilterType.TEXT
     },
     {
       fieldName: "conversationId",
@@ -31,13 +36,13 @@ export class MessageListComponent implements OnInit {
       filterType: FilterType.DATE
     }
   ];
+
   activeFilters: ActiveFilter[] = [];
 
   constructor(private dataService: DataService) {
   }
 
   async ngOnInit() {
-    this.refreshMessageCount();
   }
 
   async loadMessages(pageIndex: number, pageSize: number) {

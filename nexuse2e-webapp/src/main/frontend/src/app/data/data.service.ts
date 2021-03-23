@@ -52,7 +52,11 @@ export class DataService {
     let httpParams = new HttpParams();
     for (const filter of activeFilters) {
       if (filter.value) {
-        httpParams = httpParams.append(filter.fieldName, filter.value);
+        if (typeof filter.value === "string") {
+          httpParams = httpParams.append(filter.fieldName, filter.value);
+        } else {
+          httpParams = httpParams.append(filter.fieldName, filter.value.toISOString());
+        }
       }
     }
     return httpParams;

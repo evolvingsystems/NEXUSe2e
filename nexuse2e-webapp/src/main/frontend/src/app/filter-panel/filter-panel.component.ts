@@ -15,7 +15,7 @@ export interface Filter {
 
 export interface ActiveFilter {
   fieldName: string;
-  value: string;
+  value: string | Date;
 }
 
 @Component({
@@ -24,7 +24,7 @@ export interface ActiveFilter {
   styleUrls: ['./filter-panel.component.scss']
 })
 export class FilterPanelComponent implements OnInit {
-  @Input() filters!: Filter[];
+  @Input() filters: Filter[] = [];
   @Output() filterChange: EventEmitter<ActiveFilter[]> = new EventEmitter();
   expanded = false;
   activeFilters: ActiveFilter[] = [];
@@ -33,6 +33,15 @@ export class FilterPanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    for (const filter of this.filters) {
+      if (filter.defaultValue) {
+        this.activeFilters.push({
+          fieldName: filter.fieldName,
+          value: filter.defaultValue
+        });
+      }
+    }
+    this.applyFilters();
   }
 
   getFilterType() {
@@ -61,5 +70,4 @@ export class FilterPanelComponent implements OnInit {
     this.filterChange.emit(this.activeFilters);
     this.expanded = false;
   }
-
 }

@@ -28,7 +28,6 @@ export class ConversationListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.totalConversationCount = await this.dataService.getConversationsCount(this.activeFilters);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {
