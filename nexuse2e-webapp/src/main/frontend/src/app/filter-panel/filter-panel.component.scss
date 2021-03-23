@@ -45,6 +45,11 @@ button {
   ::ng-deep label {
     color: $gray2;
     margin-left: 5px;
+    display: block;
+  }
+
+  ::ng-deep .mat-form-field {
+    display: block;
   }
 
   ::ng-deep .mat-form-field-appearance-outline {

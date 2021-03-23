@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { FilterPanelComponent, FilterType } from './filter-panel.component';
+import { FilterPanelComponent, FilterType } from "./filter-panel.component";
 import { By } from "@angular/platform-browser";
 import { TranslateModule } from "@ngx-translate/core";
 
-describe('FilterPanelComponent', () => {
+describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;
   let fixture: ComponentFixture<FilterPanelComponent>;
 
@@ -21,7 +21,7 @@ describe('FilterPanelComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 
@@ -46,7 +46,7 @@ describe('FilterPanelComponent', () => {
       },
       {
         fieldName: "conversationId",
-        filterType: FilterType.TEXT_FIELD
+        filterType: FilterType.TEXT
       },
       {
         fieldName: "startDate",
@@ -61,10 +61,10 @@ describe('FilterPanelComponent', () => {
   it("should emit an event including the active filters when the filter button is clicked", () => {
     component.toggleVisibility();
     fixture.detectChanges();
-    spyOn(component.filterChange, 'emit');
+    spyOn(component.filterChange, "emit");
     const button = fixture.nativeElement.querySelector("button");
 
-    button.dispatchEvent(new Event('click'));
+    button.dispatchEvent(new Event("click"));
     fixture.detectChanges();
 
     expect(component.filterChange.emit).toHaveBeenCalledWith(component.activeFilters);

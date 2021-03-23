@@ -8,6 +8,12 @@
         (valueChange)="updateActiveFilters($event)"
       >
       </app-select-filter>
+      <app-text-filter
+        *ngSwitchCase="getFilterType().TEXT"
+        [fieldName]="filter.fieldName"
+        (valueChange)="updateActiveFilters($event)"
+      >
+      </app-text-filter>
     </div>
   </div>
   <button mat-flat-button

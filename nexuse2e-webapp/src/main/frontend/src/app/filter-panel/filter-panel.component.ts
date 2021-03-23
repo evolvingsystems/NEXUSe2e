@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 export enum FilterType {
-  TEXT_FIELD,
+  TEXT,
   SELECT,
   DATE
 }
@@ -47,7 +47,7 @@ export class FilterPanelComponent implements OnInit {
     const index = this.activeFilters.findIndex(filter => filter.fieldName === activeFilter.fieldName);
     const existingFilter = this.activeFilters[index];
     if (existingFilter) {
-      if (typeof activeFilter.value !== "undefined") {
+      if (activeFilter.value) {
         existingFilter.value = activeFilter.value;
       } else {
         this.activeFilters.splice(index, 1);

@@ -24,7 +24,7 @@ export class MessageListComponent implements OnInit {
     },
     {
       fieldName: "conversationId",
-      filterType: FilterType.TEXT_FIELD
+      filterType: FilterType.TEXT
     },
     {
       fieldName: "startDate",

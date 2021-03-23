@@ -131,9 +131,10 @@ public class TransactionReportingHandler implements Handler {
 
     private void getConversationsCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String status = request.getParameter("status");
+        String conversationId = request.getParameter("conversationId");
         long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
                 getConversationStatusNumberFromName(status),
-                0, 0, null,
+                0, 0, conversationId,
                 TWO_WEEKS_AGO, new Date(),
                 0, false);
         String message = new Gson().toJson(conversationsCount);
@@ -144,10 +145,11 @@ public class TransactionReportingHandler implements Handler {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
         String status = request.getParameter("status");
+        String conversationId = request.getParameter("conversationId");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
                     getConversationStatusNumberFromName(status),
-                    0, 0, null,
+                    0, 0, conversationId,
                     TWO_WEEKS_AGO,
                     new Date(),
                     Integer.parseInt(itemsPerPage),

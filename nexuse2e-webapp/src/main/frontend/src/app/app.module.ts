@@ -40,6 +40,7 @@ import { SelectFilterComponent } from './select-filter/select-filter.component';
 import { ConversationTableComponent } from "./conversation-table/conversation-table.component";
 import { MatTableModule } from "@angular/material/table";
 import { MessageTableComponent } from "./message-table/message-table.component";
+import { TextFilterComponent } from './text-filter/text-filter.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -127,6 +128,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SelectFilterComponent,
     ConversationTableComponent,
     MessageTableComponent,
+    TextFilterComponent,
   ],
   imports: [
     BrowserModule,

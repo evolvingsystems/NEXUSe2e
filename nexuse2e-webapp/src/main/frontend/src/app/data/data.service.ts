@@ -82,7 +82,7 @@ export class DataService {
   }
 
   getConversationsCount(activeFilters: ActiveFilter[] = []): Promise<number> {
-    return this.get<number>(this.API_URL + "/conversations/count", false, DataService.buildFilterParams(activeFilters));
+    return this.get<number>("/conversations/count", false, DataService.buildFilterParams(activeFilters));
   }
 
   getVersion(): Promise<string[]> {
