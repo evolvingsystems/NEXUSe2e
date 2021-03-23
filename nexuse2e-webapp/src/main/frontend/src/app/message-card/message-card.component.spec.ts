@@ -5,6 +5,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
+import { messages } from "../test-data";
 
 describe("MessageCardComponent", () => {
   let component: MessageCardComponent;
@@ -24,19 +25,7 @@ describe("MessageCardComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MessageCardComponent);
     component = fixture.componentInstance;
-    component.message = {
-      messageId: "sdasdad-sadsadasda-asdsadada",
-      actionId: "SendFile",
-      createdDate: "03-02-2018 15:07:34 GMT",
-      typeName: "Normal",
-      status: "Sent",
-      conversationId: "dsfsdfs-dsfsdfdf-dsfsdfsf",
-      nxMessageId: 25,
-      nxConversationId: 12,
-      partnerId: "NexusFriend",
-      backendStatus: "QUEUED",
-      turnAroundTime: "Not terminated",
-    };
+    component.message = messages[0];
     fixture.detectChanges();
   });
 
@@ -52,14 +41,15 @@ describe("MessageCardComponent", () => {
   });
 
   it("should have a link to the message detail page", () => {
-    const linkToMessage = fixture.debugElement.query(By.css("a[href*='25']"));
+    const messageId = component.message.nxMessageId;
+    const linkToMessage = fixture.debugElement.query(By.css(`a[href*='${messageId}']`));
     expect(linkToMessage).toBeTruthy();
     expect(linkToMessage.nativeElement.textContent).toBeTruthy();
   });
 
   it("should have a link to the conversation detail page", () => {
     const linkToConversation = fixture.debugElement.query(
-      By.css("a[href*='12']")
+      By.css(`a[href*='${component.message.nxConversationId}']`)
     );
     expect(linkToConversation).toBeTruthy();
     expect(linkToConversation.nativeElement.textContent).toBeTruthy();

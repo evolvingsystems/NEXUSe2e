@@ -262,3 +262,26 @@ export const messages = [
     turnAroundTime: "Not terminated",
   },
 ];
+
+export const conversations = [
+  {
+    choreographyId: "GenericFile",
+    conversationId: "sdasdad-sadsadasda-asdsadada",
+    nxConversationId: 12,
+    partnerId: "NexusFriend",
+    createdDate: "03-02-2018 15:07:34 GMT",
+    status: "Sent",
+    currentAction: "SendFile",
+    turnAroundTime: "Not terminated",
+  },
+  {
+    choreographyId: "GenericFile",
+    conversationId: "sdasdad-sadsadasda-asdsadada",
+    nxConversationId: 13,
+    partnerId: "NexusFriend2",
+    createdDate: "03-02-2018 15:07:34 GMT",
+    status: "Queued",
+    currentAction: "SendFile",
+    turnAroundTime: "Not terminated",
+  },
+];
