@@ -30,23 +30,27 @@ describe("SelectFilterComponent", () => {
   it("should display an option for each allowed value", async () => {
     component.allowedValues = ["One", "Two", "Three"];
     fixture.detectChanges();
+    await fixture.whenStable();
     const debugElement = fixture.debugElement;
     const matSelect = debugElement.query(By.css('.mat-select-trigger')).nativeElement;
     matSelect.click();
     fixture.detectChanges();
+    await fixture.whenStable();
     const matOptions = debugElement.queryAll(By.css('.mat-option'));
 
     expect(matOptions.length).toBe(component.allowedValues.length + 1);
   });
 
-  it("should emit the value when something is selected", () => {
+  it("should emit the value when something is selected", async () => {
     spyOn(component, "emitValue");
     component.allowedValues = ["Three", "Four", "Five"];
     fixture.detectChanges();
+    await fixture.whenStable();
     const debugElement = fixture.debugElement;
     const matSelect = debugElement.query(By.css(".mat-select-trigger")).nativeElement;
     matSelect.click();
     fixture.detectChanges();
+    await fixture.whenStable();
     const matOptions = debugElement.queryAll(By.css(".mat-option"));
     matOptions[1].nativeElement.click();
 

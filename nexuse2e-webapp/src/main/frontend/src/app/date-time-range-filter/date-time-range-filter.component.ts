@@ -21,7 +21,6 @@ export class DateTimeRangeFilterComponent implements OnInit {
     if (this.defaultValue) {
       this.startDate = this.defaultValue.startDate;
       this.endDate = this.defaultValue.endDate;
-      this.emitValue();
     }
   }
 

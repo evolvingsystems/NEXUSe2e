@@ -16,7 +16,10 @@ export class TextFilterComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  emitValue(value: string) {
-    this.valueChange.emit({ fieldName: this.fieldName, value: value });
+  emitValue(event: Event) {
+    if (event) {
+      const target = event.target as HTMLInputElement;
+      this.valueChange.emit({ fieldName: this.fieldName, value: target.value });
+    }
   }
 }
