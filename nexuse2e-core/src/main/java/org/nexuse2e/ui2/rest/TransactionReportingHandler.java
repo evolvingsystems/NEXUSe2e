@@ -23,12 +23,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.nexuse2e.util.DateUtil.getCurrentDateMinusWeeks;
-
 public class TransactionReportingHandler implements Handler {
-    // TODO get date range from filter
-    public static final Date TWO_WEEKS_AGO = getCurrentDateMinusWeeks(2);
-
     @Override
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
@@ -155,10 +150,13 @@ public class TransactionReportingHandler implements Handler {
     private void getConversationsCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String status = request.getParameter("status");
         String conversationId = request.getParameter("conversationId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
                 getConversationStatusNumberFromName(status),
                 0, 0, conversationId,
-                TWO_WEEKS_AGO, new Date(),
+                getDateFromString(startDate),
+                getDateFromString(endDate),
                 0, false);
         String message = new Gson().toJson(conversationsCount);
         response.getOutputStream().print(message);
@@ -169,12 +167,14 @@ public class TransactionReportingHandler implements Handler {
         String itemsPerPage = request.getParameter("itemsPerPage");
         String status = request.getParameter("status");
         String conversationId = request.getParameter("conversationId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
                     getConversationStatusNumberFromName(status),
                     0, 0, conversationId,
-                    TWO_WEEKS_AGO,
-                    new Date(),
+                    getDateFromString(startDate),
+                    getDateFromString(endDate),
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,
