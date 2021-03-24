@@ -41,7 +41,10 @@
     "filterActive": "Filter Active",
     "filtersActive": "Filters Active",
     "noFiltersActive": "No Filters Active",
-    "type": "Type"
+    "type": "Type",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "dateTimeFieldPlaceholder": "Choose a date and a time"
   },
   "status": {
     "failed": "Failed",

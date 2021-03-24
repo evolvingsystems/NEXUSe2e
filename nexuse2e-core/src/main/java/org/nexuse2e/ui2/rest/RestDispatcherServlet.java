@@ -32,7 +32,7 @@ public class RestDispatcherServlet extends HttpServlet {
                 }
             } catch (Exception e) {
                 response.setStatus(500);
-                LOG.error("Error occurred when handling path " + request.getPathInfo() + " with method " + request.getMethod());
+                LOG.error("Error occurred when handling path " + request.getPathInfo() + " with method " + request.getMethod(), e);
                 return;
             }
         }

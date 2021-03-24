@@ -48,7 +48,23 @@ export class DataService {
     let httpParams = new HttpParams();
     for (const filter of activeFilters) {
       if (filter.value) {
-        httpParams = httpParams.append(filter.fieldName, filter.value);
+        if (typeof filter.value === "string") {
+          httpParams = httpParams.append(filter.fieldName, filter.value);
+        } else {
+          // type must be DateRange
+          if (filter.value.startDate) {
+            httpParams = httpParams.append(
+              "startDate",
+              filter.value.startDate.toISOString()
+            );
+          }
+          if (filter.value.endDate) {
+            httpParams = httpParams.append(
+              "endDate",
+              filter.value.endDate.toISOString()
+            );
+          }
+        }
       }
     }
     return httpParams;
