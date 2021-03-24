@@ -6,6 +6,7 @@ import { MatInputModule } from "@angular/material/input";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
+import { MatFormFieldModule } from "@angular/material/form-field";
 
 describe("TextFilterComponent", () => {
   let component: TextFilterComponent;
@@ -14,9 +15,14 @@ describe("TextFilterComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TextFilterComponent],
-      imports: [TranslateModule.forRoot(), MatInputModule, FormsModule, NoopAnimationsModule]
-    })
-      .compileComponents();
+      imports: [
+        TranslateModule.forRoot(),
+        MatInputModule,
+        FormsModule,
+        NoopAnimationsModule,
+        MatFormFieldModule,
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -52,5 +58,5 @@ describe("TextFilterComponent", () => {
     const activeFilter = { fieldName: component.fieldName, value: test };
 
     expect(component.valueChange.emit).toHaveBeenCalledWith(activeFilter);
-  })
+  });
 });

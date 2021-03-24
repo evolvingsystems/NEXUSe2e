@@ -9,11 +9,11 @@ import { DashboardComponent } from "../dashboard/dashboard.component";
 import { ReportingComponent } from "../reporting/reporting.component";
 import { TransactionReportingComponent } from "../transaction-reporting/transaction-reporting.component";
 import { Router } from "@angular/router";
+import { MatIconModule } from "@angular/material/icon";
 
 describe("MenuItemComponent", () => {
   let component: MenuItemComponent;
   let fixture: ComponentFixture<MenuItemComponent>;
-  let router: Router;
 
   beforeEach(
     waitForAsync(() => {
@@ -23,6 +23,7 @@ describe("MenuItemComponent", () => {
           FormsModule,
           HttpClientTestingModule,
           TranslateModule.forRoot(),
+          MatIconModule,
         ],
         declarations: [MenuItemComponent],
         providers: [
@@ -37,7 +38,6 @@ describe("MenuItemComponent", () => {
       fixture = TestBed.createComponent(MenuItemComponent);
       component = fixture.componentInstance;
       component.route = { path: "login", component: LoginComponent };
-      router = TestBed.inject(Router);
       fixture.detectChanges();
     })
   );

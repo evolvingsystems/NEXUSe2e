@@ -5,6 +5,7 @@ import { NavigationComponent } from "./navigation.component";
 import { RouterTestingModule } from "@angular/router/testing";
 import { By } from "@angular/platform-browser";
 import { DataService } from "../data/data.service";
+import { SessionPanelComponent } from "../session-panel/session-panel.component";
 
 describe("NavigationComponent", () => {
   let component: NavigationComponent;
@@ -19,7 +20,7 @@ describe("NavigationComponent", () => {
           TranslateModule.forRoot(),
           RouterTestingModule,
         ],
-        declarations: [NavigationComponent],
+        declarations: [NavigationComponent, SessionPanelComponent],
         providers: [DataService],
       });
       fixture = TestBed.createComponent(NavigationComponent);

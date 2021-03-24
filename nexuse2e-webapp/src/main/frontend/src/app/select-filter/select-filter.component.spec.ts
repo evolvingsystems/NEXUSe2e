@@ -5,6 +5,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatSelectModule } from "@angular/material/select";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { By } from "@angular/platform-browser";
+import { MatOptionModule } from "@angular/material/core";
 
 describe("SelectFilterComponent", () => {
   let component: SelectFilterComponent;
@@ -13,9 +14,14 @@ describe("SelectFilterComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SelectFilterComponent],
-      imports: [TranslateModule.forRoot(), MatSelectModule, NoopAnimationsModule]
-    })
-      .compileComponents();
+      imports: [
+        TranslateModule.forRoot(),
+        MatSelectModule,
+        NoopAnimationsModule,
+        MatSelectModule,
+        MatOptionModule,
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -32,11 +38,12 @@ describe("SelectFilterComponent", () => {
     fixture.detectChanges();
     await fixture.whenStable();
     const debugElement = fixture.debugElement;
-    const matSelect = debugElement.query(By.css('.mat-select-trigger')).nativeElement;
+    const matSelect = debugElement.query(By.css(".mat-select-trigger"))
+      .nativeElement;
     matSelect.click();
     fixture.detectChanges();
     await fixture.whenStable();
-    const matOptions = debugElement.queryAll(By.css('.mat-option'));
+    const matOptions = debugElement.queryAll(By.css(".mat-option"));
 
     expect(matOptions.length).toBe(component.allowedValues.length + 1);
   });
@@ -47,7 +54,8 @@ describe("SelectFilterComponent", () => {
     fixture.detectChanges();
     await fixture.whenStable();
     const debugElement = fixture.debugElement;
-    const matSelect = debugElement.query(By.css(".mat-select-trigger")).nativeElement;
+    const matSelect = debugElement.query(By.css(".mat-select-trigger"))
+      .nativeElement;
     matSelect.click();
     fixture.detectChanges();
     await fixture.whenStable();
@@ -55,5 +63,5 @@ describe("SelectFilterComponent", () => {
     matOptions[1].nativeElement.click();
 
     expect(component.emitValue).toHaveBeenCalled();
-  })
+  });
 });
