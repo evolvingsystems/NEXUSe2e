@@ -1,0 +1,21 @@
+@import '../../styles.scss';
+
+.mat-form-field {
+  display: block;
+
+  .icon-click {
+    cursor: pointer;
+
+    &.in-field {
+      position: absolute;
+      transform: translateY(-50%);
+      top: 47%;
+      right: 5px;
+      color: $gray1;
+    }
+  }
+
+  input {
+    cursor: default;
+  }
+}

@@ -17,6 +17,8 @@ import org.nexuse2e.util.DateWithTimezoneSerializer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,12 +63,15 @@ public class TransactionReportingHandler implements Handler {
         String type = request.getParameter("type");
         String conversationId = request.getParameter("conversationId");
         String messageId = request.getParameter("messageId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
         long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
                 getMessageStatusNumberFromName(status),
                 getMessageTypeFromName(type),
                 0, 0, conversationId, messageId,
-                TWO_WEEKS_AGO,
-                new Date());
+                getDateFromString(startDate),
+                getDateFromString(endDate));
         String message = new Gson().toJson(messagesCount);
         response.getOutputStream().print(message);
     }
@@ -101,11 +106,25 @@ public class TransactionReportingHandler implements Handler {
         return null;
     }
 
+    private Date getDateFromString(String dateString) {
+        if (dateString != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            try {
+                return formatter.parse(dateString);
+            } catch (ParseException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
     private void getMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
         String status = request.getParameter("status");
         String type = request.getParameter("type");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         String conversationId = request.getParameter("conversationId");
         String messageId = request.getParameter("messageId");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
@@ -113,8 +132,8 @@ public class TransactionReportingHandler implements Handler {
                     getMessageStatusNumberFromName(status),
                     0, 0, conversationId, messageId,
                     getMessageTypeFromName(type),
-                    TWO_WEEKS_AGO,
-                    new Date(),
+                    getDateFromString(startDate),
+                    getDateFromString(endDate),
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,

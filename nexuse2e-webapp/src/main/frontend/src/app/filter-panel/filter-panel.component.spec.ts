@@ -11,9 +11,8 @@ describe("FilterPanelComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [FilterPanelComponent],
-      imports: [TranslateModule.forRoot()]
-    })
-      .compileComponents();
+      imports: [TranslateModule.forRoot()],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -28,11 +27,13 @@ describe("FilterPanelComponent", () => {
   it("should display the number of active filters when collapsed", () => {
     component.activeFilters = [
       { fieldName: "filter1", value: "2" },
-      { fieldName: "filter1", value: "1" }
+      { fieldName: "filter1", value: "1" },
     ];
     fixture.detectChanges();
 
-    const activeFiltersBadge = fixture.debugElement.query(By.css(".active-filters-badge"));
+    const activeFiltersBadge = fixture.debugElement.query(
+      By.css(".active-filters-badge")
+    );
     expect(activeFiltersBadge.nativeElement.textContent).toBe("2");
   });
 
@@ -42,16 +43,16 @@ describe("FilterPanelComponent", () => {
       {
         fieldName: "status",
         filterType: FilterType.SELECT,
-        allowedValues: ["FAILED", "SENT"]
+        allowedValues: ["FAILED", "SENT"],
       },
       {
         fieldName: "conversationId",
         filterType: FilterType.TEXT
       },
       {
-        fieldName: "startDate",
-        filterType: FilterType.DATE
-      }
+        fieldName: "startEndDateRange",
+        filterType: FilterType.DATE_TIME_RANGE,
+      },
     ];
     fixture.detectChanges();
 
@@ -67,6 +68,44 @@ describe("FilterPanelComponent", () => {
     button.dispatchEvent(new Event("click"));
     fixture.detectChanges();
 
-    expect(component.filterChange.emit).toHaveBeenCalledWith(component.activeFilters);
+    expect(component.filterChange.emit).toHaveBeenCalledWith(
+      component.activeFilters
+    );
+  });
+
+  it("should add 1 to active filter count if active filters contain start and end date in one DateRange object", () => {
+    component.activeFilters.push(
+      {
+        fieldName: "startEndDateRange",
+        value: {
+          startDate: new Date(),
+          endDate: new Date(),
+        },
+      },
+      {
+        fieldName: "type",
+        value: "Completed",
+      }
+    );
+
+    expect(component.getNumberOfActivatedFilters()).toEqual(3);
+  });
+
+  it("should not add 1 to active filter count if active filters contain only one date in the DateRange object", () => {
+    component.activeFilters.push(
+      {
+        fieldName: "startEndDateRange",
+        value: {
+          startDate: new Date(),
+          endDate: undefined,
+        },
+      },
+      {
+        fieldName: "type",
+        value: "Completed",
+      }
+    );
+
+    expect(component.getNumberOfActivatedFilters()).toEqual(2);
   });
 });

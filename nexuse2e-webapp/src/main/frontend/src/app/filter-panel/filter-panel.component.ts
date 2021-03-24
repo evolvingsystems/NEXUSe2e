@@ -1,27 +1,28 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { DateRange } from "../types";
 
 export enum FilterType {
   TEXT,
   SELECT,
-  DATE
+  DATE_TIME_RANGE,
 }
 
 export interface Filter {
   fieldName: string;
-  filterType: FilterType,
+  filterType: FilterType;
   allowedValues?: string[];
-  defaultValue?: string | Date;
+  defaultValue?: string | DateRange;
 }
 
 export interface ActiveFilter {
   fieldName: string;
-  value: string | Date;
+  value?: string | DateRange;
 }
 
 @Component({
-  selector: 'app-filter-panel',
-  templateUrl: './filter-panel.component.html',
-  styleUrls: ['./filter-panel.component.scss']
+  selector: "app-filter-panel",
+  templateUrl: "./filter-panel.component.html",
+  styleUrls: ["./filter-panel.component.scss"],
 })
 export class FilterPanelComponent implements OnInit {
   @Input() filters: Filter[] = [];
@@ -29,8 +30,7 @@ export class FilterPanelComponent implements OnInit {
   expanded = false;
   activeFilters: ActiveFilter[] = [];
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit(): void {
     for (const filter of this.filters) {
@@ -53,7 +53,9 @@ export class FilterPanelComponent implements OnInit {
   }
 
   updateActiveFilters(activeFilter: ActiveFilter) {
-    const index = this.activeFilters.findIndex(filter => filter.fieldName === activeFilter.fieldName);
+    const index = this.activeFilters.findIndex(
+      (filter) => filter.fieldName === activeFilter.fieldName
+    );
     const existingFilter = this.activeFilters[index];
     if (existingFilter) {
       if (activeFilter.value) {
@@ -69,5 +71,18 @@ export class FilterPanelComponent implements OnInit {
   applyFilters() {
     this.filterChange.emit(this.activeFilters);
     this.expanded = false;
+  }
+
+  getNumberOfActivatedFilters(): number {
+    let activeLength = this.activeFilters.length;
+    this.activeFilters.forEach((filter) => {
+      if (!(typeof filter.value === "string")) {
+        // eslint-disable-next-line
+        if (filter.value!.startDate && filter.value!.endDate) {
+          activeLength++;
+        }
+      }
+    });
+    return activeLength;
   }
 }
