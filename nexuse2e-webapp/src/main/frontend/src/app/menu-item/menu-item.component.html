@@ -3,11 +3,12 @@
     (click)="onClick()"
     class="link full-width"
     [style.padding-left]="level * 16 + 'px'"
+    [class.active]="isActivatedRoute()"
   >
     {{ route.data?.title }}
-  </button>
-  <button (click)="toggleChildren()" *ngIf="route.children?.length" class="toggle">
-    <mat-icon>{{ expanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    <span class="toggle" *ngIf="route.children?.length">
+      <mat-icon>{{ expanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </span>
   </button>
 </div>
 <div *ngIf="route.children && expanded">
