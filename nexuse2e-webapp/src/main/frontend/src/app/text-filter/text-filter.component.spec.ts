@@ -7,6 +7,7 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 describe("TextFilterComponent", () => {
   let component: TextFilterComponent;
@@ -21,6 +22,7 @@ describe("TextFilterComponent", () => {
         FormsModule,
         NoopAnimationsModule,
         MatFormFieldModule,
+        MatAutocompleteModule
       ],
     }).compileComponents();
   });
@@ -49,11 +51,12 @@ describe("TextFilterComponent", () => {
     expect(textField).toBeTruthy();
   });
 
-  it("should emit active filter on value change", async () => {
+  it("should emit active filter on blur", async () => {
     const input = fixture.debugElement.query(By.css("input"));
     spyOn(component.valueChange, "emit");
     const test = "testValue";
-    input.triggerEventHandler("change", { target: { value: test } });
+    component.selectedValue = test;
+    input.triggerEventHandler("blur", {});
     fixture.detectChanges();
     const activeFilter = { fieldName: component.fieldName, value: test };
 

@@ -17,6 +17,7 @@ import { PaginatedListComponent } from "../paginated-list/paginated-list.compone
 import { SelectFilterComponent } from "../select-filter/select-filter.component";
 import { TextFilterComponent } from "../text-filter/text-filter.component";
 import { DateTimeRangeFilterComponent } from "../date-time-range-filter/date-time-range-filter.component";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -36,6 +37,7 @@ describe("MessageListComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
+        MatAutocompleteModule
       ],
       declarations: [
         MessageListComponent,

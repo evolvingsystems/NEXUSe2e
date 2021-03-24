@@ -17,6 +17,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 describe("ConversationListComponent", () => {
   let component: ConversationListComponent;
@@ -36,6 +37,7 @@ describe("ConversationListComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
+        MatAutocompleteModule
       ],
       declarations: [
         ConversationListComponent,

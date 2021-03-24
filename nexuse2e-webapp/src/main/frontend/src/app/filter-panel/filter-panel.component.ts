@@ -63,7 +63,7 @@ export class FilterPanelComponent implements OnInit {
       } else {
         this.activeFilters.splice(index, 1);
       }
-    } else {
+    } else if (activeFilter.value) {
       this.activeFilters.push(activeFilter);
     }
   }
@@ -77,8 +77,7 @@ export class FilterPanelComponent implements OnInit {
     let activeLength = this.activeFilters.length;
     this.activeFilters.forEach((filter) => {
       if (!(typeof filter.value === "string")) {
-        // eslint-disable-next-line
-        if (filter.value!.startDate && filter.value!.endDate) {
+        if (filter.value?.startDate && filter.value?.endDate) {
           activeLength++;
         }
       }

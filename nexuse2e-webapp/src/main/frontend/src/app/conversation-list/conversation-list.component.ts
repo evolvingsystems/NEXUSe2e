@@ -1,10 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Conversation } from "../types";
 import { DataService } from "../data/data.service";
-import {
-  ActiveFilter,
-  FilterType,
-} from "../filter-panel/filter-panel.component";
+import { ActiveFilter, FilterType, } from "../filter-panel/filter-panel.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -23,21 +20,29 @@ export class ConversationListComponent implements OnInit {
 
   filters = [
     {
-      fieldName: "status",
-      filterType: FilterType.SELECT,
-      allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"],
-    },
-    {
-      fieldName: "conversationId",
-      filterType: FilterType.TEXT,
-    },
-    {
       fieldName: "startEndDateRange",
       filterType: FilterType.DATE_TIME_RANGE,
       defaultValue: {
         startDate: ConversationListComponent.START_DATE_DEFAULT,
         endDate: ConversationListComponent.END_DATE_DEFAULT,
       },
+    },
+    {
+      fieldName: "conversationId",
+      filterType: FilterType.TEXT,
+    },
+    {
+      fieldName: "choreographyId",
+      filterType: FilterType.TEXT,
+    },
+    {
+      fieldName: "participantId",
+      filterType: FilterType.TEXT,
+    },
+    {
+      fieldName: "status",
+      filterType: FilterType.SELECT,
+      allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"],
     },
   ];
   activeFilters: ActiveFilter[] = [];
