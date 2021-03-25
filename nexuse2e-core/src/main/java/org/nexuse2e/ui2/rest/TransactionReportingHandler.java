@@ -11,6 +11,7 @@ import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.messaging.Constants;
+import org.nexuse2e.pojo.ChoreographyPojo;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.pojo.PartnerPojo;
@@ -62,9 +63,17 @@ public class TransactionReportingHandler implements Handler {
             return 0;
         }
         EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
-        PartnerPojo partner;
-        partner = engineConfiguration.getPartnerByPartnerId(participantId);
+        PartnerPojo partner = engineConfiguration.getPartnerByPartnerId(participantId);
         return partner.getNxPartnerId();
+    }
+
+    private int getNxChoreographyId(String choreographyId) throws NexusException {
+        if (choreographyId == null) {
+            return 0;
+        }
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        ChoreographyPojo choreography = engineConfiguration.getChoreographyByChoreographyId(choreographyId);
+        return choreography.getNxChoreographyId();
     }
 
     private String getMessageStatusNumberFromName(String statusName) {
@@ -112,14 +121,16 @@ public class TransactionReportingHandler implements Handler {
         String messageId = request.getParameter("messageId");
         String status;
         Integer messageType;
-        int participantId;
+        int nxParticipantId;
+        int nxChoreographyId;
         Date startDate;
         Date endDate;
 
         try {
             status = getMessageStatusNumberFromName(request.getParameter("status"));
             messageType = getMessageTypeFromName(request.getParameter("type"));
-            participantId = getNxParticipantId(request.getParameter("participantId"));
+            nxParticipantId = getNxParticipantId(request.getParameter("participantId"));
+            nxChoreographyId = getNxChoreographyId(request.getParameter("choreographyId"));
             startDate = getDateFromString(request.getParameter("startDate"));
             endDate = getDateFromString(request.getParameter("endDate"));
         } catch (Exception e) {
@@ -132,17 +143,17 @@ public class TransactionReportingHandler implements Handler {
         }
 
         if (count) {
-            returnMessageCount(response, conversationId, messageId, status, messageType, participantId, startDate, endDate);
+            returnMessageCount(response, conversationId, messageId, status, messageType, nxChoreographyId, nxParticipantId, startDate, endDate);
         } else {
-            returnMessages(response, pageIndex, itemsPerPage, conversationId, messageId, status, messageType, participantId, startDate, endDate);
+            returnMessages(response, pageIndex, itemsPerPage, conversationId, messageId, status, messageType, nxChoreographyId, nxParticipantId, startDate, endDate);
         }
     }
 
-    private void returnMessages(HttpServletResponse response, String pageIndex, String itemsPerPage, String conversationId, String messageId, String status, Integer messageType, int participantId, Date startDate, Date endDate) throws NexusException, IOException {
+    private void returnMessages(HttpServletResponse response, String pageIndex, String itemsPerPage, String conversationId, String messageId, String status, Integer messageType, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate) throws NexusException, IOException {
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<MessagePojo> reportMessages = Engine.getInstance().getTransactionService().getMessagesForReport(
-                    status, 0,
-                    participantId,
+                    status, nxChoreographyId,
+                    nxParticipantId,
                     conversationId,
                     messageId,
                     messageType,
@@ -166,11 +177,11 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void returnMessageCount(HttpServletResponse response, String conversationId, String messageId, String status, Integer messageType, int participantId, Date startDate, Date endDate) throws NexusException, IOException {
+    private void returnMessageCount(HttpServletResponse response, String conversationId, String messageId, String status, Integer messageType, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate) throws NexusException, IOException {
         long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
                 status,
                 messageType,
-                0, participantId,
+                nxChoreographyId, nxParticipantId,
                 conversationId, messageId,
                 startDate,
                 endDate);
@@ -183,13 +194,15 @@ public class TransactionReportingHandler implements Handler {
         String itemsPerPage = request.getParameter("itemsPerPage");
         String conversationId = request.getParameter("conversationId");
         String status;
-        int participantId;
+        int nxParticipantId;
+        int nxChoreographyId;
         Date startDate;
         Date endDate;
 
         try {
             status = getConversationStatusNumberFromName(request.getParameter("status"));
-            participantId = getNxParticipantId(request.getParameter("participantId"));
+            nxParticipantId = getNxParticipantId(request.getParameter("participantId"));
+            nxChoreographyId = getNxChoreographyId(request.getParameter("choreographyId"));
             startDate = getDateFromString(request.getParameter("startDate"));
             endDate = getDateFromString(request.getParameter("endDate"));
         } catch (Exception e) {
@@ -202,17 +215,19 @@ public class TransactionReportingHandler implements Handler {
         }
 
         if (count) {
-            returnConversationCount(response, conversationId, status, participantId, startDate, endDate);
+            returnConversationCount(response, conversationId, status, nxChoreographyId, nxParticipantId, startDate, endDate);
         } else {
-            returnConversations(response, conversationId, status, participantId, startDate, endDate, pageIndex, itemsPerPage);
+            returnConversations(response, conversationId, status, nxChoreographyId, nxParticipantId, startDate, endDate, pageIndex, itemsPerPage);
         }
     }
 
-    private void returnConversations(HttpServletResponse response, String conversationId, String status, int participantId, Date startDate, Date endDate, String pageIndex, String itemsPerPage) throws NexusException, IOException {
+    private void returnConversations(HttpServletResponse response, String conversationId, String status, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate, String pageIndex, String itemsPerPage) throws NexusException, IOException {
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
                     status,
-                    0, participantId, conversationId,
+                    nxChoreographyId,
+                    nxParticipantId,
+                    conversationId,
                     startDate,
                     endDate,
                     Integer.parseInt(itemsPerPage),
@@ -232,10 +247,12 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void returnConversationCount(HttpServletResponse response, String conversationId, String status, int participantId, Date startDate, Date endDate) throws NexusException, IOException {
+    private void returnConversationCount(HttpServletResponse response, String conversationId, String status, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate) throws NexusException, IOException {
         long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
                 status,
-                0, participantId, conversationId,
+                nxChoreographyId,
+                nxParticipantId,
+                conversationId,
                 startDate,
                 endDate,
                 0, false);
