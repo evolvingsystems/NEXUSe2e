@@ -123,11 +123,18 @@ public class TransactionReportingHandler implements Handler {
         return formatter.parse(dateString);
     }
 
+    private String wrapWithWildcards(String input) {
+        if (StringUtils.isBlank(input)) {
+            return null;
+        }
+        return "%" + input + "%";
+    }
+
     private void handleMessageRequest(HttpServletRequest request, HttpServletResponse response, boolean count) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
-        String conversationId = request.getParameter("conversationId");
-        String messageId = request.getParameter("messageId");
+        String conversationId = wrapWithWildcards(request.getParameter("conversationId"));
+        String messageId = wrapWithWildcards(request.getParameter("messageId"));
         String status;
         Integer messageType;
         int nxParticipantId;
@@ -201,7 +208,7 @@ public class TransactionReportingHandler implements Handler {
     private void handleConversationRequest(HttpServletRequest request, HttpServletResponse response, boolean count) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
-        String conversationId = request.getParameter("conversationId");
+        String conversationId = wrapWithWildcards(request.getParameter("conversationId"));
         String status;
         int nxParticipantId;
         int nxChoreographyId;
