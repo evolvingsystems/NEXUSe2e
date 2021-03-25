@@ -7,16 +7,20 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
+import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.messaging.Constants;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.pojo.PartnerPojo;
 import org.nexuse2e.reporting.StatisticsConversation;
 import org.nexuse2e.reporting.StatisticsMessage;
 import org.nexuse2e.util.DateWithTimezoneSerializer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,97 +42,112 @@ public class TransactionReportingHandler implements Handler {
         if (path != null) {
             switch (StringUtils.lowerCase(path)) {
                 case "/messages":
-                    this.getMessages(request, response);
+                    this.handleMessageRequest(request, response, false);
                     break;
                 case "/messages/count":
-                    this.getMessagesCount(request, response);
+                    this.handleMessageRequest(request, response, true);
                     break;
                 case "/conversations":
-                    this.getConversations(request, response);
+                    this.handleConversationRequest(request, response, false);
                     break;
                 case "/conversations/count":
-                    this.getConversationsCount(request, response);
+                    this.handleConversationRequest(request, response, true);
                     break;
             }
         }
     }
 
-    private void getMessagesCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String status = request.getParameter("status");
-        String type = request.getParameter("type");
-        String conversationId = request.getParameter("conversationId");
-        String messageId = request.getParameter("messageId");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-
-        long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
-                getMessageStatusNumberFromName(status),
-                getMessageTypeFromName(type),
-                0, 0, conversationId, messageId,
-                getDateFromString(startDate),
-                getDateFromString(endDate));
-        String message = new Gson().toJson(messagesCount);
-        response.getOutputStream().print(message);
+    private int getNxParticipantId(String participantId) throws NexusException {
+        if (participantId == null) {
+            return 0;
+        }
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        PartnerPojo partner;
+        partner = engineConfiguration.getPartnerByPartnerId(participantId);
+        return partner.getNxPartnerId();
     }
 
     private String getMessageStatusNumberFromName(String statusName) {
-        try {
-            return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
-        } catch (Exception e) {
+        if (statusName == null) {
             return null;
         }
+        return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
     }
 
     private String getConversationStatusNumberFromName(String statusName) {
-        try {
-            return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
-        } catch (Exception e) {
+        if (statusName == null) {
             return null;
         }
+        return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
     }
 
     private Integer getMessageTypeFromName(String typeName) {
-        if (typeName != null) {
-            switch (typeName) {
-                case "ACKNOWLEDGEMENT":
-                    return Constants.INT_MESSAGE_TYPE_ACK;
-                case "NORMAL":
-                    return Constants.INT_MESSAGE_TYPE_NORMAL;
-                case "ERROR":
-                    return Constants.INT_MESSAGE_TYPE_ERROR;
-            }
+        if (typeName == null) {
+            return null;
         }
-        return null;
+        switch (typeName) {
+            case "ACKNOWLEDGEMENT":
+                return Constants.INT_MESSAGE_TYPE_ACK;
+            case "NORMAL":
+                return Constants.INT_MESSAGE_TYPE_NORMAL;
+            case "ERROR":
+                return Constants.INT_MESSAGE_TYPE_ERROR;
+            default:
+                throw new IllegalArgumentException("Message type " + typeName + " could not be resolved.");
+        }
     }
 
-    private Date getDateFromString(String dateString) {
-        if (dateString != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            try {
-                return formatter.parse(dateString);
-            } catch (ParseException e) {
-                return null;
-            }
+    private Date getDateFromString(String dateString) throws ParseException {
+        if (dateString == null) {
+            return null;
         }
-        return null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return formatter.parse(dateString);
     }
 
-    private void getMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void handleMessageRequest(HttpServletRequest request, HttpServletResponse response, boolean count) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
-        String status = request.getParameter("status");
-        String type = request.getParameter("type");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
         String conversationId = request.getParameter("conversationId");
         String messageId = request.getParameter("messageId");
+        String status;
+        Integer messageType;
+        int participantId;
+        Date startDate;
+        Date endDate;
+
+        try {
+            status = getMessageStatusNumberFromName(request.getParameter("status"));
+            messageType = getMessageTypeFromName(request.getParameter("type"));
+            participantId = getNxParticipantId(request.getParameter("participantId"));
+            startDate = getDateFromString(request.getParameter("startDate"));
+            endDate = getDateFromString(request.getParameter("endDate"));
+        } catch (Exception e) {
+            if (count) {
+                response.getOutputStream().print(new Gson().toJson(0));
+            } else {
+                response.getOutputStream().print(new Gson().toJson(new int[]{}));
+            }
+            return;
+        }
+
+        if (count) {
+            returnMessageCount(response, conversationId, messageId, status, messageType, participantId, startDate, endDate);
+        } else {
+            returnMessages(response, pageIndex, itemsPerPage, conversationId, messageId, status, messageType, participantId, startDate, endDate);
+        }
+    }
+
+    private void returnMessages(HttpServletResponse response, String pageIndex, String itemsPerPage, String conversationId, String messageId, String status, Integer messageType, int participantId, Date startDate, Date endDate) throws NexusException, IOException {
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<MessagePojo> reportMessages = Engine.getInstance().getTransactionService().getMessagesForReport(
-                    getMessageStatusNumberFromName(status),
-                    0, 0, conversationId, messageId,
-                    getMessageTypeFromName(type),
-                    getDateFromString(startDate),
-                    getDateFromString(endDate),
+                    status, 0,
+                    participantId,
+                    conversationId,
+                    messageId,
+                    messageType,
+                    startDate,
+                    endDate,
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,
@@ -147,34 +166,55 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void getConversationsCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String status = request.getParameter("status");
-        String conversationId = request.getParameter("conversationId");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
-                getConversationStatusNumberFromName(status),
-                0, 0, conversationId,
-                getDateFromString(startDate),
-                getDateFromString(endDate),
-                0, false);
-        String message = new Gson().toJson(conversationsCount);
+    private void returnMessageCount(HttpServletResponse response, String conversationId, String messageId, String status, Integer messageType, int participantId, Date startDate, Date endDate) throws NexusException, IOException {
+        long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
+                status,
+                messageType,
+                0, participantId,
+                conversationId, messageId,
+                startDate,
+                endDate);
+        String message = new Gson().toJson(messagesCount);
         response.getOutputStream().print(message);
     }
 
-    private void getConversations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void handleConversationRequest(HttpServletRequest request, HttpServletResponse response, boolean count) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
-        String status = request.getParameter("status");
         String conversationId = request.getParameter("conversationId");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+        String status;
+        int participantId;
+        Date startDate;
+        Date endDate;
+
+        try {
+            status = getConversationStatusNumberFromName(request.getParameter("status"));
+            participantId = getNxParticipantId(request.getParameter("participantId"));
+            startDate = getDateFromString(request.getParameter("startDate"));
+            endDate = getDateFromString(request.getParameter("endDate"));
+        } catch (Exception e) {
+            if (count) {
+                response.getOutputStream().print(new Gson().toJson(0));
+            } else {
+                response.getOutputStream().print(new Gson().toJson(new int[]{}));
+            }
+            return;
+        }
+
+        if (count) {
+            returnConversationCount(response, conversationId, status, participantId, startDate, endDate);
+        } else {
+            returnConversations(response, conversationId, status, participantId, startDate, endDate, pageIndex, itemsPerPage);
+        }
+    }
+
+    private void returnConversations(HttpServletResponse response, String conversationId, String status, int participantId, Date startDate, Date endDate, String pageIndex, String itemsPerPage) throws NexusException, IOException {
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
-                    getConversationStatusNumberFromName(status),
-                    0, 0, conversationId,
-                    getDateFromString(startDate),
-                    getDateFromString(endDate),
+                    status,
+                    0, participantId, conversationId,
+                    startDate,
+                    endDate,
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,
@@ -190,5 +230,16 @@ public class TransactionReportingHandler implements Handler {
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameters: pageIndex and itemsPerPage");
         }
+    }
+
+    private void returnConversationCount(HttpServletResponse response, String conversationId, String status, int participantId, Date startDate, Date endDate) throws NexusException, IOException {
+        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
+                status,
+                0, participantId, conversationId,
+                startDate,
+                endDate,
+                0, false);
+        String message = new Gson().toJson(conversationsCount);
+        response.getOutputStream().print(message);
     }
 }
