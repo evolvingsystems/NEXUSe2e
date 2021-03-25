@@ -30,6 +30,14 @@ export class TextFilterComponent implements OnInit {
     this.emitValue();
   }
 
+  checkInput() {
+    if (this.selectedValue && this.allowedValues?.length && !this.allowedValues.includes(this.selectedValue)) {
+      this.selectedValue = undefined;
+    }
+    this.emitValue();
+  }
+
+
   emitValue() {
     this.valueChange.emit({ fieldName: this.fieldName, value: this.selectedValue });
   }

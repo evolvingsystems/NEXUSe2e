@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +35,9 @@ public class TransactionReportingHandler implements Handler {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/messages/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversations".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/conversations/count".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/conversations/count".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/participants/ids".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/choreographies/ids".equalsIgnoreCase(path));
     }
 
     @Override
@@ -53,6 +56,12 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/conversations/count":
                     this.handleConversationRequest(request, response, true);
+                    break;
+                case "/participants/ids":
+                    this.returnParticipantIds(response);
+                    break;
+                case "/choreographies/ids":
+                    this.returnChoreographyIds(response);
                     break;
             }
         }
@@ -258,5 +267,29 @@ public class TransactionReportingHandler implements Handler {
                 0, false);
         String message = new Gson().toJson(conversationsCount);
         response.getOutputStream().print(message);
+    }
+
+    private void returnParticipantIds(HttpServletResponse response) throws NexusException, IOException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<String> participants = new ArrayList<>();
+        List<PartnerPojo> partners = engineConfiguration.getPartners(org.nexuse2e.configuration.Constants.PARTNER_TYPE_PARTNER, org.nexuse2e.configuration.Constants.PARTNERCOMPARATOR);
+
+        for (PartnerPojo partner : partners) {
+            participants.add(partner.getPartnerId());
+        }
+
+        response.getOutputStream().print(new Gson().toJson(participants));
+    }
+
+    private void returnChoreographyIds(HttpServletResponse response) throws IOException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<String> choreographyIds = new ArrayList<>();
+        List<ChoreographyPojo> choreographies = engineConfiguration.getChoreographies();
+
+        for (ChoreographyPojo choreography : choreographies) {
+            choreographyIds.add(choreography.getName());
+        }
+
+        response.getOutputStream().print(new Gson().toJson(choreographyIds));
     }
 }

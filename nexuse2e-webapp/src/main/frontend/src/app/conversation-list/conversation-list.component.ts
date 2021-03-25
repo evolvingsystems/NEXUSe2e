@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Conversation } from "../types";
 import { DataService } from "../data/data.service";
-import { ActiveFilter, FilterType, } from "../filter-panel/filter-panel.component";
+import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -18,6 +18,15 @@ export class ConversationListComponent implements OnInit {
     new Date().setHours(24, 0, 0, 0)
   );
 
+  private participantFilter: Filter = {
+    fieldName: "participantId",
+    filterType: FilterType.TEXT,
+  };
+  private choreographyFilter: Filter = {
+    fieldName: "choreographyId",
+    filterType: FilterType.TEXT,
+  };
+
   filters = [
     {
       fieldName: "startEndDateRange",
@@ -31,14 +40,8 @@ export class ConversationListComponent implements OnInit {
       fieldName: "conversationId",
       filterType: FilterType.TEXT,
     },
-    {
-      fieldName: "choreographyId",
-      filterType: FilterType.TEXT,
-    },
-    {
-      fieldName: "participantId",
-      filterType: FilterType.TEXT,
-    },
+    this.choreographyFilter,
+    this.participantFilter,
     {
       fieldName: "status",
       filterType: FilterType.SELECT,
@@ -47,9 +50,13 @@ export class ConversationListComponent implements OnInit {
   ];
   activeFilters: ActiveFilter[] = [];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) {
+  }
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    this.participantFilter.allowedValues = await this.dataService.getParticipantIds();
+    this.choreographyFilter.allowedValues = await this.dataService.getChoreographyIds();
+  }
 
   async loadConversations(pageIndex: number, pageSize: number) {
     this.conversations = await this.dataService.getConversations(

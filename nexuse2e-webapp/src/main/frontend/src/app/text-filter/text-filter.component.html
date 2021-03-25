@@ -1,6 +1,6 @@
 <label>{{ "labels." + fieldName | translate }}</label>
 <mat-form-field class="example-full-width">
-  <input type="text" matInput [matAutocomplete]="auto" (blur)="emitValue()" [(ngModel)]="selectedValue"/>
+  <input type="text" matInput [matAutocomplete]="auto" (blur)="checkInput()" [(ngModel)]="selectedValue"/>
   <button mat-button *ngIf="selectedValue" matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
     <mat-icon>close</mat-icon>
   </button>
