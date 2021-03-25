@@ -1,6 +1,14 @@
 <label>{{ "labels." + fieldName | translate }}</label>
 <mat-form-field class="example-full-width">
-  <input type="text" matInput [matAutocomplete]="auto" (blur)="checkInput()" [(ngModel)]="selectedValue"/>
+  <input type="text" matInput
+         [matAutocomplete]="auto"
+         (focus)="filterSuggestions()"
+         (blur)="checkInput()"
+         (ngModelChange)="filterSuggestions($event)"
+         [(ngModel)]="selectedValue"
+         placeholder="{{ 'labels.' + (allowedValues ? 'typeToSearch' : 'searchByFragment') | translate }}"
+         spellcheck="false"
+  />
   <button mat-button *ngIf="selectedValue" matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
     <mat-icon>close</mat-icon>
   </button>
@@ -9,7 +17,7 @@
     #auto="matAutocomplete"
     (optionSelected)="onSelect($event.option.value)"
   >
-    <mat-option *ngFor="let option of allowedValues" [value]="option">
+    <mat-option *ngFor="let option of filteredOptions" [value]="option">
       {{ option }}
     </mat-option>
   </mat-autocomplete>

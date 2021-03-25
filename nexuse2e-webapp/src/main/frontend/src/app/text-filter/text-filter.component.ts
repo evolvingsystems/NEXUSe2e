@@ -8,9 +8,10 @@ import { ActiveFilter } from "../filter-panel/filter-panel.component";
 })
 export class TextFilterComponent implements OnInit {
   @Input() fieldName!: string;
-  @Input() allowedValues!: string[];
+  @Input() allowedValues: string[] = [];
   @Input() defaultValue?: string;
   @Output() valueChange: EventEmitter<ActiveFilter> = new EventEmitter();
+  filteredOptions: string[] = [];
   selectedValue?: string;
 
   constructor() {
@@ -39,5 +40,15 @@ export class TextFilterComponent implements OnInit {
 
   private emitValue() {
     this.valueChange.emit({ fieldName: this.fieldName, value: this.selectedValue });
+  }
+
+  filterSuggestions(input?: string) {
+    if (input) {
+      this.filteredOptions = this.allowedValues.filter(
+        (option) => option.toUpperCase().includes(input.toUpperCase())
+      );
+    } else {
+      this.filteredOptions = this.allowedValues;
+    }
   }
 }
