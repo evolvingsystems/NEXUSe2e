@@ -37,8 +37,7 @@ export class TextFilterComponent implements OnInit {
     this.emitValue();
   }
 
-
-  emitValue() {
+  private emitValue() {
     this.valueChange.emit({ fieldName: this.fieldName, value: this.selectedValue });
   }
 }

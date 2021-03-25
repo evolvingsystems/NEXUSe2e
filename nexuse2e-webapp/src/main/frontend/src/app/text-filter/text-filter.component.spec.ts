@@ -51,14 +51,27 @@ describe("TextFilterComponent", () => {
     expect(textField).toBeTruthy();
   });
 
-  it("should emit active filter on blur", async () => {
-    const input = fixture.debugElement.query(By.css("input"));
+  it("should emit the active filter as it is if no allowed values are set", async () => {
     spyOn(component.valueChange, "emit");
+    component.allowedValues = [];
+    const input = fixture.debugElement.query(By.css("input"));
     const test = "testValue";
     component.selectedValue = test;
     input.triggerEventHandler("blur", {});
     fixture.detectChanges();
     const activeFilter = { fieldName: component.fieldName, value: test };
+
+    expect(component.valueChange.emit).toHaveBeenCalledWith(activeFilter);
+  });
+
+  it("should empty the text field if allowed values are set and the value is not allowed", () => {
+    spyOn(component.valueChange, "emit");
+    component.allowedValues = ["one", "two", "three"];
+    const input = fixture.debugElement.query(By.css("input"));
+    component.selectedValue = "notAllowed";
+    input.triggerEventHandler("blur", {});
+    fixture.detectChanges();
+    const activeFilter = { fieldName: component.fieldName, value: undefined };
 
     expect(component.valueChange.emit).toHaveBeenCalledWith(activeFilter);
   });
