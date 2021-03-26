@@ -7,6 +7,12 @@
                  (page)="onPageChange($event)">
   </mat-paginator>
 </div>
+<app-master-select
+  *ngIf="itemType == 'message'"
+  [items]="items"
+  [selectionGroupName]="itemType"
+>
+</app-master-select>
 <div *ngIf="isMobile()" class="padded">
   <div [ngSwitch]="itemType" *ngFor="let item of items" class="item-card-wrapper">
     <app-message-card *ngSwitchCase="'message'" [message]="item"></app-message-card>

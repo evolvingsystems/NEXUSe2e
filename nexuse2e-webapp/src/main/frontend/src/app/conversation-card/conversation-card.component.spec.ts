@@ -34,13 +34,6 @@ describe("ConversationCardComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should have a checkbox", () => {
-    const checkbox = fixture.nativeElement.querySelector(
-      "input[type='checkbox']"
-    );
-    expect(checkbox).toBeTruthy();
-  });
-
   it("should have a link to the conversation detail page", () => {
     const linkToConversation = fixture.debugElement.query(
       By.css(`a[href*='${component.conversation.nxConversationId}']`)

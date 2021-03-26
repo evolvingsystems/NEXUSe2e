@@ -1,6 +1,6 @@
 <mat-card [class]="message.status | lowercase" class="messageStatusLeftBorderColor">
   <div class="card-header">
-    <mat-checkbox></mat-checkbox>
+    <mat-checkbox (change)="toggleSelection($event)" [checked]="isSelected()"></mat-checkbox>
     <a [routerLink]="'' + message.nxMessageId">{{ message.messageId }}</a>
   </div>
   <table>
