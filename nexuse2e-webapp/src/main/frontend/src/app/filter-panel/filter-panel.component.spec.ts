@@ -50,11 +50,12 @@ describe("FilterPanelComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should display the number of active filters when collapsed", () => {
+  it("should display the number of active filters when collapsed and if mobile view", () => {
     component.activeFilters = [
       { fieldName: "filter1", value: "2" },
       { fieldName: "filter1", value: "1" },
     ];
+    spyOn(component, "isMobile").and.returnValue(true);
     fixture.detectChanges();
 
     const activeFiltersBadge = fixture.debugElement.query(
