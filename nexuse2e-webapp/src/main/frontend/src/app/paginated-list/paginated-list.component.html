@@ -8,7 +8,7 @@
   </mat-paginator>
 </div>
 <app-master-select
-  *ngIf="itemType == 'message'"
+  *ngIf="items.length && itemType == 'message'"
   [items]="items"
   [selectionGroupName]="itemType"
 >
