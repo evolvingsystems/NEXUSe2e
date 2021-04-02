@@ -1,19 +1,15 @@
-<div class="table-scrollable">
+<div class="table-scrollable" *ngIf="conversations.length">
   <table mat-table [dataSource]="conversations" class="mat-elevation-z8 full-width">
-    <ng-container matColumnDef="statusColor">
+    <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
+        <app-master-select
+          [items]="conversations"
+          selectionGroupName="conversation"
+        ></app-master-select>
       </th>
       <td mat-cell *matCellDef="let element" [class]="element.status | lowercase"
           class="conversationStatusLeftBorderColor">
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef>
-        <mat-checkbox></mat-checkbox>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <mat-checkbox></mat-checkbox>
+        <mat-checkbox (change)="toggleSelection($event, element)" [checked]="isSelected(element)"></mat-checkbox>
       </td>
     </ng-container>
 

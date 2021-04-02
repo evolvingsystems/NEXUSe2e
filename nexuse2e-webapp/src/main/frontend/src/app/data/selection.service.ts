@@ -46,6 +46,10 @@ export class SelectionService {
   }
 
   selectAll(selectionGroupName: string, items: unknown[]) {
-    this.selections[selectionGroupName] = items;
+    this.selections[selectionGroupName] = [...items];
+  }
+
+  getSelectionSize(selectionGroupName: string) {
+    return this.selections[selectionGroupName]?.length;
   }
 }
