@@ -1,27 +1,51 @@
-# Frontend
+# Getting started
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.10.
+## Project Setup
 
-## Development server
+### Setup NEXUSe2e
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Import the project
+- IntelliJ: Activate the Maven Tool Window (right-click root module in Project Tool Window > "Add Framework Support" > "
+  Maven")
+- IntelliJ: Import Maven projects using the "+" sign in the Maven Tool Window (choose the pom.xml from the folders
+  nexuse2e-parent, nexuse2e-core und nexuse2e-webapp)
+- nexuse2e-parent mvn install
+- nexuse2e-core mvn install
+- nexuse2e-webapp mvn install
 
-## Code scaffolding
+### Active Maven profile "with-new-frontend"
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Execute "mvn package" in nexuse2e-webapp
 
-## Build
+- npm and node are installed automatically including all dependencies
+- The HTML, CSS and JS files resulting from the frontend build can be found in the folder
+  nexuse2e-webapp\src\main\webapp\WEB-INF\ui
+- After deployment, the new frontend can be found at /ui/, relative to your running nexus instance (
+  e.g. http://localhost:8080/ui/)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Run Configuration
 
-## Running unit tests
+### Server
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- Application Server: Tomcat
+- JRE: Java 8
 
-## Running end-to-end tests
+### Deployment
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+- Artifact: nexuse2e-webapp:war exploded
 
-## Further help
+### Before Launch
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+- Maven Goal: nexuse2e-core package
+- Build artifact "nexuse2e-webapp:war exploded"
+
+## Development
+
+If you want to be able to make changes without rebuilding nexuse2e-webapp...
+
+- Install the Angular CLI
+- Use the exploded war artifact in your Run Configuration
+- IntelliJ: In the tab "Server" in your Run Configuration, choose Update Action > Reload classes and resources
+- Run "ng build --watch" to rebuild the Angular App on save
+- IntelliJ: After each rebuild, run "Update Project" (white reload arrow) from the Services Tab
+
