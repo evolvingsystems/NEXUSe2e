@@ -7,19 +7,26 @@ export class SelectionService {
   private selections: { [key: string]: unknown[] } = {};
 
   private getIndexOfItem(selectionGroupName: string, item: unknown) {
-    return this.selections[selectionGroupName]?.findIndex((e) => e === item);
+    const index = this.selections[selectionGroupName]?.findIndex((e) => e === item);
+    if (typeof index === "undefined") {
+      return -1;
+    }
+    return index;
   }
 
   private select(selectionGroupName: string, item: unknown) {
     if (!this.selections[selectionGroupName]) {
       this.selections[selectionGroupName] = [];
     }
-    this.selections[selectionGroupName].push(item);
+    const index = this.getIndexOfItem(selectionGroupName, item);
+    if (index == -1) {
+      this.selections[selectionGroupName].push(item);
+    }
   }
 
   private deselect(selectionGroupName: string, item: unknown) {
     const index = this.getIndexOfItem(selectionGroupName, item);
-    if (index != -1) {
+    if (index !== -1) {
       this.selections[selectionGroupName].splice(index, 1);
     }
   }

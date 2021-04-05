@@ -9,7 +9,7 @@ import { SelectionService } from "../data/selection.service";
 })
 export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
-  @Input() items!: unknown[];
+  @Input() items: unknown[] = [];
   @Input() itemType!: string;
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
