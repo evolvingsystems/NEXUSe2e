@@ -44,7 +44,8 @@
     "type": "Type",
     "startDate": "Start Date",
     "endDate": "End Date",
-    "dateTimeFieldPlaceholder": "Choose a date and a time"
+    "dateTimeFieldPlaceholder": "Choose a date and a time",
+    "step": "Step"
   },
   "status": {
     "FAILED": "Failed",

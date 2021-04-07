@@ -50,6 +50,11 @@
       <td mat-cell *matCellDef="let element"> {{element.typeName}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="step">
+      <th mat-header-cell *matHeaderCellDef>{{ "labels.step" | translate }}</th>
+      <td mat-cell *matCellDef="let element"> {{element.choreographyId}} | {{element.actionId}} </td>
+    </ng-container>
+
     <ng-container matColumnDef="createdDate">
       <th mat-header-cell *matHeaderCellDef>{{ "labels.createdDate" | translate }}</th>
       <td mat-cell *matCellDef="let element"> {{element.createdDate}} </td>
