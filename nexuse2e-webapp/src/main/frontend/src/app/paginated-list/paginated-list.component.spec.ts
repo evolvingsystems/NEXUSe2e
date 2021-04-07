@@ -5,6 +5,7 @@ import { messages } from "../test-data";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { By } from "@angular/platform-browser";
+import { ConversationTableComponent } from "../conversation-table/conversation-table.component";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
@@ -13,7 +14,7 @@ describe("PaginatedListComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatPaginatorModule, BrowserAnimationsModule],
-      declarations: [PaginatedListComponent],
+      declarations: [PaginatedListComponent, ConversationTableComponent],
     }).compileComponents();
   });
 
