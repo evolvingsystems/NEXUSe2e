@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.dao.TransactionDAO;
@@ -16,16 +17,13 @@ import org.nexuse2e.util.DateWithTimezoneSerializer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.nexuse2e.util.DateUtil.getCurrentDateMinusWeeks;
-
 public class TransactionReportingHandler implements Handler {
-    // TODO get date range from filter
-    public static final Date TWO_WEEKS_AGO = getCurrentDateMinusWeeks(2);
-
     @Override
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
@@ -49,7 +47,7 @@ public class TransactionReportingHandler implements Handler {
                     this.getConversations(request, response);
                     break;
                 case "/conversations/count":
-                    this.getConversationsCount(response);
+                    this.getConversationsCount(request, response);
                     break;
             }
         }
@@ -58,19 +56,32 @@ public class TransactionReportingHandler implements Handler {
     private void getMessagesCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String status = request.getParameter("status");
         String type = request.getParameter("type");
+        String conversationId = request.getParameter("conversationId");
+        String messageId = request.getParameter("messageId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
         long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
-                getStatusNumberFromName(status),
+                getMessageStatusNumberFromName(status),
                 getMessageTypeFromName(type),
-                0, 0, null, null,
-                TWO_WEEKS_AGO,
-                new Date());
+                0, 0, conversationId, messageId,
+                getDateFromString(startDate),
+                getDateFromString(endDate));
         String message = new Gson().toJson(messagesCount);
         response.getOutputStream().print(message);
     }
 
-    private String getStatusNumberFromName(String statusName) {
+    private String getMessageStatusNumberFromName(String statusName) {
         try {
             return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String getConversationStatusNumberFromName(String statusName) {
+        try {
+            return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
         } catch (Exception e) {
             return null;
         }
@@ -90,18 +101,34 @@ public class TransactionReportingHandler implements Handler {
         return null;
     }
 
+    private Date getDateFromString(String dateString) {
+        if (dateString != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            try {
+                return formatter.parse(dateString);
+            } catch (ParseException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
     private void getMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
         String status = request.getParameter("status");
         String type = request.getParameter("type");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String conversationId = request.getParameter("conversationId");
+        String messageId = request.getParameter("messageId");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<MessagePojo> reportMessages = Engine.getInstance().getTransactionService().getMessagesForReport(
-                    getStatusNumberFromName(status),
-                    0, 0, null, null,
+                    getMessageStatusNumberFromName(status),
+                    0, 0, conversationId, messageId,
                     getMessageTypeFromName(type),
-                    TWO_WEEKS_AGO,
-                    new Date(),
+                    getDateFromString(startDate),
+                    getDateFromString(endDate),
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,
@@ -120,8 +147,17 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void getConversationsCount(HttpServletResponse response) throws Exception {
-        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(TWO_WEEKS_AGO, new Date());
+    private void getConversationsCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String status = request.getParameter("status");
+        String conversationId = request.getParameter("conversationId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
+                getConversationStatusNumberFromName(status),
+                0, 0, conversationId,
+                getDateFromString(startDate),
+                getDateFromString(endDate),
+                0, false);
         String message = new Gson().toJson(conversationsCount);
         response.getOutputStream().print(message);
     }
@@ -129,11 +165,16 @@ public class TransactionReportingHandler implements Handler {
     private void getConversations(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
+        String status = request.getParameter("status");
+        String conversationId = request.getParameter("conversationId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
-                    null, 0, 0, null,
-                    TWO_WEEKS_AGO,
-                    new Date(),
+                    getConversationStatusNumberFromName(status),
+                    0, 0, conversationId,
+                    getDateFromString(startDate),
+                    getDateFromString(endDate),
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,

@@ -6,6 +6,7 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { messages } from "../test-data";
+import { MatCardModule } from "@angular/material/card";
 
 describe("MessageCardComponent", () => {
   let component: MessageCardComponent;
@@ -17,6 +18,7 @@ describe("MessageCardComponent", () => {
         RouterTestingModule,
         TranslateModule.forRoot(),
         MatCheckboxModule,
+        MatCardModule,
       ],
       declarations: [MessageCardComponent],
     }).compileComponents();
@@ -42,7 +44,9 @@ describe("MessageCardComponent", () => {
 
   it("should have a link to the message detail page", () => {
     const messageId = component.message.nxMessageId;
-    const linkToMessage = fixture.debugElement.query(By.css(`a[href*='${messageId}']`));
+    const linkToMessage = fixture.debugElement.query(
+      By.css(`a[href*='${messageId}']`)
+    );
     expect(linkToMessage).toBeTruthy();
     expect(linkToMessage.nativeElement.textContent).toBeTruthy();
   });

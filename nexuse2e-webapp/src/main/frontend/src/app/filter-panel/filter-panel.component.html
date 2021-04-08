@@ -1,29 +1,43 @@
-<div class="expanded" [hidden]="!expanded">
-  <div *ngFor="let filter of filters" class="filter">
+<div class="expanded filters" [hidden]="!expanded && isMobile()">
+  <div *ngFor="let filter of filters" class="filter" [ngClass]="{'full': filter.fieldName === 'startEndDateRange'}">
     <div [ngSwitch]="filter.filterType">
       <app-select-filter
         *ngSwitchCase="getFilterType().SELECT"
         [allowedValues]="filter.allowedValues"
+        [defaultValue]="filter.defaultValue"
         [fieldName]="filter.fieldName"
         (valueChange)="updateActiveFilters($event)"
       >
       </app-select-filter>
+      <app-date-time-range-filter
+        *ngSwitchCase="getFilterType().DATE_TIME_RANGE"
+        [fieldName]="filter.fieldName"
+        (valueChange)="updateActiveFilters($event)"
+        [defaultValue]="filter.defaultValue">
+      </app-date-time-range-filter>
+      <app-text-filter
+        *ngSwitchCase="getFilterType().TEXT"
+        [fieldName]="filter.fieldName"
+        (valueChange)="updateActiveFilters($event)"
+      >
+      </app-text-filter>
     </div>
   </div>
   <button mat-flat-button
           (click)="applyFilters()"
           color="accent"
+          class="filterButton"
   >
     {{ "buttons.filter" | translate }}
   </button>
 </div>
-<div (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
+<div *ngIf="isMobile()" (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
   <div class="collapsed" *ngIf="!expanded">
-    <div *ngIf="activeFilters.length" class="filter-info">
-      <div class="active-filters-badge">{{ activeFilters.length }}</div>
-      {{ (activeFilters.length == 1 ? "labels.filterActive" : "labels.filtersActive") | translate }}
+    <div *ngIf="getNumberOfActivatedFilters()" class="filter-info">
+      <div class="active-filters-badge">{{ getNumberOfActivatedFilters() }}</div>
+      {{ (getNumberOfActivatedFilters() == 1 ? "labels.filterActive" : "labels.filtersActive") | translate }}
     </div>
-    <div *ngIf="!activeFilters.length">
+    <div *ngIf="!getNumberOfActivatedFilters()">
       {{ "labels.noFiltersActive" | translate }}
     </div>
   </div>

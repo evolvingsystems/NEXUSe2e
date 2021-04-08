@@ -1,0 +1,9 @@
+<label [for]="fieldName">{{ "labels." + fieldName | translate }}</label>
+<mat-form-field>
+  <input matInput
+         [name]="fieldName"
+         autocomplete="off"
+         type="text"
+         (change)="emitValue($event)"
+  />
+</mat-form-field>

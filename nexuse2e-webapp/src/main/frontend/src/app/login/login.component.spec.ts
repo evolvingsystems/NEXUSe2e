@@ -6,6 +6,9 @@ import { FormsModule } from "@angular/forms";
 import { DataService } from "../data/data.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("LoginComponent", () => {
   let component: LoginComponent;
@@ -21,6 +24,9 @@ describe("LoginComponent", () => {
           FormsModule,
           HttpClientTestingModule,
           TranslateModule.forRoot(),
+          MatFormFieldModule,
+          MatInputModule,
+          BrowserAnimationsModule,
         ],
         declarations: [LoginComponent],
         providers: [

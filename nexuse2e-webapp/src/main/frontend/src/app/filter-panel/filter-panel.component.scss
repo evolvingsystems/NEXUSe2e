@@ -45,6 +45,11 @@ button {
   ::ng-deep label {
     color: $gray2;
     margin-left: 5px;
+    display: block;
+  }
+
+  ::ng-deep .mat-form-field {
+    display: block;
   }
 
   ::ng-deep .mat-form-field-appearance-outline {
@@ -54,6 +59,44 @@ button {
 
     .mat-select-arrow-wrapper {
       transform: translateY(0%);
+    }
+  }
+}
+
+@media(min-width: $desktopBreakpoint) {
+  .filters {
+    background: $white;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .filter {
+      flex-grow: 1;
+      flex-shrink: 1;
+
+      &.full {
+        min-width: 100%;
+
+        & > div {
+          padding: 0;
+        }
+
+        app-date-time-range-filter {
+          display: flex;
+          flex-direction: row;
+        }
+      }
+
+      & > div {
+        padding: 0 5px;
+      }
+    }
+
+    .filterButton {
+      width: auto;
+      margin-left: auto;
+      margin-right: 5px;
     }
   }
 }

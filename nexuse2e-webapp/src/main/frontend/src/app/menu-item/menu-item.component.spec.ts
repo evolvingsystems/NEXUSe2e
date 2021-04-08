@@ -8,6 +8,8 @@ import { LoginComponent } from "../login/login.component";
 import { DashboardComponent } from "../dashboard/dashboard.component";
 import { ReportingComponent } from "../reporting/reporting.component";
 import { TransactionReportingComponent } from "../transaction-reporting/transaction-reporting.component";
+import { Router } from "@angular/router";
+import { MatIconModule } from "@angular/material/icon";
 
 describe("MenuItemComponent", () => {
   let component: MenuItemComponent;
@@ -21,9 +23,17 @@ describe("MenuItemComponent", () => {
           FormsModule,
           HttpClientTestingModule,
           TranslateModule.forRoot(),
+          MatIconModule,
         ],
         declarations: [MenuItemComponent],
-        providers: [],
+        providers: [
+          {
+            provide: Router,
+            useValue: {
+              url: "/dashboard",
+            },
+          },
+        ],
       });
       fixture = TestBed.createComponent(MenuItemComponent);
       component = fixture.componentInstance;
@@ -113,5 +123,11 @@ describe("MenuItemComponent", () => {
     fixture.detectChanges();
 
     expect(component.fullPath).toBe("/parent/child");
+  });
+
+  it("should set menu link item as active if it is the current active route", () => {
+    component.route = { path: "dashboard", component: DashboardComponent };
+    fixture.detectChanges();
+    expect(component.isActivatedRoute()).toBeTruthy();
   });
 });

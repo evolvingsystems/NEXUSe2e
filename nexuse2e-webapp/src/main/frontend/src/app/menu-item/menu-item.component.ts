@@ -11,7 +11,7 @@ export class MenuItemComponent implements OnInit {
   @Input() route!: Route;
   @Input() fullPath!: string;
   @Input() level = 1;
-  expanded = false;
+  expanded = true;
 
   constructor(
     private router: Router,
@@ -27,11 +27,20 @@ export class MenuItemComponent implements OnInit {
   }
 
   async onClick() {
-    this.navigationService.hideNavigation();
-    await this.router.navigateByUrl(this.fullPath);
+    if (this.route.children?.length) {
+      this.toggleChildren();
+    } else {
+      this.navigationService.hideNavigation();
+      await this.router.navigateByUrl(this.fullPath);
+    }
   }
 
   toggleChildren() {
     this.expanded = !this.expanded;
+  }
+
+  isActivatedRoute() {
+    const activeUrlParts = this.router.url.split("/");
+    return this.route.path === activeUrlParts[activeUrlParts.length - 1];
   }
 }

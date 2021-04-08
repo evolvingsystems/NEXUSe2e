@@ -37,7 +37,9 @@ describe("SessionPanelComponent", () => {
   });
 
   it("should show username", async () => {
-    spyOn(dataService, "getFullUsername").and.returnValue(Promise.resolve("Administrator"));
+    spyOn(dataService, "getFullUsername").and.returnValue(
+      Promise.resolve("Administrator")
+    );
     await component.ngOnInit();
     fixture.detectChanges();
 

@@ -1,9 +1,10 @@
-import {ComponentFixture, TestBed} from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import {TransactionReportingComponent} from "./transaction-reporting.component";
-import {By} from "@angular/platform-browser";
-import {TranslateModule} from "@ngx-translate/core";
-import {RouterTestingModule} from "@angular/router/testing";
+import { TransactionReportingComponent } from "./transaction-reporting.component";
+import { By } from "@angular/platform-browser";
+import { TranslateModule } from "@ngx-translate/core";
+import { RouterTestingModule } from "@angular/router/testing";
+import { MatTabsModule } from "@angular/material/tabs";
 
 describe("TransactionReportingComponent", () => {
   let component: TransactionReportingComponent;
@@ -11,10 +12,7 @@ describe("TransactionReportingComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule
-      ],
+      imports: [TranslateModule.forRoot(), RouterTestingModule, MatTabsModule],
       declarations: [TransactionReportingComponent],
     }).compileComponents();
   });
@@ -35,13 +33,17 @@ describe("TransactionReportingComponent", () => {
   });
 
   it("should show a link to message overview", () => {
-    const linkToMessages = fixture.debugElement.query(By.css("a[href*='messages']"));
+    const linkToMessages = fixture.debugElement.query(
+      By.css("a[href*='messages']")
+    );
     expect(linkToMessages).toBeTruthy();
     expect(linkToMessages.nativeElement.textContent).toBeTruthy();
   });
 
   it("should show a link to conversations overview", () => {
-    const linkToConversations = fixture.debugElement.query(By.css("a[href*='conversations']"));
+    const linkToConversations = fixture.debugElement.query(
+      By.css("a[href*='conversations']")
+    );
     expect(linkToConversations).toBeTruthy();
     expect(linkToConversations.nativeElement.textContent).toBeTruthy();
   });

@@ -1,38 +1,55 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
+import { DateRange } from "../types";
 
 export enum FilterType {
-  TEXT_FIELD,
+  TEXT,
   SELECT,
-  DATE
+  DATE_TIME_RANGE,
 }
 
 export interface Filter {
   fieldName: string;
-  filterType: FilterType,
+  filterType: FilterType;
   allowedValues?: string[];
-  defaultValue?: string | Date;
+  defaultValue?: string | DateRange;
 }
 
 export interface ActiveFilter {
   fieldName: string;
-  value: string;
+  value?: string | DateRange;
 }
 
 @Component({
-  selector: 'app-filter-panel',
-  templateUrl: './filter-panel.component.html',
-  styleUrls: ['./filter-panel.component.scss']
+  selector: "app-filter-panel",
+  templateUrl: "./filter-panel.component.html",
+  styleUrls: ["./filter-panel.component.scss"],
 })
 export class FilterPanelComponent implements OnInit {
-  @Input() filters!: Filter[];
+  @Input() filters: Filter[] = [];
   @Output() filterChange: EventEmitter<ActiveFilter[]> = new EventEmitter();
   expanded = false;
   activeFilters: ActiveFilter[] = [];
+  innerWidth = window.innerWidth;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit(): void {
+    for (const filter of this.filters) {
+      if (filter.defaultValue) {
+        this.activeFilters.push({
+          fieldName: filter.fieldName,
+          value: filter.defaultValue,
+        });
+      }
+    }
+    this.applyFilters();
   }
 
   getFilterType() {
@@ -44,10 +61,12 @@ export class FilterPanelComponent implements OnInit {
   }
 
   updateActiveFilters(activeFilter: ActiveFilter) {
-    const index = this.activeFilters.findIndex(filter => filter.fieldName === activeFilter.fieldName);
+    const index = this.activeFilters.findIndex(
+      (filter) => filter.fieldName === activeFilter.fieldName
+    );
     const existingFilter = this.activeFilters[index];
     if (existingFilter) {
-      if (typeof activeFilter.value !== "undefined") {
+      if (activeFilter.value) {
         existingFilter.value = activeFilter.value;
       } else {
         this.activeFilters.splice(index, 1);
@@ -62,4 +81,25 @@ export class FilterPanelComponent implements OnInit {
     this.expanded = false;
   }
 
+  getNumberOfActivatedFilters(): number {
+    let activeLength = this.activeFilters.length;
+    this.activeFilters.forEach((filter) => {
+      if (!(typeof filter.value === "string")) {
+        // eslint-disable-next-line
+        if (filter.value!.startDate && filter.value!.endDate) {
+          activeLength++;
+        }
+      }
+    });
+    return activeLength;
+  }
+
+  isMobile() {
+    return this.innerWidth < 980;
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize() {
+    this.innerWidth = window.innerWidth;
+  }
 }
