@@ -3,6 +3,17 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FilterPanelComponent, FilterType } from "./filter-panel.component";
 import { By } from "@angular/platform-browser";
 import { TranslateModule } from "@ngx-translate/core";
+import { MatIconModule } from "@angular/material/icon";
+import { SelectFilterComponent } from "../select-filter/select-filter.component";
+import { TextFilterComponent } from "../text-filter/text-filter.component";
+import { DateTimeRangeFilterComponent } from "../date-time-range-filter/date-time-range-filter.component";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material/core";
+import { FormsModule } from "@angular/forms";
 
 describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;
@@ -10,8 +21,23 @@ describe("FilterPanelComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FilterPanelComponent],
-      imports: [TranslateModule.forRoot()],
+      declarations: [
+        FilterPanelComponent,
+        SelectFilterComponent,
+        TextFilterComponent,
+        DateTimeRangeFilterComponent,
+      ],
+      imports: [
+        TranslateModule.forRoot(),
+        FormsModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        BrowserAnimationsModule,
+      ],
     }).compileComponents();
   });
 
@@ -24,11 +50,12 @@ describe("FilterPanelComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should display the number of active filters when collapsed", () => {
+  it("should display the number of active filters when collapsed and if mobile view", () => {
     component.activeFilters = [
       { fieldName: "filter1", value: "2" },
       { fieldName: "filter1", value: "1" },
     ];
+    spyOn(component, "isMobile").and.returnValue(true);
     fixture.detectChanges();
 
     const activeFiltersBadge = fixture.debugElement.query(
@@ -47,7 +74,7 @@ describe("FilterPanelComponent", () => {
       },
       {
         fieldName: "conversationId",
-        filterType: FilterType.TEXT
+        filterType: FilterType.TEXT,
       },
       {
         fieldName: "startEndDateRange",

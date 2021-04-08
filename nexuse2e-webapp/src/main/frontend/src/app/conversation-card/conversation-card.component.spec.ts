@@ -6,6 +6,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { By } from "@angular/platform-browser";
 import { conversations } from "../test-data";
+import { MatCardModule } from "@angular/material/card";
 
 describe("ConversationCardComponent", () => {
   let component: ConversationCardComponent;
@@ -17,6 +18,7 @@ describe("ConversationCardComponent", () => {
         RouterTestingModule,
         TranslateModule.forRoot(),
         MatCheckboxModule,
+        MatCardModule,
       ],
       declarations: [ConversationCardComponent],
     }).compileComponents();

@@ -4,6 +4,9 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { By } from "@angular/platform-browser";
 import { DataService } from "../data/data.service";
+import { MatIconModule } from "@angular/material/icon";
+import { SessionPanelComponent } from "../session-panel/session-panel.component";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe("HeaderComponent", () => {
   let component: HeaderComponent;
@@ -13,8 +16,13 @@ describe("HeaderComponent", () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-        declarations: [HeaderComponent],
+        imports: [
+          HttpClientTestingModule,
+          TranslateModule.forRoot(),
+          MatIconModule,
+          RouterTestingModule,
+        ],
+        declarations: [HeaderComponent, SessionPanelComponent],
         providers: [DataService],
       });
       fixture = TestBed.createComponent(HeaderComponent);
@@ -29,10 +37,10 @@ describe("HeaderComponent", () => {
   });
 
   it("should show machine name and version number", async () => {
-    spyOn(dataService, "getMachineName")
-      .and.returnValue(Promise.resolve("Machine Name"));
-    spyOn(dataService, "getVersion")
-      .and.returnValue(
+    spyOn(dataService, "getMachineName").and.returnValue(
+      Promise.resolve("Machine Name")
+    );
+    spyOn(dataService, "getVersion").and.returnValue(
       Promise.resolve(["5.9.0", "Revision: 2.4.2", "Build: 14.2.4"])
     );
     await component.ngOnInit();

@@ -8,6 +8,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { MatNativeDateModule } from "@angular/material/core";
+import { MatIconModule } from "@angular/material/icon";
+import { MatFormFieldModule } from "@angular/material/form-field";
 
 describe("DateTimeRangeFilterComponent", () => {
   let component: DateTimeRangeFilterComponent;
@@ -23,6 +25,8 @@ describe("DateTimeRangeFilterComponent", () => {
         MatInputModule,
         BrowserAnimationsModule,
         FormsModule,
+        MatIconModule,
+        MatFormFieldModule,
       ],
     }).compileComponents();
   });

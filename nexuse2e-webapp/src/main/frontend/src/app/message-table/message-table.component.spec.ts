@@ -49,7 +49,9 @@ describe("MessageTableComponent", () => {
 
   it("should have a link to the message detail page", () => {
     const firstMessageId = component.messages[0].nxMessageId;
-    const linkToMessage = fixture.debugElement.query(By.css(`a[href*='${firstMessageId}']`));
+    const linkToMessage = fixture.debugElement.query(
+      By.css(`a[href*='${firstMessageId}']`)
+    );
     expect(linkToMessage).toBeTruthy();
     expect(linkToMessage.nativeElement.textContent).toBeTruthy();
   });

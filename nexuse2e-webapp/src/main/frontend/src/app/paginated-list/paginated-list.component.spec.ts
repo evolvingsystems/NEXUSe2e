@@ -64,7 +64,9 @@ describe("PaginatedListComponent", () => {
 
     fixture.detectChanges();
 
-    const rangeLabel = fixture.debugElement.query(By.css(".mat-paginator-range-label"));
+    const rangeLabel = fixture.debugElement.query(
+      By.css(".mat-paginator-range-label")
+    );
     expect(rangeLabel.nativeElement.textContent.trim()).toContain("of 30");
   });
 });

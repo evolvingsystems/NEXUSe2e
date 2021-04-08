@@ -1,5 +1,5 @@
-<div class="expanded" [hidden]="!expanded">
-  <div *ngFor="let filter of filters" class="filter">
+<div class="expanded filters" [hidden]="!expanded && isMobile()">
+  <div *ngFor="let filter of filters" class="filter" [ngClass]="{'full': filter.fieldName === 'startEndDateRange'}">
     <div [ngSwitch]="filter.filterType">
       <app-select-filter
         *ngSwitchCase="getFilterType().SELECT"
@@ -26,11 +26,12 @@
   <button mat-flat-button
           (click)="applyFilters()"
           color="accent"
+          class="filterButton"
   >
     {{ "buttons.filter" | translate }}
   </button>
 </div>
-<div (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
+<div *ngIf="isMobile()" (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
   <div class="collapsed" *ngIf="!expanded">
     <div *ngIf="getNumberOfActivatedFilters()" class="filter-info">
       <div class="active-filters-badge">{{ getNumberOfActivatedFilters() }}</div>

@@ -1,36 +1,40 @@
-<label [for]="start">{{ "labels.startDate" | translate }}</label>
-<mat-form-field>
-  <mat-icon *ngIf="startDate"
-            (click)="clearStartDatePicker()"
-            class="icon-click in-field">clear
-  </mat-icon>
-  <input matInput readonly
-         name="startDate"
-         [matDatepicker]="start"
-         [placeholder]="'labels.dateTimeFieldPlaceholder' | translate"
-         [max]="maxStartDate"
-         [(ngModel)]="startDate"
-         (ngModelChange)="emitValue()">
+<div class="startDateFilter">
+  <label [for]="start">{{ "labels.startDate" | translate }}</label>
+  <mat-form-field>
+    <mat-icon *ngIf="startDate"
+              (click)="clearStartDatePicker()"
+              class="icon-click in-field">clear
+    </mat-icon>
+    <input matInput readonly
+           name="startDate"
+           [matDatepicker]="start"
+           [placeholder]="'labels.dateTimeFieldPlaceholder' | translate"
+           [max]="maxStartDate"
+           [(ngModel)]="startDate"
+           (ngModelChange)="emitValue()">
 
-  <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
+    <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
 
-  <mat-datepicker #start color="accent"></mat-datepicker>
-</mat-form-field>
-<label [for]="end">{{ "labels.endDate" | translate }}</label>
-<mat-form-field>
-  <mat-icon *ngIf="endDate"
-            (click)="clearEndDatePicker()"
-            class="icon-click in-field">clear
-  </mat-icon>
-  <input matInput readonly
-         name="endDate"
-         [matDatepicker]="end"
-         [placeholder]="'labels.dateTimeFieldPlaceholder' | translate"
-         [min]="startDate"
-         [(ngModel)]="endDate"
-         (ngModelChange)="emitValue()">
+    <mat-datepicker #start color="accent"></mat-datepicker>
+  </mat-form-field>
+</div>
+<div class="endDateFilter">
+  <label [for]="end">{{ "labels.endDate" | translate }}</label>
+  <mat-form-field>
+    <mat-icon *ngIf="endDate"
+              (click)="clearEndDatePicker()"
+              class="icon-click in-field">clear
+    </mat-icon>
+    <input matInput readonly
+           name="endDate"
+           [matDatepicker]="end"
+           [placeholder]="'labels.dateTimeFieldPlaceholder' | translate"
+           [min]="startDate"
+           [(ngModel)]="endDate"
+           (ngModelChange)="emitValue()">
 
-  <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+    <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
 
-  <mat-datepicker #end color="accent"></mat-datepicker>
-</mat-form-field>
+    <mat-datepicker #end color="accent"></mat-datepicker>
+  </mat-form-field>
+</div>
