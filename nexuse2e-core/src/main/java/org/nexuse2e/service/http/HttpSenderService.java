@@ -1,37 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service.http;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.mail.internet.ContentType;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
@@ -51,18 +41,20 @@ import org.nexuse2e.configuration.ParameterType;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.FrontendPipeline;
 import org.nexuse2e.messaging.MessageContext;
-import org.nexuse2e.pojo.CertificatePojo;
-import org.nexuse2e.pojo.ChoreographyPojo;
-import org.nexuse2e.pojo.MessagePayloadPojo;
-import org.nexuse2e.pojo.MessagePojo;
-import org.nexuse2e.pojo.ParticipantPojo;
-import org.nexuse2e.pojo.TRPPojo;
+import org.nexuse2e.pojo.*;
 import org.nexuse2e.service.AbstractService;
 import org.nexuse2e.service.SenderAware;
 import org.nexuse2e.transport.TransportSender;
 import org.nexuse2e.util.CertSSLProtocolSocketFactory;
 import org.nexuse2e.util.CertificateUtil;
 import org.nexuse2e.util.EncryptionUtil;
+
+import javax.mail.internet.ContentType;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A service that can be used by a <code>TransportSender</code> in order
@@ -72,17 +64,20 @@ import org.nexuse2e.util.EncryptionUtil;
  */
 public class HttpSenderService extends AbstractService implements SenderAware {
 
-    private static Logger      LOG                        = Logger.getLogger(HttpSenderService.class);
+    private static Logger LOG = Logger.getLogger(HttpSenderService.class);
 
     /** PARAMETERS **/
     public static final String PREEMPTIVE_AUTH_PARAM_NAME = "preemptiveAuth";
+    public static final String LEGACY_HTTP_HEADER_FOLDING = "httpHeaderFolding";
 
-    private TransportSender    transportSender;
+    private TransportSender transportSender;
 
     @Override
     public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
         parameterMap.put(PREEMPTIVE_AUTH_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Preemptive Authentication",
                 "Check, if the HTTP client should use preemtive authentication.", Boolean.FALSE));
+        parameterMap.put(LEGACY_HTTP_HEADER_FOLDING, new ParameterDescriptor(ParameterType.BOOLEAN, "Legacy Http header Folding",
+                "HTTP Header folding is deprecated. In case of issues, the old behavior can be activated.", Boolean.FALSE));
     }
 
     @Override
@@ -113,7 +108,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
         try {
             receiverURL = new URL(messageContext.getParticipant().getConnection().getUri());
         } catch (MalformedURLException e) {
-            throw new NexusException(new LogMessage("Error creating HTTP POST call for: " + messageContext.getParticipant().getConnection().getUri(),messageContext), e);
+            throw new NexusException(new LogMessage("Error creating HTTP POST call for: " + messageContext.getParticipant().getConnection().getUri(), messageContext), e);
 
         }
 
@@ -136,7 +131,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
                     LOG.trace(new LogMessage("participant.name: " + participant.getPartner().getName(), messageContext.getMessagePojo()));
                     LOG.trace(new LogMessage("participant.localcerts: " + participant.getLocalCertificate(), messageContext.getMessagePojo()));
                     if (participant.getLocalCertificate() != null) {
-                        LOG.trace(new LogMessage("localcert.name("+participant.getLocalCertificate().getNxCertificateId()+"): " + participant.getLocalCertificate().getName(), messageContext.getMessagePojo()));
+                        LOG.trace(new LogMessage("localcert.name(" + participant.getLocalCertificate().getNxCertificateId() + "): " + participant.getLocalCertificate().getName(), messageContext.getMessagePojo()));
                     }
                 }
 
@@ -159,7 +154,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 myhttps = new Protocol("https", (ProtocolSocketFactory) new CertSSLProtocolSocketFactory(privateKeyChain,
                         EncryptionUtil.decryptString(localCert.getPassword()), Engine.getInstance().getActiveConfigurationAccessService().getCacertsKeyStore(),
-                        cacertspwd, partnerCert,tlsProtocols,tlsCiphers), 443);
+                        cacertspwd, partnerCert, tlsProtocols, tlsCiphers), 443);
 
                 client.getHostConfiguration().setHost(receiverURL.getHost(), receiverURL.getPort(), myhttps);
 
@@ -186,7 +181,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
                 method.setDoAuthentication(true);
             }
         } catch (Exception e) {
-            throw new NexusException(new LogMessage("Error creating HTTP POST call: " + e, e),e);
+            throw new NexusException(new LogMessage("Error creating HTTP POST call: " + e, e), e);
         }
 
         try {
@@ -203,14 +198,19 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 String contentTypeString = null;
 
-                /* No bug with wrapping the content type, see section 2.2 of http://www.ietf.org/rfc/rfc2616.txt */
-                ContentType contentType = new ContentType("multipart/related");
-                contentType.setParameter("type", "text/xml");
-                contentType.setParameter("boundary", "MIME_boundary");
-                contentType.setParameter("start", messageContext.getMessagePojo().getMessageId() + messageContext.getMessagePojo().getTRP().getProtocol()
-                        + "-Header");
+                Boolean folding = getParameter(LEGACY_HTTP_HEADER_FOLDING);
 
-                contentTypeString = contentType.toString();
+                if (folding == null || folding) {
+                    /* No bug with wrapping the content type, see section 2.2 of http://www.ietf.org/rfc/rfc2616.txt */
+                    ContentType contentType = new ContentType("multipart/related");
+                    contentType.setParameter("type", "text/xml");
+                    contentType.setParameter("boundary", "MIME_boundary");
+                    contentType.setParameter("start", messageContext.getMessagePojo().getMessageId() + messageContext.getMessagePojo().getTRP().getProtocol()
+                            + "-Header");
+                    contentTypeString = contentType.toString();
+                } else {
+                    contentTypeString = "multipart/related; type=\"text/xml\"; boundary=MIME_boundary; start=" + messageContext.getMessagePojo().getMessageId() + messageContext.getMessagePojo().getTRP().getProtocol() + "-Header";
+                }
 
                 RequestEntity requestEntity = new ByteArrayRequestEntity((byte[]) messageContext.getData(), "Content-Type:" + contentTypeString);
 
@@ -237,7 +237,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 String preConfiguredQuery = receiverURL.getQuery();
                 String queryString;
-                if(StringUtils.isBlank(preConfiguredQuery)) {
+                if (StringUtils.isBlank(preConfiguredQuery)) {
                     queryString = uriParams.toString();
                 } else {
                     queryString = preConfiguredQuery + "&" + uriParams.toString();
@@ -251,7 +251,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
                 RequestEntity requestEntity = new ByteArrayRequestEntity((byte[]) messageContext.getData(), "text/xml");
                 method.setRequestEntity(requestEntity);
             }
-            LOG.info("resulting URL:"+client.getHostConfiguration().getHostURL()+method.getURI());
+            LOG.info("resulting URL:" + client.getHostConfiguration().getHostURL() + method.getURI());
             client.executeMethod(method);
             LOG.debug(new LogMessage("HTTP call done", messageContext.getMessagePojo()));
             int statusCode = method.getStatusCode();
@@ -295,11 +295,11 @@ public class HttpSenderService extends AbstractService implements SenderAware {
             method.releaseConnection();
 
         } catch (ConnectTimeoutException e) {
-            LogMessage lm = new LogMessage("Message submission failed, connection timeout for URL: " + messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(),e);
+            LogMessage lm = new LogMessage("Message submission failed, connection timeout for URL: " + messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(), e);
             LOG.warn(lm, e);
             throw new NexusException(lm, e);
         } catch (Exception ex) {
-            LogMessage lm = new LogMessage("Message submission failed for URL: "+messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(),ex);
+            LogMessage lm = new LogMessage("Message submission failed for URL: " + messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(), ex);
             LOG.warn(lm, ex);
             throw new NexusException(lm, ex);
         }
@@ -327,7 +327,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.Manageable#teardown()
      */
     public void teardown() {
