@@ -7,24 +7,28 @@ describe("SelectionService", () => {
   });
 
   it("should add the first item of a type to the selection", () => {
-    service.updateSelection(true, "newSelectionGroup", { id: "123" });
+    const item = { id: "123" };
+    service.updateSelection(true, "newSelectionGroup", item);
 
-    expect(service.getSelectionSize("newSelectionGroup")).toEqual(1);
+    expect(service.isSelected("newSelectionGroup", item)).toBeTrue();
   });
 
   it("should add more than one item to the selection", () => {
-    service.updateSelection(true, "newSelectionGroup", { id: "123" });
-    service.updateSelection(true, "newSelectionGroup", { id: "234" });
+    const item1 = { id: "123" };
+    const item2 = { id: "234" };
+    service.updateSelection(true, "newSelectionGroup", item1);
+    service.updateSelection(true, "newSelectionGroup", item2);
 
-    expect(service.getSelectionSize("newSelectionGroup")).toEqual(2);
+    expect(service.isSelected("newSelectionGroup", item1)).toBeTrue();
+    expect(service.isSelected("newSelectionGroup", item2)).toBeTrue();
   });
 
-  it("should not add an item to the selection if it's already contained", () => {
+  it("should still work if the same item is added twice", () => {
     const item = { id: "123" };
     service.updateSelection(true, "newSelectionGroup", item);
     service.updateSelection(true, "newSelectionGroup", item);
 
-    expect(service.getSelectionSize("newSelectionGroup")).toEqual(1);
+    expect(service.isSelected("newSelectionGroup", item)).toBeTrue();
   });
 
   it("should remove an item from the selection", () => {
@@ -32,12 +36,13 @@ describe("SelectionService", () => {
     service.updateSelection(true, "newSelectionGroup", item);
     service.updateSelection(false, "newSelectionGroup", item);
 
-    expect(service.getSelectionSize("newSelectionGroup")).toEqual(0);
+    expect(service.isSelected("newSelectionGroup", item)).toBeFalse();
   });
 
   it("should ignore a deselection if the item was not contained in the selection", () => {
-    service.updateSelection(false, "newSelectionGroup", { id: 2121 });
+    const item = { id: 2121 };
+    service.updateSelection(false, "newSelectionGroup", item);
 
-    expect().nothing();
+    expect(service.isSelected("newSelectionGroup", item)).toBeFalse();
   });
 });

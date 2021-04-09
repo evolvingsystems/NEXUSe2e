@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 export class SelectionService {
   private selections: { [key: string]: unknown[] } = {};
 
-  private getIndexOfItem(selectionGroupName: string, item: unknown) {
+  private getIndexOfItem(selectionGroupName: string, item: unknown): number {
     const index = this.selections[selectionGroupName]?.findIndex((e) => e === item);
     if (typeof index === "undefined") {
       return -1;
@@ -39,11 +39,11 @@ export class SelectionService {
     }
   }
 
-  isSelected(selectionGroupName: string, item: unknown) {
-    return this.selections[selectionGroupName]?.includes(item);
+  isSelected(selectionGroupName: string, item: unknown): boolean {
+    return this.selections[selectionGroupName]?.includes(item) || false;
   }
 
-  selectionContainsAll(selectionGroupName: string, items: unknown[]) {
+  selectionContainsAll(selectionGroupName: string, items: unknown[]): boolean {
     const selection = this.selections[selectionGroupName];
     return items?.length > 0 && items.every((item) => selection?.includes(item));
   }
@@ -54,9 +54,5 @@ export class SelectionService {
 
   selectAll(selectionGroupName: string, items: unknown[]) {
     this.selections[selectionGroupName] = [...items];
-  }
-
-  getSelectionSize(selectionGroupName: string) {
-    return this.selections[selectionGroupName]?.length;
   }
 }
