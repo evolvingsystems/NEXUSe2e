@@ -1,12 +1,6 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
+import { ScreensizeService } from "../screensize.service";
 
 @Component({
   selector: "app-paginated-list",
@@ -25,10 +19,9 @@ export class PaginatedListComponent implements OnInit {
   pageIndex = 0;
   innerWidth = window.innerWidth;
 
-  constructor() {}
+  constructor(public screenSizeService: ScreensizeService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   @Input()
   set totalItemCount(value: number) {
@@ -51,14 +44,5 @@ export class PaginatedListComponent implements OnInit {
       pageIndex: this.pageIndex,
       pageSize: this.pageSize,
     });
-  }
-
-  isMobile() {
-    return this.innerWidth < 980;
-  }
-
-  @HostListener("window:resize", ["$event"])
-  onResize() {
-    this.innerWidth = window.innerWidth;
   }
 }
