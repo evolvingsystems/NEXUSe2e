@@ -7,6 +7,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { RouterTestingModule } from "@angular/router/testing";
 import { messages } from "../test-data";
+import { MasterSelectComponent } from "../master-select/master-select.component";
 
 describe("MessageTableComponent", () => {
   let component: MessageTableComponent;
@@ -20,7 +21,7 @@ describe("MessageTableComponent", () => {
         RouterTestingModule,
         TranslateModule.forRoot(),
       ],
-      declarations: [MessageTableComponent],
+      declarations: [MessageTableComponent, MasterSelectComponent],
     }).compileComponents();
   });
 

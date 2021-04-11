@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MasterSelectComponent } from './master-select.component';
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 describe('MasterSelectComponent', () => {
   let component: MasterSelectComponent;
@@ -8,6 +9,7 @@ describe('MasterSelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [MatCheckboxModule],
       declarations: [MasterSelectComponent]
     })
       .compileComponents();
