@@ -147,7 +147,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 myhttps = new Protocol("https", (ProtocolSocketFactory) new CertSSLProtocolSocketFactory(privateKeyChain,
                         EncryptionUtil.decryptString(localCert.getPassword()), Engine.getInstance().getActiveConfigurationAccessService().getCacertsKeyStore(),
-                        cacertspwd, partnerCert,null,null), 443);
+                        cacertspwd, partnerCert), 443);
 
                 client.getHostConfiguration().setHost(receiverURL.getHost(), receiverURL.getPort(), myhttps);
 

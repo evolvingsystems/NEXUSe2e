@@ -74,7 +74,7 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
      *                           and validity only.
      */
     public CertSSLProtocolSocketFactory(final KeyStore keystore, final String keystorePassword,
-                                        final KeyStore truststore, final String truststorePassword, CertificatePojo trustedPartnerCert, String tlsProtocols, String tlsCiphers) {
+                                        final KeyStore truststore, final String truststorePassword, CertificatePojo trustedPartnerCert) {
 
         super();
 
@@ -82,8 +82,6 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         this.keystorePassword = keystorePassword;
         this.truststore = truststore;
         this.trustedPartnerCert = trustedPartnerCert;
-        this.tlsProtocols = tlsProtocols;
-        this.tlsCiphers = tlsCiphers;
     }
 
     private SSLContext createSSLContext() {
