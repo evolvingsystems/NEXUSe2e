@@ -1,6 +1,5 @@
 <mat-card [class]="conversation.status | lowercase" class="conversationStatusLeftBorderColor">
   <div class="card-header">
-    <mat-checkbox></mat-checkbox>
     <a [routerLink]="'' + conversation.nxConversationId">{{ conversation.conversationId }}</a>
   </div>
   <table>

@@ -19,3 +19,11 @@
     cursor: default;
   }
 }
+
+@media(min-width: $desktopBreakpoint) {
+  .startDateFilter,
+  .endDateFilter {
+    flex: 1;
+    padding: 0 5px;
+  }
+}

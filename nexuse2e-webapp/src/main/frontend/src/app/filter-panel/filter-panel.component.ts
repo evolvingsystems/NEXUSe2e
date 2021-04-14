@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { DateRange } from "../types";
 
 export enum FilterType {
@@ -29,6 +36,7 @@ export class FilterPanelComponent implements OnInit {
   @Output() filterChange: EventEmitter<ActiveFilter[]> = new EventEmitter();
   expanded = false;
   activeFilters: ActiveFilter[] = [];
+  innerWidth = window.innerWidth;
 
   constructor() {}
 
@@ -37,7 +45,7 @@ export class FilterPanelComponent implements OnInit {
       if (filter.defaultValue) {
         this.activeFilters.push({
           fieldName: filter.fieldName,
-          value: filter.defaultValue
+          value: filter.defaultValue,
         });
       }
     }
@@ -83,5 +91,14 @@ export class FilterPanelComponent implements OnInit {
       }
     });
     return activeLength;
+  }
+
+  isMobile() {
+    return this.innerWidth < 980;
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize() {
+    this.innerWidth = window.innerWidth;
   }
 }

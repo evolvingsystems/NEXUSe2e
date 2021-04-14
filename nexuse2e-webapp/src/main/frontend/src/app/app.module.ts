@@ -45,6 +45,7 @@ import { DateTimeRangeFilterComponent } from "./date-time-range-filter/date-time
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MasterSelectComponent } from './master-select/master-select.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -134,6 +135,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageTableComponent,
     TextFilterComponent,
     DateTimeRangeFilterComponent,
+    MasterSelectComponent,
   ],
   imports: [
     BrowserModule,

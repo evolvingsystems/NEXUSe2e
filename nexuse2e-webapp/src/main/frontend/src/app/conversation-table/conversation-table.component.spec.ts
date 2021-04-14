@@ -6,6 +6,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatTableModule } from "@angular/material/table";
 import { conversations } from "../test-data";
+import { MasterSelectComponent } from "../master-select/master-select.component";
 
 describe("ConversationTableComponent", () => {
   let component: ConversationTableComponent;
@@ -19,7 +20,7 @@ describe("ConversationTableComponent", () => {
         MatCheckboxModule,
         MatTableModule,
       ],
-      declarations: [ConversationTableComponent],
+      declarations: [ConversationTableComponent, MasterSelectComponent],
     }).compileComponents();
   });
 
