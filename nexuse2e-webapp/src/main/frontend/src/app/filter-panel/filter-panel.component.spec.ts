@@ -51,11 +51,11 @@ describe("FilterPanelComponent", () => {
   });
 
   it("should display the number of active filters when collapsed and if mobile view", () => {
-    component.activeFilters = [
-      { fieldName: "filter1", value: "2" },
-      { fieldName: "filter1", value: "1" },
-    ];
-    spyOn(component, "isMobile").and.returnValue(true);
+    component.activeFilters = {
+      filter1: "1",
+      filter2: "2"
+    },
+      spyOn(component, "isMobile").and.returnValue(true);
     fixture.detectChanges();
 
     const activeFiltersBadge = fixture.debugElement.query(
@@ -101,37 +101,21 @@ describe("FilterPanelComponent", () => {
   });
 
   it("should add 1 to active filter count if active filters contain start and end date in one DateRange object", () => {
-    component.activeFilters.push(
-      {
-        fieldName: "startEndDateRange",
-        value: {
-          startDate: new Date(),
-          endDate: new Date(),
-        },
-      },
-      {
-        fieldName: "type",
-        value: "Completed",
-      }
-    );
+    component.activeFilters["startEndDateRange"] = {
+      startDate: new Date(),
+      endDate: new Date(),
+    };
+    component.activeFilters["type"] = "Completed";
 
     expect(component.getNumberOfActivatedFilters()).toEqual(3);
   });
 
   it("should not add 1 to active filter count if active filters contain only one date in the DateRange object", () => {
-    component.activeFilters.push(
-      {
-        fieldName: "startEndDateRange",
-        value: {
-          startDate: new Date(),
-          endDate: undefined,
-        },
-      },
-      {
-        fieldName: "type",
-        value: "Completed",
-      }
-    );
+    component.activeFilters["startEndDateRange"] = {
+      startDate: new Date(),
+      endDate: undefined,
+    };
+    component.activeFilters["type"] = "Completed";
 
     expect(component.getNumberOfActivatedFilters()).toEqual(2);
   });

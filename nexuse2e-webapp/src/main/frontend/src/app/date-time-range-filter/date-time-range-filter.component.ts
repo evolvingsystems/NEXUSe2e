@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { ActiveFilter } from "../filter-panel/filter-panel.component";
 import { DateRange } from "../types";
 
 @Component({
@@ -13,7 +12,7 @@ export class DateTimeRangeFilterComponent implements OnInit {
   @Input() maxStartDate: Date = new Date();
   @Input() startDate: Date | undefined;
   @Input() endDate: Date | undefined;
-  @Output() valueChange: EventEmitter<ActiveFilter> = new EventEmitter();
+  @Output() valueChange: EventEmitter<{ fieldName: string, value?: string | DateRange }> = new EventEmitter();
 
   constructor() {}
 
@@ -35,12 +34,13 @@ export class DateTimeRangeFilterComponent implements OnInit {
   }
 
   emitValue() {
+    const filters: { [fieldName: string]: string | DateRange | undefined } = {};
+    filters[this.fieldName] = this.startDate || this.endDate
+      ? { startDate: this.startDate, endDate: this.endDate }
+      : undefined;
     this.valueChange.emit({
       fieldName: this.fieldName,
-      value:
-        this.startDate || this.endDate
-          ? { startDate: this.startDate, endDate: this.endDate }
-          : undefined,
+      value: this.startDate || this.endDate ? { startDate: this.startDate, endDate: this.endDate } : undefined
     });
   }
 }

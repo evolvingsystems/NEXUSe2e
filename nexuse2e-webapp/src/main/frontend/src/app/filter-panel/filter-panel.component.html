@@ -6,19 +6,19 @@
         [allowedValues]="filter.allowedValues"
         [defaultValue]="filter.defaultValue"
         [fieldName]="filter.fieldName"
-        (valueChange)="updateActiveFilters($event)"
+        (valueChange)="updateActiveFilter($event)"
       >
       </app-select-filter>
       <app-date-time-range-filter
         *ngSwitchCase="getFilterType().DATE_TIME_RANGE"
         [fieldName]="filter.fieldName"
-        (valueChange)="updateActiveFilters($event)"
+        (valueChange)="updateActiveFilter($event)"
         [defaultValue]="filter.defaultValue">
       </app-date-time-range-filter>
       <app-text-filter
         *ngSwitchCase="getFilterType().TEXT"
         [fieldName]="filter.fieldName"
-        (valueChange)="updateActiveFilters($event)"
+        (valueChange)="updateActiveFilter($event)"
       >
       </app-text-filter>
     </div>

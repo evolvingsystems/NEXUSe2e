@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { Message } from "../types";
+import { DateRange, Message } from "../types";
 import { DataService } from "../data/data.service";
 import {
-  ActiveFilter,
   FilterType,
 } from "../filter-panel/filter-panel.component";
 
@@ -57,7 +56,7 @@ export class MessageListComponent implements OnInit {
     },
   ];
 
-  activeFilters: ActiveFilter[] = [];
+  activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
 
   constructor(private dataService: DataService) {}
 
@@ -78,7 +77,7 @@ export class MessageListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: ActiveFilter[]) {
+  filterMessages(activeFilters: { [fieldName: string]: string | DateRange | undefined }) {
     this.activeFilters = activeFilters;
     this.refreshMessageCount();
   }
