@@ -8,6 +8,7 @@ import { FormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatIconModule } from "@angular/material/icon";
 
 describe("TextFilterComponent", () => {
   let component: TextFilterComponent;
@@ -22,7 +23,8 @@ describe("TextFilterComponent", () => {
         FormsModule,
         NoopAnimationsModule,
         MatFormFieldModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatIconModule
       ],
     }).compileComponents();
   });
