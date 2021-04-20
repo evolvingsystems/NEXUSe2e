@@ -7,6 +7,7 @@ import {
   Output,
 } from "@angular/core";
 import { DateRange } from "../types";
+import { SessionService } from "../data/session.service";
 
 export enum FilterType {
   TEXT,
@@ -28,17 +29,22 @@ export interface Filter {
 })
 export class FilterPanelComponent implements OnInit {
   @Input() filters: Filter[] = [];
+  @Input() itemType!: string;
   @Output() filterChange: EventEmitter<{ [fieldName: string]: string | DateRange | undefined }> = new EventEmitter();
   expanded = false;
   activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
   innerWidth = window.innerWidth;
 
-  constructor() {}
+  constructor(public sessionService: SessionService) {
+  }
 
   ngOnInit(): void {
-    for (const filter of this.filters) {
-      if (filter.defaultValue) {
-        this.activeFilters[filter.fieldName] = filter.defaultValue;
+    this.activeFilters = this.sessionService.getActiveFilters(this.itemType);
+    if (Object.keys(this.activeFilters).length === 0) {
+      for (const filter of this.filters) {
+        if (filter.defaultValue && !this.activeFilters[filter.fieldName]) {
+          this.activeFilters[filter.fieldName] = filter.defaultValue;
+        }
       }
     }
     this.applyFilters();
@@ -62,6 +68,7 @@ export class FilterPanelComponent implements OnInit {
 
   applyFilters() {
     this.filterChange.emit(this.activeFilters);
+    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
     this.expanded = false;
   }
 

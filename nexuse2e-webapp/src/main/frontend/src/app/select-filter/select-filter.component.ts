@@ -10,7 +10,7 @@ import { DateRange } from "../types";
 export class SelectFilterComponent implements OnInit {
   @Input() fieldName!: string;
   @Input() allowedValues!: string[];
-  @Input() defaultValue?: string;
+  @Input() selectedValue?: string;
   @Output() valueChange: EventEmitter<{ fieldName: string, value?: string | DateRange }> = new EventEmitter();
 
   constructor() {

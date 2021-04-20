@@ -44,7 +44,8 @@ describe("DateTimeRangeFilterComponent", () => {
     component.fieldName = "startEndDateRange";
     const startTest = new Date(new Date().setHours(3, 0, 0, 0));
     const activeFilter = {
-      startEndDateRange: { startDate: startTest, endDate: component.endDate }
+      fieldName: "startEndDateRange",
+      value: { startDate: startTest, endDate: component.endDate }
     };
     const inputStart = fixture.debugElement.query(
       By.css('input[name="startDate"]')
@@ -60,7 +61,8 @@ describe("DateTimeRangeFilterComponent", () => {
   it("should emit undefined as value if both dates are undefined", () => {
     component.fieldName = "startEndDateRange";
     const activeFilter = {
-      startEndDateRange: undefined,
+      fieldName: "startEndDateRange",
+      value: undefined,
     };
 
     spyOn(component.valueChange, "emit");

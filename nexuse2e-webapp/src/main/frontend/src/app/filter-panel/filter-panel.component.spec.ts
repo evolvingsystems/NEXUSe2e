@@ -51,16 +51,17 @@ describe("FilterPanelComponent", () => {
   });
 
   it("should display the number of active filters when collapsed and if mobile view", () => {
-    component.activeFilters = {
+    spyOn(component.sessionService, "getActiveFilters").and.returnValue({
       filter1: "1",
       filter2: "2"
-    },
-      spyOn(component, "isMobile").and.returnValue(true);
+    });
+    spyOn(component, "isMobile").and.returnValue(true);
     fixture.detectChanges();
 
     const activeFiltersBadge = fixture.debugElement.query(
       By.css(".active-filters-badge")
     );
+
     expect(activeFiltersBadge.nativeElement.textContent).toBe("2");
   });
 

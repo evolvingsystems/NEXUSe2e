@@ -8,7 +8,7 @@ import { DateRange } from "../types";
 })
 export class DateTimeRangeFilterComponent implements OnInit {
   @Input() fieldName!: string;
-  @Input() defaultValue?: DateRange;
+  @Input() selectedValue?: DateRange;
   @Input() maxStartDate: Date = new Date();
   @Input() startDate: Date | undefined;
   @Input() endDate: Date | undefined;
@@ -17,9 +17,9 @@ export class DateTimeRangeFilterComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    if (this.defaultValue) {
-      this.startDate = this.defaultValue.startDate;
-      this.endDate = this.defaultValue.endDate;
+    if (this.selectedValue) {
+      this.startDate = this.selectedValue.startDate;
+      this.endDate = this.selectedValue.endDate;
     }
   }
 

@@ -4,7 +4,7 @@
       <app-select-filter
         *ngSwitchCase="getFilterType().SELECT"
         [allowedValues]="filter.allowedValues"
-        [defaultValue]="filter.defaultValue"
+        [selectedValue]="activeFilters[filter.fieldName]"
         [fieldName]="filter.fieldName"
         (valueChange)="updateActiveFilter($event)"
       >
@@ -13,7 +13,7 @@
         *ngSwitchCase="getFilterType().DATE_TIME_RANGE"
         [fieldName]="filter.fieldName"
         (valueChange)="updateActiveFilter($event)"
-        [defaultValue]="filter.defaultValue">
+        [selectedValue]="activeFilters[filter.fieldName]">
       </app-date-time-range-filter>
       <app-text-filter
         *ngSwitchCase="getFilterType().TEXT"
