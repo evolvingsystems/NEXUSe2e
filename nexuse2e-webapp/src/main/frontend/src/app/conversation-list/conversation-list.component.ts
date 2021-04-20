@@ -14,6 +14,7 @@ import {
 export class ConversationListComponent implements OnInit {
   totalConversationCount?: number;
   conversations: Conversation[] = [];
+  loaded: boolean;
   static readonly START_DATE_DEFAULT: Date = new Date(
     new Date().setHours(0, 0, 0, 0)
   );
@@ -42,16 +43,20 @@ export class ConversationListComponent implements OnInit {
   ];
   activeFilters: ActiveFilter[] = [];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) {
+    this.loaded = false;
+  }
 
   async ngOnInit() {}
 
   async loadConversations(pageIndex: number, pageSize: number) {
+    this.loaded = false;
     this.conversations = await this.dataService.getConversations(
       pageIndex,
       pageSize,
       this.activeFilters
     );
+    this.loaded = true;
   }
 
   async refreshConversationCount() {

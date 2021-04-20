@@ -17,6 +17,10 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
+import { ConversationTableComponent } from "../conversation-table/conversation-table.component";
+import { MatTableModule } from "@angular/material/table";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 describe("ConversationListComponent", () => {
   let component: ConversationListComponent;
@@ -36,14 +40,18 @@ describe("ConversationListComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
+        MatTableModule,
+        MatCheckboxModule,
       ],
       declarations: [
         ConversationListComponent,
+        ConversationTableComponent,
         FilterPanelComponent,
         PaginatedListComponent,
         SelectFilterComponent,
         TextFilterComponent,
         DateTimeRangeFilterComponent,
+        LoadingSpinnerComponent,
       ],
     }).compileComponents();
   });

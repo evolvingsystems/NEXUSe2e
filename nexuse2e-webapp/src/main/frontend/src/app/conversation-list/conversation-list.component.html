@@ -2,10 +2,13 @@
   [filters]="filters"
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
-<app-paginated-list
-  [totalItemCount]="totalConversationCount"
-  [items]="conversations"
-  itemType="conversation"
-  (triggerReload)="loadConversations($event.pageIndex, $event.pageSize)"
+<app-paginated-list [hidden]="!loaded"
+                    [totalItemCount]="totalConversationCount"
+                    [items]="conversations"
+                    itemType="conversation"
+                    (triggerReload)="loadConversations($event.pageIndex, $event.pageSize)"
 >
 </app-paginated-list>
+<div class="loading_spinner_wrapper" *ngIf="!loaded">
+  <app-loading-spinner></app-loading-spinner>
+</div>

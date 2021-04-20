@@ -14,6 +14,7 @@ import {
 export class MessageListComponent implements OnInit {
   totalMessageCount?: number;
   messages: Message[] = [];
+  loaded: boolean;
   static readonly START_DATE_DEFAULT: Date = new Date(
     new Date().setHours(0, 0, 0, 0)
   );
@@ -37,15 +38,15 @@ export class MessageListComponent implements OnInit {
       fieldName: "type",
       filterType: FilterType.SELECT,
       allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"],
-      defaultValue: "NORMAL"
+      defaultValue: "NORMAL",
     },
     {
       fieldName: "messageId",
-      filterType: FilterType.TEXT
+      filterType: FilterType.TEXT,
     },
     {
       fieldName: "conversationId",
-      filterType: FilterType.TEXT
+      filterType: FilterType.TEXT,
     },
     {
       fieldName: "startEndDateRange",
@@ -59,17 +60,20 @@ export class MessageListComponent implements OnInit {
 
   activeFilters: ActiveFilter[] = [];
 
-  constructor(private dataService: DataService) {}
-
-  async ngOnInit() {
+  constructor(private dataService: DataService) {
+    this.loaded = false;
   }
 
+  async ngOnInit() {}
+
   async loadMessages(pageIndex: number, pageSize: number) {
+    this.loaded = false;
     this.messages = await this.dataService.getMessages(
       pageIndex,
       pageSize,
       this.activeFilters
     );
+    this.loaded = true;
   }
 
   async refreshMessageCount() {

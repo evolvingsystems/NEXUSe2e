@@ -51,6 +51,7 @@ import { TextFilterComponent } from './text-filter/text-filter.component';
 import { DateTimeRangeFilterComponent } from "./date-time-range-filter/date-time-range-filter.component";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
+import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -140,6 +141,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageTableComponent,
     TextFilterComponent,
     DateTimeRangeFilterComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,
