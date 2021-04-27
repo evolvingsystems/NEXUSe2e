@@ -22,7 +22,7 @@
     "conversations": "Conversations",
     "messageId": "Message ID",
     "conversationId": "Conversation ID",
-    "participantId": "Participant ID",
+    "participantId": "Partner ID",
     "choreographyId": "Choreography ID",
     "messageType": "Message Type",
     "action": "Action",
@@ -44,8 +44,10 @@
     "type": "Type",
     "startDate": "Start Date",
     "endDate": "End Date",
-    "dateTimeFieldPlaceholder": "Choose a date and a time",
-    "step": "Step"
+    "step": "Step",
+    "dateTimeFieldPlaceholder": "choose a date",
+    "typeToSearch": "type to search",
+    "searchByFragment": "enter ID fragment"
   },
   "status": {
     "FAILED": "Failed",

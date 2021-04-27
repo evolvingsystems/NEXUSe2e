@@ -21,6 +21,7 @@ import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.comp
 import { ConversationTableComponent } from "../conversation-table/conversation-table.component";
 import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 describe("ConversationListComponent", () => {
   let component: ConversationListComponent;
@@ -40,6 +41,7 @@ describe("ConversationListComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
+        MatAutocompleteModule,
         MatTableModule,
         MatCheckboxModule,
       ],

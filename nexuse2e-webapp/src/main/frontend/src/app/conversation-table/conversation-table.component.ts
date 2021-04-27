@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Conversation } from "../types";
+import { MatCheckboxChange } from "@angular/material/checkbox";
+import { SelectionService } from "../data/selection.service";
 
 @Component({
   selector: "app-conversation-table",
@@ -9,7 +11,6 @@ import { Conversation } from "../types";
 export class ConversationTableComponent implements OnInit {
   @Input() conversations!: Conversation[];
   displayedColumns: string[] = [
-    "statusColor",
     "select",
     "conversationId",
     "partnerId",
@@ -20,7 +21,17 @@ export class ConversationTableComponent implements OnInit {
     "turnAroundTime",
   ];
 
-  constructor() {}
+  constructor(private selectionService: SelectionService) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
+
+  toggleSelection(change: MatCheckboxChange, conversation: Conversation) {
+    this.selectionService.updateSelection(change.checked, "conversation", conversation);
+  }
+
+  isSelected(conversation: Conversation) {
+    return this.selectionService.isSelected("conversation", conversation);
+  }
 }

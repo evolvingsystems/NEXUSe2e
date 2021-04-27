@@ -21,6 +21,7 @@ import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.comp
 import { MessageTableComponent } from "../message-table/message-table.component";
 import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -40,6 +41,7 @@ describe("MessageListComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
+        MatAutocompleteModule,
         MatTableModule,
         MatCheckboxModule,
       ],

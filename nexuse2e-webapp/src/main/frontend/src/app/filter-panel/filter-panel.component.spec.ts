@@ -15,6 +15,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { FormsModule } from "@angular/forms";
 import { ScreensizeService } from "../screensize.service";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;
@@ -39,6 +40,7 @@ describe("FilterPanelComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
+        MatAutocompleteModule
       ],
     }).compileComponents();
   });

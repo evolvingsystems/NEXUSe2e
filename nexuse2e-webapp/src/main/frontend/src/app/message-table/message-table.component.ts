@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Message } from "../types";
+import { MatCheckboxChange } from "@angular/material/checkbox";
+import { SelectionService } from "../data/selection.service";
 
 @Component({
   selector: "app-message-table",
@@ -9,7 +11,6 @@ import { Message } from "../types";
 export class MessageTableComponent implements OnInit {
   @Input() messages!: Message[];
   displayedColumns: string[] = [
-    "statusColor",
     "select",
     "messageId",
     "conversationId",
@@ -22,7 +23,17 @@ export class MessageTableComponent implements OnInit {
     "turnAroundTime",
   ];
 
-  constructor() {}
+  constructor(private selectionService: SelectionService) {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
+
+  toggleSelection(change: MatCheckboxChange, message: Message) {
+    this.selectionService.updateSelection(change.checked, "message", message);
+  }
+
+  isSelected(message: Message) {
+    return this.selectionService.isSelected("message", message);
+  }
 }

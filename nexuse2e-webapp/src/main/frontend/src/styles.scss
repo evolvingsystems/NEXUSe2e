@@ -181,18 +181,16 @@ a {
       white-space: normal;
       min-width: 180px;
     }
+
+    &:first-of-type {
+      padding: 0 20px;
+    }
   }
 
   .mat-cell {
-    &[class*="-column-statusColor"] {
-      max-width: 10px;
-      margin: 0;
-      padding: 0;
+    &[class*="-column-select"] {
       border-left: 8px solid $gray4;
-
-      &:first-of-type {
-        padding-left: 0;
-      }
+      padding-left: 16px;
     }
   }
 }

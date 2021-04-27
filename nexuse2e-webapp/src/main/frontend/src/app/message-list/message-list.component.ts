@@ -1,10 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Message } from "../types";
 import { DataService } from "../data/data.service";
-import {
-  ActiveFilter,
-  FilterType,
-} from "../filter-panel/filter-panel.component";
+import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.component";
 
 @Component({
   selector: "app-message-list",
@@ -21,7 +18,35 @@ export class MessageListComponent implements OnInit {
   static readonly END_DATE_DEFAULT: Date = new Date(
     new Date().setHours(24, 0, 0, 0)
   );
+
+  private participantFilter: Filter = {
+    fieldName: "participantId",
+    filterType: FilterType.TEXT,
+  };
+  private choreographyFilter: Filter = {
+    fieldName: "choreographyId",
+    filterType: FilterType.TEXT,
+  };
+
   filters = [
+    {
+      fieldName: "startEndDateRange",
+      filterType: FilterType.DATE_TIME_RANGE,
+      defaultValue: {
+        startDate: MessageListComponent.START_DATE_DEFAULT,
+        endDate: MessageListComponent.END_DATE_DEFAULT,
+      },
+    },
+    {
+      fieldName: "messageId",
+      filterType: FilterType.TEXT
+    },
+    {
+      fieldName: "conversationId",
+      filterType: FilterType.TEXT
+    },
+    this.choreographyFilter,
+    this.participantFilter,
     {
       fieldName: "status",
       filterType: FilterType.SELECT,
@@ -40,22 +65,6 @@ export class MessageListComponent implements OnInit {
       allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"],
       defaultValue: "NORMAL",
     },
-    {
-      fieldName: "messageId",
-      filterType: FilterType.TEXT,
-    },
-    {
-      fieldName: "conversationId",
-      filterType: FilterType.TEXT,
-    },
-    {
-      fieldName: "startEndDateRange",
-      filterType: FilterType.DATE_TIME_RANGE,
-      defaultValue: {
-        startDate: MessageListComponent.START_DATE_DEFAULT,
-        endDate: MessageListComponent.END_DATE_DEFAULT,
-      },
-    },
   ];
 
   activeFilters: ActiveFilter[] = [];
@@ -64,7 +73,10 @@ export class MessageListComponent implements OnInit {
     this.loaded = false;
   }
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    this.participantFilter.allowedValues = await this.dataService.getParticipantIds();
+    this.choreographyFilter.allowedValues = await this.dataService.getChoreographyIds();
+  }
 
   async loadMessages(pageIndex: number, pageSize: number) {
     this.loaded = false;

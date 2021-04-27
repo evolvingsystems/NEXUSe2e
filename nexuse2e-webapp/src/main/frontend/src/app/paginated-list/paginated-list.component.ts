@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { ScreensizeService } from "../screensize.service";
+import { SelectionService } from "../data/selection.service";
 
 @Component({
   selector: "app-paginated-list",
@@ -9,7 +10,7 @@ import { ScreensizeService } from "../screensize.service";
 })
 export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
-  @Input() items!: unknown[];
+  @Input() items: unknown[] = [];
   @Input() itemType!: string;
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
@@ -19,7 +20,7 @@ export class PaginatedListComponent implements OnInit {
   pageIndex = 0;
   innerWidth = window.innerWidth;
 
-  constructor(public screenSizeService: ScreensizeService) {}
+  constructor(private selectionService: SelectionService, public screenSizeService: ScreensizeService) {}
 
   ngOnInit(): void {}
 
@@ -44,5 +45,6 @@ export class PaginatedListComponent implements OnInit {
       pageIndex: this.pageIndex,
       pageSize: this.pageSize,
     });
+    this.selectionService.clearSelection(this.itemType);
   }
 }
