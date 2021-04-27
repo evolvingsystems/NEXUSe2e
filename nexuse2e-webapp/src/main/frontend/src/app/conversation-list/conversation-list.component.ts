@@ -54,8 +54,8 @@ export class ConversationListComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.participantFilter.allowedValues = await this.dataService.getParticipantIds();
-    this.choreographyFilter.allowedValues = await this.dataService.getChoreographyIds();
+    [this.participantFilter.allowedValues, this.choreographyFilter.allowedValues] =
+      await Promise.all([this.dataService.getParticipantIds(), this.dataService.getChoreographyIds()]);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {
