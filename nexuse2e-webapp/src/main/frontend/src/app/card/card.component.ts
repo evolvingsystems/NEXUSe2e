@@ -1,35 +1,29 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 import { Conversation, Message } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../data/selection.service";
-
-export interface CardConfig {
-  fieldName: string;
-  linkUrlRecipe?: string;
-  isHeader?: boolean;
-}
+import { ListConfig } from "../table/table.component";
 
 @Component({
-  selector: 'app-card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  selector: "app-card",
+  templateUrl: "./card.component.html",
+  styleUrls: ["./card.component.scss"],
 })
 export class CardComponent implements OnInit {
   @Input() itemType!: string;
-  @Input() config: CardConfig[] = [];
+  @Input() config: ListConfig[] = [];
   @Input() item!: Message | Conversation;
   @Input() isSelectable?: boolean;
-  headerElement?: CardConfig;
+  headerElement?: ListConfig;
 
-  constructor(private selectionService: SelectionService) {
-  }
+  constructor(private selectionService: SelectionService) {}
 
   ngOnInit(): void {
     this.headerElement = this.getHeaderElement();
   }
 
-  getHeaderElement(): CardConfig | undefined {
-    return this.config.find(e => e.isHeader);
+  getHeaderElement(): ListConfig | undefined {
+    return this.config.find((e) => e.isHeader);
   }
 
   getProperty(propertyName: string) {
@@ -44,7 +38,11 @@ export class CardComponent implements OnInit {
   }
 
   toggleSelection(change: MatCheckboxChange) {
-    this.selectionService.updateSelection(change.checked, this.itemType, this.item);
+    this.selectionService.updateSelection(
+      change.checked,
+      this.itemType,
+      this.item
+    );
   }
 
   isSelected() {

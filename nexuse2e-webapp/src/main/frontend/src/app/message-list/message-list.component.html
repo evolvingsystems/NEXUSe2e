@@ -3,8 +3,8 @@
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
 <app-paginated-list [totalItemCount]="totalMessageCount"
-                    [cardConfig]="cardConfig"
-                    [tableConfig]="tableConfig"
+                    [mobileConfig]="mobileConfig"
+                    [desktopConfig]="desktopConfig"
                     [isSelectable]="true"
                     [items]="messages"
                     itemType="message"

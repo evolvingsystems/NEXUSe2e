@@ -7,21 +7,8 @@
                  (page)="onPageChange($event)">
   </mat-paginator>
 </div>
-<div *ngIf="screenSizeService.isMobile()" class="padded">
-  <app-master-select
-    *ngIf="items.length && itemType == 'message'"
-    [items]="items"
-    [selectionGroupName]="itemType"
-  >
-  </app-master-select>
-  <div *ngFor="let item of items" class="item-card-wrapper">
-    <app-card [item]="item" [config]="cardConfig" [itemType]="itemType" [isSelectable]="isSelectable"></app-card>
-  </div>
-</div>
-<div *ngIf="!screenSizeService.isMobile()" class="padded items-table-wrapper">
-  <app-table [config]="tableConfig" [items]="items" [itemType]="itemType"
-             [isSelectable]="isSelectable"></app-table>
-</div>
+<app-table [desktopConfig]="desktopConfig" [mobileConfig]="mobileConfig" [items]="items" [itemType]="itemType"
+           [isSelectable]="isSelectable"></app-table>
 <mat-paginator *ngIf="items?.length"
                [length]="totalItemCount"
                [pageSize]="pageSize"

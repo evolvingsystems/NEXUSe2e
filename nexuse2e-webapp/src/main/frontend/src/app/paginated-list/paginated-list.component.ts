@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { ScreensizeService } from "../screensize.service";
 import { SelectionService } from "../data/selection.service";
-import { CardConfig } from "../card/card.component";
 import { ListConfig } from "../table/table.component";
 import { Conversation, Message } from "../types";
 
@@ -15,8 +14,8 @@ export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
   @Input() items: Message[] | Conversation[] = [];
   @Input() itemType!: string;
-  @Input() cardConfig: CardConfig[] = [];
-  @Input() tableConfig: ListConfig[] = [];
+  @Input() mobileConfig: ListConfig[] = [];
+  @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;

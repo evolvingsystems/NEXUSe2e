@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { Conversation, Message } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../data/selection.service";
+import { ScreensizeService } from "../screensize.service";
 
 export interface ListConfig {
   fieldName: string;
@@ -17,14 +18,24 @@ export interface ListConfig {
 export class TableComponent implements OnInit {
   @Input() itemType!: string;
   @Input() items: Message[] | Conversation[] = [];
-  @Input() config: ListConfig[] = [];
+  @Input() mobileConfig: ListConfig[] = [];
+  @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
   displayedColumns: string[] = ["select"];
+  headerElement?: ListConfig;
 
-  constructor(private selectionService: SelectionService) {}
+  constructor(
+    private selectionService: SelectionService,
+    public screenSizeService: ScreensizeService
+  ) {}
 
   ngOnInit(): void {
-    this.displayedColumns.push(...this.config.map((e) => e.fieldName));
+    this.displayedColumns.push(...this.desktopConfig.map((e) => e.fieldName));
+    this.headerElement = this.getHeaderElement();
+  }
+
+  getHeaderElement(): ListConfig | undefined {
+    return this.mobileConfig.find((e) => e.isHeader);
   }
 
   getProperty(item: Message | Conversation, propertyName: string) {

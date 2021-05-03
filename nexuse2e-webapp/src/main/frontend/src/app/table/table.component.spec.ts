@@ -31,4 +31,15 @@ describe("TableComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  it("should find the header element if it is configured");
+  it("should get property by propertyName");
+  it("should thrown an error if propertyName does not exist");
+  it("should show a checkbox if it is configured");
+  it("should build the item url if configured");
+  // $nxConversationId$
+  // /base/test
+  // /base/test/$nxConversationId$/test2/$nxConversationId$/
+  // $nxConversationId$/test/test3/$nxConversationId$
+  // ""
 });

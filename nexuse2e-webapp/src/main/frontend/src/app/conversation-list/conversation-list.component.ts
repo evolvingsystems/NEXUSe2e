@@ -6,7 +6,6 @@ import {
   Filter,
   FilterType,
 } from "../filter-panel/filter-panel.component";
-import { CardConfig } from "../card/card.component";
 import { ListConfig } from "../table/table.component";
 
 @Component({
@@ -57,7 +56,7 @@ export class ConversationListComponent implements OnInit {
   ];
   activeFilters: ActiveFilter[] = [];
 
-  cardConfig: CardConfig[] = [
+  mobileConfig: ListConfig[] = [
     {
       fieldName: "conversationId",
       linkUrlRecipe: "$nxConversationId$",
@@ -68,7 +67,7 @@ export class ConversationListComponent implements OnInit {
     { fieldName: "createdDate" },
   ];
 
-  tableConfig: ListConfig[] = [
+  desktopConfig: ListConfig[] = [
     {
       fieldName: "conversationId",
       linkUrlRecipe: "$nxConversationId$",

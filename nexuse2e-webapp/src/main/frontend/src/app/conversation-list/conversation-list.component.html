@@ -3,8 +3,8 @@
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
 <app-paginated-list [totalItemCount]="totalConversationCount"
-                    [cardConfig]="cardConfig"
-                    [tableConfig]="tableConfig"
+                    [mobileConfig]="mobileConfig"
+                    [desktopConfig]="desktopConfig"
                     [items]="conversations"
                     itemType="conversation"
                     (triggerReload)="loadConversations($event.pageIndex, $event.pageSize)">
