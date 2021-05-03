@@ -105,6 +105,7 @@ a {
   margin-bottom: 15px;
   border-left: 5px $gray4 solid;
   padding: 8px;
+  color: $gray2;
 
   .card-header {
     padding-bottom: 4px;
@@ -141,7 +142,6 @@ a {
     .label {
       width: 120px;
       font-weight: bold;
-      color: $gray2;
     }
   }
 }

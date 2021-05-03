@@ -18,6 +18,7 @@ export class MessageTableComponent implements OnInit {
     "status",
     "backendStatus",
     "typeName",
+    "step",
     "createdDate",
     "turnAroundTime",
   ];

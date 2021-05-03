@@ -1,5 +1,6 @@
 export interface Message {
   messageId: string;
+  choreographyId: string;
   actionId: string;
   createdDate: string;
   typeName: string;

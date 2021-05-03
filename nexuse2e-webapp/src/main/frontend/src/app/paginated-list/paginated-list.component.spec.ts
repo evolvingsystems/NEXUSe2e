@@ -5,16 +5,19 @@ import { messages } from "../test-data";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { By } from "@angular/platform-browser";
+import { ConversationTableComponent } from "../conversation-table/conversation-table.component";
+import { ScreensizeService } from "../screensize.service";
 import { MessageTableComponent } from "../message-table/message-table.component";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
   let fixture: ComponentFixture<PaginatedListComponent>;
+  let screensizeService: ScreensizeService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatPaginatorModule, BrowserAnimationsModule],
-      declarations: [PaginatedListComponent, MessageTableComponent],
+      declarations: [PaginatedListComponent, ConversationTableComponent, MessageTableComponent],
     }).compileComponents();
   });
 
@@ -22,6 +25,7 @@ describe("PaginatedListComponent", () => {
     fixture = TestBed.createComponent(PaginatedListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    screensizeService = TestBed.inject(ScreensizeService);
   });
 
   it("should create", () => {
@@ -42,7 +46,7 @@ describe("PaginatedListComponent", () => {
 
   it("if mobile is true, it should render one item card for each item on the page", async () => {
     component.items = messages;
-    spyOn(component, "isMobile").and.returnValue(true);
+    spyOn(screensizeService, "isMobile").and.returnValue(true);
     fixture.detectChanges();
 
     const itemCards = fixture.nativeElement.querySelectorAll(
@@ -52,7 +56,7 @@ describe("PaginatedListComponent", () => {
   });
 
   it("if mobile is false, it should render all items as a table", async () => {
-    spyOn(component, "isMobile").and.returnValue(false);
+    spyOn(screensizeService, "isMobile").and.returnValue(false);
     fixture.detectChanges();
 
     expect(

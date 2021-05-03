@@ -14,11 +14,13 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { FormsModule } from "@angular/forms";
+import { ScreensizeService } from "../screensize.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;
   let fixture: ComponentFixture<FilterPanelComponent>;
+  let screensizeService: ScreensizeService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -46,6 +48,7 @@ describe("FilterPanelComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FilterPanelComponent);
     component = fixture.componentInstance;
+    screensizeService = TestBed.inject(ScreensizeService);
   });
 
   it("should create", () => {
@@ -57,7 +60,7 @@ describe("FilterPanelComponent", () => {
       { fieldName: "filter1", value: "2" },
       { fieldName: "filter1", value: "1" },
     ];
-    spyOn(component, "isMobile").and.returnValue(true);
+    spyOn(screensizeService, "isMobile").and.returnValue(true);
     fixture.detectChanges();
 
     const activeFiltersBadge = fixture.debugElement.query(

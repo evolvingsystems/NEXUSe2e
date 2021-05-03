@@ -12,6 +12,7 @@ import { CardConfig } from "../card/card.component";
 export class MessageListComponent implements OnInit {
   totalMessageCount?: number;
   messages: Message[] = [];
+  loaded: boolean;
   static readonly START_DATE_DEFAULT: Date = new Date(
     new Date().setHours(0, 0, 0, 0)
   );
@@ -63,7 +64,7 @@ export class MessageListComponent implements OnInit {
       fieldName: "type",
       filterType: FilterType.SELECT,
       allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"],
-      defaultValue: "NORMAL"
+      defaultValue: "NORMAL",
     },
   ];
 
@@ -86,6 +87,7 @@ export class MessageListComponent implements OnInit {
   ];
 
   constructor(private dataService: DataService) {
+    this.loaded = false;
   }
 
   async ngOnInit() {
@@ -94,11 +96,13 @@ export class MessageListComponent implements OnInit {
   }
 
   async loadMessages(pageIndex: number, pageSize: number) {
+    this.loaded = false;
     this.messages = await this.dataService.getMessages(
       pageIndex,
       pageSize,
       this.activeFilters
     );
+    this.loaded = true;
   }
 
   async refreshMessageCount() {

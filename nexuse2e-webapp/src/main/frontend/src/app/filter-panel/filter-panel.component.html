@@ -1,4 +1,4 @@
-<div class="expanded filters" [hidden]="!expanded && isMobile()">
+<div class="expanded filters" [hidden]="!expanded && screenSizeService.isMobile()">
   <div *ngFor="let filter of filters" class="filter" [ngClass]="{'full': filter.fieldName === 'startEndDateRange'}">
     <div [ngSwitch]="filter.filterType">
       <app-select-filter
@@ -33,7 +33,7 @@
     {{ "buttons.filter" | translate }}
   </button>
 </div>
-<div *ngIf="isMobile()" (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
+<div *ngIf="screenSizeService.isMobile()" (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
   <div class="collapsed" *ngIf="!expanded">
     <div *ngIf="getNumberOfActivatedFilters()" class="filter-info">
       <div class="active-filters-badge">{{ getNumberOfActivatedFilters() }}</div>
