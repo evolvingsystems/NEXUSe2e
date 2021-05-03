@@ -5,6 +5,7 @@
 <app-paginated-list
   [totalItemCount]="totalMessageCount"
   [items]="messages"
+  [cardConfig]="cardConfig"
   itemType="message"
   (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"
 >

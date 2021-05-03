@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Message } from "../types";
 import { DataService } from "../data/data.service";
 import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.component";
+import { CardConfig } from "../card/card.component";
 
 @Component({
   selector: "app-message-list",
@@ -68,7 +69,24 @@ export class MessageListComponent implements OnInit {
 
   activeFilters: ActiveFilter[] = [];
 
-  constructor(private dataService: DataService) {}
+  cardConfig: CardConfig[] = [
+    {
+      fieldName: "messageId",
+      linkUrl: "nxMessageId",
+      isHeader: true
+    },
+    {
+      fieldName: "conversationId",
+      linkUrl: "nxConversationId",
+    },
+    { fieldName: "partnerId" },
+    { fieldName: "typeName" },
+    { fieldName: "actionId" },
+    { fieldName: "createdDate" },
+  ];
+
+  constructor(private dataService: DataService) {
+  }
 
   async ngOnInit() {
     this.participantFilter.allowedValues = await this.dataService.getPartnerIds();

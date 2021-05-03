@@ -17,7 +17,7 @@ export class MessageTableComponent implements OnInit {
     "partnerId",
     "status",
     "backendStatus",
-    "messageType",
+    "typeName",
     "createdDate",
     "turnAroundTime",
   ];
