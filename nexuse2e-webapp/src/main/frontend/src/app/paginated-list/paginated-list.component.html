@@ -18,9 +18,8 @@
     <app-card [item]="item" [config]="cardConfig" [itemType]="itemType" [isSelectable]="isSelectable"></app-card>
   </div>
 </div>
-<div *ngIf="!screenSizeService.isMobile()" [ngSwitch]="itemType" class="padded items-table-wrapper">
-  <app-message-table *ngSwitchCase="'message'" [messages]="items"></app-message-table>
-  <app-table *ngSwitchCase="'conversation'" [config]="tableConfig" [items]="items" [itemType]="itemType"
+<div *ngIf="!screenSizeService.isMobile()" class="padded items-table-wrapper">
+  <app-table [config]="tableConfig" [items]="items" [itemType]="itemType"
              [isSelectable]="isSelectable"></app-table>
 </div>
 <mat-paginator *ngIf="items?.length"

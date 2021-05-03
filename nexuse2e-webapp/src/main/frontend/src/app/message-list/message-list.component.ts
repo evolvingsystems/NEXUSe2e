@@ -7,6 +7,7 @@ import {
   FilterType,
 } from "../filter-panel/filter-panel.component";
 import { CardConfig } from "../card/card.component";
+import { ListConfig } from "../table/table.component";
 
 @Component({
   selector: "app-message-list",
@@ -88,6 +89,24 @@ export class MessageListComponent implements OnInit {
     { fieldName: "typeName" },
     { fieldName: "actionId" },
     { fieldName: "createdDate" },
+  ];
+
+  tableConfig: ListConfig[] = [
+    {
+      fieldName: "messageId",
+      linkUrlRecipe: "$nxMessageId$",
+    },
+    {
+      fieldName: "conversationId",
+      linkUrlRecipe: "../conversations/$nxConversationId$",
+    },
+    { fieldName: "partnerId" },
+    { fieldName: "status" },
+    { fieldName: "backendStatus" },
+    { fieldName: "typeName" },
+    { fieldName: "actionId" },
+    { fieldName: "createdDate" },
+    { fieldName: "turnAroundTime" },
   ];
 
   constructor(private dataService: DataService) {}
