@@ -8,6 +8,8 @@ import { By } from "@angular/platform-browser";
 import { ConversationTableComponent } from "../conversation-table/conversation-table.component";
 import { ScreensizeService } from "../screensize.service";
 import { MessageTableComponent } from "../message-table/message-table.component";
+import { CardComponent } from "../card/card.component";
+import { MatCardModule } from "@angular/material/card";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
@@ -16,8 +18,13 @@ describe("PaginatedListComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatPaginatorModule, BrowserAnimationsModule],
-      declarations: [PaginatedListComponent, ConversationTableComponent, MessageTableComponent],
+      imports: [MatPaginatorModule, BrowserAnimationsModule, MatCardModule],
+      declarations: [
+        PaginatedListComponent,
+        ConversationTableComponent,
+        MessageTableComponent,
+        CardComponent,
+      ],
     }).compileComponents();
   });
 
