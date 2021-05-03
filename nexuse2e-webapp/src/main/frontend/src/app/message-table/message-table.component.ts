@@ -14,7 +14,7 @@ export class MessageTableComponent implements OnInit {
     "select",
     "messageId",
     "conversationId",
-    "partnerId",
+    "participantId",
     "status",
     "backendStatus",
     "messageType",

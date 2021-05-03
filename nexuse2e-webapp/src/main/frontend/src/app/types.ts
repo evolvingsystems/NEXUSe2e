@@ -7,7 +7,7 @@ export interface Message {
   conversationId: string;
   nxMessageId: number;
   nxConversationId: number;
-  partnerId: string;
+  participantId: string;
   backendStatus: string;
   turnAroundTime: string;
 }
@@ -16,7 +16,7 @@ export interface Conversation {
   choreographyId: string;
   conversationId: string;
   nxConversationId: number;
-  partnerId: string;
+  participantId: string;
   createdDate: string;
   status: string;
   currentAction: string;

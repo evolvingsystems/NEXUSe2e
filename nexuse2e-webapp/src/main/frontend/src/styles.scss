@@ -195,8 +195,8 @@ a {
   }
 }
 
-/* Conversation Status Colors */
-.conversationStatusLeftBorderColor {
+/* Status Colors */
+.statusLeftBorderColor {
   &.error {
     border-left-color: $error !important;
   }
@@ -208,10 +208,7 @@ a {
   &.completed {
     border-left-color: $success !important;
   }
-}
 
-/* Message Status Colors */
-.messageStatusLeftBorderColor {
   &.failed {
     border-left-color: $error !important;
   }

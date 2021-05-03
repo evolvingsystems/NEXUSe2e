@@ -1,0 +1,13 @@
+<mat-card *ngIf="item" [class]="item.status | lowercase" class="statusLeftBorderColor">
+  <div *ngIf="headerElement" class="card-header">
+    <a [routerLink]="headerElement.linkUrl">{{ item[headerElement.fieldName] }}</a>
+  </div>
+  <table>
+    <ng-container *ngFor="let configItem of config">
+      <tr *ngIf="!configItem.isHeader">
+        <td class="label">{{ "labels." + configItem.fieldName | translate }}</td>
+        <td>{{ item[configItem.fieldName] }}</td>
+      </tr>
+    </ng-container>
+  </table>
+</mat-card>

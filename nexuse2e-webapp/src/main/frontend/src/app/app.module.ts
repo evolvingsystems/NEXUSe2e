@@ -46,6 +46,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MasterSelectComponent } from './master-select/master-select.component';
+import { CardComponent } from './card/card.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -136,6 +137,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TextFilterComponent,
     DateTimeRangeFilterComponent,
     MasterSelectComponent,
+    CardComponent,
   ],
   imports: [
     BrowserModule,
