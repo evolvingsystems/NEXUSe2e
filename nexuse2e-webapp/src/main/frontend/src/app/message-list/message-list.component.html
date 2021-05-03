@@ -6,6 +6,7 @@
   [totalItemCount]="totalMessageCount"
   [items]="messages"
   [cardConfig]="cardConfig"
+  [isSelectable]="true"
   itemType="message"
   (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"
 >

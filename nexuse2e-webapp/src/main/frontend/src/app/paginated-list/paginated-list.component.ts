@@ -13,6 +13,7 @@ export class PaginatedListComponent implements OnInit {
   @Input() items: unknown[] = [];
   @Input() itemType!: string;
   @Input() cardConfig: CardConfig[] = [];
+  @Input() isSelectable?: boolean;
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
     pageSize: number;

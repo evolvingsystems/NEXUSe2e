@@ -15,7 +15,7 @@
   >
   </app-master-select>
   <div *ngFor="let item of items" class="item-card-wrapper">
-    <app-card [item]="item" [config]="cardConfig" [itemType]="itemType"></app-card>
+    <app-card [item]="item" [config]="cardConfig" [itemType]="itemType" [isSelectable]="isSelectable"></app-card>
   </div>
 </div>
 <div *ngIf="!isMobile()" [ngSwitch]="itemType" class="padded items-table-wrapper">
