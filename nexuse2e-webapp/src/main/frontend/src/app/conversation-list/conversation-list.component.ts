@@ -54,7 +54,7 @@ export class ConversationListComponent implements OnInit {
   cardConfig: CardConfig[] = [
     {
       fieldName: "conversationId",
-      linkUrl: "nxConversationId",
+      linkUrlRecipe: "$nxConversationId$",
       isHeader: true
     },
     { fieldName: "choreographyId" },

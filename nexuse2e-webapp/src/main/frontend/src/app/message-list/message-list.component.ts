@@ -72,12 +72,12 @@ export class MessageListComponent implements OnInit {
   cardConfig: CardConfig[] = [
     {
       fieldName: "messageId",
-      linkUrl: "nxMessageId",
+      linkUrlRecipe: "$nxMessageId$",
       isHeader: true
     },
     {
       fieldName: "conversationId",
-      linkUrl: "nxConversationId",
+      linkUrlRecipe: "../conversations/$nxConversationId$",
     },
     { fieldName: "partnerId" },
     { fieldName: "typeName" },

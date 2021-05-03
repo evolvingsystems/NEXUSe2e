@@ -5,7 +5,7 @@ import { SelectionService } from "../data/selection.service";
 
 export interface CardConfig {
   fieldName: string;
-  linkUrl?: string;
+  linkUrlRecipe?: string;
   isHeader?: boolean;
 }
 
@@ -49,5 +49,18 @@ export class CardComponent implements OnInit {
 
   isSelected() {
     return this.selectionService.isSelected(this.itemType, this.item);
+  }
+
+  getUrl(linkUrlRecipe: string): string {
+    const segments = linkUrlRecipe.split("$");
+    let url = segments[0];
+    for (let i = 1; i < segments.length; i++) {
+      if (i % 2 == 0) {
+        url += segments[i];
+      } else {
+        url += this.getProperty(segments[i]);
+      }
+    }
+    return url;
   }
 }
