@@ -30,7 +30,6 @@ import { MenuItemComponent } from "./menu-item/menu-item.component";
 import { MessageListComponent } from "./message-list/message-list.component";
 import { ConversationListComponent } from "./conversation-list/conversation-list.component";
 import { MatTabsModule } from "@angular/material/tabs";
-import { MessageCardComponent } from "./message-card/message-card.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import {
@@ -40,13 +39,10 @@ import {
 import { AuthInterceptor } from "./auth-interceptor";
 import { CustomPaginatorFormatting } from "./custom-paginator-formatting";
 import { PaginatedListComponent } from "./paginated-list/paginated-list.component";
-import { ConversationCardComponent } from "./conversation-card/conversation-card.component";
 import { FilterPanelComponent } from "./filter-panel/filter-panel.component";
 import { MatSelectModule } from "@angular/material/select";
 import { SelectFilterComponent } from "./select-filter/select-filter.component";
-import { ConversationTableComponent } from "./conversation-table/conversation-table.component";
 import { MatTableModule } from "@angular/material/table";
-import { MessageTableComponent } from "./message-table/message-table.component";
 import { TextFilterComponent } from "./text-filter/text-filter.component";
 import { DateTimeRangeFilterComponent } from "./date-time-range-filter/date-time-range-filter.component";
 import { MatDatepickerModule } from "@angular/material/datepicker";
@@ -54,7 +50,6 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.component";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MasterSelectComponent } from "./master-select/master-select.component";
-import { CardComponent } from "./card/card.component";
 import { TableComponent } from "./table/table.component";
 
 const routes: Routes = [
@@ -136,18 +131,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     MenuItemComponent,
     MessageListComponent,
     ConversationListComponent,
-    MessageCardComponent,
     PaginatedListComponent,
-    ConversationCardComponent,
     FilterPanelComponent,
     SelectFilterComponent,
-    ConversationTableComponent,
-    MessageTableComponent,
     TextFilterComponent,
     DateTimeRangeFilterComponent,
     MasterSelectComponent,
     LoadingSpinnerComponent,
-    CardComponent,
     TableComponent,
   ],
   imports: [

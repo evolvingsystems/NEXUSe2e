@@ -18,10 +18,10 @@ import { SelectFilterComponent } from "../select-filter/select-filter.component"
 import { TextFilterComponent } from "../text-filter/text-filter.component";
 import { DateTimeRangeFilterComponent } from "../date-time-range-filter/date-time-range-filter.component";
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
-import { MessageTableComponent } from "../message-table/message-table.component";
 import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { TableComponent } from "../table/table.component";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -47,13 +47,13 @@ describe("MessageListComponent", () => {
       ],
       declarations: [
         MessageListComponent,
-        MessageTableComponent,
         FilterPanelComponent,
         PaginatedListComponent,
         SelectFilterComponent,
         TextFilterComponent,
         DateTimeRangeFilterComponent,
         LoadingSpinnerComponent,
+        TableComponent,
       ],
     }).compileComponents();
   });
