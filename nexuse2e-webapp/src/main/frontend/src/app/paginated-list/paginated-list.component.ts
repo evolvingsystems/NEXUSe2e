@@ -3,6 +3,8 @@ import { PageEvent } from "@angular/material/paginator";
 import { ScreensizeService } from "../screensize.service";
 import { SelectionService } from "../data/selection.service";
 import { CardConfig } from "../card/card.component";
+import { ListConfig } from "../table/table.component";
+import { Conversation, Message } from "../types";
 
 @Component({
   selector: "app-paginated-list",
@@ -11,9 +13,10 @@ import { CardConfig } from "../card/card.component";
 })
 export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
-  @Input() items: unknown[] = [];
+  @Input() items: Message[] | Conversation[] = [];
   @Input() itemType!: string;
   @Input() cardConfig: CardConfig[] = [];
+  @Input() tableConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
@@ -23,7 +26,10 @@ export class PaginatedListComponent implements OnInit {
   pageIndex = 0;
   innerWidth = window.innerWidth;
 
-  constructor(private selectionService: SelectionService, public screenSizeService: ScreensizeService) {}
+  constructor(
+    private selectionService: SelectionService,
+    public screenSizeService: ScreensizeService
+  ) {}
 
   ngOnInit(): void {}
 

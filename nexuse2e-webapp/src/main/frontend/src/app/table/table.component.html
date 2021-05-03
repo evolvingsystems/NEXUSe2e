@@ -1,0 +1,70 @@
+<div class="table-scrollable" *ngIf="items.length">
+  <table mat-table [dataSource]="items" class="mat-elevation-z8 full-width">
+    <ng-container *ngFor="let col of displayedColumns" [matColumnDef]="col">
+      <ng-container *ngIf="col==='select'">
+        <th mat-header-cell *matHeaderCellDef>
+          <app-master-select *ngIf="isSelectable"
+                             [items]="items"
+                             selectionGroupName="conversation"
+          ></app-master-select>
+        </th>
+        <td mat-cell *matCellDef="let element" [class]="element.status | lowercase"
+            class="statusLeftBorderColor">
+          <mat-checkbox *ngIf="isSelectable" (change)="toggleSelection($event, element)"
+                        [checked]="isSelected(element)"></mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container *ngIf="col!=='select'">
+        <th mat-header-cell *matHeaderCellDef>{{ "labels." + col | translate }}</th>
+        <td mat-cell *matCellDef="let element"> {{element[col]}} </td>
+
+        <th mat-header-cell *matHeaderCellDef>{{ "labels.conversationId" | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <a [routerLink]="'' + element.nxConversationId">{{ element.conversationId }}</a>
+        </td>
+      </ng-container>
+    </ng-container>
+
+
+    <!--    <ng-container matColumnDef="conversationId">
+          <th mat-header-cell *matHeaderCellDef>{{ "labels.conversationId" | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <a [routerLink]="'' + element.nxConversationId">{{ element.conversationId }}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="partnerId">
+          <th mat-header-cell *matHeaderCellDef>{{ "labels.partnerId" | translate }}</th>
+          <td mat-cell *matCellDef="let element"> {{element.partnerId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="choreographyId">
+          <th mat-header-cell *matHeaderCellDef>{{ "labels.choreographyId" | translate }}</th>
+          <td mat-cell *matCellDef="let element"> {{element.choreographyId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="currentAction">
+          <th mat-header-cell *matHeaderCellDef>{{ "labels.currentAction" | translate }}</th>
+          <td mat-cell *matCellDef="let element"> {{element.currentAction}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef>{{ "labels.createdDate" | translate }}</th>
+          <td mat-cell *matCellDef="let element"> {{element.createdDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>{{ "labels.status" | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ "status." + element.status | translate }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="turnAroundTime">
+          <th mat-header-cell *matHeaderCellDef>{{ "labels.turnAroundTime" | translate }}</th>
+          <td mat-cell *matCellDef="let element"> {{element.turnAroundTime}} </td>
+        </ng-container>-->
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

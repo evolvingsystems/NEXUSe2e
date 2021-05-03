@@ -1,8 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { Conversation } from "../types";
 import { DataService } from "../data/data.service";
-import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.component";
+import {
+  ActiveFilter,
+  Filter,
+  FilterType,
+} from "../filter-panel/filter-panel.component";
 import { CardConfig } from "../card/card.component";
+import { ListConfig } from "../table/table.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -12,7 +17,7 @@ import { CardConfig } from "../card/card.component";
 export class ConversationListComponent implements OnInit {
   totalConversationCount?: number;
   conversations: Conversation[] = [];
-  loaded: boolean;
+  loaded = false;
   static readonly START_DATE_DEFAULT: Date = new Date(
     new Date().setHours(0, 0, 0, 0)
   );
@@ -56,20 +61,48 @@ export class ConversationListComponent implements OnInit {
     {
       fieldName: "conversationId",
       linkUrlRecipe: "$nxConversationId$",
-      isHeader: true
+      isHeader: true,
     },
     { fieldName: "choreographyId" },
     { fieldName: "partnerId" },
     { fieldName: "createdDate" },
   ];
 
-  constructor(private dataService: DataService) {
-    this.loaded = false;
-  }
+  tableConfig: ListConfig[] = [
+    {
+      fieldName: "conversationId",
+      linkUrlRecipe: "$nxConversationId$",
+    },
+    {
+      fieldName: "partnerId",
+    },
+    {
+      fieldName: "choreographyId",
+    },
+    {
+      fieldName: "currentAction",
+    },
+    {
+      fieldName: "createdDate",
+    },
+    {
+      fieldName: "status",
+    },
+    {
+      fieldName: "turnAroundTime",
+    },
+  ];
+
+  constructor(private dataService: DataService) {}
 
   async ngOnInit() {
-    [this.participantFilter.allowedValues, this.choreographyFilter.allowedValues] =
-      await Promise.all([this.dataService.getPartnerIds(), this.dataService.getChoreographyIds()]);
+    [
+      this.participantFilter.allowedValues,
+      this.choreographyFilter.allowedValues,
+    ] = await Promise.all([
+      this.dataService.getPartnerIds(),
+      this.dataService.getChoreographyIds(),
+    ]);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {

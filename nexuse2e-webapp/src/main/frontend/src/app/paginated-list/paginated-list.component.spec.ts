@@ -10,6 +10,7 @@ import { ScreensizeService } from "../screensize.service";
 import { MessageTableComponent } from "../message-table/message-table.component";
 import { CardComponent } from "../card/card.component";
 import { MatCardModule } from "@angular/material/card";
+import { TableComponent } from "../table/table.component";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
@@ -24,6 +25,7 @@ describe("PaginatedListComponent", () => {
         ConversationTableComponent,
         MessageTableComponent,
         CardComponent,
+        TableComponent,
       ],
     }).compileComponents();
   });

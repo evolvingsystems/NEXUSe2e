@@ -2,8 +2,7 @@
   [filters]="filters"
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
-<app-paginated-list [hidden]="!loaded"
-                    [totalItemCount]="totalMessageCount"
+<app-paginated-list [totalItemCount]="totalMessageCount"
                     [cardConfig]="cardConfig"
                     [isSelectable]="true"
                     [items]="messages"

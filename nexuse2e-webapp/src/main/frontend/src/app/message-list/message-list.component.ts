@@ -1,7 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { Message } from "../types";
 import { DataService } from "../data/data.service";
-import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.component";
+import {
+  ActiveFilter,
+  Filter,
+  FilterType,
+} from "../filter-panel/filter-panel.component";
 import { CardConfig } from "../card/card.component";
 
 @Component({
@@ -12,7 +16,7 @@ import { CardConfig } from "../card/card.component";
 export class MessageListComponent implements OnInit {
   totalMessageCount?: number;
   messages: Message[] = [];
-  loaded: boolean;
+  loaded = false;
   static readonly START_DATE_DEFAULT: Date = new Date(
     new Date().setHours(0, 0, 0, 0)
   );
@@ -40,11 +44,11 @@ export class MessageListComponent implements OnInit {
     },
     {
       fieldName: "messageId",
-      filterType: FilterType.TEXT
+      filterType: FilterType.TEXT,
     },
     {
       fieldName: "conversationId",
-      filterType: FilterType.TEXT
+      filterType: FilterType.TEXT,
     },
     this.choreographyFilter,
     this.participantFilter,
@@ -74,7 +78,7 @@ export class MessageListComponent implements OnInit {
     {
       fieldName: "messageId",
       linkUrlRecipe: "$nxMessageId$",
-      isHeader: true
+      isHeader: true,
     },
     {
       fieldName: "conversationId",
@@ -86,9 +90,7 @@ export class MessageListComponent implements OnInit {
     { fieldName: "createdDate" },
   ];
 
-  constructor(private dataService: DataService) {
-    this.loaded = false;
-  }
+  constructor(private dataService: DataService) {}
 
   async ngOnInit() {
     this.participantFilter.allowedValues = await this.dataService.getPartnerIds();

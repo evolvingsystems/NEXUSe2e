@@ -20,7 +20,8 @@
 </div>
 <div *ngIf="!screenSizeService.isMobile()" [ngSwitch]="itemType" class="padded items-table-wrapper">
   <app-message-table *ngSwitchCase="'message'" [messages]="items"></app-message-table>
-  <app-conversation-table *ngSwitchCase="'conversation'" [conversations]="items"></app-conversation-table>
+  <app-table *ngSwitchCase="'conversation'" [config]="tableConfig" [items]="items" [itemType]="itemType"
+             [isSelectable]="isSelectable"></app-table>
 </div>
 <mat-paginator *ngIf="items?.length"
                [length]="totalItemCount"

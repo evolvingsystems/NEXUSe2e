@@ -2,9 +2,10 @@
   [filters]="filters"
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
-<app-paginated-list [hidden]="!loaded"
-                    [totalItemCount]="totalConversationCount"
+<app-paginated-list [totalItemCount]="totalConversationCount"
                     [cardConfig]="cardConfig"
+                    [tableConfig]="tableConfig"
+                    isSelectable="true"
                     [items]="conversations"
                     itemType="conversation"
                     (triggerReload)="loadConversations($event.pageIndex, $event.pageSize)">
