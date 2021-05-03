@@ -16,7 +16,7 @@
   </app-master-select>
   <div [ngSwitch]="itemType" *ngFor="let item of items" class="item-card-wrapper">
     <app-message-card *ngSwitchCase="'message'" [message]="item"></app-message-card>
-    <app-conversation-card *ngSwitchCase="'conversation'" [conversation]="item"></app-conversation-card>
+    <app-card *ngSwitchCase="'conversation'" [item]="item" [config]="cardConfig" [itemType]="itemType"></app-card>
   </div>
 </div>
 <div *ngIf="!isMobile()" [ngSwitch]="itemType" class="padded items-table-wrapper">

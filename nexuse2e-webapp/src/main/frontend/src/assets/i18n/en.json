@@ -22,7 +22,7 @@
     "conversations": "Conversations",
     "messageId": "Message ID",
     "conversationId": "Conversation ID",
-    "participantId": "Partner ID",
+    "partnerId": "Partner ID",
     "choreographyId": "Choreography ID",
     "messageType": "Message Type",
     "action": "Action",

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Conversation } from "../types";
 import { DataService } from "../data/data.service";
 import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.component";
+import { CardConfig } from "../card/card.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -19,7 +20,7 @@ export class ConversationListComponent implements OnInit {
   );
 
   private participantFilter: Filter = {
-    fieldName: "participantId",
+    fieldName: "partnerId",
     filterType: FilterType.TEXT,
   };
   private choreographyFilter: Filter = {
@@ -50,12 +51,23 @@ export class ConversationListComponent implements OnInit {
   ];
   activeFilters: ActiveFilter[] = [];
 
+  cardConfig: CardConfig[] = [
+    {
+      fieldName: "conversationId",
+      linkUrl: "nxConversationId",
+      isHeader: true
+    },
+    { fieldName: "choreographyId" },
+    { fieldName: "partnerId" },
+    { fieldName: "createdDate" },
+  ];
+
   constructor(private dataService: DataService) {
   }
 
   async ngOnInit() {
     [this.participantFilter.allowedValues, this.choreographyFilter.allowedValues] =
-      await Promise.all([this.dataService.getParticipantIds(), this.dataService.getChoreographyIds()]);
+      await Promise.all([this.dataService.getPartnerIds(), this.dataService.getChoreographyIds()]);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { SelectionService } from "../data/selection.service";
+import { CardConfig } from "../card/card.component";
 
 @Component({
   selector: "app-paginated-list",
@@ -11,6 +12,7 @@ export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
   @Input() items: unknown[] = [];
   @Input() itemType!: string;
+  @Input() cardConfig: CardConfig[] = [];
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
     pageSize: number;

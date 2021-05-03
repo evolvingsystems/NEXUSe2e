@@ -13,7 +13,7 @@ export class ConversationTableComponent implements OnInit {
   displayedColumns: string[] = [
     "select",
     "conversationId",
-    "participantId",
+    "partnerId",
     "choreographyId",
     "currentAction",
     "createdDate",

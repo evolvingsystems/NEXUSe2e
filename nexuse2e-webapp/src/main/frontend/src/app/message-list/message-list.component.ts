@@ -19,7 +19,7 @@ export class MessageListComponent implements OnInit {
   );
 
   private participantFilter: Filter = {
-    fieldName: "participantId",
+    fieldName: "partnerId",
     filterType: FilterType.TEXT,
   };
   private choreographyFilter: Filter = {
@@ -71,7 +71,7 @@ export class MessageListComponent implements OnInit {
   constructor(private dataService: DataService) {}
 
   async ngOnInit() {
-    this.participantFilter.allowedValues = await this.dataService.getParticipantIds();
+    this.participantFilter.allowedValues = await this.dataService.getPartnerIds();
     this.choreographyFilter.allowedValues = await this.dataService.getChoreographyIds();
   }
 
