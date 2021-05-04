@@ -27,14 +27,12 @@ export class SessionService {
   getPageSize(itemType: string): number | undefined {
     const pageSizeFromSession = sessionStorage.getItem(`${itemType}-page-size`);
     if (pageSizeFromSession) {
-      console.log(pageSizeFromSession);
       return +pageSizeFromSession;
     }
     return undefined;
   }
 
   setPageSize(itemType: string, pageSize: number) {
-    console.log("setting", pageSize);
     sessionStorage.setItem(`${itemType}-page-size`, String(pageSize));
   }
 }
