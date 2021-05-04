@@ -38,7 +38,7 @@
 <ng-container *ngIf="screenSizeService.isMobile()">
   <div class="padded">
     <app-master-select
-      *ngIf="items.length && itemType == 'message'"
+      *ngIf="items.length && isSelectable"
       [items]="items"
       [selectionGroupName]="itemType"
     >
