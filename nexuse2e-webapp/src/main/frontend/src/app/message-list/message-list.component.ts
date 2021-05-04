@@ -85,8 +85,8 @@ export class MessageListComponent implements OnInit {
       linkUrlRecipe: "../conversations/$nxConversationId$",
     },
     { fieldName: "partnerId" },
-    { fieldName: "typeName" },
-    { fieldName: "actionId" },
+    { fieldName: "typeName", label: "messageType" },
+    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
     { fieldName: "createdDate" },
   ];
 
@@ -102,7 +102,7 @@ export class MessageListComponent implements OnInit {
     { fieldName: "partnerId" },
     { fieldName: "status" },
     { fieldName: "backendStatus" },
-    { fieldName: "typeName" },
+    { fieldName: "typeName", label: "messageType" },
     { fieldName: "choreographyId" },
     { fieldName: "actionId" },
     { fieldName: "createdDate" },

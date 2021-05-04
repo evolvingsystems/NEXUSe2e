@@ -6,7 +6,10 @@ import { ScreensizeService } from "../screensize.service";
 
 export interface ListConfig {
   fieldName: string;
+  additionalFieldName?: string;
+  label?: string;
   linkUrlRecipe?: string;
+  additionalLinkUrlRecipe?: string;
   isHeader?: boolean;
 }
 
