@@ -19,15 +19,29 @@
         <ng-container *ngFor="let configItem of desktopConfig" [matColumnDef]="configItem.fieldName">
           <th mat-header-cell
               *matHeaderCellDef>{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</th>
-          <ng-container *ngIf="!configItem.linkUrlRecipe">
-            <td mat-cell *matCellDef="let element"> {{element[configItem.fieldName]}} </td>
-          </ng-container>
-          <ng-container *ngIf="configItem.linkUrlRecipe">
-            <td mat-cell *matCellDef="let element">
-              <a
-                [routerLink]="getUrl(element, configItem.linkUrlRecipe)">{{ getProperty(element, configItem.fieldName) }}</a>
-            </td>
-          </ng-container>
+          <td mat-cell *matCellDef="let item">
+            <ng-container *ngIf="configItem.fieldName">
+              <a *ngIf="configItem.linkUrlRecipe"
+                 [routerLink]="getUrl(item, configItem.linkUrlRecipe)">
+                {{ getProperty(item, configItem.fieldName) }}
+              </a>
+              <ng-container *ngIf="!configItem.linkUrlRecipe">
+                {{ getProperty(item, configItem.fieldName) }}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="configItem.additionalFieldName">
+                  <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">
+                    <span>(</span>
+                    <a [routerLink]="getUrl(item, configItem.additionalLinkUrlRecipe)">
+                      {{ "" + getProperty(item, configItem.additionalFieldName) + "" }}
+                    </a>
+                    <span>)</span>
+                  </span>
+              <ng-container *ngIf="!configItem.additionalLinkUrlRecipe">
+                {{ " | " + getProperty(item, configItem.additionalFieldName) }}
+              </ng-container>
+            </ng-container>
+          </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

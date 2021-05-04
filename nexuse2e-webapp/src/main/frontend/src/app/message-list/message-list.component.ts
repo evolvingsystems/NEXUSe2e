@@ -103,8 +103,7 @@ export class MessageListComponent implements OnInit {
     { fieldName: "status" },
     { fieldName: "backendStatus" },
     { fieldName: "typeName", label: "messageType" },
-    { fieldName: "choreographyId" },
-    { fieldName: "actionId" },
+    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
     { fieldName: "createdDate" },
     { fieldName: "turnAroundTime" },
   ];
