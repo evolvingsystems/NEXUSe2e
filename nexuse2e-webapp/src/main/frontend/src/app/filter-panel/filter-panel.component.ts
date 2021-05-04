@@ -61,7 +61,7 @@ export class FilterPanelComponent implements OnInit {
   updateActiveFilter(filter: { fieldName: string, value?: string | DateRange }) {
     if (filter.value) {
       this.activeFilters[filter.fieldName] = filter.value;
-    } else {
+    } else if (activeFilter.value) {
       delete this.activeFilters[filter.fieldName];
     }
   }

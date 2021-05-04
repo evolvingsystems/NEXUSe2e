@@ -44,6 +44,7 @@ import { TextFilterComponent } from './text-filter/text-filter.component';
 import { DateTimeRangeFilterComponent } from "./date-time-range-filter/date-time-range-filter.component";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MasterSelectComponent } from './master-select/master-select.component';
 
 const routes: Routes = [
@@ -162,6 +163,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatDatepickerModule,
     MatNativeDateModule,
     BrowserAnimationsModule,
+    MatAutocompleteModule
   ],
   providers: [
     {

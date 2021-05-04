@@ -100,6 +100,14 @@ export class DataService {
     return this.get<number>("/conversations/count", false, DataService.buildFilterParams(activeFilters));
   }
 
+  getParticipantIds(): Promise<string[]> {
+    return this.get<string[]>("/participants/ids");
+  }
+
+  getChoreographyIds(): Promise<string[]> {
+    return this.get<string[]>("/choreographies/ids");
+  }
+
   getVersion(): Promise<string[]> {
     return this.get<string[]>("/version");
   }

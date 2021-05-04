@@ -25,16 +25,16 @@ button {
 
 .filter-info {
   display: flex;
-  align-items: center;
+  align-items: stretch;
 
   .active-filters-badge {
     color: white;
-    padding: 0 8px;
+    padding: 0 10px;
     background: $orangeDark;
-    border-radius: 10px;
+    border-radius: 9px;
     margin-right: 5px;
-    font-size: 11px;
-    line-height: 15px;
+    font-size: 12px;
+    text-align: center;
   }
 }
 
@@ -58,7 +58,11 @@ button {
     }
 
     .mat-select-arrow-wrapper {
-      transform: translateY(0%);
+      transform: translateX(-8px);
+    }
+
+    .mat-form-field-suffix {
+      top: 0.40em;
     }
   }
 }

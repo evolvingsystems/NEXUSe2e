@@ -7,18 +7,24 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
+import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.messaging.Constants;
+import org.nexuse2e.pojo.ChoreographyPojo;
 import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.pojo.PartnerPojo;
 import org.nexuse2e.reporting.StatisticsConversation;
 import org.nexuse2e.reporting.StatisticsMessage;
 import org.nexuse2e.util.DateWithTimezoneSerializer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +35,9 @@ public class TransactionReportingHandler implements Handler {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/messages/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversations".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/conversations/count".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/conversations/count".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/participants/ids".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/choreographies/ids".equalsIgnoreCase(path));
     }
 
     @Override
@@ -38,97 +46,135 @@ public class TransactionReportingHandler implements Handler {
         if (path != null) {
             switch (StringUtils.lowerCase(path)) {
                 case "/messages":
-                    this.getMessages(request, response);
+                    this.handleMessageRequest(request, response, false);
                     break;
                 case "/messages/count":
-                    this.getMessagesCount(request, response);
+                    this.handleMessageRequest(request, response, true);
                     break;
                 case "/conversations":
-                    this.getConversations(request, response);
+                    this.handleConversationRequest(request, response, false);
                     break;
                 case "/conversations/count":
-                    this.getConversationsCount(request, response);
+                    this.handleConversationRequest(request, response, true);
+                    break;
+                case "/participants/ids":
+                    this.returnParticipantIds(response);
+                    break;
+                case "/choreographies/ids":
+                    this.returnChoreographyIds(response);
                     break;
             }
         }
     }
 
-    private void getMessagesCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String status = request.getParameter("status");
-        String type = request.getParameter("type");
-        String conversationId = request.getParameter("conversationId");
-        String messageId = request.getParameter("messageId");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+    private int getNxParticipantId(String participantId) throws NexusException {
+        if (participantId == null) {
+            return 0;
+        }
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        PartnerPojo partner = engineConfiguration.getPartnerByPartnerId(participantId);
+        return partner.getNxPartnerId();
+    }
 
-        long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
-                getMessageStatusNumberFromName(status),
-                getMessageTypeFromName(type),
-                0, 0, conversationId, messageId,
-                getDateFromString(startDate),
-                getDateFromString(endDate));
-        String message = new Gson().toJson(messagesCount);
-        response.getOutputStream().print(message);
+    private int getNxChoreographyId(String choreographyId) throws NexusException {
+        if (choreographyId == null) {
+            return 0;
+        }
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        ChoreographyPojo choreography = engineConfiguration.getChoreographyByChoreographyId(choreographyId);
+        return choreography.getNxChoreographyId();
     }
 
     private String getMessageStatusNumberFromName(String statusName) {
-        try {
-            return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
-        } catch (Exception e) {
+        if (statusName == null) {
             return null;
         }
+        return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
     }
 
     private String getConversationStatusNumberFromName(String statusName) {
-        try {
-            return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
-        } catch (Exception e) {
+        if (statusName == null) {
             return null;
         }
+        return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
     }
 
     private Integer getMessageTypeFromName(String typeName) {
-        if (typeName != null) {
-            switch (typeName) {
-                case "ACKNOWLEDGEMENT":
-                    return Constants.INT_MESSAGE_TYPE_ACK;
-                case "NORMAL":
-                    return Constants.INT_MESSAGE_TYPE_NORMAL;
-                case "ERROR":
-                    return Constants.INT_MESSAGE_TYPE_ERROR;
-            }
+        if (typeName == null) {
+            return null;
         }
-        return null;
+        switch (typeName) {
+            case "ACKNOWLEDGEMENT":
+                return Constants.INT_MESSAGE_TYPE_ACK;
+            case "NORMAL":
+                return Constants.INT_MESSAGE_TYPE_NORMAL;
+            case "ERROR":
+                return Constants.INT_MESSAGE_TYPE_ERROR;
+            default:
+                throw new IllegalArgumentException("Message type " + typeName + " could not be resolved.");
+        }
     }
 
-    private Date getDateFromString(String dateString) {
-        if (dateString != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            try {
-                return formatter.parse(dateString);
-            } catch (ParseException e) {
-                return null;
-            }
+    private Date getDateFromString(String dateString) throws ParseException {
+        if (dateString == null) {
+            return null;
         }
-        return null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return formatter.parse(dateString);
     }
 
-    private void getMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private String wrapWithWildcards(String input) {
+        if (StringUtils.isBlank(input)) {
+            return null;
+        }
+        return "%" + input + "%";
+    }
+
+    private void handleMessageRequest(HttpServletRequest request, HttpServletResponse response, boolean count) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
-        String status = request.getParameter("status");
-        String type = request.getParameter("type");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        String conversationId = request.getParameter("conversationId");
-        String messageId = request.getParameter("messageId");
+        String conversationId = wrapWithWildcards(request.getParameter("conversationId"));
+        String messageId = wrapWithWildcards(request.getParameter("messageId"));
+        String status;
+        Integer messageType;
+        int nxParticipantId;
+        int nxChoreographyId;
+        Date startDate;
+        Date endDate;
+
+        try {
+            status = getMessageStatusNumberFromName(request.getParameter("status"));
+            messageType = getMessageTypeFromName(request.getParameter("type"));
+            nxParticipantId = getNxParticipantId(request.getParameter("participantId"));
+            nxChoreographyId = getNxChoreographyId(request.getParameter("choreographyId"));
+            startDate = getDateFromString(request.getParameter("startDate"));
+            endDate = getDateFromString(request.getParameter("endDate"));
+        } catch (Exception e) {
+            if (count) {
+                response.getOutputStream().print(new Gson().toJson(0));
+            } else {
+                response.getOutputStream().print(new Gson().toJson(new int[]{}));
+            }
+            return;
+        }
+
+        if (count) {
+            returnMessageCount(response, conversationId, messageId, status, messageType, nxChoreographyId, nxParticipantId, startDate, endDate);
+        } else {
+            returnMessages(response, pageIndex, itemsPerPage, conversationId, messageId, status, messageType, nxChoreographyId, nxParticipantId, startDate, endDate);
+        }
+    }
+
+    private void returnMessages(HttpServletResponse response, String pageIndex, String itemsPerPage, String conversationId, String messageId, String status, Integer messageType, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate) throws NexusException, IOException {
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<MessagePojo> reportMessages = Engine.getInstance().getTransactionService().getMessagesForReport(
-                    getMessageStatusNumberFromName(status),
-                    0, 0, conversationId, messageId,
-                    getMessageTypeFromName(type),
-                    getDateFromString(startDate),
-                    getDateFromString(endDate),
+                    status, nxChoreographyId,
+                    nxParticipantId,
+                    conversationId,
+                    messageId,
+                    messageType,
+                    startDate,
+                    endDate,
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,
@@ -147,34 +193,59 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void getConversationsCount(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String status = request.getParameter("status");
-        String conversationId = request.getParameter("conversationId");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
-                getConversationStatusNumberFromName(status),
-                0, 0, conversationId,
-                getDateFromString(startDate),
-                getDateFromString(endDate),
-                0, false);
-        String message = new Gson().toJson(conversationsCount);
+    private void returnMessageCount(HttpServletResponse response, String conversationId, String messageId, String status, Integer messageType, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate) throws NexusException, IOException {
+        long messagesCount = Engine.getInstance().getTransactionService().getMessagesCount(
+                status,
+                messageType,
+                nxChoreographyId, nxParticipantId,
+                conversationId, messageId,
+                startDate,
+                endDate);
+        String message = new Gson().toJson(messagesCount);
         response.getOutputStream().print(message);
     }
 
-    private void getConversations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void handleConversationRequest(HttpServletRequest request, HttpServletResponse response, boolean count) throws Exception {
         String pageIndex = request.getParameter("pageIndex");
         String itemsPerPage = request.getParameter("itemsPerPage");
-        String status = request.getParameter("status");
-        String conversationId = request.getParameter("conversationId");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
+        String conversationId = wrapWithWildcards(request.getParameter("conversationId"));
+        String status;
+        int nxParticipantId;
+        int nxChoreographyId;
+        Date startDate;
+        Date endDate;
+
+        try {
+            status = getConversationStatusNumberFromName(request.getParameter("status"));
+            nxParticipantId = getNxParticipantId(request.getParameter("participantId"));
+            nxChoreographyId = getNxChoreographyId(request.getParameter("choreographyId"));
+            startDate = getDateFromString(request.getParameter("startDate"));
+            endDate = getDateFromString(request.getParameter("endDate"));
+        } catch (Exception e) {
+            if (count) {
+                response.getOutputStream().print(new Gson().toJson(0));
+            } else {
+                response.getOutputStream().print(new Gson().toJson(new int[]{}));
+            }
+            return;
+        }
+
+        if (count) {
+            returnConversationCount(response, conversationId, status, nxChoreographyId, nxParticipantId, startDate, endDate);
+        } else {
+            returnConversations(response, conversationId, status, nxChoreographyId, nxParticipantId, startDate, endDate, pageIndex, itemsPerPage);
+        }
+    }
+
+    private void returnConversations(HttpServletResponse response, String conversationId, String status, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate, String pageIndex, String itemsPerPage) throws NexusException, IOException {
         if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
             List<ConversationPojo> reportConversations = Engine.getInstance().getTransactionService().getConversationsForReport(
-                    getConversationStatusNumberFromName(status),
-                    0, 0, conversationId,
-                    getDateFromString(startDate),
-                    getDateFromString(endDate),
+                    status,
+                    nxChoreographyId,
+                    nxParticipantId,
+                    conversationId,
+                    startDate,
+                    endDate,
                     Integer.parseInt(itemsPerPage),
                     Integer.parseInt(pageIndex),
                     TransactionDAO.SORT_CREATED,
@@ -190,5 +261,42 @@ public class TransactionReportingHandler implements Handler {
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameters: pageIndex and itemsPerPage");
         }
+    }
+
+    private void returnConversationCount(HttpServletResponse response, String conversationId, String status, int nxChoreographyId, int nxParticipantId, Date startDate, Date endDate) throws NexusException, IOException {
+        long conversationsCount = Engine.getInstance().getTransactionService().getConversationsCount(
+                status,
+                nxChoreographyId,
+                nxParticipantId,
+                conversationId,
+                startDate,
+                endDate,
+                0, false);
+        String message = new Gson().toJson(conversationsCount);
+        response.getOutputStream().print(message);
+    }
+
+    private void returnParticipantIds(HttpServletResponse response) throws NexusException, IOException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<String> participants = new ArrayList<>();
+        List<PartnerPojo> partners = engineConfiguration.getPartners(org.nexuse2e.configuration.Constants.PARTNER_TYPE_PARTNER, org.nexuse2e.configuration.Constants.PARTNERCOMPARATOR);
+
+        for (PartnerPojo partner : partners) {
+            participants.add(partner.getPartnerId());
+        }
+
+        response.getOutputStream().print(new Gson().toJson(participants));
+    }
+
+    private void returnChoreographyIds(HttpServletResponse response) throws IOException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<String> choreographyIds = new ArrayList<>();
+        List<ChoreographyPojo> choreographies = engineConfiguration.getChoreographies();
+
+        for (ChoreographyPojo choreography : choreographies) {
+            choreographyIds.add(choreography.getName());
+        }
+
+        response.getOutputStream().print(new Gson().toJson(choreographyIds));
     }
 }

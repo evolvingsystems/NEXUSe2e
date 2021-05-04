@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Conversation, DateRange } from "../types";
 import { DataService } from "../data/data.service";
-import { FilterType, } from "../filter-panel/filter-panel.component";
+import {
+  Filter, FilterType,
+} from "../filter-panel/filter-panel.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -18,16 +20,16 @@ export class ConversationListComponent implements OnInit {
     new Date().setHours(24, 0, 0, 0)
   );
 
+  private participantFilter: Filter = {
+    fieldName: "participantId",
+    filterType: FilterType.TEXT,
+  };
+  private choreographyFilter: Filter = {
+    fieldName: "choreographyId",
+    filterType: FilterType.TEXT,
+  };
+
   filters = [
-    {
-      fieldName: "status",
-      filterType: FilterType.SELECT,
-      allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"],
-    },
-    {
-      fieldName: "conversationId",
-      filterType: FilterType.TEXT,
-    },
     {
       fieldName: "startEndDateRange",
       filterType: FilterType.DATE_TIME_RANGE,
@@ -36,12 +38,27 @@ export class ConversationListComponent implements OnInit {
         endDate: ConversationListComponent.END_DATE_DEFAULT,
       },
     },
+    {
+      fieldName: "conversationId",
+      filterType: FilterType.TEXT,
+    },
+    this.choreographyFilter,
+    this.participantFilter,
+    {
+      fieldName: "status",
+      filterType: FilterType.SELECT,
+      allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"],
+    },
   ];
   activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService) {
+  }
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    [this.participantFilter.allowedValues, this.choreographyFilter.allowedValues] =
+      await Promise.all([this.dataService.getParticipantIds(), this.dataService.getChoreographyIds()]);
+  }
 
   async loadConversations(pageIndex: number, pageSize: number) {
     this.conversations = await this.dataService.getConversations(
