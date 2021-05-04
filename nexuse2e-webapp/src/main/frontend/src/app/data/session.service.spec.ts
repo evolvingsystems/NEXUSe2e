@@ -1,7 +1,7 @@
 import { SessionService } from "./session.service";
 import { DateRange } from "../types";
 
-fdescribe("SessionService", () => {
+describe("SessionService", () => {
   let service: SessionService;
   beforeEach(() => {
     service = new SessionService();
