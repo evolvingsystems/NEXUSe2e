@@ -72,11 +72,13 @@ describe("ListComponent", () => {
 
   it("should show a header element if it is configured in mobile with a linkUrlRecipe", () => {
     spyOn(component.screenSizeService, "isMobile").and.returnValue(true);
-    component.mobileConfig = [{
-      fieldName: "messageId",
-      linkUrlRecipe: "$nxMessageId$",
-      isHeader: true,
-    }];
+    component.mobileConfig = [
+      {
+        fieldName: "messageId",
+        linkUrlRecipe: "$nxMessageId$",
+        isHeader: true,
+      },
+    ];
     component.items = messages;
     component.ngOnInit();
     fixture.detectChanges();
@@ -126,12 +128,32 @@ describe("ListComponent", () => {
     expect(builtUrl).toEqual("" + item.nxConversationId);
   });
 
-  // /base/test
-  it("should build the item url if it contains no variables");
+  it("should build the item url if it contains no variables", () => {
+    const item = messages[0];
+    const recipe = "/base/test";
+    const builtUrl = component.getUrl(item, recipe);
+    expect(builtUrl).toEqual("/base/test");
+  });
 
-  // /base/test/$nxConversationId$/test2/$nxConversationId$/
-  it("should build the item url if it contains multiple variables in the middle");
+  it("should build the item url if it contains multiple variables in the middle", () => {
+    const item = messages[0];
+    const recipe = "/base/test/$nxConversationId$/test2/$nxConversationId$/";
+    const builtUrl = component.getUrl(item, recipe);
+    expect(builtUrl).toEqual(
+      "/base/test/" +
+        item.nxConversationId +
+        "/test2/" +
+        item.nxConversationId +
+        "/"
+    );
+  });
 
-  // $nxConversationId$/test/test3/$nxConversationId$
-  it("should build the item url if it contains multiple variables on the edges");
+  it("should build the item url if it contains multiple variables on the edges", () => {
+    const item = messages[0];
+    const recipe = "$nxConversationId$/test/test3/$nxConversationId$";
+    const builtUrl = component.getUrl(item, recipe);
+    expect(builtUrl).toEqual(
+      item.nxConversationId + "/test/test3/" + item.nxConversationId
+    );
+  });
 });
