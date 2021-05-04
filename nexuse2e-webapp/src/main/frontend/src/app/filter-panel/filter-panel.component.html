@@ -1,28 +1,30 @@
 <div class="expanded filters" [hidden]="!expanded && screenSizeService.isMobile()">
-  <div *ngFor="let filter of filters" class="filter" [ngClass]="{'full': filter.fieldName === 'startEndDateRange'}">
-    <div [ngSwitch]="filter.filterType">
-      <app-select-filter
-        *ngSwitchCase="getFilterType().SELECT"
-        [allowedValues]="filter.allowedValues"
-        [defaultValue]="filter.defaultValue"
-        [fieldName]="filter.fieldName"
-        (valueChange)="updateActiveFilters($event)"
-      >
-      </app-select-filter>
-      <app-date-time-range-filter
-        *ngSwitchCase="getFilterType().DATE_TIME_RANGE"
-        [fieldName]="filter.fieldName"
-        (valueChange)="updateActiveFilters($event)"
-        [defaultValue]="filter.defaultValue">
-      </app-date-time-range-filter>
-      <app-text-filter
-        *ngSwitchCase="getFilterType().TEXT"
-        [allowedValues]="filter.allowedValues"
-        [defaultValue]="filter.defaultValue"
-        [fieldName]="filter.fieldName"
-        (valueChange)="updateActiveFilters($event)"
-      >
-      </app-text-filter>
+  <div class="filter_wrapper">
+    <div *ngFor="let filter of filters" class="filter" [ngClass]="{'full': filter.fieldName === 'startEndDateRange'}">
+      <div [ngSwitch]="filter.filterType">
+        <app-select-filter
+          *ngSwitchCase="getFilterType().SELECT"
+          [allowedValues]="filter.allowedValues"
+          [defaultValue]="filter.defaultValue"
+          [fieldName]="filter.fieldName"
+          (valueChange)="updateActiveFilters($event)"
+        >
+        </app-select-filter>
+        <app-date-time-range-filter
+          *ngSwitchCase="getFilterType().DATE_TIME_RANGE"
+          [fieldName]="filter.fieldName"
+          (valueChange)="updateActiveFilters($event)"
+          [defaultValue]="filter.defaultValue">
+        </app-date-time-range-filter>
+        <app-text-filter
+          *ngSwitchCase="getFilterType().TEXT"
+          [allowedValues]="filter.allowedValues"
+          [defaultValue]="filter.defaultValue"
+          [fieldName]="filter.fieldName"
+          (valueChange)="updateActiveFilters($event)"
+        >
+        </app-text-filter>
+      </div>
     </div>
   </div>
   <button mat-flat-button
