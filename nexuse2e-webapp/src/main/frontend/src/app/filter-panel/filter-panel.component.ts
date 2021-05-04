@@ -86,4 +86,8 @@ export class FilterPanelComponent implements OnInit {
     });
     return activeLength;
   }
+
+  resetFiltersAndSetDefaults() {
+    //TODO
+  }
 }

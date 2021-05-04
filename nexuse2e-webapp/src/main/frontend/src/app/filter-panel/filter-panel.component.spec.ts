@@ -40,7 +40,7 @@ describe("FilterPanelComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
       ],
     }).compileComponents();
   });
@@ -95,7 +95,7 @@ describe("FilterPanelComponent", () => {
     component.toggleVisibility();
     fixture.detectChanges();
     spyOn(component.filterChange, "emit");
-    const button = fixture.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("#filterButton");
 
     button.dispatchEvent(new Event("click"));
     fixture.detectChanges();

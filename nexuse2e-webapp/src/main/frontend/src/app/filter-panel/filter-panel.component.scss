@@ -17,6 +17,7 @@ button {
   background: $gray5;
   color: $gray2;
   cursor: pointer;
+  position: relative;
 }
 
 .border {
@@ -72,7 +73,7 @@ button {
     background: $white;
     padding: 15px 0;
 
-    .filter_wrapper {
+    .filterWrapper {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -100,10 +101,37 @@ button {
       }
     }
 
-    .filterButton {
-      width: auto;
-      margin-left: auto;
-      margin-right: 5px;
+    .buttonsWrapper {
+      display: flex;
+      justify-content: space-between;
+
+      #filterButton {
+        width: auto;
+      }
+
+      .resetFilterButton {
+        width: auto;
+      }
+    }
+  }
+}
+
+@media(max-width: $desktopBreakpointForMaxWidth) {
+  .filters {
+    .buttonsWrapper {
+      .resetFilterButton {
+        margin-bottom: 20px;
+      }
+    }
+  }
+
+  .mobileResetBtnWrapper {
+    position: absolute;
+    right: 10px;
+
+    ::ng-deep .mat-raised-button {
+      line-height: 27px;
+      font-size: 12px;
     }
   }
 }

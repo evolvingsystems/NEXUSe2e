@@ -1,5 +1,5 @@
 <div class="expanded filters" [hidden]="!expanded && screenSizeService.isMobile()">
-  <div class="filter_wrapper">
+  <div class="filterWrapper">
     <div *ngFor="let filter of filters" class="filter" [ngClass]="{'full': filter.fieldName === 'startEndDateRange'}">
       <div [ngSwitch]="filter.filterType">
         <app-select-filter
@@ -27,13 +27,23 @@
       </div>
     </div>
   </div>
-  <button mat-flat-button
-          (click)="applyFilters()"
-          color="accent"
-          class="filterButton"
-  >
-    {{ "buttons.filter" | translate }}
-  </button>
+  <div class="buttonsWrapper">
+    <button mat-flat-button
+            (click)="resetFiltersAndSetDefaults()"
+            color="primary"
+            class="resetFilterButton"
+    >
+      {{ "buttons.resetFilter" | translate }}
+    </button>
+    <button mat-flat-button
+            (click)="applyFilters()"
+            color="accent"
+            id="filterButton"
+            class="filterButton"
+    >
+      {{ "buttons.filter" | translate }}
+    </button>
+  </div>
 </div>
 <div *ngIf="screenSizeService.isMobile()" (click)="toggleVisibility()" class="toggle" [class.border]="expanded">
   <div class="collapsed" *ngIf="!expanded">
@@ -46,4 +56,13 @@
     </div>
   </div>
   <mat-icon>{{ expanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+  <div class="collapsed mobileResetBtnWrapper" *ngIf="!expanded">
+    <button mat-raised-button
+            (click)="$event.stopPropagation(); resetFiltersAndSetDefaults()"
+            color="primary"
+            class="resetFilterButton"
+    >
+      {{ "buttons.resetFilter" | translate }}
+    </button>
+  </div>
 </div>
