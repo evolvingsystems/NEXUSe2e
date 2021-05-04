@@ -11,11 +11,11 @@ export interface ListConfig {
 }
 
 @Component({
-  selector: "app-table",
-  templateUrl: "./table.component.html",
-  styleUrls: ["./table.component.scss"],
+  selector: "app-list",
+  templateUrl: "./list.component.html",
+  styleUrls: ["./list.component.scss"],
 })
-export class TableComponent implements OnInit {
+export class ListComponent implements OnInit {
   @Input() itemType!: string;
   @Input() items: Message[] | Conversation[] = [];
   @Input() mobileConfig: ListConfig[] = [];

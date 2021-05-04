@@ -21,7 +21,7 @@ import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.comp
 import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { TableComponent } from "../table/table.component";
+import { ListComponent } from "../list/list.component";
 
 describe("ConversationListComponent", () => {
   let component: ConversationListComponent;
@@ -53,7 +53,7 @@ describe("ConversationListComponent", () => {
         TextFilterComponent,
         DateTimeRangeFilterComponent,
         LoadingSpinnerComponent,
-        TableComponent,
+        ListComponent,
       ],
     }).compileComponents();
   });

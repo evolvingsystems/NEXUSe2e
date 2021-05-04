@@ -24,7 +24,7 @@
     "conversationId": "Conversation ID",
     "partnerId": "Partner ID",
     "choreographyId": "Choreography ID",
-    "typeName": "Message Type",
+    "typeName": "Type",
     "actionId": "Action",
     "currentAction": "Current Action",
     "createdDate": "Date created",

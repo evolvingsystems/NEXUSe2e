@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { ScreensizeService } from "../screensize.service";
 import { SelectionService } from "../data/selection.service";
-import { ListConfig } from "../table/table.component";
+import { ListConfig } from "../list/list.component";
 import { Conversation, Message } from "../types";
 
 @Component({

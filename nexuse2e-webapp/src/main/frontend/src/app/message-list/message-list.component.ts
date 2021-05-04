@@ -6,7 +6,7 @@ import {
   Filter,
   FilterType,
 } from "../filter-panel/filter-panel.component";
-import { ListConfig } from "../table/table.component";
+import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-message-list",
@@ -103,6 +103,7 @@ export class MessageListComponent implements OnInit {
     { fieldName: "status" },
     { fieldName: "backendStatus" },
     { fieldName: "typeName" },
+    { fieldName: "choreographyId" },
     { fieldName: "actionId" },
     { fieldName: "createdDate" },
     { fieldName: "turnAroundTime" },

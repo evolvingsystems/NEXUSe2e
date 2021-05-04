@@ -6,7 +6,7 @@ import {
   Filter,
   FilterType,
 } from "../filter-panel/filter-panel.component";
-import { ListConfig } from "../table/table.component";
+import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-conversation-list",

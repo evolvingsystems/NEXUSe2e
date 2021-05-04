@@ -50,7 +50,7 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.component";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MasterSelectComponent } from "./master-select/master-select.component";
-import { TableComponent } from "./table/table.component";
+import { ListComponent } from "./list/list.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -138,7 +138,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     DateTimeRangeFilterComponent,
     MasterSelectComponent,
     LoadingSpinnerComponent,
-    TableComponent,
+    ListComponent,
   ],
   imports: [
     BrowserModule,
