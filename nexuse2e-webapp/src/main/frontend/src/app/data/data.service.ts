@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Conversation, Message } from "../types";
-import { ActiveFilter } from "../filter-panel/filter-panel.component";
+import { Conversation, DateRange, Message } from "../types";
 
 @Injectable({
   providedIn: "root",
@@ -48,24 +47,24 @@ export class DataService {
     return this.get<string>("/machine-name");
   }
 
-  private static buildFilterParams(activeFilters: ActiveFilter[]) {
+  private static buildFilterParams(activeFilters: { [fieldName: string]: string | DateRange | undefined }) {
     let httpParams = new HttpParams();
-    for (const filter of activeFilters) {
-      if (filter.value) {
-        if (typeof filter.value === "string") {
-          httpParams = httpParams.append(filter.fieldName, filter.value);
-        } else {
-          // type must be DateRange
-          if (filter.value.startDate) {
+    for (const fieldName in activeFilters) {
+      const value = activeFilters[fieldName];
+      if (value) {
+        if (typeof value === "string") {
+          httpParams = httpParams.append(fieldName, value);
+        } else { // type is DateRange
+          if (value.startDate) {
             httpParams = httpParams.append(
               "startDate",
-              filter.value.startDate.toISOString()
+              value.startDate.toISOString()
             );
           }
-          if (filter.value.endDate) {
+          if (value.endDate) {
             httpParams = httpParams.append(
               "endDate",
-              filter.value.endDate.toISOString()
+              value.endDate.toISOString()
             );
           }
         }
@@ -74,14 +73,14 @@ export class DataService {
     return httpParams;
   }
 
-  getMessages(pageIndex: number, itemsPerPage: number, activeFilters: ActiveFilter[]): Promise<Message[]> {
+  getMessages(pageIndex: number, itemsPerPage: number, activeFilters: { [fieldName: string]: string | DateRange | undefined }): Promise<Message[]> {
     let params = DataService.buildFilterParams(activeFilters);
     params = params.append("pageIndex", String(pageIndex));
     params = params.append("itemsPerPage", String(itemsPerPage));
     return this.get<Message[]>("/messages", false, params);
   }
 
-  getMessagesCount(activeFilters: ActiveFilter[] = []): Promise<number> {
+  getMessagesCount(activeFilters: { [fieldName: string]: string | DateRange | undefined } = {}): Promise<number> {
     return this.get<number>("/messages/count",
       false, DataService.buildFilterParams(activeFilters));
   }
@@ -89,7 +88,7 @@ export class DataService {
   getConversations(
     pageIndex: number,
     itemsPerPage: number,
-    activeFilters: ActiveFilter[]
+    activeFilters: { [fieldName: string]: string | DateRange | undefined }
   ): Promise<Conversation[]> {
     let params = DataService.buildFilterParams(activeFilters);
     params = params.append("pageIndex", String(pageIndex));
@@ -97,7 +96,7 @@ export class DataService {
     return this.get<Conversation[]>("/conversations", false, params);
   }
 
-  getConversationsCount(activeFilters: ActiveFilter[] = []): Promise<number> {
+  getConversationsCount(activeFilters: { [fieldName: string]: string | DateRange | undefined } = {}): Promise<number> {
     return this.get<number>("/conversations/count", false, DataService.buildFilterParams(activeFilters));
   }
 

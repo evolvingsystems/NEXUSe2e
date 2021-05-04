@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ActiveFilter } from "../filter-panel/filter-panel.component";
+import { DateRange } from "../types";
 
 @Component({
   selector: 'app-text-filter',
@@ -10,7 +10,7 @@ export class TextFilterComponent implements OnInit {
   @Input() fieldName!: string;
   @Input() allowedValues: string[] = [];
   @Input() defaultValue?: string;
-  @Output() valueChange: EventEmitter<ActiveFilter> = new EventEmitter();
+  @Output() valueChange: EventEmitter<{ fieldName: string, value?: string | DateRange }> = new EventEmitter();
   filteredOptions: string[] = [];
   selectedValue?: string;
 

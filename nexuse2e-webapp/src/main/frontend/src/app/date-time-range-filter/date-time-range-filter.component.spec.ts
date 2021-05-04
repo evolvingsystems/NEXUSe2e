@@ -45,7 +45,7 @@ describe("DateTimeRangeFilterComponent", () => {
     const startTest = new Date(new Date().setHours(3, 0, 0, 0));
     const activeFilter = {
       fieldName: "startEndDateRange",
-      value: { startDate: startTest, endDate: component.endDate },
+      value: { startDate: startTest, endDate: component.endDate }
     };
     const inputStart = fixture.debugElement.query(
       By.css('input[name="startDate"]')

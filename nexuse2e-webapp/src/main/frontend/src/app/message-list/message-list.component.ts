@@ -1,10 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { Message } from "../types";
+import { DateRange, Message } from "../types";
 import { DataService } from "../data/data.service";
 import {
-  ActiveFilter,
-  Filter,
-  FilterType,
+  Filter, FilterType,
 } from "../filter-panel/filter-panel.component";
 import { ListConfig } from "../list/list.component";
 
@@ -72,7 +70,7 @@ export class MessageListComponent implements OnInit {
     },
   ];
 
-  activeFilters: ActiveFilter[] = [];
+  activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
 
   mobileConfig: ListConfig[] = [
     {
@@ -132,7 +130,7 @@ export class MessageListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: ActiveFilter[]) {
+  filterMessages(activeFilters: { [fieldName: string]: string | DateRange | undefined }) {
     this.activeFilters = activeFilters;
     this.refreshMessageCount();
   }

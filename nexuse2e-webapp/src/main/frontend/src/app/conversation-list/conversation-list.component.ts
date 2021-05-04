@@ -1,10 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { Conversation } from "../types";
+import { Conversation, DateRange } from "../types";
 import { DataService } from "../data/data.service";
 import {
-  ActiveFilter,
-  Filter,
-  FilterType,
+  Filter, FilterType,
 } from "../filter-panel/filter-panel.component";
 import { ListConfig } from "../list/list.component";
 
@@ -54,7 +52,7 @@ export class ConversationListComponent implements OnInit {
       allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"],
     },
   ];
-  activeFilters: ActiveFilter[] = [];
+  activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
 
   mobileConfig: ListConfig[] = [
     {
@@ -95,13 +93,8 @@ export class ConversationListComponent implements OnInit {
   constructor(private dataService: DataService) {}
 
   async ngOnInit() {
-    [
-      this.participantFilter.allowedValues,
-      this.choreographyFilter.allowedValues,
-    ] = await Promise.all([
-      this.dataService.getPartnerIds(),
-      this.dataService.getChoreographyIds(),
-    ]);
+    [this.participantFilter.allowedValues, this.choreographyFilter.allowedValues] =
+      await Promise.all([this.dataService.getPartnerIds(), this.dataService.getChoreographyIds()]);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {
@@ -120,7 +113,7 @@ export class ConversationListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: ActiveFilter[]) {
+  filterMessages(activeFilters: { [fieldName: string]: string | DateRange | undefined }) {
     this.activeFilters = activeFilters;
     this.refreshConversationCount();
   }
