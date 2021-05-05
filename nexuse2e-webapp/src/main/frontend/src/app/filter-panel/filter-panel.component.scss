@@ -103,14 +103,16 @@ button {
 
     .buttonsWrapper {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
 
       #filterButton {
         width: auto;
+        margin: 5px;
       }
 
       .resetFilterButton {
         width: auto;
+        margin: 5px;
       }
     }
   }
@@ -133,5 +135,24 @@ button {
       line-height: 27px;
       font-size: 12px;
     }
+  }
+
+}
+
+@media(min-width: $mobileBreakpoint) {
+  .textButton {
+    display: block;
+  }
+  .iconButton {
+    display: none;
+  }
+}
+
+@media(max-width: $mobileBreakpointForMaxWidth) {
+  .iconButton {
+    display: block;
+  }
+  .textButton {
+    display: none;
   }
 }

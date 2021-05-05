@@ -11,7 +11,8 @@
     "logout": "Logout",
     "backToDashboard": "Back to dashboard",
     "filter": "Filter",
-    "resetFilter": "Reset filter"
+    "resetFilter": "Reset filter",
+    "reset": "Reset"
   },
   "labels": {
     "nexuse2e": "NEXUSe2e",
