@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActiveFilterList, Conversation } from "../types";
-import { DataService } from "../data/data.service";
-import {
-  Filter, FilterType,
-} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
+import { DataService } from "../services/data.service";
+import { Filter, FilterType } from "../filter-panel/filter-panel.component";
+import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -92,8 +91,13 @@ export class ConversationListComponent implements OnInit {
   constructor(private dataService: DataService) {}
 
   async ngOnInit() {
-    [this.participantFilter.allowedValues, this.choreographyFilter.allowedValues] =
-      await Promise.all([this.dataService.getPartnerIds(), this.dataService.getChoreographyIds()]);
+    [
+      this.participantFilter.allowedValues,
+      this.choreographyFilter.allowedValues,
+    ] = await Promise.all([
+      this.dataService.getPartnerIds(),
+      this.dataService.getChoreographyIds(),
+    ]);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {

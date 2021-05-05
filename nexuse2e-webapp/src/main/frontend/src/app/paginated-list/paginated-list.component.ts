@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
-import { SelectionService } from "../data/selection.service";
+import { SelectionService } from "../services/selection.service";
 import { ListConfig } from "../list/list.component";
-import { SessionService } from "../data/session.service";
+import { SessionService } from "../services/session.service";
 import { NexusData } from "../types";
-import { ScreensizeService } from "../data/screensize.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 @Component({
   selector: "app-paginated-list",

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActiveFilterList, DateRange } from "../types";
-import { SessionService } from "../data/session.service";
-import { ScreensizeService } from "../data/screensize.service";
+import { SessionService } from "../services/session.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 export enum FilterType {
   TEXT,

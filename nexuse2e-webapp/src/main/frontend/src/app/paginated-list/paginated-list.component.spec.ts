@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { By } from "@angular/platform-browser";
 import { MatCardModule } from "@angular/material/card";
 import { ListComponent } from "../list/list.component";
-import { ScreensizeService } from "../data/screensize.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;

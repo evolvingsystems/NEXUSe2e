@@ -1,24 +1,25 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { SelectionService } from "../data/selection.service";
+import { Component, Input, OnInit } from "@angular/core";
+import { SelectionService } from "../services/selection.service";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 
 @Component({
-  selector: 'app-master-select',
-  templateUrl: './master-select.component.html',
-  styleUrls: ['./master-select.component.scss']
+  selector: "app-master-select",
+  templateUrl: "./master-select.component.html",
+  styleUrls: ["./master-select.component.scss"],
 })
 export class MasterSelectComponent implements OnInit {
   @Input() selectionGroupName!: string;
   @Input() items!: unknown[];
 
-  constructor(private selectionService: SelectionService) {
-  }
+  constructor(private selectionService: SelectionService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   allItemsSelected() {
-    return this.selectionService.selectionContainsAll(this.selectionGroupName, this.items);
+    return this.selectionService.selectionContainsAll(
+      this.selectionGroupName,
+      this.items
+    );
   }
 
   toggleSelection(event: MatCheckboxChange) {
