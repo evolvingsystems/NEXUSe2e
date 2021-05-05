@@ -1,7 +1,10 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
+import { ScreensizeService } from "../screensize.service";
 import { SelectionService } from "../data/selection.service";
 import { SessionService } from "../data/session.service";
+import { ListConfig } from "../list/list.component";
+import { Conversation, Message } from "../types";
 
 @Component({
   selector: "app-paginated-list",
@@ -10,8 +13,11 @@ import { SessionService } from "../data/session.service";
 })
 export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
-  @Input() items: unknown[] = [];
+  @Input() items: Message[] | Conversation[] = [];
   @Input() itemType!: string;
+  @Input() mobileConfig: ListConfig[] = [];
+  @Input() desktopConfig: ListConfig[] = [];
+  @Input() isSelectable?: boolean;
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
     pageSize: number;
@@ -20,11 +26,13 @@ export class PaginatedListComponent implements OnInit {
   pageIndex = 0;
   innerWidth = window.innerWidth;
 
-  constructor(private selectionService: SelectionService, private sessionService: SessionService) {
+  constructor(
+    private selectionService: SelectionService,
+    public screenSizeService: ScreensizeService,
+    private sessionService: SessionService) {
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   @Input()
   set totalItemCount(value: number) {
@@ -54,14 +62,5 @@ export class PaginatedListComponent implements OnInit {
     });
     this.selectionService.clearSelection(this.itemType);
     this.sessionService.setPageSize(this.itemType, this.pageSize);
-  }
-
-  isMobile() {
-    return this.innerWidth < 980;
-  }
-
-  @HostListener("window:resize", ["$event"])
-  onResize() {
-    this.innerWidth = window.innerWidth;
   }
 }

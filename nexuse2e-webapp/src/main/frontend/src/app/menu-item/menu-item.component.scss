@@ -1,7 +1,6 @@
 @import '../../styles.scss';
 
 .menu-item {
-  color: $gray1;
   width: 100%;
   height: 50px;
   background: $gray5;
@@ -16,6 +15,7 @@
     border-radius: 0;
     outline: none;
     position: relative;
+    color: $gray1;
 
     &.link {
       text-transform: capitalize;

@@ -3,7 +3,7 @@ import { ActiveFilterList, Message } from "../types";
 import { DataService } from "../data/data.service";
 import {
   Filter, FilterType,
-} from "../filter-panel/filter-panel.component";
+} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-message-list",
@@ -13,6 +13,7 @@ import {
 export class MessageListComponent implements OnInit {
   totalMessageCount?: number;
   messages: Message[] = [];
+  loaded = false;
   static readonly START_DATE_DEFAULT: Date = new Date(
     new Date().setHours(0, 0, 0, 0)
   );
@@ -21,7 +22,7 @@ export class MessageListComponent implements OnInit {
   );
 
   private participantFilter: Filter = {
-    fieldName: "participantId",
+    fieldName: "partnerId",
     filterType: FilterType.TEXT,
   };
   private choreographyFilter: Filter = {
@@ -40,11 +41,11 @@ export class MessageListComponent implements OnInit {
     },
     {
       fieldName: "messageId",
-      filterType: FilterType.TEXT
+      filterType: FilterType.TEXT,
     },
     {
       fieldName: "conversationId",
-      filterType: FilterType.TEXT
+      filterType: FilterType.TEXT,
     },
     this.choreographyFilter,
     this.participantFilter,
@@ -64,25 +65,61 @@ export class MessageListComponent implements OnInit {
       fieldName: "type",
       filterType: FilterType.SELECT,
       allowedValues: ["NORMAL", "ACKNOWLEDGEMENT", "ERROR"],
-      defaultValue: "NORMAL"
+      defaultValue: "NORMAL",
     },
   ];
 
   activeFilters: ActiveFilterList = {};
 
+  mobileConfig: ListConfig[] = [
+    {
+      fieldName: "messageId",
+      linkUrlRecipe: "$nxMessageId$",
+      isHeader: true,
+    },
+    {
+      fieldName: "conversationId",
+      linkUrlRecipe: "../conversations/$nxConversationId$",
+    },
+    { fieldName: "partnerId" },
+    { fieldName: "typeName", label: "messageType" },
+    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
+    { fieldName: "createdDate" },
+  ];
+
+  desktopConfig: ListConfig[] = [
+    {
+      fieldName: "messageId",
+      linkUrlRecipe: "$nxMessageId$",
+    },
+    {
+      fieldName: "conversationId",
+      linkUrlRecipe: "../conversations/$nxConversationId$",
+    },
+    { fieldName: "partnerId" },
+    { fieldName: "status" },
+    { fieldName: "backendStatus" },
+    { fieldName: "typeName", label: "messageType" },
+    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
+    { fieldName: "createdDate" },
+    { fieldName: "turnAroundTime" },
+  ];
+
   constructor(private dataService: DataService) {}
 
   async ngOnInit() {
-    this.participantFilter.allowedValues = await this.dataService.getParticipantIds();
+    this.participantFilter.allowedValues = await this.dataService.getPartnerIds();
     this.choreographyFilter.allowedValues = await this.dataService.getChoreographyIds();
   }
 
   async loadMessages(pageIndex: number, pageSize: number) {
+    this.loaded = false;
     this.messages = await this.dataService.getMessages(
       pageIndex,
       pageSize,
       this.activeFilters
     );
+    this.loaded = true;
   }
 
   async refreshMessageCount() {

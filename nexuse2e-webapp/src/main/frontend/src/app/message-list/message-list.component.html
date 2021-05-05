@@ -3,10 +3,15 @@
   itemType="message"
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
-<app-paginated-list
-  [totalItemCount]="totalMessageCount"
-  [items]="messages"
-  itemType="message"
-  (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"
+<app-paginated-list [totalItemCount]="totalMessageCount"
+                    [mobileConfig]="mobileConfig"
+                    [desktopConfig]="desktopConfig"
+                    [isSelectable]="true"
+                    [items]="messages"
+                    itemType="message"
+                    (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"
 >
 </app-paginated-list>
+<div class="loading_spinner_wrapper" *ngIf="!loaded">
+  <app-loading-spinner></app-loading-spinner>
+</div>

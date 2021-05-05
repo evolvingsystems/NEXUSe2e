@@ -105,6 +105,7 @@ a {
   margin-bottom: 15px;
   border-left: 5px $gray4 solid;
   padding: 8px;
+  color: $gray2;
 
   .card-header {
     padding-bottom: 4px;
@@ -141,7 +142,6 @@ a {
     .label {
       width: 120px;
       font-weight: bold;
-      color: $gray2;
     }
   }
 }
@@ -195,8 +195,8 @@ a {
   }
 }
 
-/* Conversation Status Colors */
-.conversationStatusLeftBorderColor {
+/* Status Colors */
+.statusLeftBorderColor {
   &.error {
     border-left-color: $error !important;
   }
@@ -208,10 +208,7 @@ a {
   &.completed {
     border-left-color: $success !important;
   }
-}
 
-/* Message Status Colors */
-.messageStatusLeftBorderColor {
   &.failed {
     border-left-color: $error !important;
   }

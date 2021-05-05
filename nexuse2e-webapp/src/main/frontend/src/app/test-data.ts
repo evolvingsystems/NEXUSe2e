@@ -4,6 +4,7 @@ export const messages = [
   {
     messageId: "640FE4F8-6A6D-B7D8-E35B-FB7FE4764426",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "01-12-2022 15:21:03 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -17,6 +18,7 @@ export const messages = [
   {
     messageId: "C5301640-F114-BE4E-89DC-AAB5E6C41A07",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "11-27-2021 10:21:23 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -30,6 +32,7 @@ export const messages = [
   {
     messageId: "1E40FE00-2691-BC42-EE9E-056509732C83",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "12-10-2020 10:10:09 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -43,6 +46,7 @@ export const messages = [
   {
     messageId: "263ACB31-F865-F306-F71B-BCF448BB7505",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "01-01-2021 20:45:30 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -56,6 +60,7 @@ export const messages = [
   {
     messageId: "127020C1-6539-A71C-007A-6A89CEDA97A1",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "02-23-2022 14:49:37 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -69,6 +74,7 @@ export const messages = [
   {
     messageId: "4ECFB3BA-CC84-6C64-11A3-34273BB9EF95",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "03-07-2021 21:20:54 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -82,6 +88,7 @@ export const messages = [
   {
     messageId: "57515B0E-C922-080E-4CEB-7719DE0A02CF",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "08-07-2021 11:22:14 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -95,6 +102,7 @@ export const messages = [
   {
     messageId: "B6DA3FF7-CF51-B1C7-1EBF-DEFAAF452CCF",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "09-14-2020 17:15:52 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -108,6 +116,7 @@ export const messages = [
   {
     messageId: "107365DD-B0E7-7078-FA14-580FEEEF694F",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "12-30-2020 12:22:18 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -121,6 +130,7 @@ export const messages = [
   {
     messageId: "31FEE080-847F-B008-9348-4986212738F8",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "05-09-2021 05:52:46 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -134,6 +144,7 @@ export const messages = [
   {
     messageId: "7CB454B4-0D1C-2E96-E3F0-6D762A305CFB",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "07-14-2021 00:24:08 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -147,6 +158,7 @@ export const messages = [
   {
     messageId: "B9E5F6A0-76D5-590C-691A-846345E71CDF",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "11-18-2020 06:55:52 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -160,6 +172,7 @@ export const messages = [
   {
     messageId: "11ABEA49-D508-D25C-6334-F0E0D37D9895",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "04-22-2021 01:32:15 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -173,6 +186,7 @@ export const messages = [
   {
     messageId: "88857267-BAD9-235C-7756-53024A87EEDE",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "07-17-2020 20:02:29 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -186,6 +200,7 @@ export const messages = [
   {
     messageId: "732FCBDC-D2C6-6D6F-26FD-BEFC001A820F",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "03-22-2020 04:21:01 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -199,6 +214,7 @@ export const messages = [
   {
     messageId: "BDCD7FDE-519F-75CD-7A2B-0B0BFB1DF3E7",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "03-08-2021 13:03:46 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -212,6 +228,7 @@ export const messages = [
   {
     messageId: "1664110A-9BA2-883B-9BCD-5DEE87705F2C",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "09-13-2021 19:12:12 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -225,6 +242,7 @@ export const messages = [
   {
     messageId: "0F540D69-B9FA-4655-7129-68472D4E8061",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "01-01-2021 21:51:28 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -238,6 +256,7 @@ export const messages = [
   {
     messageId: "32F0BC17-94C1-AF1B-DBA9-9909DF373407",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "09-13-2021 21:37:47 GMT",
     typeName: "Normal",
     status: "Sent",
@@ -251,6 +270,7 @@ export const messages = [
   {
     messageId: "50249445-C4D0-BE6C-B676-887FCF938FCF",
     actionId: "SendFile",
+    choreographyId: "GenericFile",
     createdDate: "02-18-2021 12:47:57 GMT",
     typeName: "Normal",
     status: "Sent",

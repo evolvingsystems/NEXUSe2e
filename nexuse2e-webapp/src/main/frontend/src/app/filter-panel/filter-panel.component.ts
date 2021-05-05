@@ -1,13 +1,13 @@
 import {
   Component,
   EventEmitter,
-  HostListener,
   Input,
   OnInit,
   Output,
 } from "@angular/core";
 import { ActiveFilterList, DateRange } from "../types";
 import { SessionService } from "../data/session.service";
+import { ScreensizeService } from "../screensize.service";
 
 export enum FilterType {
   TEXT,
@@ -35,8 +35,7 @@ export class FilterPanelComponent implements OnInit {
   activeFilters: ActiveFilterList = {};
   innerWidth = window.innerWidth;
 
-  constructor(public sessionService: SessionService) {
-  }
+  constructor(public sessionService: SessionService, public screenSizeService: ScreensizeService) {}
 
   ngOnInit(): void {
     this.activeFilters = this.sessionService.getActiveFilters(this.itemType);
@@ -86,14 +85,5 @@ export class FilterPanelComponent implements OnInit {
 
   isDateRange(item: unknown): item is DateRange {
     return (item as DateRange).startDate !== undefined;
-  }
-
-  isMobile() {
-    return this.innerWidth < 980;
-  }
-
-  @HostListener("window:resize", ["$event"])
-  onResize() {
-    this.innerWidth = window.innerWidth;
   }
 }

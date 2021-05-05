@@ -17,7 +17,11 @@ import { PaginatedListComponent } from "../paginated-list/paginated-list.compone
 import { SelectFilterComponent } from "../select-filter/select-filter.component";
 import { TextFilterComponent } from "../text-filter/text-filter.component";
 import { DateTimeRangeFilterComponent } from "../date-time-range-filter/date-time-range-filter.component";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
+import { MatTableModule } from "@angular/material/table";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { ListComponent } from "../list/list.component";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -37,7 +41,9 @@ describe("MessageListComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatTableModule,
+        MatCheckboxModule,
       ],
       declarations: [
         MessageListComponent,
@@ -46,6 +52,8 @@ describe("MessageListComponent", () => {
         SelectFilterComponent,
         TextFilterComponent,
         DateTimeRangeFilterComponent,
+        LoadingSpinnerComponent,
+        ListComponent,
       ],
     }).compileComponents();
   });
