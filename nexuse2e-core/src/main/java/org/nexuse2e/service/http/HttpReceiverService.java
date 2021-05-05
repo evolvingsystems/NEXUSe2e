@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ import org.nexuse2e.BeanStatus;
 import org.nexuse2e.ClusterException;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
+import org.nexuse2e.MessageStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.NexusUUIDGenerator;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -131,12 +133,39 @@ public class HttpReceiverService extends AbstractControllerService implements Re
             } catch ( RuntimeException e ) {
                 LOG.error(e);
             }
-            
-            processMessage( messageContext );
-            LOG.trace( new LogMessage( "Processing Done",messageContext.getMessagePojo()) );
+
+            MessageContext responseCtx = processMessage( messageContext );
+            if ( responseCtx != null && responseCtx.getSynchronusBackendResponse() instanceof HttpResponse ) {
+                HttpResponse synchronusBackendResponse = (HttpResponse) responseCtx.getSynchronusBackendResponse();
+                response.setStatus( synchronusBackendResponse.getStatusCode() );
+                for ( Entry<? extends String, ? extends String> e : synchronusBackendResponse.getHeaders().entrySet() ) {
+                    if ( e.getKey().equalsIgnoreCase( "content-type" ) ) {
+                        response.setContentType( e.getValue() );
+                        response.setHeader(e.getKey(), e.getValue());
+                    } else if ( e.getKey().equalsIgnoreCase( "content-length" ) ) {
+                        try {
+                            response.setContentLength( Integer.parseInt( e.getValue() ) );
+                        } catch ( NumberFormatException err ) {
+                            LOG.warn( new LogMessage( "Could not set Content-Length header", responseCtx ), err );
+                        }
+                    } else {
+                        response.addHeader( e.getKey(), e.getValue() );
+                    }
+                }
+                response.getOutputStream().write( synchronusBackendResponse.getBody() ); 
+            } else {
+                if ( responseCtx != null
+                        && responseCtx.getMessagePojo().getStatus() == MessageStatus.FAILED.getOrdinal()
+                        && responseCtx.getParticipant().getConnection().isSynchronous() )
+                {
+                    response.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
+                } else {
+                    response.setStatus( HttpServletResponse.SC_OK );
+                }
+            }
+            LOG.trace( new LogMessage( "Processing Done",messageContext.getMessagePojo() ) );
 
             // PrintWriter out = new PrintWriter( response.getOutputStream() );
-            response.setStatus( HttpServletResponse.SC_OK );
             // out.println( "\n" );
             //out.flush();
             //out.close();
@@ -210,7 +239,7 @@ public class HttpReceiverService extends AbstractControllerService implements Re
         } else {
         	// create simple output for none ebxml requests.
         	response.setContentType( "text/plain" );
-        	response.setStatus(400);
+        	response.setStatus(500);
         	PrintWriter pw = new PrintWriter(response.getOutputStream());
         	pw.write("NEXUSe2e - Processing error: " + message);
         	pw.flush();
@@ -250,8 +279,9 @@ public class HttpReceiverService extends AbstractControllerService implements Re
     public MessageContext processMessage( MessageContext messageContext ) throws IllegalArgumentException,
             IllegalStateException, NexusException {
 
+        MessageContext ctx = null;
         if ( transportReceiver != null ) {
-            transportReceiver.processMessage( messageContext );
+            ctx = transportReceiver.processMessage( messageContext );
             if ( transportReceiver.getStatus() != BeanStatus.ACTIVATED ) {
                 savePayload( messageContext );
             }
@@ -259,7 +289,7 @@ public class HttpReceiverService extends AbstractControllerService implements Re
             LOG.fatal( "No TransportReceiver available for inbound message!" );
             savePayload( messageContext );
         }
-        return null;
+        return ctx;
     }
 
     private void savePayload( MessageContext messageContext ) {

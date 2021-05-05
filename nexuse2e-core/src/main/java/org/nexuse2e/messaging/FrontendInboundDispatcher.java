@@ -286,6 +286,16 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                     // Block for synchronous processing
                     if (participant.getConnection().isSynchronous()) {
                         responseMessageContext = waitForSynchronousResponse(messageContext);
+                        if (responseMessageContext.getMessagePojo().getStatus() != MessageStatus.FAILED.getOrdinal()
+                                && responseMessageContext.getMessagePojo().getBackendStatus() != MessageStatus.FAILED
+                                        .getOrdinal())
+                        {
+                            try {
+                                messageContext.getStateMachine().receivedNonReliableMessage();
+                            } catch (StateTransitionException e) {
+                                LOG.warn(e.getMessage());
+                            }
+                        }
                     }
                 } catch (NexusException e) {
                     LOG.error(new LogMessage(
@@ -347,6 +357,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                     LOG.warn(new LogMessage("Waiting for synchronous reply was interrupted", messageContext), e);
                 }
             }
+            //TODO we should check the replies first before we wait
+            
             // Since the processing process uses notifyAll(),
             // we check whether there is a response for this thread.
             // If response is not present, the loop continues.
