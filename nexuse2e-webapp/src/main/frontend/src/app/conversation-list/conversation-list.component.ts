@@ -1,7 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { Conversation } from "../types";
 import { DataService } from "../data/data.service";
-import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.component";
+import {
+  ActiveFilter,
+  Filter,
+  FilterType,
+} from "../filter-panel/filter-panel.component";
+import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -11,6 +16,7 @@ import { ActiveFilter, Filter, FilterType, } from "../filter-panel/filter-panel.
 export class ConversationListComponent implements OnInit {
   totalConversationCount?: number;
   conversations: Conversation[] = [];
+  loaded = false;
   static readonly START_DATE_DEFAULT: Date = new Date(
     new Date().setHours(0, 0, 0, 0)
   );
@@ -19,7 +25,7 @@ export class ConversationListComponent implements OnInit {
   );
 
   private participantFilter: Filter = {
-    fieldName: "participantId",
+    fieldName: "partnerId",
     filterType: FilterType.TEXT,
   };
   private choreographyFilter: Filter = {
@@ -50,20 +56,62 @@ export class ConversationListComponent implements OnInit {
   ];
   activeFilters: ActiveFilter[] = [];
 
-  constructor(private dataService: DataService) {
-  }
+  mobileConfig: ListConfig[] = [
+    {
+      fieldName: "conversationId",
+      linkUrlRecipe: "$nxConversationId$",
+      isHeader: true,
+    },
+    { fieldName: "choreographyId" },
+    { fieldName: "partnerId" },
+    { fieldName: "createdDate" },
+  ];
+
+  desktopConfig: ListConfig[] = [
+    {
+      fieldName: "conversationId",
+      linkUrlRecipe: "$nxConversationId$",
+    },
+    {
+      fieldName: "partnerId",
+    },
+    {
+      fieldName: "choreographyId",
+    },
+    {
+      fieldName: "currentAction",
+    },
+    {
+      fieldName: "createdDate",
+    },
+    {
+      fieldName: "status",
+    },
+    {
+      fieldName: "turnAroundTime",
+    },
+  ];
+
+  constructor(private dataService: DataService) {}
 
   async ngOnInit() {
-    [this.participantFilter.allowedValues, this.choreographyFilter.allowedValues] =
-      await Promise.all([this.dataService.getParticipantIds(), this.dataService.getChoreographyIds()]);
+    [
+      this.participantFilter.allowedValues,
+      this.choreographyFilter.allowedValues,
+    ] = await Promise.all([
+      this.dataService.getPartnerIds(),
+      this.dataService.getChoreographyIds(),
+    ]);
   }
 
   async loadConversations(pageIndex: number, pageSize: number) {
+    this.loaded = false;
     this.conversations = await this.dataService.getConversations(
       pageIndex,
       pageSize,
       this.activeFilters
     );
+    this.loaded = true;
   }
 
   async refreshConversationCount() {

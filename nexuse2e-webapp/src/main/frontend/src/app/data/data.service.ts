@@ -101,7 +101,7 @@ export class DataService {
     return this.get<number>("/conversations/count", false, DataService.buildFilterParams(activeFilters));
   }
 
-  getParticipantIds(): Promise<string[]> {
+  getPartnerIds(): Promise<string[]> {
     return this.get<string[]>("/participants/ids");
   }
 

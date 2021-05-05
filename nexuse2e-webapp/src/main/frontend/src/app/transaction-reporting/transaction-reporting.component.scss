@@ -5,9 +5,10 @@
   border-bottom: 1px solid $gray4;
 
   a {
-    color: $gray1;
+    color: $gray2;
     text-transform: uppercase;
     letter-spacing: 1px;
+    opacity: 1 !important;
   }
 
   @media (max-width: $mobileBreakpoint) {

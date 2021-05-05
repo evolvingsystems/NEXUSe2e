@@ -58,6 +58,7 @@ public class StatisticsMessage {
     public StatisticsMessage(MessagePojo message) {
         messageId = message.getMessageId();
         actionId = message.getAction().getName();
+        choreographyId = message.getConversation().getChoreography().getName();
         createdDate = message.getCreatedDate();
         type = message.getType();
         typeName = message.getTypeName();
