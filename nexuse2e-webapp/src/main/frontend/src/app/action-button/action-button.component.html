@@ -1,0 +1,7 @@
+<button mat-flat-button
+        (click)="performAction()"
+        color="accent"
+        [disabled]="!isPermitted"
+>
+  {{ "buttons." + action.label | translate }}
+</button>

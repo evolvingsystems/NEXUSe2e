@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, Message } from "../types";
+import { Action, ActiveFilterList, Message } from "../types";
 import { DataService } from "../data/data.service";
 import {
   Filter, FilterType,
@@ -105,7 +105,16 @@ export class MessageListComponent implements OnInit {
     { fieldName: "turnAroundTime" },
   ];
 
-  constructor(private dataService: DataService) {}
+  actions: Action[] = [
+    {
+      label: "requeue",
+      actionKey: "requeue",
+      actionParams: []
+    }
+  ]
+
+  constructor(private dataService: DataService) {
+  }
 
   async ngOnInit() {
     this.participantFilter.allowedValues = await this.dataService.getPartnerIds();

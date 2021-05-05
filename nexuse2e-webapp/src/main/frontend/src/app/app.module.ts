@@ -51,6 +51,8 @@ import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.compo
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MasterSelectComponent } from "./master-select/master-select.component";
 import { ListComponent } from "./list/list.component";
+import { ActionPanelComponent } from './action-panel/action-panel.component';
+import { ActionButtonComponent } from './action-button/action-button.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -139,6 +141,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterSelectComponent,
     LoadingSpinnerComponent,
     ListComponent,
+    ActionPanelComponent,
+    ActionButtonComponent,
   ],
   imports: [
     BrowserModule,

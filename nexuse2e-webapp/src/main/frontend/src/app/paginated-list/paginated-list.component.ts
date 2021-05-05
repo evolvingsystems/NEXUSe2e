@@ -18,6 +18,7 @@ export class PaginatedListComponent implements OnInit {
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
+  @Input() actions? = [];
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
     pageSize: number;

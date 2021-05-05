@@ -10,7 +10,8 @@
     "login": "Login",
     "logout": "Logout",
     "backToDashboard": "Back to dashboard",
-    "filter": "Filter"
+    "filter": "Filter",
+    "requeue": "Requeue"
   },
   "labels": {
     "nexuse2e": "NEXUSe2e",
