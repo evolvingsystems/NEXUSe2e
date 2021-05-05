@@ -129,4 +129,25 @@ describe("FilterPanelComponent", () => {
 
     expect(component.getNumberOfActivatedFilters()).toEqual(2);
   });
+
+  it("should reset filters to default values when clicking reset button", () => {
+    component.filters = [
+      {
+        fieldName: "filter1",
+        filterType: FilterType.TEXT,
+        defaultValue: "NORMAL",
+      },
+      {
+        fieldName: "filter2",
+        filterType: FilterType.TEXT,
+      },
+    ];
+    component.activeFilters = {
+      filter1: "1",
+      filter2: "2",
+    };
+    component.resetFiltersAndSetDefaults();
+
+    expect(component.activeFilters).toEqual({ filter1: "NORMAL" });
+  });
 });
