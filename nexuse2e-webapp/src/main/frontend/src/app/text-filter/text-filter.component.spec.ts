@@ -9,6 +9,7 @@ import { By } from "@angular/platform-browser";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatIconModule } from "@angular/material/icon";
+import { ActiveFilterList } from "../types";
 
 describe("TextFilterComponent", () => {
   let component: TextFilterComponent;
@@ -61,7 +62,8 @@ describe("TextFilterComponent", () => {
     component.currentValue = test;
     input.triggerEventHandler("blur", {});
     fixture.detectChanges();
-    const activeFilter = { fieldName: component.fieldName, value: test };
+    const activeFilter: ActiveFilterList = {};
+    activeFilter[component.fieldName] = test;
 
     expect(component.valueChange.emit).toHaveBeenCalledWith(activeFilter);
   });
@@ -73,7 +75,8 @@ describe("TextFilterComponent", () => {
     component.selectedValue = "notAllowed";
     input.triggerEventHandler("blur", {});
     fixture.detectChanges();
-    const activeFilter = { fieldName: component.fieldName, value: undefined };
+    const activeFilter: ActiveFilterList = {};
+    activeFilter[component.fieldName] = undefined;
 
     expect(component.valueChange.emit).toHaveBeenCalledWith(activeFilter);
   });

@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from "@angular/core";
   pure: true,
 })
 export class StringPipe implements PipeTransform {
-  transform(value: any, args?: any): string {
-    return value;
+  transform(value: unknown): string {
+    return value as string;
   }
 }

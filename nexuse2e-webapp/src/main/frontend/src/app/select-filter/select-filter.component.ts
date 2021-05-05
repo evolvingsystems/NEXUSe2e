@@ -18,6 +18,8 @@ export class SelectFilterComponent implements OnInit {
   ngOnInit(): void {}
 
   emitValue(event: MatSelectChange) {
-    this.valueChange.emit({ fieldName: this.fieldName, value: event.value });
+    const filters: ActiveFilterList = {};
+    filters[this.fieldName] = event.value;
+    this.valueChange.emit(filters);
   }
 }

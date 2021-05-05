@@ -6,7 +6,7 @@ import { DateRange } from "../types";
   pure: true,
 })
 export class DateRangePipe implements PipeTransform {
-  transform(value: any, args?: any): DateRange {
-    return value;
+  transform(value: unknown): DateRange {
+    return value as DateRange;
   }
 }

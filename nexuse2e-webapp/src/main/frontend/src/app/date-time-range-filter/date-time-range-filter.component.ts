@@ -39,12 +39,6 @@ export class DateTimeRangeFilterComponent {
       this.startDate || this.endDate
         ? { startDate: this.startDate, endDate: this.endDate }
         : undefined;
-    this.valueChange.emit({
-      fieldName: this.fieldName,
-      value:
-        this.startDate || this.endDate
-          ? { startDate: this.startDate, endDate: this.endDate }
-          : undefined,
-    });
+    this.valueChange.emit(filters);
   }
 }

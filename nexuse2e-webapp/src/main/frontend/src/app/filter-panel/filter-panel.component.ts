@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActiveFilterList, DateRange } from "../types";
 import { SessionService } from "../data/session.service";
-import { ScreensizeService } from "../screensize.service";
+import { ScreensizeService } from "../data/screensize.service";
 
 export enum FilterType {
   TEXT,
@@ -51,9 +51,9 @@ export class FilterPanelComponent implements OnInit {
   }
 
   updateActiveFilters(filters: ActiveFilterList) {
-    for (let key in filters) {
+    for (const key in filters) {
       if (filters.hasOwnProperty(key)) {
-        let value = filters[key];
+        const value = filters[key];
         if (value) {
           this.activeFilters[key] = value;
         } else {

@@ -14,8 +14,10 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { FormsModule } from "@angular/forms";
-import { ScreensizeService } from "../screensize.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { ScreensizeService } from "../data/screensize.service";
+import { StringPipe } from "../pipes/string.pipe";
+import { DateRangePipe } from "../pipes/date-range.pipe";
 
 describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;
@@ -29,6 +31,8 @@ describe("FilterPanelComponent", () => {
         SelectFilterComponent,
         TextFilterComponent,
         DateTimeRangeFilterComponent,
+        StringPipe,
+        DateRangePipe,
       ],
       imports: [
         TranslateModule.forRoot(),
@@ -58,7 +62,7 @@ describe("FilterPanelComponent", () => {
   it("should display the number of active filters when collapsed and if mobile view", () => {
     spyOn(component.sessionService, "getActiveFilters").and.returnValue({
       filter1: "1",
-      filter2: "2"
+      filter2: "2",
     });
     spyOn(screensizeService, "isMobile").and.returnValue(true);
     fixture.detectChanges();

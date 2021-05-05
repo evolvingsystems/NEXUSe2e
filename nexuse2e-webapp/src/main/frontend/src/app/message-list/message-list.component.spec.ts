@@ -22,6 +22,8 @@ import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ListComponent } from "../list/list.component";
+import { StringPipe } from "../pipes/string.pipe";
+import { DateRangePipe } from "../pipes/date-range.pipe";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -54,6 +56,8 @@ describe("MessageListComponent", () => {
         DateTimeRangeFilterComponent,
         LoadingSpinnerComponent,
         ListComponent,
+        StringPipe,
+        DateRangePipe,
       ],
     }).compileComponents();
   });

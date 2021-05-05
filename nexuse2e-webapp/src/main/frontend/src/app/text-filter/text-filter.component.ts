@@ -43,10 +43,9 @@ export class TextFilterComponent {
   }
 
   private emitValue() {
-    this.valueChange.emit({
-      fieldName: this.fieldName,
-      value: this.currentValue,
-    });
+    const filters: ActiveFilterList = {};
+    filters[this.fieldName] = this.currentValue;
+    this.valueChange.emit(filters);
   }
 
   filterSuggestions(input?: string) {
