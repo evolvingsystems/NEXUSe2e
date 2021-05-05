@@ -51,6 +51,8 @@ import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.compo
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MasterSelectComponent } from "./master-select/master-select.component";
 import { ListComponent } from "./list/list.component";
+import { StringPipe } from "./pipes/string.pipe";
+import { DateRangePipe } from "./pipes/date-range.pipe";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -139,6 +141,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterSelectComponent,
     LoadingSpinnerComponent,
     ListComponent,
+    StringPipe,
+    DateRangePipe,
   ],
   imports: [
     BrowserModule,

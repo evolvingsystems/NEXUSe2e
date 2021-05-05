@@ -50,14 +50,16 @@ export class FilterPanelComponent implements OnInit {
     this.expanded = !this.expanded;
   }
 
-  updateActiveFilter(filter: {
-    fieldName: string;
-    value?: string | DateRange;
-  }) {
-    if (filter.value) {
-      this.activeFilters[filter.fieldName] = filter.value;
-    } else {
-      delete this.activeFilters[filter.fieldName];
+  updateActiveFilters(filters: ActiveFilterList) {
+    for (let key in filters) {
+      if (filters.hasOwnProperty(key)) {
+        let value = filters[key];
+        if (value) {
+          this.activeFilters[key] = value;
+        } else {
+          delete this.activeFilters[key];
+        }
+      }
     }
   }
 

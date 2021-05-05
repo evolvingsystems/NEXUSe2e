@@ -24,7 +24,7 @@ describe("TextFilterComponent", () => {
         NoopAnimationsModule,
         MatFormFieldModule,
         MatAutocompleteModule,
-        MatIconModule
+        MatIconModule,
       ],
     }).compileComponents();
   });
@@ -58,7 +58,7 @@ describe("TextFilterComponent", () => {
     component.allowedValues = [];
     const input = fixture.debugElement.query(By.css("input"));
     const test = "testValue";
-    component.selectedValue = test;
+    component.currentValue = test;
     input.triggerEventHandler("blur", {});
     fixture.detectChanges();
     const activeFilter = { fieldName: component.fieldName, value: test };
