@@ -4,7 +4,7 @@ import { ScreensizeService } from "../screensize.service";
 import { SelectionService } from "../data/selection.service";
 import { SessionService } from "../data/session.service";
 import { ListConfig } from "../list/list.component";
-import { Conversation, Message } from "../types";
+import { NexusData } from "../types";
 
 @Component({
   selector: "app-paginated-list",
@@ -13,7 +13,7 @@ import { Conversation, Message } from "../types";
 })
 export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
-  @Input() items: Message[] | Conversation[] = [];
+  @Input() items: NexusData[] = [];
   @Input() itemType!: string;
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];

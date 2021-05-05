@@ -20,7 +20,7 @@ export interface ListConfig {
 })
 export class ListComponent implements OnInit {
   @Input() itemType!: string;
-  @Input() items: Message[] | Conversation[] = [];
+  @Input() items: NexusData[] = [];
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
