@@ -1,12 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { Message } from "../types";
+import { ActiveFilterList, Message } from "../types";
 import { DataService } from "../data/data.service";
 import {
-  ActiveFilter,
-  Filter,
-  FilterType,
-} from "../filter-panel/filter-panel.component";
-import { ListConfig } from "../list/list.component";
+  Filter, FilterType,
+} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-message-list",
@@ -72,7 +69,7 @@ export class MessageListComponent implements OnInit {
     },
   ];
 
-  activeFilters: ActiveFilter[] = [];
+  activeFilters: ActiveFilterList = {};
 
   mobileConfig: ListConfig[] = [
     {
@@ -131,7 +128,7 @@ export class MessageListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: ActiveFilter[]) {
+  filterMessages(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshMessageCount();
   }

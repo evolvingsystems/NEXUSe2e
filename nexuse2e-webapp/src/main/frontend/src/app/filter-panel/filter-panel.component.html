@@ -5,23 +5,23 @@
         <app-select-filter
           *ngSwitchCase="getFilterType().SELECT"
           [allowedValues]="filter.allowedValues"
-          [defaultValue]="filter.defaultValue"
+          [selectedValue]="activeFilters[filter.fieldName]"
           [fieldName]="filter.fieldName"
-          (valueChange)="updateActiveFilters($event)"
+          (valueChange)="updateActiveFilter($event)"
         >
         </app-select-filter>
         <app-date-time-range-filter
           *ngSwitchCase="getFilterType().DATE_TIME_RANGE"
           [fieldName]="filter.fieldName"
-          (valueChange)="updateActiveFilters($event)"
-          [defaultValue]="filter.defaultValue">
+          (valueChange)="updateActiveFilter($event)"
+          [selectedValue]="activeFilters[filter.fieldName]">
         </app-date-time-range-filter>
         <app-text-filter
           *ngSwitchCase="getFilterType().TEXT"
           [allowedValues]="filter.allowedValues"
           [defaultValue]="filter.defaultValue"
           [fieldName]="filter.fieldName"
-          (valueChange)="updateActiveFilters($event)"
+          (valueChange)="updateActiveFilter($event)"
         >
         </app-text-filter>
       </div>

@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { ScreensizeService } from "../screensize.service";
 import { SelectionService } from "../data/selection.service";
+import { SessionService } from "../data/session.service";
 import { ListConfig } from "../list/list.component";
-import { Conversation, Message } from "../types";
+import { NexusData } from "../types";
 
 @Component({
   selector: "app-paginated-list",
@@ -12,7 +13,7 @@ import { Conversation, Message } from "../types";
 })
 export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
-  @Input() items: Message[] | Conversation[] = [];
+  @Input() items: NexusData[] = [];
   @Input() itemType!: string;
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
@@ -27,19 +28,21 @@ export class PaginatedListComponent implements OnInit {
 
   constructor(
     private selectionService: SelectionService,
-    public screenSizeService: ScreensizeService
-  ) {}
+    public screenSizeService: ScreensizeService,
+    private sessionService: SessionService) {
+  }
 
   ngOnInit(): void {}
 
   @Input()
   set totalItemCount(value: number) {
     this._totalItemCount = value;
-    this.onPageChange({
-      pageIndex: 0,
-      pageSize: this.pageSize,
-      length: this.totalItemCount,
-    });
+    this.pageIndex = 0;
+    const savedPageSize = this.sessionService.getPageSize(this.itemType);
+    if (savedPageSize) {
+      this.pageSize = savedPageSize;
+    }
+    this.update();
   }
 
   get totalItemCount() {
@@ -49,10 +52,15 @@ export class PaginatedListComponent implements OnInit {
   onPageChange(pageEvent: PageEvent) {
     this.pageSize = pageEvent.pageSize;
     this.pageIndex = pageEvent.pageIndex;
+    this.update();
+  }
+
+  private update() {
     this.triggerReload.emit({
       pageIndex: this.pageIndex,
       pageSize: this.pageSize,
     });
     this.selectionService.clearSelection(this.itemType);
+    this.sessionService.setPageSize(this.itemType, this.pageSize);
   }
 }

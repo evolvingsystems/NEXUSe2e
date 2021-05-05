@@ -31,3 +31,7 @@ export interface DateRange {
   startDate: Date | undefined;
   endDate: Date | undefined;
 }
+
+export interface ActiveFilterList {
+  [fieldName: string]: string | DateRange | undefined;
+}

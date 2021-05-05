@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ActiveFilter } from "../filter-panel/filter-panel.component";
 import { MatSelectChange } from "@angular/material/select";
+import { DateRange } from "../types";
 
 @Component({
   selector: 'app-select-filter',
@@ -10,8 +10,8 @@ import { MatSelectChange } from "@angular/material/select";
 export class SelectFilterComponent implements OnInit {
   @Input() fieldName!: string;
   @Input() allowedValues!: string[];
-  @Input() defaultValue?: string;
-  @Output() valueChange: EventEmitter<ActiveFilter> = new EventEmitter();
+  @Input() selectedValue?: string;
+  @Output() valueChange: EventEmitter<{ fieldName: string, value?: string | DateRange }> = new EventEmitter();
 
   constructor() {
   }

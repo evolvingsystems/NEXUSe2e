@@ -1,12 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { Conversation } from "../types";
+import { ActiveFilterList, Conversation } from "../types";
 import { DataService } from "../data/data.service";
 import {
-  ActiveFilter,
-  Filter,
-  FilterType,
-} from "../filter-panel/filter-panel.component";
-import { ListConfig } from "../list/list.component";
+  Filter, FilterType,
+} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-conversation-list",
@@ -54,7 +51,7 @@ export class ConversationListComponent implements OnInit {
       allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"],
     },
   ];
-  activeFilters: ActiveFilter[] = [];
+  activeFilters: ActiveFilterList = {};
 
   mobileConfig: ListConfig[] = [
     {
@@ -120,7 +117,7 @@ export class ConversationListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: ActiveFilter[]) {
+  filterMessages(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshConversationCount();
   }

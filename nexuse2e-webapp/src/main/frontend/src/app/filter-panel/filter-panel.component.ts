@@ -1,5 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { DateRange } from "../types";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
+import { ActiveFilterList, DateRange } from "../types";
+import { SessionService } from "../data/session.service";
 import { ScreensizeService } from "../screensize.service";
 
 export enum FilterType {
@@ -15,11 +22,6 @@ export interface Filter {
   defaultValue?: string | DateRange;
 }
 
-export interface ActiveFilter {
-  fieldName: string;
-  value?: string | DateRange;
-}
-
 @Component({
   selector: "app-filter-panel",
   templateUrl: "./filter-panel.component.html",
@@ -27,20 +29,21 @@ export interface ActiveFilter {
 })
 export class FilterPanelComponent implements OnInit {
   @Input() filters: Filter[] = [];
-  @Output() filterChange: EventEmitter<ActiveFilter[]> = new EventEmitter();
+  @Input() itemType!: string;
+  @Output() filterChange: EventEmitter<ActiveFilterList> = new EventEmitter();
   expanded = false;
-  activeFilters: ActiveFilter[] = [];
+  activeFilters: ActiveFilterList = {};
   innerWidth = window.innerWidth;
 
-  constructor(public screenSizeService: ScreensizeService) {}
+  constructor(public sessionService: SessionService, public screenSizeService: ScreensizeService) {}
 
   ngOnInit(): void {
-    for (const filter of this.filters) {
-      if (filter.defaultValue) {
-        this.activeFilters.push({
-          fieldName: filter.fieldName,
-          value: filter.defaultValue,
-        });
+    this.activeFilters = this.sessionService.getActiveFilters(this.itemType);
+    if (Object.keys(this.activeFilters).length === 0) {
+      for (const filter of this.filters) {
+        if (filter.defaultValue && !this.activeFilters[filter.fieldName]) {
+          this.activeFilters[filter.fieldName] = filter.defaultValue;
+        }
       }
     }
     this.applyFilters();
@@ -54,36 +57,33 @@ export class FilterPanelComponent implements OnInit {
     this.expanded = !this.expanded;
   }
 
-  updateActiveFilters(activeFilter: ActiveFilter) {
-    const index = this.activeFilters.findIndex(
-      (filter) => filter.fieldName === activeFilter.fieldName
-    );
-    const existingFilter = this.activeFilters[index];
-    if (existingFilter) {
-      if (activeFilter.value) {
-        existingFilter.value = activeFilter.value;
-      } else {
-        this.activeFilters.splice(index, 1);
-      }
-    } else if (activeFilter.value) {
-      this.activeFilters.push(activeFilter);
+  updateActiveFilter(filter: { fieldName: string, value?: string | DateRange }) {
+    if (filter.value) {
+      this.activeFilters[filter.fieldName] = filter.value;
+    } else {
+      delete this.activeFilters[filter.fieldName];
     }
   }
 
   applyFilters() {
     this.filterChange.emit(this.activeFilters);
+    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
     this.expanded = false;
   }
 
   getNumberOfActivatedFilters(): number {
-    let activeLength = this.activeFilters.length;
-    this.activeFilters.forEach((filter) => {
-      if (!(typeof filter.value === "string")) {
-        if (filter.value?.startDate && filter.value?.endDate) {
+    let activeLength = Object.keys(this.activeFilters).length;
+    for (const value of Object.values(this.activeFilters)) {
+      if (this.isDateRange(value)) {
+        if (value?.startDate && value?.endDate) {
           activeLength++;
         }
       }
-    });
+    }
     return activeLength;
+  }
+
+  isDateRange(item: unknown): item is DateRange {
+    return (item as DateRange).startDate !== undefined;
   }
 }
