@@ -24,22 +24,22 @@ export interface Filter {
 export class FilterPanelComponent implements OnInit {
   @Input() filters: Filter[] = [];
   @Input() itemType!: string;
-  @Output() filterChange: EventEmitter<{ [fieldName: string]: string | DateRange | undefined }> = new EventEmitter();
+  @Output() filterChange: EventEmitter<{
+    [fieldName: string]: string | DateRange | undefined;
+  }> = new EventEmitter();
   expanded = false;
   activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
   innerWidth = window.innerWidth;
 
-  constructor(public screenSizeService: ScreensizeService, public sessionService: SessionService) {
-  }
+  constructor(
+    public screenSizeService: ScreensizeService,
+    public sessionService: SessionService
+  ) {}
 
   ngOnInit(): void {
     this.activeFilters = this.sessionService.getActiveFilters(this.itemType);
     if (Object.keys(this.activeFilters).length === 0) {
-      for (const filter of this.filters) {
-        if (filter.defaultValue && !this.activeFilters[filter.fieldName]) {
-          this.activeFilters[filter.fieldName] = filter.defaultValue;
-        }
-      }
+      this.setDefaultValues();
     }
     this.applyFilters();
   }
@@ -52,7 +52,10 @@ export class FilterPanelComponent implements OnInit {
     this.expanded = !this.expanded;
   }
 
-  updateActiveFilter(filter: { fieldName: string, value?: string | DateRange }) {
+  updateActiveFilter(filter: {
+    fieldName: string;
+    value?: string | DateRange;
+  }) {
     if (filter.value) {
       this.activeFilters[filter.fieldName] = filter.value;
     } else {
@@ -63,6 +66,10 @@ export class FilterPanelComponent implements OnInit {
   applyFilters() {
     this.filterChange.emit(this.activeFilters);
     this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
+  }
+
+  handleFilterAction() {
+    this.applyFilters();
     this.expanded = false;
   }
 
@@ -79,6 +86,16 @@ export class FilterPanelComponent implements OnInit {
   }
 
   resetFiltersAndSetDefaults() {
-    //TODO
+    this.activeFilters = {};
+    this.setDefaultValues();
+    this.applyFilters();
+  }
+
+  setDefaultValues() {
+    for (const filter of this.filters) {
+      if (filter.defaultValue && !this.activeFilters[filter.fieldName]) {
+        this.activeFilters[filter.fieldName] = filter.defaultValue;
+      }
+    }
   }
 }

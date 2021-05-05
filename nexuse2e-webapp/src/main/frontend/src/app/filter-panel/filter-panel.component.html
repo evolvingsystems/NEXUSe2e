@@ -36,7 +36,7 @@
       {{ "buttons.resetFilter" | translate }}
     </button>
     <button mat-flat-button
-            (click)="applyFilters()"
+            (click)="handleFilterAction()"
             color="accent"
             id="filterButton"
             class="filterButton"
@@ -58,7 +58,7 @@
   <mat-icon>{{ expanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
   <div class="collapsed mobileResetBtnWrapper" *ngIf="!expanded">
     <button mat-raised-button
-            (click)="$event.stopPropagation(); resetFiltersAndSetDefaults()"
+            (click)="$event.stopPropagation(); resetFiltersAndSetDefaults();"
             color="primary"
             class="resetFilterButton"
     >
