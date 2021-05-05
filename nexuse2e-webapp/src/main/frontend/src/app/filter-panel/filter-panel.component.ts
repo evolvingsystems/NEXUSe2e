@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
-import { DateRange } from "../types";
+import { ActiveFilterList, DateRange } from "../types";
 import { SessionService } from "../data/session.service";
 
 export enum FilterType {
@@ -30,9 +30,9 @@ export interface Filter {
 export class FilterPanelComponent implements OnInit {
   @Input() filters: Filter[] = [];
   @Input() itemType!: string;
-  @Output() filterChange: EventEmitter<{ [fieldName: string]: string | DateRange | undefined }> = new EventEmitter();
+  @Output() filterChange: EventEmitter<ActiveFilterList> = new EventEmitter();
   expanded = false;
-  activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
+  activeFilters: ActiveFilterList = {};
   innerWidth = window.innerWidth;
 
   constructor(public sessionService: SessionService) {
@@ -75,13 +75,17 @@ export class FilterPanelComponent implements OnInit {
   getNumberOfActivatedFilters(): number {
     let activeLength = Object.keys(this.activeFilters).length;
     for (const value of Object.values(this.activeFilters)) {
-      if (!(typeof value === "string")) {
+      if (this.isDateRange(value)) {
         if (value?.startDate && value?.endDate) {
           activeLength++;
         }
       }
     }
     return activeLength;
+  }
+
+  isDateRange(item: unknown): item is DateRange {
+    return (item as DateRange).startDate !== undefined;
   }
 
   isMobile() {

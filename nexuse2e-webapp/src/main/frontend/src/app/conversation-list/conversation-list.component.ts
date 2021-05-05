@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Conversation, DateRange } from "../types";
+import { ActiveFilterList, Conversation } from "../types";
 import { DataService } from "../data/data.service";
 import {
   Filter, FilterType,
@@ -50,7 +50,7 @@ export class ConversationListComponent implements OnInit {
       allowedValues: ["ERROR", "PROCESSING", "IDLE", "COMPLETED"],
     },
   ];
-  activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
+  activeFilters: ActiveFilterList = {};
 
   constructor(private dataService: DataService) {
   }
@@ -74,7 +74,7 @@ export class ConversationListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: { [fieldName: string]: string | DateRange | undefined }) {
+  filterMessages(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshConversationCount();
   }

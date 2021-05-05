@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { DateRange } from "../types";
+import { ActiveFilterList, DateRange } from "../types";
 
 @Component({
   selector: "app-date-time-range-filter",
@@ -34,7 +34,7 @@ export class DateTimeRangeFilterComponent implements OnInit {
   }
 
   emitValue() {
-    const filters: { [fieldName: string]: string | DateRange | undefined } = {};
+    const filters: ActiveFilterList = {};
     filters[this.fieldName] = this.startDate || this.endDate
       ? { startDate: this.startDate, endDate: this.endDate }
       : undefined;
