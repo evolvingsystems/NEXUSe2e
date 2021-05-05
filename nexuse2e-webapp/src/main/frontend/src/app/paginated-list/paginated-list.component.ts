@@ -3,8 +3,8 @@ import { PageEvent } from "@angular/material/paginator";
 import { ScreensizeService } from "../screensize.service";
 import { SelectionService } from "../data/selection.service";
 import { ListConfig } from "../list/list.component";
-import { Conversation, Message } from "../types";
 import { SessionService } from "../data/session.service";
+import { NexusData } from "../types";
 
 @Component({
   selector: "app-paginated-list",
@@ -13,7 +13,7 @@ import { SessionService } from "../data/session.service";
 })
 export class PaginatedListComponent implements OnInit {
   private _totalItemCount!: number;
-  @Input() items: Message[] | Conversation[] = [];
+  @Input() items: NexusData[] = [];
   @Input() itemType!: string;
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
@@ -28,7 +28,8 @@ export class PaginatedListComponent implements OnInit {
 
   constructor(
     private selectionService: SelectionService,
-    public screenSizeService: ScreensizeService, private sessionService: SessionService) {
+    public screenSizeService: ScreensizeService,
+    private sessionService: SessionService) {
   }
 
   ngOnInit(): void {}

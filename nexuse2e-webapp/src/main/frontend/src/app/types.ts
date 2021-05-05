@@ -1,4 +1,7 @@
-export interface Message {
+export interface NexusData {
+}
+
+export interface Message extends NexusData {
   messageId: string;
   choreographyId: string;
   actionId: string;
@@ -13,7 +16,7 @@ export interface Message {
   turnAroundTime: string;
 }
 
-export interface Conversation {
+export interface Conversation extends NexusData {
   choreographyId: string;
   conversationId: string;
   nxConversationId: number;
@@ -27,4 +30,8 @@ export interface Conversation {
 export interface DateRange {
   startDate: Date | undefined;
   endDate: Date | undefined;
+}
+
+export interface ActiveFilterList {
+  [fieldName: string]: string | DateRange | undefined;
 }

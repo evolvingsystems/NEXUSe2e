@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Conversation, DateRange, Message } from "../types";
+import { ActiveFilterList, Conversation, Message } from "../types";
 
 @Injectable({
   providedIn: "root",
@@ -47,7 +47,7 @@ export class DataService {
     return this.get<string>("/machine-name");
   }
 
-  private static buildFilterParams(activeFilters: { [fieldName: string]: string | DateRange | undefined }) {
+  private static buildFilterParams(activeFilters: ActiveFilterList) {
     let httpParams = new HttpParams();
     for (const fieldName in activeFilters) {
       const value = activeFilters[fieldName];
@@ -73,14 +73,14 @@ export class DataService {
     return httpParams;
   }
 
-  getMessages(pageIndex: number, itemsPerPage: number, activeFilters: { [fieldName: string]: string | DateRange | undefined }): Promise<Message[]> {
+  getMessages(pageIndex: number, itemsPerPage: number, activeFilters: ActiveFilterList): Promise<Message[]> {
     let params = DataService.buildFilterParams(activeFilters);
     params = params.append("pageIndex", String(pageIndex));
     params = params.append("itemsPerPage", String(itemsPerPage));
     return this.get<Message[]>("/messages", false, params);
   }
 
-  getMessagesCount(activeFilters: { [fieldName: string]: string | DateRange | undefined } = {}): Promise<number> {
+  getMessagesCount(activeFilters: ActiveFilterList = {}): Promise<number> {
     return this.get<number>("/messages/count",
       false, DataService.buildFilterParams(activeFilters));
   }
@@ -88,7 +88,7 @@ export class DataService {
   getConversations(
     pageIndex: number,
     itemsPerPage: number,
-    activeFilters: { [fieldName: string]: string | DateRange | undefined }
+    activeFilters: ActiveFilterList
   ): Promise<Conversation[]> {
     let params = DataService.buildFilterParams(activeFilters);
     params = params.append("pageIndex", String(pageIndex));
@@ -96,7 +96,7 @@ export class DataService {
     return this.get<Conversation[]>("/conversations", false, params);
   }
 
-  getConversationsCount(activeFilters: { [fieldName: string]: string | DateRange | undefined } = {}): Promise<number> {
+  getConversationsCount(activeFilters: ActiveFilterList = {}): Promise<number> {
     return this.get<number>("/conversations/count", false, DataService.buildFilterParams(activeFilters));
   }
 

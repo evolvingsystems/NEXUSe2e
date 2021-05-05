@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { DateRange } from "../types";
+import { ActiveFilterList } from "../types";
 
 @Injectable({
   providedIn: "root",
 })
 export class SessionService {
-  getActiveFilters(itemType: string): { [fieldName: string]: string | DateRange | undefined } {
+  getActiveFilters(itemType: string): ActiveFilterList {
     const stringFromSession = sessionStorage.getItem(`active-${itemType}-filters`);
     if (stringFromSession) {
       return JSON.parse(stringFromSession, SessionService.jsonDateReviver);
@@ -20,7 +20,7 @@ export class SessionService {
     return value;
   }
 
-  setActiveFilters(itemType: string, filters: { [fieldName: string]: string | DateRange | undefined }) {
+  setActiveFilters(itemType: string, filters: ActiveFilterList) {
     sessionStorage.setItem(`active-${itemType}-filters`, JSON.stringify(filters));
   }
 

@@ -1,10 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { DateRange, Message } from "../types";
+import { ActiveFilterList, Message } from "../types";
 import { DataService } from "../data/data.service";
 import {
   Filter, FilterType,
-} from "../filter-panel/filter-panel.component";
-import { ListConfig } from "../list/list.component";
+} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-message-list",
@@ -70,7 +69,7 @@ export class MessageListComponent implements OnInit {
     },
   ];
 
-  activeFilters: { [fieldName: string]: string | DateRange | undefined } = {};
+  activeFilters: ActiveFilterList = {};
 
   mobileConfig: ListConfig[] = [
     {
@@ -83,8 +82,8 @@ export class MessageListComponent implements OnInit {
       linkUrlRecipe: "../conversations/$nxConversationId$",
     },
     { fieldName: "partnerId" },
-    { fieldName: "typeName" },
-    { fieldName: "actionId" },
+    { fieldName: "typeName", label: "messageType" },
+    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
     { fieldName: "createdDate" },
   ];
 
@@ -100,9 +99,8 @@ export class MessageListComponent implements OnInit {
     { fieldName: "partnerId" },
     { fieldName: "status" },
     { fieldName: "backendStatus" },
-    { fieldName: "typeName" },
-    { fieldName: "choreographyId" },
-    { fieldName: "actionId" },
+    { fieldName: "typeName", label: "messageType" },
+    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
     { fieldName: "createdDate" },
     { fieldName: "turnAroundTime" },
   ];
@@ -130,7 +128,7 @@ export class MessageListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: { [fieldName: string]: string | DateRange | undefined }) {
+  filterMessages(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshMessageCount();
   }
