@@ -1,16 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ActionPanelComponent } from './action-panel.component';
+import { ActionPanelComponent } from "./action-panel.component";
+import { ActionButtonComponent } from "../action-button/action-button.component";
 
-describe('ActionPanelComponent', () => {
+describe("ActionPanelComponent", () => {
   let component: ActionPanelComponent;
   let fixture: ComponentFixture<ActionPanelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ActionPanelComponent]
-    })
-      .compileComponents();
+      declarations: [ActionPanelComponent, ActionButtonComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('ActionPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
