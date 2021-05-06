@@ -108,9 +108,19 @@ export class MessageListComponent implements OnInit {
   actions: Action[] = [
     {
       label: "requeue",
-      actionKey: "requeue",
+      actionKey: "message.requeue",
       actionParams: []
-    }
+    },
+    {
+      label: "stop",
+      actionKey: "message.stop",
+      actionParams: []
+    },
+    {
+      label: "delete",
+      actionKey: "message.delete",
+      actionParams: []
+    },
   ]
 
   constructor(private dataService: DataService) {

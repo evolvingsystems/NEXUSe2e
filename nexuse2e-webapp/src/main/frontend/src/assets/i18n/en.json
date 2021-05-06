@@ -11,7 +11,9 @@
     "logout": "Logout",
     "backToDashboard": "Back to dashboard",
     "filter": "Filter",
-    "requeue": "Requeue"
+    "requeue": "Requeue",
+    "stop": "Stop",
+    "delete": "Delete"
   },
   "labels": {
     "nexuse2e": "NEXUSe2e",

@@ -47,10 +47,8 @@ export class DataService {
     return this.get("/logged-in", false);
   }
 
-  getUserPermission(actionKey: string) {
-    const httpParams = new HttpParams();
-    httpParams.append("actionKey", actionKey);
-    return this.get("/permission", true, httpParams);
+  getPermittedActions(): Promise<string[]> {
+    return this.get("/permitted-actions");
   }
 
   getMachineName(): Promise<string> {

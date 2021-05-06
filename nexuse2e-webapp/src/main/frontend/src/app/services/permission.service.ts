@@ -1,20 +1,15 @@
 import { Injectable } from '@angular/core';
-import { DataService } from "../data/data.service";
+import { SessionService } from "../data/session.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PermissionService {
 
-  constructor(private dataService: DataService) {
+  constructor(private sessionService: SessionService) {
   }
 
-  async isUserPermitted(actionKey: string): Promise<boolean> {
-    try {
-      await this.dataService.getUserPermission(actionKey);
-    } catch {
-      return false;
-    }
-    return true;
+  isUserPermitted(actionKey: string) {
+    return this.sessionService.getPermittedActions().some(a => a === "*" || a === actionKey);
   }
 }
