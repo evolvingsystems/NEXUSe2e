@@ -51,7 +51,7 @@
 </ng-container>
 
 <ng-container *ngIf="screenSizeService.isMobile()">
-  <div class="padded">
+  <div class="padded relativeWrapper">
     <app-master-select
       *ngIf="items.length && isSelectable"
       [items]="items"

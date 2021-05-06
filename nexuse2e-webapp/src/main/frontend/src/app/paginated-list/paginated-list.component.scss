@@ -4,6 +4,10 @@
   border-bottom: none;
 }
 
+.action-button-panel {
+  padding: 0 10px;
+}
+
 @media(max-width: $desktopBreakpointForMaxWidth) {
   #first {
     ::ng-deep .mat-paginator-page-size {
@@ -45,6 +49,11 @@
         border-top: 1px solid $darkerTextGray;
       }
     }
+  }
+
+  .action-button-panel {
+    margin-left: 75px;
+    padding-top: 10px;
   }
 }
 

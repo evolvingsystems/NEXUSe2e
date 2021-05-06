@@ -3,9 +3,6 @@
   itemType="message"
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
-<app-action-panel itemType="message"
-                  [actions]="actions"
-></app-action-panel>
 <app-paginated-list [totalItemCount]="totalMessageCount"
                     [mobileConfig]="mobileConfig"
                     [desktopConfig]="desktopConfig"
