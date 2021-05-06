@@ -45,7 +45,9 @@ export class SessionService {
   }
 
   setPermittedActions(actionKeys: string[]) {
-    sessionStorage.setItem("permitted-actions", JSON.stringify(actionKeys));
+    if (actionKeys) {
+      sessionStorage.setItem("permitted-actions", JSON.stringify(actionKeys));
+    }
   }
 
   clearSession() {
