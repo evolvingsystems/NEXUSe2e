@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationService } from "./navigation.service";
 import { Router } from "@angular/router";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-navigation",
@@ -15,8 +15,7 @@ export class NavigationComponent implements OnInit {
     public navigationService: NavigationService,
     private dataService: DataService,
     public router: Router
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.version = await this.dataService.getVersion();

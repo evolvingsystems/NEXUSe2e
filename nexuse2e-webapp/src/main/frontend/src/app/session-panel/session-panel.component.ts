@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 import { Router } from "@angular/router";
 
 @Component({
@@ -10,8 +10,7 @@ import { Router } from "@angular/router";
 export class SessionPanelComponent implements OnInit {
   username?: string;
 
-  constructor(private dataService: DataService, private router: Router) {
-  }
+  constructor(private dataService: DataService, private router: Router) {}
 
   async ngOnInit() {
     this.username = await this.dataService.getFullUsername();

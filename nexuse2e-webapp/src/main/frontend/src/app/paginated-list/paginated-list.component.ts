@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
-import { ScreensizeService } from "../screensize.service";
-import { SelectionService } from "../data/selection.service";
-import { SessionService } from "../data/session.service";
+import { SelectionService } from "../services/selection.service";
 import { ListConfig } from "../list/list.component";
+import { SessionService } from "../services/session.service";
 import { NexusData } from "../types";
+import { ScreensizeService } from "../services/screensize.service";
 
 @Component({
   selector: "app-paginated-list",
@@ -29,8 +29,8 @@ export class PaginatedListComponent implements OnInit {
   constructor(
     private selectionService: SelectionService,
     public screenSizeService: ScreensizeService,
-    private sessionService: SessionService) {
-  }
+    private sessionService: SessionService
+  ) {}
 
   ngOnInit(): void {}
 

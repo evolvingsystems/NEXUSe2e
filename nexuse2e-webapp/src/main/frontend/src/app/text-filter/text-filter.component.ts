@@ -1,51 +1,57 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DateRange } from "../types";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { ActiveFilterList } from "../types";
 
 @Component({
-  selector: 'app-text-filter',
-  templateUrl: './text-filter.component.html',
-  styleUrls: ['./text-filter.component.scss']
+  selector: "app-text-filter",
+  templateUrl: "./text-filter.component.html",
+  styleUrls: ["./text-filter.component.scss"],
 })
-export class TextFilterComponent implements OnInit {
+export class TextFilterComponent {
   @Input() fieldName!: string;
   @Input() allowedValues: string[] = [];
   @Input() defaultValue?: string;
-  @Output() valueChange: EventEmitter<{ fieldName: string, value?: string | DateRange }> = new EventEmitter();
+  @Input() selectedValue?: string;
+  @Output() valueChange: EventEmitter<ActiveFilterList> = new EventEmitter();
   filteredOptions: string[] = [];
-  selectedValue?: string;
+  currentValue?: string;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-    this.selectedValue = this.defaultValue;
+  ngOnChanges(): void {
+    this.currentValue = this.selectedValue;
   }
 
   clear() {
-    this.selectedValue = undefined;
+    this.currentValue = undefined;
     this.emitValue();
   }
 
   onSelect(value: string) {
-    this.selectedValue = value;
+    this.currentValue = value;
     this.emitValue();
   }
 
   checkInput() {
-    if (this.selectedValue && this.allowedValues?.length && !this.allowedValues.includes(this.selectedValue)) {
-      this.selectedValue = undefined;
+    if (
+      this.currentValue &&
+      this.allowedValues?.length &&
+      !this.allowedValues.includes(this.currentValue)
+    ) {
+      this.currentValue = undefined;
     }
     this.emitValue();
   }
 
   private emitValue() {
-    this.valueChange.emit({ fieldName: this.fieldName, value: this.selectedValue });
+    const filters: ActiveFilterList = {};
+    filters[this.fieldName] = this.currentValue;
+    this.valueChange.emit(filters);
   }
 
   filterSuggestions(input?: string) {
     if (input) {
-      this.filteredOptions = this.allowedValues.filter(
-        (option) => option.toUpperCase().includes(input.toUpperCase())
+      this.filteredOptions = this.allowedValues.filter((option) =>
+        option.toUpperCase().includes(input.toUpperCase())
       );
     } else {
       this.filteredOptions = this.allowedValues;
