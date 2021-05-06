@@ -58,23 +58,25 @@ export class DataService {
   private static buildFilterParams(activeFilters: ActiveFilterList) {
     let httpParams = new HttpParams();
     for (const fieldName in activeFilters) {
-      if (activeFilters.hasOwnProperty(fieldName)) {const value = activeFilters[fieldName];
-      if (value) {
-        if (typeof value === "string") {
-          httpParams = httpParams.append(fieldName, value);
-        } else {
-          // type is DateRange
-          if (value.startDate) {
-            httpParams = httpParams.append(
-              "startDate",
-              value.startDate.toISOString()
-            );
-          }
-          if (value.endDate) {
-            httpParams = httpParams.append(
-              "endDate",
-              value.endDate.toISOString()
-            );}
+      if (activeFilters.hasOwnProperty(fieldName)) {
+        const value = activeFilters[fieldName];
+        if (value) {
+          if (typeof value === "string") {
+            httpParams = httpParams.append(fieldName, value);
+          } else {
+            // type is DateRange
+            if (value.startDate) {
+              httpParams = httpParams.append(
+                "startDate",
+                value.startDate.toISOString()
+              );
+            }
+            if (value.endDate) {
+              httpParams = httpParams.append(
+                "endDate",
+                value.endDate.toISOString()
+              );
+            }
           }
         }
       }

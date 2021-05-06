@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { DataService } from "../services/data.service";
 import { Router } from "@angular/router";
-import { SessionService } from "../data/session.service";
+import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-session-panel",
