@@ -3,8 +3,9 @@ import { PageEvent } from "@angular/material/paginator";
 import { SelectionService } from "../services/selection.service";
 import { ListConfig } from "../list/list.component";
 import { SessionService } from "../services/session.service";
-import { NexusData } from "../types";
+import { Action, NexusData } from "../types";
 import { ScreensizeService } from "../services/screensize.service";
+import { PermissionService } from "../services/permission.service";
 
 @Component({
   selector: "app-paginated-list",
@@ -17,8 +18,7 @@ export class PaginatedListComponent implements OnInit {
   @Input() itemType!: string;
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
-  @Input() isSelectable?: boolean;
-  @Input() actions? = [];
+  @Input() actions?: Action[] = [];
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
     pageSize: number;
@@ -30,7 +30,8 @@ export class PaginatedListComponent implements OnInit {
   constructor(
     private selectionService: SelectionService,
     public screenSizeService: ScreensizeService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {}
@@ -63,5 +64,12 @@ export class PaginatedListComponent implements OnInit {
     });
     this.selectionService.clearSelection(this.itemType);
     this.sessionService.setPageSize(this.itemType, this.pageSize);
+  }
+
+  isSelectable(): boolean {
+    if (this.actions) {
+      return this.actions.some(a => this.permissionService.isUserPermitted(a.actionKey));
+    }
+    return false;
   }
 }

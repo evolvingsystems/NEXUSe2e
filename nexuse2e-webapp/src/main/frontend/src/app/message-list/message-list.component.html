@@ -9,7 +9,7 @@
 <app-paginated-list [totalItemCount]="totalMessageCount"
                     [mobileConfig]="mobileConfig"
                     [desktopConfig]="desktopConfig"
-                    [isSelectable]="true"
+                    [actions]="actions"
                     [items]="messages"
                     itemType="message"
                     (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"

@@ -8,7 +8,7 @@
   </mat-paginator>
 </div>
 <app-list [desktopConfig]="desktopConfig" [mobileConfig]="mobileConfig" [items]="items" [itemType]="itemType"
-          [isSelectable]="isSelectable"></app-list>
+          [isSelectable]="isSelectable()"></app-list>
 <mat-paginator *ngIf="items?.length"
                [length]="totalItemCount"
                [pageSize]="pageSize"
