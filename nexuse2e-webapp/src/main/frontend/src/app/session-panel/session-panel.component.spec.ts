@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 import { SessionPanelComponent } from "./session-panel.component";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";

@@ -14,8 +14,10 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { FormsModule } from "@angular/forms";
-import { ScreensizeService } from "../screensize.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { ScreensizeService } from "../services/screensize.service";
+import { StringPipe } from "../pipes/string.pipe";
+import { DateRangePipe } from "../pipes/date-range.pipe";
 
 describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;
@@ -29,6 +31,8 @@ describe("FilterPanelComponent", () => {
         SelectFilterComponent,
         TextFilterComponent,
         DateTimeRangeFilterComponent,
+        StringPipe,
+        DateRangePipe,
       ],
       imports: [
         TranslateModule.forRoot(),
@@ -40,7 +44,7 @@ describe("FilterPanelComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
       ],
     }).compileComponents();
   });
@@ -58,7 +62,7 @@ describe("FilterPanelComponent", () => {
   it("should display the number of active filters when collapsed and if mobile view", () => {
     spyOn(component.sessionService, "getActiveFilters").and.returnValue({
       filter1: "1",
-      filter2: "2"
+      filter2: "2",
     });
     spyOn(screensizeService, "isMobile").and.returnValue(true);
     fixture.detectChanges();
@@ -96,7 +100,7 @@ describe("FilterPanelComponent", () => {
     component.toggleVisibility();
     fixture.detectChanges();
     spyOn(component.filterChange, "emit");
-    const button = fixture.nativeElement.querySelector("button");
+    const button = fixture.nativeElement.querySelector("#filterButton");
 
     button.dispatchEvent(new Event("click"));
     fixture.detectChanges();
@@ -124,5 +128,26 @@ describe("FilterPanelComponent", () => {
     component.activeFilters["type"] = "Completed";
 
     expect(component.getNumberOfActivatedFilters()).toEqual(2);
+  });
+
+  it("should reset filters to default values when clicking reset button", () => {
+    component.filters = [
+      {
+        fieldName: "filter1",
+        filterType: FilterType.TEXT,
+        defaultValue: "NORMAL",
+      },
+      {
+        fieldName: "filter2",
+        filterType: FilterType.TEXT,
+      },
+    ];
+    component.activeFilters = {
+      filter1: "1",
+      filter2: "2",
+    };
+    component.resetFiltersAndSetDefaults();
+
+    expect(component.activeFilters).toEqual({ filter1: "NORMAL" });
   });
 });

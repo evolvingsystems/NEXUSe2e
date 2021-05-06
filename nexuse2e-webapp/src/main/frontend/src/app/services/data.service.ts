@@ -58,7 +58,7 @@ export class DataService {
   private static buildFilterParams(activeFilters: ActiveFilterList) {
     let httpParams = new HttpParams();
     for (const fieldName in activeFilters) {
-      const value = activeFilters[fieldName];
+      if (activeFilters.hasOwnProperty(fieldName)) {const value = activeFilters[fieldName];
       if (value) {
         if (typeof value === "string") {
           httpParams = httpParams.append(fieldName, value);
@@ -74,7 +74,7 @@ export class DataService {
             httpParams = httpParams.append(
               "endDate",
               value.endDate.toISOString()
-            );
+            );}
           }
         }
       }

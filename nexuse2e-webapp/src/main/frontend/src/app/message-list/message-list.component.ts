@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Action, ActiveFilterList, Message } from "../types";
-import { DataService } from "../data/data.service";
-import {
-  Filter, FilterType,
-} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
+import { DataService } from "../services/data.service";
+import { Filter, FilterType } from "../filter-panel/filter-panel.component";
+import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-message-list",
@@ -83,7 +82,11 @@ export class MessageListComponent implements OnInit {
     },
     { fieldName: "partnerId" },
     { fieldName: "typeName", label: "messageType" },
-    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
+    {
+      fieldName: "choreographyId",
+      additionalFieldName: "actionId",
+      label: "step",
+    },
     { fieldName: "createdDate" },
   ];
 
@@ -100,7 +103,11 @@ export class MessageListComponent implements OnInit {
     { fieldName: "status" },
     { fieldName: "backendStatus" },
     { fieldName: "typeName", label: "messageType" },
-    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
+    {
+      fieldName: "choreographyId",
+      additionalFieldName: "actionId",
+      label: "step",
+    },
     { fieldName: "createdDate" },
     { fieldName: "turnAroundTime" },
   ];

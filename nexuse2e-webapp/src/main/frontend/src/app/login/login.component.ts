@@ -1,6 +1,6 @@
 import { Component, Injectable, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 import { NavigationService } from "../navigation/navigation.service";
 import { SessionService } from "../data/session.service";
 

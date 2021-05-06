@@ -10,6 +10,7 @@ import { By } from "@angular/platform-browser";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { ActiveFilterList } from "../types";
 
 describe("DateTimeRangeFilterComponent", () => {
   let component: DateTimeRangeFilterComponent;
@@ -43,9 +44,10 @@ describe("DateTimeRangeFilterComponent", () => {
   it("should emit date when changed", () => {
     component.fieldName = "startEndDateRange";
     const startTest = new Date(new Date().setHours(3, 0, 0, 0));
-    const activeFilter = {
-      fieldName: "startEndDateRange",
-      value: { startDate: startTest, endDate: component.endDate }
+    const activeFilter: ActiveFilterList = {};
+    activeFilter["startEndDateRange"] = {
+      startDate: startTest,
+      endDate: component.endDate,
     };
     const inputStart = fixture.debugElement.query(
       By.css('input[name="startDate"]')
@@ -60,10 +62,8 @@ describe("DateTimeRangeFilterComponent", () => {
 
   it("should emit undefined as value if both dates are undefined", () => {
     component.fieldName = "startEndDateRange";
-    const activeFilter = {
-      fieldName: "startEndDateRange",
-      value: undefined,
-    };
+    const activeFilter: ActiveFilterList = {};
+    activeFilter["startEndDateRange"] = undefined;
 
     spyOn(component.valueChange, "emit");
     component.clearStartDatePicker();

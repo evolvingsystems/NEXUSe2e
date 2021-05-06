@@ -1,13 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActiveFilterList, DateRange } from "../types";
-import { SessionService } from "../data/session.service";
-import { ScreensizeService } from "../screensize.service";
+import { SessionService } from "../services/session.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 export enum FilterType {
   TEXT,
@@ -35,16 +29,15 @@ export class FilterPanelComponent implements OnInit {
   activeFilters: ActiveFilterList = {};
   innerWidth = window.innerWidth;
 
-  constructor(public sessionService: SessionService, public screenSizeService: ScreensizeService) {}
+  constructor(
+    public screenSizeService: ScreensizeService,
+    public sessionService: SessionService
+  ) {}
 
   ngOnInit(): void {
     this.activeFilters = this.sessionService.getActiveFilters(this.itemType);
     if (Object.keys(this.activeFilters).length === 0) {
-      for (const filter of this.filters) {
-        if (filter.defaultValue && !this.activeFilters[filter.fieldName]) {
-          this.activeFilters[filter.fieldName] = filter.defaultValue;
-        }
-      }
+      this.setDefaultValues();
     }
     this.applyFilters();
   }
@@ -57,17 +50,26 @@ export class FilterPanelComponent implements OnInit {
     this.expanded = !this.expanded;
   }
 
-  updateActiveFilter(filter: { fieldName: string, value?: string | DateRange }) {
-    if (filter.value) {
-      this.activeFilters[filter.fieldName] = filter.value;
-    } else {
-      delete this.activeFilters[filter.fieldName];
+  updateActiveFilters(filters: ActiveFilterList) {
+    for (const key in filters) {
+      if (filters.hasOwnProperty(key)) {
+        const value = filters[key];
+        if (value) {
+          this.activeFilters[key] = value;
+        } else {
+          delete this.activeFilters[key];
+        }
+      }
     }
   }
 
   applyFilters() {
     this.filterChange.emit(this.activeFilters);
     this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
+  }
+
+  handleFilterAction() {
+    this.applyFilters();
     this.expanded = false;
   }
 
@@ -85,5 +87,19 @@ export class FilterPanelComponent implements OnInit {
 
   isDateRange(item: unknown): item is DateRange {
     return (item as DateRange).startDate !== undefined;
+  }
+
+  resetFiltersAndSetDefaults() {
+    this.activeFilters = {};
+    this.setDefaultValues();
+    this.applyFilters();
+  }
+
+  setDefaultValues() {
+    for (const filter of this.filters) {
+      if (filter.defaultValue && !this.activeFilters[filter.fieldName]) {
+        this.activeFilters[filter.fieldName] = filter.defaultValue;
+      }
+    }
   }
 }

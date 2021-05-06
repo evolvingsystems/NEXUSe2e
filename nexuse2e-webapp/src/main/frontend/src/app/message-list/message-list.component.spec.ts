@@ -24,6 +24,8 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ListComponent } from "../list/list.component";
 import { ActionPanelComponent } from "../action-panel/action-panel.component";
 import { ActionButtonComponent } from "../action-button/action-button.component";
+import { StringPipe } from "../pipes/string.pipe";
+import { DateRangePipe } from "../pipes/date-range.pipe";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -58,6 +60,8 @@ describe("MessageListComponent", () => {
         ListComponent,
         ActionPanelComponent,
         ActionButtonComponent,
+        StringPipe,
+        DateRangePipe,
       ],
     }).compileComponents();
   });

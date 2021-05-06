@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActiveFilterList, Conversation } from "../types";
-import { DataService } from "../data/data.service";
-import {
-  Filter, FilterType,
-} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
+import { DataService } from "../services/data.service";
+import { Filter, FilterType } from "../filter-panel/filter-panel.component";
+import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-conversation-list",

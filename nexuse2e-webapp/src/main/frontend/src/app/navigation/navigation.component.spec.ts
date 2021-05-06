@@ -4,7 +4,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { NavigationComponent } from "./navigation.component";
 import { RouterTestingModule } from "@angular/router/testing";
 import { By } from "@angular/platform-browser";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 import { SessionPanelComponent } from "../session-panel/session-panel.component";
 
 describe("NavigationComponent", () => {
