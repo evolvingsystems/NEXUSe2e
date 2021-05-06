@@ -22,7 +22,7 @@ describe("ActionButtonComponent", () => {
     component = fixture.componentInstance;
     component.action = {
       label: "requeue",
-      actionKey: "requeue",
+      actionKey: "message.requeue",
       actionParams: [],
     };
     permissionService = TestBed.inject(PermissionService);

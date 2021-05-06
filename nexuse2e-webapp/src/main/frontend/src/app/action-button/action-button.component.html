@@ -1,7 +1,8 @@
-<button mat-flat-button
+<button mat-stroked-button
         (click)="performAction()"
-        color="accent"
+        color="primary"
         [disabled]="!isPermitted"
 >
-  {{ "buttons." + action.label | translate }}
+  <mat-icon class="btnIcon" *ngIf="action.icon">{{ action.icon }}</mat-icon>
+  <span>{{ "buttons." + action.label | translate }}</span>
 </button>
