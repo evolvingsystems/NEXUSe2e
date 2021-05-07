@@ -7,7 +7,6 @@ import org.nexuse2e.ui.action.NexusE2EAction;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,7 +62,6 @@ public class UserHandler implements Handler {
             case "ModifyMessage.do":
                 actionKeys.add("message.requeue");
                 actionKeys.add("message.stop");
-                actionKeys.add("message.delete");
                 break;
             case "MessageView.do":
                 actionKeys.add("messages.view");

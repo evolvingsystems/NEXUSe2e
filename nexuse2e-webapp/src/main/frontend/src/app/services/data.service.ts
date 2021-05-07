@@ -37,6 +37,10 @@ export class DataService {
       .toPromise<T>();
   }
 
+  public clearCache() {
+    this.cache = {};
+  }
+
   getFullUsername(): Promise<string> {
     return this.get<string>("/full-username");
   }
