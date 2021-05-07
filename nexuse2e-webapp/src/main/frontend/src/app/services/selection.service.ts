@@ -14,6 +14,10 @@ export class SelectionService {
     return index;
   }
 
+  public getSelectedItems(selectionGroupName: string) {
+    return this.selections[selectionGroupName] || [];
+  }
+
   private select(selectionGroupName: string, item: unknown) {
     if (!this.selections[selectionGroupName]) {
       this.selections[selectionGroupName] = [];

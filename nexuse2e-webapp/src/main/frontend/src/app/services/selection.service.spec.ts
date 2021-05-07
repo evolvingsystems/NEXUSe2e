@@ -45,4 +45,10 @@ describe("SelectionService", () => {
 
     expect(service.isSelected("newSelectionGroup", item)).toBeFalse();
   });
+
+  it("should return an empty array if the selection does not exist", () => {
+    const nonExistingSelectionGroupName = "nonExistent";
+
+    expect(service.getSelectedItems(nonExistingSelectionGroupName)).toEqual([]);
+  })
 });

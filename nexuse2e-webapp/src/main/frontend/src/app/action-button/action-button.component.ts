@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Action } from "../types";
 import { PermissionService } from "../services/permission.service";
+import { ActionService } from "../services/action.service";
 
 @Component({
   selector: 'app-action-button',
@@ -9,9 +10,10 @@ import { PermissionService } from "../services/permission.service";
 })
 export class ActionButtonComponent implements OnInit {
   @Input() action!: Action;
+  @Output() isLoading: EventEmitter<boolean> = new EventEmitter();
   isPermitted = false;
 
-  constructor(private permissionService: PermissionService) {
+  constructor(private permissionService: PermissionService, private actionService: ActionService) {
   }
 
   async ngOnInit() {
@@ -19,6 +21,12 @@ export class ActionButtonComponent implements OnInit {
   }
 
   performAction(): void {
-    console.log("action button");
+    this.isLoading.emit(true);
+    switch (this.action.actionKey) {
+      case "messages.stop":
+        this.actionService.stopMessages();
+        break;
+    }
+    this.isLoading.emit(false);
   }
 }

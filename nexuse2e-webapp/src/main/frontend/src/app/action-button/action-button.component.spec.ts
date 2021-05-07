@@ -22,8 +22,7 @@ describe("ActionButtonComponent", () => {
     component = fixture.componentInstance;
     component.action = {
       label: "requeue",
-      actionKey: "message.requeue",
-      actionParams: [],
+      actionKey: "messages.requeue",
     };
     permissionService = TestBed.inject(PermissionService);
     spyOn(permissionService, "isUserPermitted").and.returnValue(true);

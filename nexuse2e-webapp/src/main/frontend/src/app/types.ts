@@ -39,5 +39,4 @@ export interface Action {
   label: string;
   icon?: string;
   actionKey: string;
-  actionParams: unknown[];
 }

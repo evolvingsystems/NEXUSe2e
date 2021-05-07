@@ -12,26 +12,13 @@ import org.nexuse2e.util.PasswordUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+
+import static org.nexuse2e.util.FileUtil.readAll;
 
 public class LoginHandler implements Handler {
     private static final Logger LOG = Logger.getLogger(LoginHandler.class);
-
-    private static String readAll(InputStream in) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        InputStreamReader inr = new InputStreamReader(in, StandardCharsets.UTF_8);
-        BufferedReader br = new BufferedReader(inr);
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        return sb.toString();
-    }
 
     @Override
     public boolean canHandle(String path, String method) {
