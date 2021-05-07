@@ -1,7 +1,6 @@
-<button mat-stroked-button
+<button *ngIf="isPermitted" mat-stroked-button
         (click)="performAction()"
         color="primary"
-        [disabled]="!isPermitted"
 >
   <mat-icon class="btnIcon" *ngIf="action.icon">{{ action.icon }}</mat-icon>
   <span>{{ "buttons." + action.label | translate }}</span>
