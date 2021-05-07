@@ -47,6 +47,7 @@ import { ListComponent } from "./list/list.component";
 import { StringPipe } from "./pipes/string.pipe";
 import { DateRangePipe } from "./pipes/date-range.pipe";
 import { ActionButtonComponent } from './action-button/action-button.component';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -166,6 +167,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatNativeDateModule,
     BrowserAnimationsModule,
     MatAutocompleteModule,
+    MatSnackBarModule
   ],
   providers: [
     {
