@@ -13,9 +13,8 @@ export class ActionService {
   async stopMessages() {
     const messages = this.selectionService.getSelectedItems("message");
     try {
-      this.dataService.stopMessages(messages.map(m => (m as Message).messageId));
+      await this.dataService.stopMessages(messages.map(m => (m as Message).messageId));
     } catch {
-      console.log("stopping failed");
       // TODO Snackbar error
     }
   }

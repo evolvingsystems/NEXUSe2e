@@ -9,7 +9,10 @@
 </div>
 <div class="action-button-panel">
   <ng-container *ngFor="let action of actions">
-    <app-action-button [action]="action"></app-action-button>
+    <app-action-button
+      [action]="action"
+      (triggerReload)="update()">
+    </app-action-button>
   </ng-container>
 </div>
 <app-list [desktopConfig]="desktopConfig" [mobileConfig]="mobileConfig" [items]="items" [itemType]="itemType"

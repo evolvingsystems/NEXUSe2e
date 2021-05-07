@@ -10,8 +10,9 @@ import { ActionService } from "../services/action.service";
 })
 export class ActionButtonComponent implements OnInit {
   @Input() action!: Action;
-  @Output() isLoading: EventEmitter<boolean> = new EventEmitter();
+  @Output() triggerReload: EventEmitter<void> = new EventEmitter();
   isPermitted = false;
+  inProgress = false;
 
   constructor(private permissionService: PermissionService, private actionService: ActionService) {
   }
@@ -20,13 +21,14 @@ export class ActionButtonComponent implements OnInit {
     this.isPermitted = await this.permissionService.isUserPermitted(this.action.actionKey);
   }
 
-  performAction(): void {
-    this.isLoading.emit(true);
+  async performAction(): Promise<void> {
+    this.inProgress = true;
     switch (this.action.actionKey) {
       case "messages.stop":
-        this.actionService.stopMessages();
+        await this.actionService.stopMessages();
         break;
     }
-    this.isLoading.emit(false);
+    this.inProgress = false;
+    this.triggerReload.emit();
   }
 }
