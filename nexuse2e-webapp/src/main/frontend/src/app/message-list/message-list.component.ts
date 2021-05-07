@@ -115,23 +115,25 @@ export class MessageListComponent implements OnInit {
   actions: Action[] = [
     {
       label: "requeue",
+      icon: "refresh",
       actionKey: "message.requeue",
-      actionParams: []
+      actionParams: [],
     },
     {
       label: "stop",
+      icon: "stop",
       actionKey: "message.stop",
-      actionParams: []
+      actionParams: [],
     },
     {
       label: "delete",
+      icon: "delete",
       actionKey: "message.delete",
-      actionParams: []
+      actionParams: [],
     },
-  ]
+  ];
 
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   async ngOnInit() {
     this.participantFilter.allowedValues = await this.dataService.getPartnerIds();

@@ -3,13 +3,10 @@
   itemType="message"
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
-<app-action-panel itemType="message"
-                  [actions]="actions"
-></app-action-panel>
 <app-paginated-list [totalItemCount]="totalMessageCount"
                     [mobileConfig]="mobileConfig"
                     [desktopConfig]="desktopConfig"
-                    [isSelectable]="true"
+                    [actions]="actions"
                     [items]="messages"
                     itemType="message"
                     (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"

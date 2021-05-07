@@ -95,6 +95,10 @@ a {
   float: right;
 }
 
+.relativeWrapper {
+  position: relative;
+}
+
 @media(min-width: $desktopBreakpoint) {
   .padded-desktop {
     padding: 15px;

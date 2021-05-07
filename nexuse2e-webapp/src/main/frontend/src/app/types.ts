@@ -1,5 +1,4 @@
-export interface NexusData {
-}
+export interface NexusData {}
 
 export interface Message extends NexusData {
   messageId: string;
@@ -38,6 +37,7 @@ export interface ActiveFilterList {
 
 export interface Action {
   label: string;
+  icon?: string;
   actionKey: string;
   actionParams: unknown[];
 }

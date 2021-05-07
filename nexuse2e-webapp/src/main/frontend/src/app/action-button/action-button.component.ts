@@ -9,7 +9,7 @@ import { PermissionService } from "../services/permission.service";
 })
 export class ActionButtonComponent implements OnInit {
   @Input() action!: Action;
-  isPermitted = true;
+  isPermitted = false;
 
   constructor(private permissionService: PermissionService) {
   }
@@ -19,8 +19,6 @@ export class ActionButtonComponent implements OnInit {
   }
 
   performAction(): void {
-    // ModifyMessageAction for requeue
     console.log("action button");
   }
-
 }
