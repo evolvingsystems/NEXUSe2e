@@ -91,6 +91,7 @@ describe("LoginComponent", () => {
 
   it("should redirect after successful login", async () => {
     spyOn(dataService, "postLogin");
+    spyOn(dataService, "getPermittedActions");
     spyOn(router, "navigateByUrl");
     await component.login({
       user: "admin",

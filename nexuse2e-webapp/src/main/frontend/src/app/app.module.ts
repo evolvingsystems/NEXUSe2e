@@ -53,6 +53,8 @@ import { MasterSelectComponent } from "./master-select/master-select.component";
 import { ListComponent } from "./list/list.component";
 import { StringPipe } from "./pipes/string.pipe";
 import { DateRangePipe } from "./pipes/date-range.pipe";
+import { ActionPanelComponent } from './action-panel/action-panel.component';
+import { ActionButtonComponent } from './action-button/action-button.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -141,6 +143,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterSelectComponent,
     LoadingSpinnerComponent,
     ListComponent,
+    ActionPanelComponent,
+    ActionButtonComponent,
     StringPipe,
     DateRangePipe,
   ],

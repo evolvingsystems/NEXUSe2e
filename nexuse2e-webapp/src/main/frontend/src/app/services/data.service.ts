@@ -47,6 +47,10 @@ export class DataService {
     return this.get("/logged-in", false);
   }
 
+  getPermittedActions(): Promise<string[]> {
+    return this.get("/permitted-actions");
+  }
+
   getMachineName(): Promise<string> {
     return this.get<string>("/machine-name");
   }
