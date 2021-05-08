@@ -8,9 +8,12 @@
   </mat-paginator>
 </div>
 <div class="action-button-panel">
-  <app-action-panel [itemType]="itemType"
-                    [actions]="actions"
-  ></app-action-panel>
+  <ng-container *ngFor="let action of actions">
+    <app-action-button
+      [action]="action"
+      (triggerReload)="update()">
+    </app-action-button>
+  </ng-container>
 </div>
 <app-list [desktopConfig]="desktopConfig" [mobileConfig]="mobileConfig" [items]="items" [itemType]="itemType"
           [isSelectable]="isSelectable()"></app-list>

@@ -1,5 +1,10 @@
 @import '../../styles.scss';
 
+.loading_spinner_wrapper {
+  position: relative;
+  height: 80px;
+}
+
 /* Spinner provided by https://loading.io/css/ */
 .lds-spinner {
   color: transparent;

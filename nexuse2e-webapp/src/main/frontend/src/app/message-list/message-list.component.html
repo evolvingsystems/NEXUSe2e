@@ -12,6 +12,6 @@
                     (triggerReload)="loadMessages($event.pageIndex, $event.pageSize)"
 >
 </app-paginated-list>
-<div class="loading_spinner_wrapper" *ngIf="!loaded">
+<ng-container *ngIf="!loaded">
   <app-loading-spinner></app-loading-spinner>
-</div>
+</ng-container>

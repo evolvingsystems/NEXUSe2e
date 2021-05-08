@@ -1,6 +1,7 @@
 <button *ngIf="isPermitted" mat-stroked-button
         (click)="performAction()"
         color="primary"
+        [class.spinner]="inProgress"
 >
   <mat-icon class="btnIcon" *ngIf="action.icon">{{ action.icon }}</mat-icon>
   <span>{{ "buttons." + action.label | translate }}</span>

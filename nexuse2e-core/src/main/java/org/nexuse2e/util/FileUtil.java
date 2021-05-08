@@ -19,12 +19,8 @@
  */
 package org.nexuse2e.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -145,5 +141,16 @@ public class FileUtil {
             reader.close();
             writer.close();
         }
+    }
+
+    public static String readAll(InputStream in) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        InputStreamReader inr = new InputStreamReader(in, StandardCharsets.UTF_8);
+        BufferedReader br = new BufferedReader(inr);
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        return sb.toString();
     }
 }

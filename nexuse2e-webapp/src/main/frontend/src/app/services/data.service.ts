@@ -101,6 +101,10 @@ export class DataService {
     );
   }
 
+  stopMessages(messageIds: string[]): Promise<void> {
+    return this.post("/messages/stop", messageIds);
+  }
+
   getConversations(
     pageIndex: number,
     itemsPerPage: number,
