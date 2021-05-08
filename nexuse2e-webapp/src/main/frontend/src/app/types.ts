@@ -40,3 +40,8 @@ export interface Action {
   icon?: string;
   actionKey: string;
 }
+
+export interface NotificationItem {
+  snackType: string;
+  textLabel: string;
+}
