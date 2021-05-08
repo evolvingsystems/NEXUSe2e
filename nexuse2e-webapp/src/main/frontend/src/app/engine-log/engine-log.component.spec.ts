@@ -23,6 +23,8 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ListComponent } from "../list/list.component";
 import { MatCardModule } from "@angular/material/card";
+import { StringPipe } from "../pipes/string.pipe";
+import { DateRangePipe } from "../pipes/date-range.pipe";
 
 describe("EngineLogComponent", () => {
   let component: EngineLogComponent;
@@ -56,6 +58,8 @@ describe("EngineLogComponent", () => {
         DateTimeRangeFilterComponent,
         LoadingSpinnerComponent,
         ListComponent,
+        StringPipe,
+        DateRangePipe,
       ],
     }).compileComponents();
   });

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActiveFilterList, EngineLog } from "../types";
 import { FilterType } from "../filter-panel/filter-panel.component";
 import { ListConfig } from "../list/list.component";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-engine-log",
