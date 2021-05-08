@@ -1,5 +1,4 @@
-export interface NexusData {
-}
+export interface NexusData {}
 
 export interface Message extends NexusData {
   messageId: string;
@@ -25,6 +24,14 @@ export interface Conversation extends NexusData {
   status: string;
   currentAction: string;
   turnAroundTime: string;
+}
+
+export interface EngineLog extends NexusData {
+  description: string;
+  createdDate: string;
+  severity: string;
+  className: string;
+  methodName: string;
 }
 
 export interface DateRange {

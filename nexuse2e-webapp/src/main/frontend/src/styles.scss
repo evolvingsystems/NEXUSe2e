@@ -137,11 +137,20 @@ a {
         background: linear-gradient(to right, rgba(255, 255, 255, 0.1), #fff);
         right: 0;
       }
+
+      &[class="description"] {
+        white-space: normal;
+
+        &:before {
+          background: transparent;
+        }
+      }
     }
 
     .label {
       width: 120px;
       font-weight: bold;
+      vertical-align: baseline;
     }
   }
 }
@@ -182,6 +191,13 @@ a {
       min-width: 180px;
     }
 
+    &[class*="-column-description"] {
+      white-space: normal;
+      min-width: 375px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
     &:first-of-type {
       padding: 0 20px;
     }
@@ -197,27 +213,15 @@ a {
 
 /* Status Colors */
 .statusLeftBorderColor {
-  &.error {
+  &.error, &.failed, &.fatal {
     border-left-color: $error !important;
   }
 
-  &.unknown, &.created, &.idle {
+  &.unknown, &.created, &.idle, &.stopped, &.retrying, &.warn {
     border-left-color: $warning !important;
   }
 
-  &.completed {
-    border-left-color: $success !important;
-  }
-
-  &.failed {
-    border-left-color: $error !important;
-  }
-
-  &.stopped, &.retrying {
-    border-left-color: $warning !important;
-  }
-
-  &.sent {
+  &.completed, &.sent {
     border-left-color: $success !important;
   }
 }

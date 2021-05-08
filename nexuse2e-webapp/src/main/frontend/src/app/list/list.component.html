@@ -9,7 +9,8 @@
                                [selectionGroupName]="itemType"
             ></app-master-select>
           </th>
-          <td mat-cell *matCellDef="let element" [class]="element.status | lowercase" [class.thin]="!isSelectable"
+          <td mat-cell *matCellDef="let element" [class]="(element.status || element.severity) | lowercase"
+              [class.thin]="!isSelectable"
               class="statusLeftBorderColor">
             <mat-checkbox *ngIf="isSelectable" (change)="toggleSelection($event, element)"
                           [checked]="isSelected(element)"></mat-checkbox>
@@ -59,7 +60,7 @@
     >
     </app-master-select>
     <div *ngFor="let item of items" class="item-card-wrapper">
-      <mat-card *ngIf="item" [class]="item.status | lowercase" class="statusLeftBorderColor">
+      <mat-card *ngIf="item" [class]="(item.status || item.severity) | lowercase" class="statusLeftBorderColor">
         <div *ngIf="headerElement && headerElement.linkUrlRecipe" class="card-header">
           <mat-checkbox *ngIf="isSelectable" (change)="toggleSelection($event, item)"
                         [checked]="isSelected(item)"></mat-checkbox>
@@ -71,7 +72,7 @@
           <ng-container *ngFor="let configItem of mobileConfig">
             <tr *ngIf="!configItem.isHeader">
               <td class="label">{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</td>
-              <td>
+              <td [class]="configItem.fieldName">
                 <ng-container *ngIf="configItem.fieldName">
                   <a *ngIf="configItem.linkUrlRecipe"
                      [routerLink]="getUrl(item, configItem.linkUrlRecipe)">

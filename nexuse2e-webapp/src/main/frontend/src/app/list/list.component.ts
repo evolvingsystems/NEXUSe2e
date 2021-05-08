@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Conversation, Message, NexusData } from "../types";
+import { Conversation, EngineLog, Message, NexusData } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../data/selection.service";
 import { ScreensizeService } from "../screensize.service";
@@ -48,6 +48,14 @@ export class ListComponent implements OnInit {
     if (this.isConversation(item)) {
       return item[propertyName as keyof Conversation];
     }
+    if (this.isEngineLog(item)) {
+      const property = item[propertyName as keyof EngineLog];
+      if (typeof property === "string") {
+        return property.length > 200
+          ? property.substr(0, 200) + "..."
+          : property;
+      }
+    }
   }
 
   isMessage(item: NexusData): item is Message {
@@ -56,6 +64,10 @@ export class ListComponent implements OnInit {
 
   isConversation(item: NexusData): item is Conversation {
     return (item as Conversation).currentAction !== undefined;
+  }
+
+  isEngineLog(item: NexusData): item is EngineLog {
+    return (item as EngineLog).methodName !== undefined;
   }
 
   getUrl(item: NexusData, linkUrlRecipe: string): string {
