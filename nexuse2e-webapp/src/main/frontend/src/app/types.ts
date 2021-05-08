@@ -42,3 +42,10 @@ export interface DateRange {
 export interface ActiveFilterList {
   [fieldName: string]: string | DateRange | undefined;
 }
+
+export interface Action {
+  label: string;
+  icon?: string;
+  actionKey: string;
+  actionParams: unknown[];
+}

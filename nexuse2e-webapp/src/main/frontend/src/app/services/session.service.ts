@@ -35,4 +35,22 @@ export class SessionService {
   setPageSize(itemType: string, pageSize: number) {
     sessionStorage.setItem(`${itemType}-page-size`, String(pageSize));
   }
+
+  getPermittedActions(): string[] {
+    const permittedActionsFromSession = sessionStorage.getItem("permitted-actions");
+    if (permittedActionsFromSession) {
+      return JSON.parse(permittedActionsFromSession) as string[];
+    }
+    return [];
+  }
+
+  setPermittedActions(actionKeys: string[]) {
+    if (actionKeys) {
+      sessionStorage.setItem("permitted-actions", JSON.stringify(actionKeys));
+    }
+  }
+
+  clearSession() {
+    sessionStorage.clear();
+  }
 }

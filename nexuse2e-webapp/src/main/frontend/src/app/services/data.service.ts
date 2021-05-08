@@ -47,6 +47,10 @@ export class DataService {
     return this.get("/logged-in", false);
   }
 
+  getPermittedActions(): Promise<string[]> {
+    return this.get("/permitted-actions");
+  }
+
   getMachineName(): Promise<string> {
     return this.get<string>("/machine-name");
   }
@@ -54,7 +58,7 @@ export class DataService {
   private static buildFilterParams(activeFilters: ActiveFilterList) {
     let httpParams = new HttpParams();
     for (const fieldName in activeFilters) {
-      const value = activeFilters[fieldName];
+      if (activeFilters.hasOwnProperty(fieldName)) {const value = activeFilters[fieldName];
       if (value) {
         if (typeof value === "string") {
           httpParams = httpParams.append(fieldName, value);
@@ -70,7 +74,7 @@ export class DataService {
             httpParams = httpParams.append(
               "endDate",
               value.endDate.toISOString()
-            );
+            );}
           }
         }
       }
@@ -121,7 +125,8 @@ export class DataService {
     itemsPerPage: number,
     activeFilters: ActiveFilterList
   ): Promise<EngineLog[]> {
-    let params = DataService.buildFilterParams(activeFilters);
+    let params = DataService.buildFilterParams(activeFilters)
+    ;
     params = params.append("pageIndex", String(pageIndex));
     params = params.append("itemsPerPage", String(itemsPerPage));
     return this.get<EngineLog[]>("/engine-logs", false, params);

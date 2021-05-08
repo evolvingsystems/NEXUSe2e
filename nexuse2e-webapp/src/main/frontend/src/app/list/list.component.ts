@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Conversation, EngineLog, Message, NexusData } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { SelectionService } from "../data/selection.service";
-import { ScreensizeService } from "../screensize.service";
+import { SelectionService } from "../services/selection.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 export interface ListConfig {
   fieldName: string;

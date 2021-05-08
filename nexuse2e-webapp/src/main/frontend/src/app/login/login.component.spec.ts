@@ -3,7 +3,7 @@ import { LoginComponent } from "./login.component";
 import { RouterTestingModule } from "@angular/router/testing";
 import { ActivatedRoute, convertToParamMap, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 import { TranslateModule } from "@ngx-translate/core";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -91,6 +91,7 @@ describe("LoginComponent", () => {
 
   it("should redirect after successful login", async () => {
     spyOn(dataService, "postLogin");
+    spyOn(dataService, "getPermittedActions");
     spyOn(router, "navigateByUrl");
     await component.login({
       user: "admin",

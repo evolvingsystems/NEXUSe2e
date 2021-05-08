@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationService } from "../navigation/navigation.service";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-header",
@@ -14,8 +14,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private dataService: DataService,
     public navigationService: NavigationService
-  ) {
-  }
+  ) {}
 
   async ngOnInit() {
     this.machineName = await this.dataService.getMachineName();

@@ -10,7 +10,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { AppComponent } from "./app.component";
 import { LoginComponent } from "./login/login.component";
 import { DashboardComponent } from "./dashboard/dashboard.component";
-import { AuthGuardService } from "./data/auth-guard.service";
+import { AuthGuardService } from "./services/auth-guard.service";
 import { FormsModule } from "@angular/forms";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -51,6 +51,10 @@ import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.compo
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MasterSelectComponent } from "./master-select/master-select.component";
 import { ListComponent } from "./list/list.component";
+import { StringPipe } from "./pipes/string.pipe";
+import { DateRangePipe } from "./pipes/date-range.pipe";
+import { ActionPanelComponent } from './action-panel/action-panel.component';
+import { ActionButtonComponent } from './action-button/action-button.component';
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -139,6 +143,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     MasterSelectComponent,
     LoadingSpinnerComponent,
     ListComponent,
+    ActionPanelComponent,
+    ActionButtonComponent,
+    StringPipe,
+    DateRangePipe,
   ],
   imports: [
     BrowserModule,

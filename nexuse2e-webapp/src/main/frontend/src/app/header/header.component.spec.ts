@@ -3,7 +3,7 @@ import { HeaderComponent } from "./header.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { By } from "@angular/platform-browser";
-import { DataService } from "../data/data.service";
+import { DataService } from "../services/data.service";
 import { MatIconModule } from "@angular/material/icon";
 import { SessionPanelComponent } from "../session-panel/session-panel.component";
 import { RouterTestingModule } from "@angular/router/testing";

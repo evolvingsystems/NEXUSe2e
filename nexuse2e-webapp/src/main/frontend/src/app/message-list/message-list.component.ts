@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, Message } from "../types";
-import { DataService } from "../data/data.service";
-import {
-  Filter, FilterType,
-} from "../filter-panel/filter-panel.component";import { ListConfig } from "../list/list.component";
+import { Action, ActiveFilterList, Message } from "../types";
+import { DataService } from "../services/data.service";
+import { Filter, FilterType } from "../filter-panel/filter-panel.component";
+import { ListConfig } from "../list/list.component";
 
 @Component({
   selector: "app-message-list",
@@ -83,7 +82,11 @@ export class MessageListComponent implements OnInit {
     },
     { fieldName: "partnerId" },
     { fieldName: "typeName", label: "messageType" },
-    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
+    {
+      fieldName: "choreographyId",
+      additionalFieldName: "actionId",
+      label: "step",
+    },
     { fieldName: "createdDate" },
   ];
 
@@ -100,9 +103,34 @@ export class MessageListComponent implements OnInit {
     { fieldName: "status" },
     { fieldName: "backendStatus" },
     { fieldName: "typeName", label: "messageType" },
-    { fieldName: "choreographyId", additionalFieldName: "actionId", label: "step" },
+    {
+      fieldName: "choreographyId",
+      additionalFieldName: "actionId",
+      label: "step",
+    },
     { fieldName: "createdDate" },
     { fieldName: "turnAroundTime" },
+  ];
+
+  actions: Action[] = [
+    {
+      label: "requeue",
+      icon: "refresh",
+      actionKey: "message.requeue",
+      actionParams: [],
+    },
+    {
+      label: "stop",
+      icon: "stop",
+      actionKey: "message.stop",
+      actionParams: [],
+    },
+    {
+      label: "delete",
+      icon: "delete",
+      actionKey: "message.delete",
+      actionParams: [],
+    },
   ];
 
   constructor(private dataService: DataService) {}
