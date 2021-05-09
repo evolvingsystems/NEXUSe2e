@@ -1,3 +1,5 @@
+import { ListConfig } from "./list/list.component";
+
 export interface NexusData {}
 
 export interface Message extends NexusData {
@@ -47,4 +49,11 @@ export interface Action {
   label: string;
   icon?: string;
   actionKey: string;
+}
+
+export interface ListModalDialog {
+  items: NexusData[];
+  itemType: string;
+  mobileConfig: ListConfig[];
+  desktopConfig: ListConfig[];
 }

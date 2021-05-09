@@ -1,4 +1,4 @@
-<ng-container *ngIf="!screenSizeService.isMobile()">
+<ng-container *ngIf="!screenSizeService.isMobile() && !isModalDialog">
   <div class="padded items-table-wrapper">
     <div class="table-scrollable" *ngIf="items.length">
       <table mat-table [dataSource]="items" class="mat-elevation-z8 full-width">
@@ -29,6 +29,10 @@
               <ng-container *ngIf="!configItem.linkUrlRecipe">
                 {{ getProperty(item, configItem.fieldName) }}
               </ng-container>
+              <div *ngIf="showMoreButton">
+                <button mat-button color="accent" class="float-right"
+                        (click)="showMore(item)">{{ "buttons.showMore" | translate }}</button>
+              </div>
             </ng-container>
             <ng-container *ngIf="configItem.additionalFieldName">
                   <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">
@@ -51,7 +55,7 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="screenSizeService.isMobile()">
+<ng-container *ngIf="screenSizeService.isMobile() && !isModalDialog">
   <div class="padded relativeWrapper">
     <app-master-select
       *ngIf="items.length && isSelectable"
@@ -81,6 +85,10 @@
                   <ng-container *ngIf="!configItem.linkUrlRecipe">
                     {{ getProperty(item, configItem.fieldName) }}
                   </ng-container>
+                  <div *ngIf="showMoreButton">
+                    <button mat-button color="accent" class="float-right"
+                            (click)="showMore(item)">{{ "buttons.showMore" | translate }}</button>
+                  </div>
                 </ng-container>
                 <ng-container *ngIf="configItem.additionalFieldName">
                   <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">
@@ -99,6 +107,43 @@
           </ng-container>
         </table>
       </mat-card>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="isModalDialog">
+  <div class="padded relativeWrapper">
+    <div *ngFor="let item of items" class="modal-dialog">
+      <table>
+        <ng-container *ngFor="let configItem of modalDialogConfig">
+          <tr *ngIf="!configItem.isHeader">
+            <td class="label">{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</td>
+            <td [class]="configItem.fieldName">
+              <ng-container *ngIf="configItem.fieldName">
+                <a *ngIf="configItem.linkUrlRecipe"
+                   [routerLink]="getUrl(item, configItem.linkUrlRecipe)">
+                  {{ getProperty(item, configItem.fieldName) }}
+                </a>
+                <ng-container *ngIf="!configItem.linkUrlRecipe">
+                  {{ getProperty(item, configItem.fieldName) }}
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="configItem.additionalFieldName">
+                <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">
+                  <span>(</span>
+                  <a [routerLink]="getUrl(item, configItem.additionalLinkUrlRecipe)">
+                    {{ "" + getProperty(item, configItem.additionalFieldName) + "" }}
+                  </a>
+                  <span>)</span>
+                </span>
+                <ng-container *ngIf="!configItem.additionalLinkUrlRecipe">
+                  {{ " | " + getProperty(item, configItem.additionalFieldName) }}
+                </ng-container>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+      </table>
     </div>
   </div>
 </ng-container>

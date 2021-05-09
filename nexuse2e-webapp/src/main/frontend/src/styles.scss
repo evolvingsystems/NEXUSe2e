@@ -216,6 +216,43 @@ a {
   }
 }
 
+/* Modal Dialog */
+.modal-dialog {
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+
+    td {
+      white-space: nowrap;
+      overflow: hidden;
+
+      &:before {
+        content: "";
+        width: 40px;
+        height: 20px;
+        position: absolute;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0.1), #fff);
+        right: 0;
+      }
+
+      &[class="description"] {
+        white-space: normal;
+
+        &:before {
+          background: transparent;
+        }
+      }
+    }
+
+    .label {
+      width: 120px;
+      font-weight: bold;
+      vertical-align: baseline;
+    }
+  }
+}
+
 /* Status Colors */
 .statusLeftBorderColor {
   &.error, &.failed, &.fatal {

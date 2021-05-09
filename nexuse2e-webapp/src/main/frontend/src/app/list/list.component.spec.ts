@@ -7,6 +7,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { messages } from "../test-data";
 import { MatCardModule } from "@angular/material/card";
+import { MatDialogModule } from "@angular/material/dialog";
 
 describe("ListComponent", () => {
   let component: ListComponent;
@@ -20,6 +21,7 @@ describe("ListComponent", () => {
         MatCardModule,
         RouterTestingModule,
         TranslateModule.forRoot(),
+        MatDialogModule,
       ],
       declarations: [ListComponent],
     }).compileComponents();
@@ -63,6 +65,7 @@ describe("ListComponent", () => {
     ];
     component.items = messages;
     component.itemType = "message";
+    component.isModalDialog = false;
     fixture.detectChanges();
   });
 

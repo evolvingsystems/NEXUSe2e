@@ -3,6 +3,8 @@ import { Conversation, EngineLog, Message, NexusData } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
 import { ScreensizeService } from "../services/screensize.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ModalDialogComponent } from "../modal-dialog/modal-dialog.component";
 
 export interface ListConfig {
   fieldName: string;
@@ -24,17 +26,27 @@ export class ListComponent implements OnInit {
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
+  @Input() isModalDialog?: boolean;
   displayedColumns: string[] = ["select"];
   headerElement?: ListConfig;
+  modalDialogConfig: ListConfig[] = [];
+  showMoreButton = false; // TODO
 
   constructor(
     private selectionService: SelectionService,
-    public screenSizeService: ScreensizeService
+    public screenSizeService: ScreensizeService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.displayedColumns.push(...this.desktopConfig.map((e) => e.fieldName));
-    this.headerElement = this.getHeaderElement();
+    if (!this.isModalDialog) {
+      this.headerElement = this.getHeaderElement();
+    } else {
+      this.modalDialogConfig = this.screenSizeService.isMobile()
+        ? this.mobileConfig
+        : this.desktopConfig;
+    }
   }
 
   getHeaderElement(): ListConfig | undefined {
@@ -50,10 +62,12 @@ export class ListComponent implements OnInit {
     }
     if (this.isEngineLog(item)) {
       const property = item[propertyName as keyof EngineLog];
-      if (typeof property === "string") {
+      if (typeof property === "string" && !this.isModalDialog) {
         return property.length > 200
           ? property.substr(0, 200) + "..."
           : property;
+      } else {
+        return property;
       }
     }
   }
@@ -89,5 +103,16 @@ export class ListComponent implements OnInit {
 
   isSelected(item: NexusData) {
     return this.selectionService.isSelected(this.itemType, item);
+  }
+
+  showMore(item: NexusData) {
+    this.dialog.open(ModalDialogComponent, {
+      data: {
+        items: [item],
+        itemType: this.itemType,
+        mobileConfig: this.mobileConfig,
+        desktopConfig: this.desktopConfig,
+      },
+    });
   }
 }
