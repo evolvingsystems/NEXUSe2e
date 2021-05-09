@@ -31,4 +31,27 @@ export class ActionService {
       });
     }
   }
+
+  async requeueMessages() {
+    const messages = this.selectionService.getSelectedItems("message");
+    try {
+      await this.dataService.requeueMessages(
+        /*messages.map((m) => ({
+          messageId: (m as Message).messageId,
+          choreographyId: (m as Message).choreographyId,
+          participantId: (m as Message).partnerId,
+          conversationId: (m as Message).conversationId,
+        }))*/
+        messages as Message[]
+      );
+    } catch {
+      this._snackBar.openFromComponent(NotificationComponent, {
+        duration: 5000,
+        data: {
+          snackType: "error",
+          textLabel: "messageStatusError",
+        } as NotificationItem,
+      });
+    }
+  }
 }

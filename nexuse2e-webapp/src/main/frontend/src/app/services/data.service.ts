@@ -103,6 +103,10 @@ export class DataService {
     );
   }
 
+  requeueMessages(messages: Message[]): Promise<void> {
+    return this.post("/messages/requeue", messages);
+  }
+
   stopMessages(messageIds: string[]): Promise<void> {
     return this.post("/messages/stop", messageIds);
   }
