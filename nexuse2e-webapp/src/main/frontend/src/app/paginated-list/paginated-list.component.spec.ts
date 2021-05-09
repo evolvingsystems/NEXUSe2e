@@ -8,6 +8,7 @@ import { By } from "@angular/platform-browser";
 import { MatCardModule } from "@angular/material/card";
 import { ListComponent } from "../list/list.component";
 import { ScreensizeService } from "../services/screensize.service";
+import { ActionButtonComponent } from "../action-button/action-button.component";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
@@ -17,7 +18,11 @@ describe("PaginatedListComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MatPaginatorModule, BrowserAnimationsModule, MatCardModule],
-      declarations: [PaginatedListComponent, ListComponent],
+      declarations: [
+        PaginatedListComponent,
+        ListComponent,
+        ActionButtonComponent,
+      ],
     }).compileComponents();
   });
 

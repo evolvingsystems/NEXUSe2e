@@ -20,7 +20,7 @@ public class DataManipulationHandler implements Handler {
     public boolean canHandle(String path, String method) {
         return ("POST".equalsIgnoreCase(method) && "/messages/requeue".equalsIgnoreCase(path)) ||
                 ("POST".equalsIgnoreCase(method) && "/messages/stop".equalsIgnoreCase(path)) ||
-                ("POST".equalsIgnoreCase(method) && "/messages/delete".equalsIgnoreCase(path));
+                ("POST".equalsIgnoreCase(method) && "/conversations/delete".equalsIgnoreCase(path));
     }
 
     @Override
@@ -34,8 +34,8 @@ public class DataManipulationHandler implements Handler {
                 case "/messages/stop":
                     this.stopMessages(request, response);
                     break;
-                case "/messages/delete":
-                    this.deleteMessages(request, response);
+                case "/conversations/delete":
+                    this.deleteConversations(request, response);
                     break;
             }
         }
@@ -66,7 +66,26 @@ public class DataManipulationHandler implements Handler {
         }
     }
 
-    private void deleteMessages(HttpServletRequest request, HttpServletResponse response) {
+    private void deleteConversations(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String requestBody = readAll(request.getInputStream());
+        //TODO
+        //ArrayList<String> failedConversations = new ArrayList<>();
+
+        //for (//TODO) {
+            /*try {
+                Engine.getInstance().getTransactionService().deleteConversation(conversation); //vom Typ ConversationPojo
+            } catch (NexusException e) {
+                failedConversations.add(//TODO);
+                LOG.error("An error occurred while trying to delete conversation" + // TODO , e);
+            }*/
+        //}
+
+        /*if (//TODO.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "An internal server error occurred while trying to delete conversations" + //TODO);
+        }*/
     }
 
 }

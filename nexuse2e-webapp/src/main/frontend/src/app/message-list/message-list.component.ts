@@ -123,11 +123,6 @@ export class MessageListComponent implements OnInit {
       icon: "stop",
       actionKey: "messages.stop",
     },
-    {
-      label: "delete",
-      icon: "delete",
-      actionKey: "messages.delete",
-    },
   ];
 
   constructor(private dataService: DataService) {}

@@ -8,17 +8,41 @@ import { MatSnackBar } from "@angular/material/snack-bar";
   providedIn: "root",
 })
 export class ActionService {
-  constructor(private dataService: DataService, private selectionService: SelectionService, private _snackBar: MatSnackBar) {
-  }
+  constructor(
+    private dataService: DataService,
+    private selectionService: SelectionService,
+    private _snackBar: MatSnackBar
+  ) {}
 
   async stopMessages() {
     const messages = this.selectionService.getSelectedItems("message");
     try {
-      await this.dataService.stopMessages(messages.map(m => (m as Message).messageId));
+      await this.dataService.stopMessages(
+        messages.map((m) => (m as Message).messageId)
+      );
     } catch {
-      this._snackBar.open("An error occurred while trying to change message status", undefined, {
-        duration: 5000,
-      });
+      this._snackBar.open(
+        "An error occurred while trying to change message status",
+        undefined,
+        {
+          duration: 5000,
+        }
+      );
+    }
+  }
+
+  async deleteConversations() {
+    //const conversations = this.selectionService.getSelectedItems("conversation");
+    try {
+      //await this.dataService.deleteConversations(//TODO);
+    } catch {
+      this._snackBar.open(
+        "An error occurred while trying to change conversation status",
+        undefined,
+        {
+          duration: 5000,
+        }
+      );
     }
   }
 }

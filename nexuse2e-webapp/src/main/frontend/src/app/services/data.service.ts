@@ -126,6 +126,10 @@ export class DataService {
     );
   }
 
+  deleteConversations(conversations: string[]): Promise<void> {
+    return this.post("/conversations/delete", conversations);
+  }
+
   getPartnerIds(): Promise<string[]> {
     return this.get<string[]>("/participants/ids");
   }
