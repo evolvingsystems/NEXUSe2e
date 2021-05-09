@@ -118,7 +118,8 @@
         <ng-container *ngFor="let configItem of modalDialogConfig">
           <tr *ngIf="!configItem.isHeader">
             <td class="label">{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</td>
-            <td [class]="configItem.fieldName">
+            <td [class]="configItem.fieldName" class="relativeWrapper"
+                [class.columnWithCopyIcon]="configItem.fieldName === 'description'">
               <ng-container *ngIf="configItem.fieldName">
                 <a *ngIf="configItem.linkUrlRecipe"
                    [routerLink]="getUrl(item, configItem.linkUrlRecipe)">
@@ -127,6 +128,9 @@
                 <ng-container *ngIf="!configItem.linkUrlRecipe">
                   {{ getProperty(item, configItem.fieldName) }}
                 </ng-container>
+                <mat-icon *ngIf="configItem.fieldName === 'description'" class="copyToClipboard"
+                          [cdkCopyToClipboard]="getProperty(item, configItem.fieldName, false)">content_copy
+                </mat-icon>
               </ng-container>
               <ng-container *ngIf="configItem.additionalFieldName">
                 <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">

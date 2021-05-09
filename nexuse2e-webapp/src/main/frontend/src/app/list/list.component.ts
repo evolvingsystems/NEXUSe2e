@@ -53,7 +53,7 @@ export class ListComponent implements OnInit {
     return this.mobileConfig.find((e) => e.isHeader);
   }
 
-  getProperty(item: NexusData, propertyName: string) {
+  getProperty(item: NexusData, propertyName: string, doNotShorten?: boolean) {
     if (this.isMessage(item)) {
       return item[propertyName as keyof Message];
     }
@@ -62,7 +62,11 @@ export class ListComponent implements OnInit {
     }
     if (this.isEngineLog(item)) {
       const property = item[propertyName as keyof EngineLog];
-      if (typeof property === "string" && !this.isModalDialog) {
+      if (
+        typeof property === "string" &&
+        !this.isModalDialog &&
+        !doNotShorten
+      ) {
         return property.length > 200
           ? property.substr(0, 200) + "..."
           : property;

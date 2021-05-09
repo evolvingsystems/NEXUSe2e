@@ -16,7 +16,8 @@
     "filter": "Filter",
     "resetFilter": "Reset filter",
     "reset": "Reset",
-    "showMore": "Show more"
+    "showMore": "Show more",
+    "cancel": "Cancel"
   },
   "labels": {
     "nexuse2e": "NEXUSe2e",
