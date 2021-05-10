@@ -22,10 +22,10 @@ import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ListComponent } from "../list/list.component";
-import { ActionPanelComponent } from "../action-panel/action-panel.component";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -48,6 +48,7 @@ describe("MessageListComponent", () => {
         MatAutocompleteModule,
         MatTableModule,
         MatCheckboxModule,
+        MatSnackBarModule
       ],
       declarations: [
         MessageListComponent,
@@ -58,7 +59,6 @@ describe("MessageListComponent", () => {
         DateTimeRangeFilterComponent,
         LoadingSpinnerComponent,
         ListComponent,
-        ActionPanelComponent,
         ActionButtonComponent,
         StringPipe,
         DateRangePipe,

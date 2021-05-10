@@ -57,7 +57,7 @@ export class PaginatedListComponent implements OnInit {
     this.update();
   }
 
-  private update() {
+  update() {
     this.triggerReload.emit({
       pageIndex: this.pageIndex,
       pageSize: this.pageSize,

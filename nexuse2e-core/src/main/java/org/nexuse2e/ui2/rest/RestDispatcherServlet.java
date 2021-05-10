@@ -13,12 +13,13 @@ public class RestDispatcherServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(RestDispatcherServlet.class);
 
     private final List<Handler> handlers = new ArrayList<>();
-    private final List<Handler> protectedHandlers = new ArrayList<>();
 
     public RestDispatcherServlet() {
-        this.protectedHandlers.add(new UserHandler());
-        this.protectedHandlers.add(new TransactionReportingHandler());
-        this.handlers.add(new NoAnonymousAccessHandler(this.protectedHandlers));
+        List<Handler> protectedHandlers = new ArrayList<>();
+        protectedHandlers.add(new UserHandler());
+        protectedHandlers.add(new TransactionReportingHandler());
+        protectedHandlers.add(new DataManipulationHandler());
+        this.handlers.add(new NoAnonymousAccessHandler(protectedHandlers));
         this.handlers.add(new LoginHandler());
         this.handlers.add(new ConfigHandler());
     }
