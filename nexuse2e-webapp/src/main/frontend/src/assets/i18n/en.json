@@ -77,6 +77,6 @@
   },
   "actions": {
     "messageStatusError": "An error occurred while trying to change message status",
-    "conversationDeleteError": "An error occurred while trying to delete conversation(s)"
+    "conversationDeleteError": "An error occurred while trying to delete conversation(s), check the engine log for details"
   }
 }

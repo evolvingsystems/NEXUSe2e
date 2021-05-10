@@ -98,7 +98,7 @@ public class DataManipulationHandler implements Handler {
                 Engine.getInstance().getTransactionService().deleteConversation(conversation);
             } catch (NexusException e) {
                 failedConversations.add(conversationId);
-                LOG.error("An error occurred while trying to delete conversation" + conversationId, e);
+                LOG.error("An error occurred while trying to delete conversation " + conversationId, e);
             }
         }
 
@@ -106,7 +106,7 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An internal server error occurred while trying to delete conversations" + failedConversations);
+                    "An internal server error occurred while trying to delete conversations: " + failedConversations);
         }
     }
 }
