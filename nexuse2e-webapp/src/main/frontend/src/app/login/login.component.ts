@@ -2,7 +2,7 @@ import { Component, Injectable, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../services/data.service";
 import { NavigationService } from "../navigation/navigation.service";
-import { SessionService } from "../services/session.service";
+import { PermissionService } from "../services/permission.service";
 
 interface LoginData {
   user: string;
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private dataService: DataService,
     private navigationService: NavigationService,
-    private sessionService: SessionService
+    private permissionService: PermissionService
   ) {}
 
   async ngOnInit() {
@@ -58,12 +58,8 @@ export class LoginComponent implements OnInit {
 
   async login(loginData: LoginData) {
     await this.dataService.postLogin(loginData);
-
-    const permittedActions = await this.dataService.getPermittedActions();
-    this.sessionService.setPermittedActions(permittedActions);
-
+    this.permissionService.updatePermissions();
     this.navigationService.hideNavigation();
-
     const returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
     await this.router.navigateByUrl(returnUrl);
   }

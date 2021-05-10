@@ -1,19 +1,24 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoginComponent } from "./login/login.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
+import { PermissionService } from "./services/permission.service";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   showHeaderNav = false;
   navExpanded = false;
 
-  constructor(translate: TranslateService) {
+  constructor(translate: TranslateService, private permissionService: PermissionService) {
     translate.use("en");
+  }
+
+  ngOnInit() {
+    this.permissionService.updatePermissions();
   }
 
   // eslint-disable-next-line
