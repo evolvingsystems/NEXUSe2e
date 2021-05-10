@@ -58,13 +58,13 @@ export class ActionService {
         conversations.map((c) => (c as Conversation).conversationId)
       );
     } catch {
-      this._snackBar.open(
-        "An error occurred while trying to change conversation status",
-        undefined,
-        {
-          duration: 5000,
-        }
-      );
+      this._snackBar.openFromComponent(NotificationComponent, {
+        duration: 5000,
+        data: {
+          snackType: "error",
+          textLabel: "conversationDeleteError",
+        } as NotificationItem,
+      });
     }
   }
 }

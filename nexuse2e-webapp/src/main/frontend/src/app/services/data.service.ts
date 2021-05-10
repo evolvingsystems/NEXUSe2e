@@ -130,8 +130,8 @@ export class DataService {
     );
   }
 
-  deleteConversations(conversations: string[]): Promise<void> {
-    return this.post("/conversations/delete", conversations);
+  deleteConversations(conversationIds: string[]): Promise<void> {
+    return this.post("/conversations/delete", conversationIds);
   }
 
   getPartnerIds(): Promise<string[]> {
