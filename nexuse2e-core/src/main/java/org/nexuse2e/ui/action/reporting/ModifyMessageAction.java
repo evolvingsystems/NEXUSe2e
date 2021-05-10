@@ -74,7 +74,7 @@ public class ModifyMessageAction extends NexusE2EAction {
                 LOG.debug( "Requeueing outbound message " + messageId + " for choreography " + choreographyId
                         + " and participant " + participantId );
                 try {
-                    MessageHandlingCenter.getInstance().requeueMessage( choreographyId, participantId, conversationId, messageId );
+                    MessageHandlingCenter.getInstance().requeueMessage(messageId);
                 } catch ( Exception e ) {
                     ActionMessage errorMessage = new ActionMessage( "generic.error", e.getMessage() );
                     errors.add( ActionMessages.GLOBAL_MESSAGE, errorMessage );
@@ -83,7 +83,7 @@ public class ModifyMessageAction extends NexusE2EAction {
                 LOG.debug( "Requeueing inbound message " + messageId + " for choreography " + choreographyId
                         + " and participant " + participantId );
                 try {
-                    MessageHandlingCenter.getInstance().requeueMessage( choreographyId, participantId, conversationId, messageId );
+                    MessageHandlingCenter.getInstance().requeueMessage(messageId);
                 } catch ( Exception e ) {
                     ActionMessage errorMessage = new ActionMessage( "generic.error", e.getMessage() );
                     errors.add( ActionMessages.GLOBAL_MESSAGE, errorMessage );

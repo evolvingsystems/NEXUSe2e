@@ -108,18 +108,15 @@ public class MessageHandlingCenter implements MessageProcessor {
     /**
      * Gathers a {@link MessageContext} from the persistent store, and
      * initializes a re-queue.
-     * 
-     * @param choreographyId
-     * @param participantId
-     * @param conversationId
+     *
      * @param messageId
      * @throws NexusException
      */
     public void requeueMessage(
-            String choreographyId, String participantId, String conversationId, String messageId ) throws NexusException {
+            String messageId) throws NexusException {
 
-        MessageContext messageContext = Engine.getInstance().getTransactionService().getMessageContext( messageId );
-        requeueMessage( messageContext );
+        MessageContext messageContext = Engine.getInstance().getTransactionService().getMessageContext(messageId);
+        requeueMessage(messageContext);
     }
 
     /**
@@ -156,6 +153,7 @@ public class MessageHandlingCenter implements MessageProcessor {
             queue( messageContext );
         } else {
             LOG.error( "Cannot requeue message with messageContext = null" );
+            throw new NexusException("Cannot requeue message with messageContext = null");
         }
     }
 }
