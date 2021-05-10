@@ -62,3 +62,9 @@ export interface ListModalDialog {
   mobileConfig: ListConfig[];
   desktopConfig: ListConfig[];
 }
+
+export interface UserConfirmationDialog {
+  notificationTitleLabel?: string;
+  notificationTextLabel?: string;
+  confirmButtonLabel?: string;
+}

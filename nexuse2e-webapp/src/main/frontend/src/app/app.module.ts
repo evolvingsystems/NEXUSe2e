@@ -59,6 +59,7 @@ import { NotificationComponent } from "./notification/notification.component";
 import { ModalDialogComponent } from "./modal-dialog/modal-dialog.component";
 import { ClipboardModule } from "@angular/cdk/clipboard";
 import { MatDialogModule } from "@angular/material/dialog";
+import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -152,6 +153,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     DateRangePipe,
     ModalDialogComponent,
     NotificationComponent,
+    UserConfirmationDialogComponent,
   ],
   imports: [
     BrowserModule,

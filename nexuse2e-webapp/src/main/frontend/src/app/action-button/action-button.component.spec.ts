@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { PermissionService } from "../services/permission.service";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatDialogModule } from "@angular/material/dialog";
 
 describe("ActionButtonComponent", () => {
   let component: ActionButtonComponent;
@@ -16,7 +17,8 @@ describe("ActionButtonComponent", () => {
       imports: [
         HttpClientTestingModule,
         TranslateModule.forRoot(),
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatDialogModule,
       ],
       declarations: [ActionButtonComponent],
     }).compileComponents();

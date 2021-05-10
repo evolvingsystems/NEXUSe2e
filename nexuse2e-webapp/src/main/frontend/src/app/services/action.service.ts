@@ -4,6 +4,8 @@ import { SelectionService } from "./selection.service";
 import { Conversation, Message, NotificationItem } from "../types";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NotificationComponent } from "../notification/notification.component";
+import { MatDialog } from "@angular/material/dialog";
+import { UserConfirmationDialogComponent } from "../user-confirmation-dialog/user-confirmation-dialog.component";
 
 @Injectable({
   providedIn: "root",
@@ -12,7 +14,8 @@ export class ActionService {
   constructor(
     private dataService: DataService,
     private selectionService: SelectionService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _dialog: MatDialog
   ) {}
 
   async stopMessages() {
@@ -53,18 +56,34 @@ export class ActionService {
     const conversations = this.selectionService.getSelectedItems(
       "conversation"
     );
-    try {
-      await this.dataService.deleteConversations(
-        conversations.map((c) => (c as Conversation).conversationId)
-      );
-    } catch {
-      this._snackBar.openFromComponent(NotificationComponent, {
-        duration: 5000,
-        data: {
-          snackType: "error",
-          textLabel: "conversationDeleteError",
-        } as NotificationItem,
-      });
+
+    const dialogRef = this._dialog.open(UserConfirmationDialogComponent, {
+      data: {
+        notificationTitleLabel:
+          conversations.length > 1
+            ? "deleteConversationsTitle"
+            : "deleteConversationTitle",
+        notificationTextLabel: "actionNotReversible",
+        confirmButtonLabel: "delete",
+      },
+    });
+
+    const result = await dialogRef.afterClosed().toPromise();
+
+    if (result) {
+      try {
+        await this.dataService.deleteConversations(
+          conversations.map((c) => (c as Conversation).conversationId)
+        );
+      } catch {
+        this._snackBar.openFromComponent(NotificationComponent, {
+          duration: 5000,
+          data: {
+            snackType: "error",
+            textLabel: "conversationDeleteError",
+          } as NotificationItem,
+        });
+      }
     }
   }
 }
