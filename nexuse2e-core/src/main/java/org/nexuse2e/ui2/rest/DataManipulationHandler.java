@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
+import org.nexuse2e.messaging.MessageHandlingCenter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +42,26 @@ public class DataManipulationHandler implements Handler {
         }
     }
 
-    private void requeueMessages(HttpServletRequest request, HttpServletResponse response) {
+    private void requeueMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String requestBody = readAll(request.getInputStream());
+        String[] messageIds = new Gson().fromJson(requestBody, String[].class);
+        ArrayList<String> failedMessageIds = new ArrayList<>();
+
+        for (String messageId : messageIds) {
+            try {
+                MessageHandlingCenter.getInstance().requeueMessage(messageId);
+            } catch (NexusException e) {
+                failedMessageIds.add(messageId);
+                LOG.error("An error occurred while trying to requeue message" + messageId, e);
+            }
+        }
+
+        if (failedMessageIds.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "An internal server error occurred while trying to requeue messages" + failedMessageIds);
+        }
     }
 
     private void stopMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -51,6 +51,11 @@ export interface Action {
   actionKey: string;
 }
 
+export interface NotificationItem {
+  snackType: string;
+  textLabel: string;
+}
+
 export interface ListModalDialog {
   items: NexusData[];
   itemType: string;
