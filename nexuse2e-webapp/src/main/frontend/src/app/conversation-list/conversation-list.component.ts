@@ -92,7 +92,7 @@ export class ConversationListComponent implements OnInit {
     {
       label: "delete",
       icon: "delete",
-      actionKey: "conversations.delete",
+      actionKey: "/conversations/delete",
     },
   ];
 

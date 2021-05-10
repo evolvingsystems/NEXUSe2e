@@ -28,9 +28,9 @@ export class DataService {
       if (this.cache[key]) {
         return this.cache[key] as Promise<T>;
       }
-      return this.cache[key] = this.http
+      return (this.cache[key] = this.http
         .get<T>(this.API_URL + path, { params: params })
-        .toPromise();
+        .toPromise());
     }
     return this.http
       .get<T>(this.API_URL + path, { params: params })
@@ -62,23 +62,25 @@ export class DataService {
   private static buildFilterParams(activeFilters: ActiveFilterList) {
     let httpParams = new HttpParams();
     for (const fieldName in activeFilters) {
-      if (activeFilters.hasOwnProperty(fieldName)) {const value = activeFilters[fieldName];
-      if (value) {
-        if (typeof value === "string") {
-          httpParams = httpParams.append(fieldName, value);
-        } else {
-          // type is DateRange
-          if (value.startDate) {
-            httpParams = httpParams.append(
-              "startDate",
-              value.startDate.toISOString()
-            );
-          }
-          if (value.endDate) {
-            httpParams = httpParams.append(
-              "endDate",
-              value.endDate.toISOString()
-            );}
+      if (activeFilters.hasOwnProperty(fieldName)) {
+        const value = activeFilters[fieldName];
+        if (value) {
+          if (typeof value === "string") {
+            httpParams = httpParams.append(fieldName, value);
+          } else {
+            // type is DateRange
+            if (value.startDate) {
+              httpParams = httpParams.append(
+                "startDate",
+                value.startDate.toISOString()
+              );
+            }
+            if (value.endDate) {
+              httpParams = httpParams.append(
+                "endDate",
+                value.endDate.toISOString()
+              );
+            }
           }
         }
       }
@@ -132,13 +134,16 @@ export class DataService {
     );
   }
 
+  deleteConversations(conversationIds: string[]): Promise<void> {
+    return this.post("/conversations/delete", conversationIds);
+  }
+
   getEngineLogs(
     pageIndex: number,
     itemsPerPage: number,
     activeFilters: ActiveFilterList
   ): Promise<EngineLog[]> {
-    let params = DataService.buildFilterParams(activeFilters)
-    ;
+    let params = DataService.buildFilterParams(activeFilters);
     params = params.append("pageIndex", String(pageIndex));
     params = params.append("itemsPerPage", String(itemsPerPage));
     return this.get<EngineLog[]>("/engine-logs", false, params);
@@ -150,10 +155,6 @@ export class DataService {
       false,
       DataService.buildFilterParams(activeFilters)
     );
-  }
-
-  deleteConversations(conversationIds: string[]): Promise<void> {
-    return this.post("/conversations/delete", conversationIds);
   }
 
   getPartnerIds(): Promise<string[]> {
