@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
+import org.nexuse2e.pojo.ConversationPojo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,24 +69,24 @@ public class DataManipulationHandler implements Handler {
 
     private void deleteConversations(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestBody = readAll(request.getInputStream());
-        //TODO
-        //ArrayList<String> failedConversations = new ArrayList<>();
+        String[] conversationIds = new Gson().fromJson(requestBody, String[].class);
+        ArrayList<String> failedConversations = new ArrayList<>();
 
-        //for (//TODO) {
-            /*try {
-                Engine.getInstance().getTransactionService().deleteConversation(conversation); //vom Typ ConversationPojo
+        for (String conversationId : conversationIds) {
+            try {
+                ConversationPojo conversation = Engine.getInstance().getTransactionService().getConversation(conversationId);
+                Engine.getInstance().getTransactionService().deleteConversation(conversation);
             } catch (NexusException e) {
-                failedConversations.add(//TODO);
-                LOG.error("An error occurred while trying to delete conversation" + // TODO , e);
-            }*/
-        //}
+                failedConversations.add(conversationId);
+                LOG.error("An error occurred while trying to delete conversation" + conversationId, e);
+            }
+        }
 
-        /*if (//TODO.isEmpty()) {
+        if (failedConversations.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An internal server error occurred while trying to delete conversations" + //TODO);
-        }*/
+                    "An internal server error occurred while trying to delete conversations" + failedConversations);
+        }
     }
-
 }

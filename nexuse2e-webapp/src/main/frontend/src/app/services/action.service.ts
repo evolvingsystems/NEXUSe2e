@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { DataService } from "./data.service";
 import { SelectionService } from "./selection.service";
-import { Message } from "../types";
+import { Conversation, Message } from "../types";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Injectable({
@@ -32,9 +32,13 @@ export class ActionService {
   }
 
   async deleteConversations() {
-    //const conversations = this.selectionService.getSelectedItems("conversation");
+    const conversations = this.selectionService.getSelectedItems(
+      "conversation"
+    );
     try {
-      //await this.dataService.deleteConversations(//TODO);
+      await this.dataService.deleteConversations(
+        conversations.map((c) => (c as Conversation).conversationId)
+      );
     } catch {
       this._snackBar.open(
         "An error occurred while trying to change conversation status",
