@@ -116,17 +116,12 @@ export class MessageListComponent implements OnInit {
     {
       label: "requeue",
       icon: "refresh",
-      actionKey: "messages.requeue",
+      actionKey: "/messages/requeue",
     },
     {
       label: "stop",
       icon: "stop",
-      actionKey: "messages.stop",
-    },
-    {
-      label: "delete",
-      icon: "delete",
-      actionKey: "messages.delete",
+      actionKey: "/messages/stop",
     },
   ];
 

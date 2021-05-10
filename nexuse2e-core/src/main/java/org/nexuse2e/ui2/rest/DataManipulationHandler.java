@@ -21,7 +21,7 @@ public class DataManipulationHandler implements Handler {
     public boolean canHandle(String path, String method) {
         return ("POST".equalsIgnoreCase(method) && "/messages/requeue".equalsIgnoreCase(path)) ||
                 ("POST".equalsIgnoreCase(method) && "/messages/stop".equalsIgnoreCase(path)) ||
-                ("POST".equalsIgnoreCase(method) && "/messages/delete".equalsIgnoreCase(path));
+                ("POST".equalsIgnoreCase(method) && "/conversations/delete".equalsIgnoreCase(path));
     }
 
     @Override
@@ -35,8 +35,8 @@ public class DataManipulationHandler implements Handler {
                 case "/messages/stop":
                     this.stopMessages(request, response);
                     break;
-                case "/messages/delete":
-                    this.deleteMessages(request, response);
+                case "/conversations/delete":
+                    this.deleteConversations(request, response);
                     break;
             }
         }
@@ -86,7 +86,7 @@ public class DataManipulationHandler implements Handler {
         }
     }
 
-    private void deleteMessages(HttpServletRequest request, HttpServletResponse response) {
+    private void deleteConversations(HttpServletRequest request, HttpServletResponse response) {
     }
 
 }

@@ -7,7 +7,6 @@ import org.nexuse2e.ui.action.NexusE2EAction;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +17,7 @@ public class UserHandler implements Handler {
     @Override
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/full-username".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/permitted-actions".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/allowed-endpoints".equalsIgnoreCase(path));
     }
 
     @Override
@@ -29,8 +28,8 @@ public class UserHandler implements Handler {
                 case "/full-username":
                     getFullUsername(request, response);
                     break;
-                case "/permitted-actions":
-                    getPermittedActions(request, response);
+                case "/allowed-endpoints":
+                    getAllowedEndpoints(request, response);
                     break;
             }
         }
@@ -43,35 +42,56 @@ public class UserHandler implements Handler {
         response.getOutputStream().print(new Gson().toJson(name));
     }
 
-    private void getPermittedActions(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void getAllowedEndpoints(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserPojo user = (UserPojo) request.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER);
         if (user != null) {
-            Set<String> allowedRequests = user.getRole().getAllowedRequests().keySet();
-            Set<String> permittedActionKeys = new HashSet<>();
-            for (String path : allowedRequests) {
-                permittedActionKeys.addAll(getActionKeys(path));
-            }
-            response.getOutputStream().print(new Gson().toJson(permittedActionKeys));
-            return;
+            response.getOutputStream().print(new Gson().toJson(buildAllowedEndpointsList(user)));
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
-    private Set<String> getActionKeys(String permissionKey) {
-        Set<String> actionKeys = new HashSet<>();
-        switch (permissionKey) {
+    private static Set<String> buildAllowedEndpointsList(UserPojo user) {
+        Set<String> allowedEndpoints = new HashSet<>();
+
+        // endpoints that are allowed for all logged-in users
+        allowedEndpoints.add("/full-username");
+        allowedEndpoints.add("/allowed-endpoints");
+        allowedEndpoints.add("/participants/ids");
+        allowedEndpoints.add("/choreographies/ids");
+        allowedEndpoints.add("/conversations");
+        allowedEndpoints.add("/conversations/count");
+        allowedEndpoints.add("/messages");
+        allowedEndpoints.add("/messages/count");
+
+        // endpoints that are allowed based on role
+        Set<String> allowedRequests = user.getRole().getAllowedRequests().keySet();
+        for (String path : allowedRequests) {
+            allowedEndpoints.addAll(getAllowedEndpoints(path));
+        }
+
+        return allowedEndpoints;
+    }
+
+    public static boolean isUserPermitted(UserPojo user, String endpointPath) {
+        if (user != null) {
+            Set<String> permissions = buildAllowedEndpointsList(user);
+            return permissions.contains("*") || permissions.contains(endpointPath);
+        }
+        return false;
+    }
+
+    private static Set<String> getAllowedEndpoints(String actionName) {
+        Set<String> endpoints = new HashSet<>();
+        switch (actionName) {
             case "ModifyMessage.do":
-                actionKeys.add("message.requeue");
-                actionKeys.add("message.stop");
-                actionKeys.add("message.delete");
-                break;
-            case "MessageView.do":
-                actionKeys.add("messages.view");
+                endpoints.add("/messages/requeue");
+                endpoints.add("/messages/stop");
                 break;
             default:
-                actionKeys.add(permissionKey);
+                endpoints.add(actionName);
         }
-        return actionKeys;
+        return endpoints;
     }
 
 }
