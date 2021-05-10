@@ -6,7 +6,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { FilterPanelComponent } from "../filter-panel/filter-panel.component";
 import { SelectFilterComponent } from "../select-filter/select-filter.component";
 import { TextFilterComponent } from "../text-filter/text-filter.component";
-import { DateTimeRangeFilterComponent } from "../date-time-range-filter/date-time-range-filter.component";
+import { DateRangeFilterComponent } from "../date-range-filter/date-range-filter.component";
 import { PaginatedListComponent } from "../paginated-list/paginated-list.component";
 import { FormsModule } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
@@ -56,7 +56,7 @@ describe("ConversationListComponent", () => {
         PaginatedListComponent,
         SelectFilterComponent,
         TextFilterComponent,
-        DateTimeRangeFilterComponent,
+        DateRangeFilterComponent,
         LoadingSpinnerComponent,
         ListComponent,
         StringPipe,

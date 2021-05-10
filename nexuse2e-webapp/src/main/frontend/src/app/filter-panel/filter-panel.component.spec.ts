@@ -6,7 +6,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatIconModule } from "@angular/material/icon";
 import { SelectFilterComponent } from "../select-filter/select-filter.component";
 import { TextFilterComponent } from "../text-filter/text-filter.component";
-import { DateTimeRangeFilterComponent } from "../date-time-range-filter/date-time-range-filter.component";
+import { DateRangeFilterComponent } from "../date-range-filter/date-range-filter.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -31,7 +31,7 @@ describe("FilterPanelComponent", () => {
         FilterPanelComponent,
         SelectFilterComponent,
         TextFilterComponent,
-        DateTimeRangeFilterComponent,
+        DateRangeFilterComponent,
         StringPipe,
         DateRangePipe,
       ],

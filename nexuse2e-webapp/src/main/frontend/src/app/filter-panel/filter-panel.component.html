@@ -10,12 +10,12 @@
           (valueChange)="updateActiveFilters($event)"
         >
         </app-select-filter>
-        <app-date-time-range-filter
+        <app-date-range-filter
           *ngSwitchCase="getFilterType().DATE_TIME_RANGE"
           [fieldName]="filter.fieldName"
           (valueChange)="updateActiveFilters($event)"
           [selectedValue]="activeFilters[filter.fieldName] | dateRange">
-        </app-date-time-range-filter>
+        </app-date-range-filter>
         <app-text-filter
           *ngSwitchCase="getFilterType().TEXT"
           [allowedValues]="filter.allowedValues"
