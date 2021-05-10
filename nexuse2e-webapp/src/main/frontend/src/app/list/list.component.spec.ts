@@ -8,6 +8,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { messages } from "../test-data";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("ListComponent", () => {
   let component: ListComponent;
@@ -22,6 +23,7 @@ describe("ListComponent", () => {
         RouterTestingModule,
         TranslateModule.forRoot(),
         MatDialogModule,
+        MatSnackBarModule,
       ],
       declarations: [ListComponent],
     }).compileComponents();

@@ -1,10 +1,18 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Conversation, EngineLog, Message, NexusData } from "../types";
+import {
+  Conversation,
+  EngineLog,
+  Message,
+  NexusData,
+  NotificationItem,
+} from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
 import { ScreensizeService } from "../services/screensize.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ModalDialogComponent } from "../modal-dialog/modal-dialog.component";
+import { NotificationComponent } from "../notification/notification.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 export interface ListConfig {
   fieldName: string;
@@ -21,6 +29,8 @@ export interface ListConfig {
   styleUrls: ["./list.component.scss"],
 })
 export class ListComponent implements OnInit {
+  private readonly longTextThreshold: number = 200;
+  private readonly modalDialogMaxWidth: number = 1000;
   @Input() itemType!: string;
   @Input() items: NexusData[] = [];
   @Input() mobileConfig: ListConfig[] = [];
@@ -30,11 +40,10 @@ export class ListComponent implements OnInit {
   displayedColumns: string[] = ["select"];
   headerElement?: ListConfig;
   modalDialogConfig: ListConfig[] = [];
-  showMoreButton = false; // TODO
-  private readonly longTextThreshold: number = 200;
 
   constructor(
     private selectionService: SelectionService,
+    private _snackBar: MatSnackBar,
     public screenSizeService: ScreensizeService,
     public dialog: MatDialog
   ) {}
@@ -128,12 +137,23 @@ export class ListComponent implements OnInit {
 
   showMore(item: NexusData) {
     this.dialog.open(ModalDialogComponent, {
+      maxWidth: this.modalDialogMaxWidth,
       data: {
         items: [item],
         itemType: this.itemType,
         mobileConfig: this.mobileConfig,
         desktopConfig: this.desktopConfig,
       },
+    });
+  }
+
+  showCopiedNotification() {
+    this._snackBar.openFromComponent(NotificationComponent, {
+      duration: 5000,
+      data: {
+        snackType: "info",
+        textLabel: "copiedToClipboard",
+      } as NotificationItem,
     });
   }
 }

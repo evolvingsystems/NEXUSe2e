@@ -88,7 +88,8 @@
     "DEBUG": "Debug",
     "TRACE": "Trace"
   },
-  "actions": {
-    "messageStatusError": "An error occurred while trying to change message status"
+  "notifications": {
+    "messageStatusError": "An error occurred while trying to change message status",
+    "copiedToClipboard": "Content copied to clipboard!"
   }
 }

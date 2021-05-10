@@ -83,9 +83,9 @@
                     {{ getProperty(item, configItem.fieldName) }}
                   </a>
                   <ng-container *ngIf="!configItem.linkUrlRecipe">
-                    {{ getProperty(item, configItem.fieldName) }}
+                    {{ getTrimmedProperty(item, configItem.fieldName) }}
                   </ng-container>
-                  <div *ngIf="showMoreButton">
+                  <div *ngIf="isLongText(getTrimmedProperty(item, configItem.fieldName))">
                     <button mat-button color="accent" class="float-right"
                             (click)="showMore(item)">{{ "buttons.showMore" | translate }}</button>
                   </div>
@@ -113,7 +113,7 @@
 
 <ng-container *ngIf="isModalDialog">
   <div class="padded relativeWrapper">
-    <div *ngFor="let item of items" class="modal-dialog">
+    <div *ngFor="let item of items" class="simple-table">
       <table>
         <ng-container *ngFor="let configItem of modalDialogConfig">
           <tr *ngIf="!configItem.isHeader">
@@ -129,7 +129,8 @@
                   {{ getProperty(item, configItem.fieldName) }}
                 </ng-container>
                 <mat-icon *ngIf="configItem.fieldName === 'description'" class="copyToClipboard"
-                          [cdkCopyToClipboard]="getProperty(item, configItem.fieldName)">content_copy
+                          [cdkCopyToClipboard]="getProperty(item, configItem.fieldName)"
+                          (click)="showCopiedNotification()">content_copy
                 </mat-icon>
               </ng-container>
               <ng-container *ngIf="configItem.additionalFieldName">

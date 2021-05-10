@@ -4,6 +4,7 @@ import { ModalDialogComponent } from "./modal-dialog.component";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { TranslateModule } from "@ngx-translate/core";
 import { ListComponent } from "../list/list.component";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("ModalDialogComponent", () => {
   let component: ModalDialogComponent;
@@ -11,7 +12,7 @@ describe("ModalDialogComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatDialogModule, TranslateModule.forRoot()],
+      imports: [MatDialogModule, TranslateModule.forRoot(), MatSnackBarModule],
       declarations: [ModalDialogComponent, ListComponent],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: "" }],
     }).compileComponents();

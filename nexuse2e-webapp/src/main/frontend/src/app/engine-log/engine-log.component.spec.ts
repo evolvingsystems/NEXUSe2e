@@ -25,6 +25,7 @@ import { ListComponent } from "../list/list.component";
 import { MatCardModule } from "@angular/material/card";
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("EngineLogComponent", () => {
   let component: EngineLogComponent;
@@ -48,6 +49,7 @@ describe("EngineLogComponent", () => {
         MatTableModule,
         MatCheckboxModule,
         MatCardModule,
+        MatSnackBarModule,
       ],
       declarations: [
         EngineLogComponent,

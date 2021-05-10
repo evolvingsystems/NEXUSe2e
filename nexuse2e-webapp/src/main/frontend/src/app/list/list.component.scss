@@ -12,15 +12,15 @@
 .columnWithCopyIcon {
   white-space: normal !important;
   overflow: inherit !important;
-
-  &:before {
-    display: none;
-  }
+  word-break: break-word;
+  border: 1px solid $gray3;
+  border-radius: 4px;
+  padding: 5px 25px 5px 10px;
 
   .copyToClipboard {
     position: absolute;
-    right: -15px;
-    top: 0;
+    right: 5px;
+    top: 5px;
     width: 15px;
     height: 15px;
     font-size: 15px;

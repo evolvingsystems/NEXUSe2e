@@ -9,6 +9,7 @@ import { MatCardModule } from "@angular/material/card";
 import { ListComponent } from "../list/list.component";
 import { ScreensizeService } from "../services/screensize.service";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
@@ -22,6 +23,7 @@ describe("PaginatedListComponent", () => {
         BrowserAnimationsModule,
         MatCardModule,
         MatDialogModule,
+        MatSnackBarModule,
       ],
       declarations: [PaginatedListComponent, ListComponent],
     }).compileComponents();
