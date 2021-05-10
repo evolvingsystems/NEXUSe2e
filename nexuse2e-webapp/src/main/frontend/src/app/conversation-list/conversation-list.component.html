@@ -1,7 +1,7 @@
 <app-filter-panel
   [filters]="filters"
   itemType="conversation"
-  (filterChange)="filterMessages($event)"
+  (filterChange)="filterConversations($event)"
 ></app-filter-panel>
 <app-paginated-list [totalItemCount]="totalConversationCount"
                     [mobileConfig]="mobileConfig"

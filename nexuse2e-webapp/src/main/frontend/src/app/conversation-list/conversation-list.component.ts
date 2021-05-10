@@ -129,7 +129,7 @@ export class ConversationListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: ActiveFilterList) {
+  filterConversations(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshConversationCount();
   }
