@@ -56,7 +56,7 @@ import { DateRangePipe } from "./pipes/date-range.pipe";
 import { ActionButtonComponent } from "./action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { NotificationComponent } from "./notification/notification.component";
-import { ModalDialogComponent } from "./modal-dialog/modal-dialog.component";
+import { SimpleTableDialogComponent } from "./simple-table-dialog/simple-table-dialog.component";
 import { ClipboardModule } from "@angular/cdk/clipboard";
 import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
@@ -151,7 +151,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ActionButtonComponent,
     StringPipe,
     DateRangePipe,
-    ModalDialogComponent,
+    SimpleTableDialogComponent,
     NotificationComponent,
     UserConfirmationDialogComponent,
   ],
