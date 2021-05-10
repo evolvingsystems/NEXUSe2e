@@ -44,17 +44,16 @@ public class DataManipulationHandler implements Handler {
 
     private void requeueMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestBody = readAll(request.getInputStream());
-        //TODO
         String[] messageIds = new Gson().fromJson(requestBody, String[].class);
         ArrayList<String> failedMessageIds = new ArrayList<>();
 
         for (String messageId : messageIds) {
-//            try {
-//                MessageHandlingCenter.getInstance().requeueMessage( choreographyId, participantId, conversationId, messageId );
-//            } catch (NexusException e) {
-//                failedMessageIds.add(messageId);
-//                LOG.error("An error occurred while trying to requeue message" + messageId, e);
-//            }
+            try {
+                MessageHandlingCenter.getInstance().requeueMessage(messageId);
+            } catch (NexusException e) {
+                failedMessageIds.add(messageId);
+                LOG.error("An error occurred while trying to requeue message" + messageId, e);
+            }
         }
 
         if (failedMessageIds.isEmpty()) {
