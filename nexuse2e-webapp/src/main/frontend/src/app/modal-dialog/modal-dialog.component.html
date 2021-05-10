@@ -1,5 +1,5 @@
 <app-list [desktopConfig]="desktopConfig" [mobileConfig]="mobileConfig" [items]="items" [itemType]="itemType"
-          [isSelectable]="false" isModalDialog="true"></app-list>
-<mat-dialog-actions align="end">
+          [isSelectable]="false" showAsSimpleTable="true"></app-list>
+<mat-dialog-actions class="dialog-actions">
   <button mat-button mat-dialog-close>{{ "buttons.cancel" | translate }}</button>
 </mat-dialog-actions>

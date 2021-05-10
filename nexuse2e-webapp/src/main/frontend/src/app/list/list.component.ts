@@ -36,10 +36,10 @@ export class ListComponent implements OnInit {
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
-  @Input() isModalDialog?: boolean;
+  @Input() showAsSimpleTable?: boolean;
   displayedColumns: string[] = ["select"];
   headerElement?: ListConfig;
-  modalDialogConfig: ListConfig[] = [];
+  simpleTableConfig: ListConfig[] = [];
 
   constructor(
     private selectionService: SelectionService,
@@ -52,12 +52,12 @@ export class ListComponent implements OnInit {
     if (this.desktopConfig) {
       this.displayedColumns.push(...this.desktopConfig.map((e) => e.fieldName));
     }
-    if (!this.isModalDialog) {
-      this.headerElement = this.getHeaderElement();
-    } else {
-      this.modalDialogConfig = this.screenSizeService.isMobile()
+    if (this.showAsSimpleTable) {
+      this.simpleTableConfig = this.screenSizeService.isMobile()
         ? this.mobileConfig
         : this.desktopConfig;
+    } else {
+      this.headerElement = this.getHeaderElement();
     }
   }
 
@@ -80,14 +80,10 @@ export class ListComponent implements OnInit {
     }
   }
 
-  getTrimmedProperty(
-    item: NexusData,
-    fieldName: string,
-    doNotShorten?: boolean
-  ) {
+  getTrimmedProperty(item: NexusData, fieldName: string) {
     const property = this.getProperty(item, fieldName);
 
-    if (typeof property === "string" && !this.isModalDialog && !doNotShorten) {
+    if (typeof property === "string") {
       return this.isLongText(property)
         ? property.substr(0, this.longTextThreshold) + "..."
         : property;
