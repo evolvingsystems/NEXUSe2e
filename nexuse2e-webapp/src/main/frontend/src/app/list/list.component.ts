@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import {
   Conversation,
   EngineLog,
+  ListConfig,
   Message,
   NexusData,
   NotificationItem,
@@ -13,15 +14,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { SimpleTableDialogComponent } from "../simple-table-dialog/simple-table-dialog.component";
 import { NotificationComponent } from "../notification/notification.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
-
-export interface ListConfig {
-  fieldName: string;
-  additionalFieldName?: string;
-  label?: string;
-  linkUrlRecipe?: string;
-  additionalLinkUrlRecipe?: string;
-  isHeader?: boolean;
-}
 
 @Component({
   selector: "app-list",

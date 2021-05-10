@@ -3,11 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../services/data.service";
 import { NavigationService } from "../navigation/navigation.service";
 import { PermissionService } from "../services/permission.service";
-
-interface LoginData {
-  user: string;
-  password: string;
-}
+import { LoginData } from "../types";
 
 @Component({
   selector: "app-login",

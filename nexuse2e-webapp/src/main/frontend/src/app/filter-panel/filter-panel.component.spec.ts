@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { FilterPanelComponent, FilterType } from "./filter-panel.component";
+import { FilterPanelComponent } from "./filter-panel.component";
 import { By } from "@angular/platform-browser";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatIconModule } from "@angular/material/icon";
@@ -18,6 +18,7 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ScreensizeService } from "../services/screensize.service";
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
+import { FilterType } from "../types";
 
 describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;

@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, EngineLog } from "../types";
-import { FilterType } from "../filter-panel/filter-panel.component";
-import { ListConfig } from "../list/list.component";
+import { ActiveFilterList, EngineLog, FilterType, ListConfig } from "../types";
+
 import { DataService } from "../services/data.service";
 
 @Component({
