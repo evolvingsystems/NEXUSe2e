@@ -53,7 +53,7 @@ public class DataManipulationHandler implements Handler {
                 MessageHandlingCenter.getInstance().requeueMessage(messageId);
             } catch (NexusException e) {
                 failedMessageIds.add(messageId);
-                LOG.error("An error occurred while trying to requeue message" + messageId, e);
+                LOG.error("An error occurred while trying to requeue message " + messageId, e);
             }
         }
 
@@ -61,7 +61,7 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An internal server error occurred while trying to requeue messages" + failedMessageIds);
+                    "An internal server error occurred while trying to requeue messages: " + failedMessageIds);
         }
     }
 
@@ -75,7 +75,7 @@ public class DataManipulationHandler implements Handler {
                 Engine.getInstance().getTransactionService().stopProcessingMessage(messageId);
             } catch (NexusException e) {
                 failedMessageIds.add(messageId);
-                LOG.error("An error occurred while trying to stop message" + messageId, e);
+                LOG.error("An error occurred while trying to stop message " + messageId, e);
             }
         }
 
@@ -83,7 +83,7 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An internal server error occurred while trying to stop messages" + failedMessageIds);
+                    "An internal server error occurred while trying to stop messages: " + failedMessageIds);
         }
     }
 
