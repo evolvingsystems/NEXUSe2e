@@ -153,6 +153,7 @@ public class MessageHandlingCenter implements MessageProcessor {
             queue( messageContext );
         } else {
             LOG.error( "Cannot requeue message with messageContext = null" );
+            throw new NexusException("Cannot requeue message with messageContext = null");
         }
     }
 }
