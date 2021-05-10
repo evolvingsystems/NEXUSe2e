@@ -1,3 +1,5 @@
+@import '../../styles.scss';
+
 button {
   vertical-align: middle;
   margin-right: 5px;
@@ -11,6 +13,7 @@ button {
   }
 }
 
+/* Button In Progress */
 @keyframes spinner {
   to {
     transform: rotate(360deg);
@@ -28,7 +31,7 @@ button {
   margin-top: -10px;
   margin-left: -10px;
   border-radius: 50%;
-  border: 2px solid #ffffff;
-  border-top-color: #000000;
+  border: 2px solid $orangeDark;
+  border-top-color: #ffffff;
   animation: spinner .8s linear infinite;
 }

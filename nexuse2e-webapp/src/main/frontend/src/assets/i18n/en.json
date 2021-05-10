@@ -74,5 +74,8 @@
     "OUTBOUND": "Outbound",
     "NORMAL": "Normal",
     "ACKNOWLEDGEMENT": "Acknowledgement"
+  },
+  "actions": {
+    "messageStatusError": "An error occurred while trying to change message status"
   }
 }

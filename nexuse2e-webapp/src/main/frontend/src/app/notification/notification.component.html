@@ -1,0 +1,5 @@
+<div id="snackbarNotification" class="relativeWrapper">
+  <mat-icon class="snackbarIcon" [class]="data.snackType">{{ getIcon() }}</mat-icon>
+  <div [class.withIcon]="getIcon().length">{{ "actions." + data.textLabel | translate }}</div>
+</div>
+

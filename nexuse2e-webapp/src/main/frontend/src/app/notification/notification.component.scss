@@ -1,0 +1,31 @@
+@import '../../styles.scss';
+
+#snackbarNotification {
+  .snackbarIcon {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+
+    &.error {
+      color: $error;
+    }
+
+    &.info {
+      color: $info;
+    }
+
+    &.warn {
+      color: $warning;
+    }
+
+    &.success {
+      color: $success;
+    }
+  }
+
+  .withIcon {
+    margin-left: 35px;
+  }
+}
+

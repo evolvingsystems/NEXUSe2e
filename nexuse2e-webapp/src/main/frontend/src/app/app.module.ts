@@ -1,6 +1,10 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule, } from "@angular/common/http";
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpClientModule,
+} from "@angular/common/http";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AppComponent } from "./app.component";
@@ -28,7 +32,10 @@ import { ConversationListComponent } from "./conversation-list/conversation-list
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatPaginatorIntl, MatPaginatorModule, } from "@angular/material/paginator";
+import {
+  MatPaginatorIntl,
+  MatPaginatorModule,
+} from "@angular/material/paginator";
 import { AuthInterceptor } from "./auth-interceptor";
 import { CustomPaginatorFormatting } from "./custom-paginator-formatting";
 import { PaginatedListComponent } from "./paginated-list/paginated-list.component";
@@ -46,8 +53,9 @@ import { MasterSelectComponent } from "./master-select/master-select.component";
 import { ListComponent } from "./list/list.component";
 import { StringPipe } from "./pipes/string.pipe";
 import { DateRangePipe } from "./pipes/date-range.pipe";
-import { ActionButtonComponent } from './action-button/action-button.component';
+import { ActionButtonComponent } from "./action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { NotificationComponent } from "./notification/notification.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -139,6 +147,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ActionButtonComponent,
     StringPipe,
     DateRangePipe,
+    NotificationComponent,
   ],
   imports: [
     BrowserModule,
@@ -167,7 +176,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatNativeDateModule,
     BrowserAnimationsModule,
     MatAutocompleteModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   providers: [
     {
