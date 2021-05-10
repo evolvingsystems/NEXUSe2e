@@ -19,6 +19,7 @@ export class SessionPanelComponent implements OnInit {
 
   async logout() {
     await this.dataService.postLogout();
+    this.dataService.clearCache();
     this.sessionService.clearSession();
     await this.router.navigateByUrl("/login");
   }

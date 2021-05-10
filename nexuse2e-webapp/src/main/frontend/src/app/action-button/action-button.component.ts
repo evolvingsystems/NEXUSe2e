@@ -28,7 +28,7 @@ export class ActionButtonComponent implements OnInit {
   async performAction(): Promise<void> {
     this.inProgress = true;
     switch (this.action.actionKey) {
-      case "messages.stop":
+      case "/messages/stop":
         await this.actionService.stopMessages();
         break;
       case "messages.requeue":

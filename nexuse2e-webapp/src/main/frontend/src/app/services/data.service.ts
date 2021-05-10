@@ -28,13 +28,17 @@ export class DataService {
       if (this.cache[key]) {
         return this.cache[key] as Promise<T>;
       }
-      this.cache[key] = this.http
+      return this.cache[key] = this.http
         .get<T>(this.API_URL + path, { params: params })
         .toPromise();
     }
     return this.http
       .get<T>(this.API_URL + path, { params: params })
       .toPromise<T>();
+  }
+
+  public clearCache() {
+    this.cache = {};
   }
 
   getFullUsername(): Promise<string> {
@@ -48,7 +52,7 @@ export class DataService {
   }
 
   getPermittedActions(): Promise<string[]> {
-    return this.get("/permitted-actions");
+    return this.get("/allowed-endpoints");
   }
 
   getMachineName(): Promise<string> {
