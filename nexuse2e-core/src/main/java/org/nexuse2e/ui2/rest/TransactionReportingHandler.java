@@ -9,13 +9,12 @@ import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.dao.LogDAO;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.messaging.Constants;
-import org.nexuse2e.pojo.ChoreographyPojo;
-import org.nexuse2e.pojo.ConversationPojo;
-import org.nexuse2e.pojo.MessagePojo;
-import org.nexuse2e.pojo.PartnerPojo;
+import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.StatisticsConversation;
+import org.nexuse2e.reporting.StatisticsEngineLog;
 import org.nexuse2e.reporting.StatisticsMessage;
 import org.nexuse2e.util.DateWithTimezoneSerializer;
 
@@ -37,7 +36,9 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/conversations".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversations/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/participants/ids".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/choreographies/ids".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/choreographies/ids".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/engine-logs".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path));
     }
 
     @Override
@@ -62,6 +63,12 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/choreographies/ids":
                     this.returnChoreographyIds(response);
+                    break;
+                case "/engine-logs":
+                    this.handleEngineLogRequest(request, response, false);
+                    break;
+                case "/engine-logs/count":
+                    this.handleEngineLogRequest(request, response, true);
                     break;
             }
         }
@@ -112,6 +119,28 @@ public class TransactionReportingHandler implements Handler {
                 return Constants.INT_MESSAGE_TYPE_ERROR;
             default:
                 throw new IllegalArgumentException("Message type " + typeName + " could not be resolved.");
+        }
+    }
+
+    private String getSeverityLevelFromName(String severity) {
+        if (severity == null) {
+            return null;
+        }
+        switch (severity) {
+            case "TRACE":
+                return "5000";
+            case "DEBUG":
+                return "10000";
+            case "INFO":
+                return "20000";
+            case "WARN":
+                return "30000";
+            case "ERROR":
+                return "40000";
+            case "FATAL":
+                return "50000";
+            default:
+                throw new IllegalArgumentException("Severity " + severity + " could not be resolved.");
         }
     }
 
@@ -298,5 +327,69 @@ public class TransactionReportingHandler implements Handler {
         }
 
         response.getOutputStream().print(new Gson().toJson(choreographyIds));
+    }
+
+    private void handleEngineLogRequest(HttpServletRequest request, HttpServletResponse response, boolean count) throws Exception {
+        String pageIndex = request.getParameter("pageIndex");
+        String itemsPerPage = request.getParameter("itemsPerPage");
+        String messageText = request.getParameter("messageText");
+        String severity;
+        Date startDate;
+        Date endDate;
+
+        try {
+            startDate = getDateFromString(request.getParameter("startDate"));
+            endDate = getDateFromString(request.getParameter("endDate"));
+            severity = getSeverityLevelFromName(request.getParameter("severity"));
+        } catch (Exception e) {
+            if (count) {
+                response.getOutputStream().print(new Gson().toJson(0));
+            } else {
+                response.getOutputStream().print(new Gson().toJson(new int[]{}));
+            }
+            return;
+        }
+
+        if (count) {
+            returnEngineLogsCount(response, severity, messageText, startDate, endDate);
+        } else {
+            returnEngineLogs(response, severity, messageText, startDate, endDate, itemsPerPage, pageIndex);
+        }
+    }
+
+    private void returnEngineLogs(HttpServletResponse response, String severity, String messageText, Date startDate, Date endDate, String itemsPerPage, String pageIndex) throws NexusException, IOException {
+        if (NumberUtils.isNumber(pageIndex) && NumberUtils.isNumber(itemsPerPage)) {
+            List<LogPojo> reportEngineLogEntries = Engine.getInstance().getTransactionService().getLogEntriesForReport(
+                    severity,
+                    messageText,
+                    startDate,
+                    endDate,
+                    Integer.parseInt(itemsPerPage),
+                    Integer.parseInt(pageIndex),
+                    LogDAO.SORT_CREATED,
+                    false);
+
+            List<StatisticsEngineLog> engineLogs = new LinkedList<>();
+            for (LogPojo logPojo : reportEngineLogEntries) {
+                engineLogs.add(new StatisticsEngineLog(logPojo));
+            }
+
+            Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+            String engineLogJson = gson.toJson(engineLogs);
+            response.getOutputStream().print(engineLogJson);
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameters: pageIndex and itemsPerPage");
+        }
+    }
+
+    private void returnEngineLogsCount(HttpServletResponse response, String severity, String messageText, Date startDate, Date endDate) throws NexusException, IOException {
+        long engineLogsCount = Engine.getInstance().getTransactionService().getLogEntriesForReportCount(
+                severity,
+                messageText,
+                startDate,
+                endDate,
+                0, false);
+        String message = new Gson().toJson(engineLogsCount);
+        response.getOutputStream().print(message);
     }
 }

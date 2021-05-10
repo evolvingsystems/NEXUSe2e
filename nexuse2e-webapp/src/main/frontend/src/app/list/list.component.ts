@@ -1,8 +1,18 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Conversation, Message, NexusData } from "../types";
+import {
+  Conversation,
+  EngineLog,
+  Message,
+  NexusData,
+  NotificationItem,
+} from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
 import { ScreensizeService } from "../services/screensize.service";
+import { MatDialog } from "@angular/material/dialog";
+import { ModalDialogComponent } from "../modal-dialog/modal-dialog.component";
+import { NotificationComponent } from "../notification/notification.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 export interface ListConfig {
   fieldName: string;
@@ -19,35 +29,73 @@ export interface ListConfig {
   styleUrls: ["./list.component.scss"],
 })
 export class ListComponent implements OnInit {
+  private readonly longTextThreshold: number = 200;
+  private readonly modalDialogMaxWidth: number = 1000;
   @Input() itemType!: string;
   @Input() items: NexusData[] = [];
   @Input() mobileConfig: ListConfig[] = [];
   @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
+  @Input() showAsSimpleTable?: boolean;
   displayedColumns: string[] = ["select"];
   headerElement?: ListConfig;
+  simpleTableConfig: ListConfig[] = [];
 
   constructor(
     private selectionService: SelectionService,
-    public screenSizeService: ScreensizeService
+    private _snackBar: MatSnackBar,
+    public screenSizeService: ScreensizeService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.displayedColumns.push(...this.desktopConfig.map((e) => e.fieldName));
-    this.headerElement = this.getHeaderElement();
+    if (this.desktopConfig) {
+      this.displayedColumns.push(...this.desktopConfig.map((e) => e.fieldName));
+    }
+    if (this.showAsSimpleTable) {
+      this.simpleTableConfig = this.screenSizeService.isMobile()
+        ? this.mobileConfig
+        : this.desktopConfig;
+    } else {
+      this.headerElement = this.getHeaderElement();
+    }
   }
 
   getHeaderElement(): ListConfig | undefined {
     return this.mobileConfig.find((e) => e.isHeader);
   }
 
-  getProperty(item: NexusData, propertyName: string) {
+  getProperty(
+    item: NexusData,
+    propertyName: string
+  ): string | number | undefined {
     if (this.isMessage(item)) {
       return item[propertyName as keyof Message];
     }
     if (this.isConversation(item)) {
       return item[propertyName as keyof Conversation];
     }
+    if (this.isEngineLog(item)) {
+      return item[propertyName as keyof EngineLog];
+    }
+  }
+
+  getTrimmedProperty(item: NexusData, fieldName: string) {
+    const property = this.getProperty(item, fieldName);
+
+    if (typeof property === "string") {
+      return this.isLongText(property)
+        ? property.substr(0, this.longTextThreshold) + "..."
+        : property;
+    } else {
+      return property;
+    }
+  }
+
+  isLongText(property?: string | number): boolean {
+    return (
+      typeof property === "string" && property.length > this.longTextThreshold
+    );
   }
 
   isMessage(item: NexusData): item is Message {
@@ -56,6 +104,10 @@ export class ListComponent implements OnInit {
 
   isConversation(item: NexusData): item is Conversation {
     return (item as Conversation).currentAction !== undefined;
+  }
+
+  isEngineLog(item: NexusData): item is EngineLog {
+    return (item as EngineLog).methodName !== undefined;
   }
 
   getUrl(item: NexusData, linkUrlRecipe: string): string {
@@ -77,5 +129,27 @@ export class ListComponent implements OnInit {
 
   isSelected(item: NexusData) {
     return this.selectionService.isSelected(this.itemType, item);
+  }
+
+  showMore(item: NexusData) {
+    this.dialog.open(ModalDialogComponent, {
+      maxWidth: this.modalDialogMaxWidth,
+      data: {
+        items: [item],
+        itemType: this.itemType,
+        mobileConfig: this.mobileConfig,
+        desktopConfig: this.desktopConfig,
+      },
+    });
+  }
+
+  showCopiedNotification() {
+    this._snackBar.openFromComponent(NotificationComponent, {
+      duration: 5000,
+      data: {
+        snackType: "info",
+        textLabel: "copiedToClipboard",
+      } as NotificationItem,
+    });
   }
 }

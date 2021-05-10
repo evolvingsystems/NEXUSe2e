@@ -56,6 +56,9 @@ import { DateRangePipe } from "./pipes/date-range.pipe";
 import { ActionButtonComponent } from "./action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { NotificationComponent } from "./notification/notification.component";
+import { ModalDialogComponent } from "./modal-dialog/modal-dialog.component";
+import { ClipboardModule } from "@angular/cdk/clipboard";
+import { MatDialogModule } from "@angular/material/dialog";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -147,6 +150,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ActionButtonComponent,
     StringPipe,
     DateRangePipe,
+    ModalDialogComponent,
     NotificationComponent,
   ],
   imports: [
@@ -177,6 +181,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserAnimationsModule,
     MatAutocompleteModule,
     MatSnackBarModule,
+    ClipboardModule,
+    MatDialogModule,
   ],
   providers: [
     {

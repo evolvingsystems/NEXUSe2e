@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { ActiveFilterList, Conversation, Message } from "../types";
+import { ActiveFilterList, Conversation, EngineLog, Message } from "../types";
 
 @Injectable({
   providedIn: "root",
@@ -58,25 +58,23 @@ export class DataService {
   private static buildFilterParams(activeFilters: ActiveFilterList) {
     let httpParams = new HttpParams();
     for (const fieldName in activeFilters) {
-      if (activeFilters.hasOwnProperty(fieldName)) {
-        const value = activeFilters[fieldName];
-        if (value) {
-          if (typeof value === "string") {
-            httpParams = httpParams.append(fieldName, value);
-          } else {
-            // type is DateRange
-            if (value.startDate) {
-              httpParams = httpParams.append(
-                "startDate",
-                value.startDate.toISOString()
-              );
-            }
-            if (value.endDate) {
-              httpParams = httpParams.append(
-                "endDate",
-                value.endDate.toISOString()
-              );
-            }
+      if (activeFilters.hasOwnProperty(fieldName)) {const value = activeFilters[fieldName];
+      if (value) {
+        if (typeof value === "string") {
+          httpParams = httpParams.append(fieldName, value);
+        } else {
+          // type is DateRange
+          if (value.startDate) {
+            httpParams = httpParams.append(
+              "startDate",
+              value.startDate.toISOString()
+            );
+          }
+          if (value.endDate) {
+            httpParams = httpParams.append(
+              "endDate",
+              value.endDate.toISOString()
+            );}
           }
         }
       }
@@ -125,6 +123,26 @@ export class DataService {
   getConversationsCount(activeFilters: ActiveFilterList = {}): Promise<number> {
     return this.get<number>(
       "/conversations/count",
+      false,
+      DataService.buildFilterParams(activeFilters)
+    );
+  }
+
+  getEngineLogs(
+    pageIndex: number,
+    itemsPerPage: number,
+    activeFilters: ActiveFilterList
+  ): Promise<EngineLog[]> {
+    let params = DataService.buildFilterParams(activeFilters)
+    ;
+    params = params.append("pageIndex", String(pageIndex));
+    params = params.append("itemsPerPage", String(itemsPerPage));
+    return this.get<EngineLog[]>("/engine-logs", false, params);
+  }
+
+  getEngineLogsCount(activeFilters: ActiveFilterList = {}): Promise<number> {
+    return this.get<number>(
+      "/engine-logs/count",
       false,
       DataService.buildFilterParams(activeFilters)
     );
