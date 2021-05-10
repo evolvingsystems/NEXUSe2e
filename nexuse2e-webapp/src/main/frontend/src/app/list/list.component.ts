@@ -31,6 +31,7 @@ export class ListComponent implements OnInit {
   headerElement?: ListConfig;
   modalDialogConfig: ListConfig[] = [];
   showMoreButton = false; // TODO
+  private readonly longTextThreshold: number = 200;
 
   constructor(
     private selectionService: SelectionService,
@@ -39,7 +40,9 @@ export class ListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.displayedColumns.push(...this.desktopConfig.map((e) => e.fieldName));
+    if (this.desktopConfig) {
+      this.displayedColumns.push(...this.desktopConfig.map((e) => e.fieldName));
+    }
     if (!this.isModalDialog) {
       this.headerElement = this.getHeaderElement();
     } else {
@@ -53,7 +56,10 @@ export class ListComponent implements OnInit {
     return this.mobileConfig.find((e) => e.isHeader);
   }
 
-  getProperty(item: NexusData, propertyName: string, doNotShorten?: boolean) {
+  getProperty(
+    item: NexusData,
+    propertyName: string
+  ): string | number | undefined {
     if (this.isMessage(item)) {
       return item[propertyName as keyof Message];
     }
@@ -61,19 +67,30 @@ export class ListComponent implements OnInit {
       return item[propertyName as keyof Conversation];
     }
     if (this.isEngineLog(item)) {
-      const property = item[propertyName as keyof EngineLog];
-      if (
-        typeof property === "string" &&
-        !this.isModalDialog &&
-        !doNotShorten
-      ) {
-        return property.length > 200
-          ? property.substr(0, 200) + "..."
-          : property;
-      } else {
-        return property;
-      }
+      return item[propertyName as keyof EngineLog];
     }
+  }
+
+  getTrimmedProperty(
+    item: NexusData,
+    fieldName: string,
+    doNotShorten?: boolean
+  ) {
+    const property = this.getProperty(item, fieldName);
+
+    if (typeof property === "string" && !this.isModalDialog && !doNotShorten) {
+      return this.isLongText(property)
+        ? property.substr(0, this.longTextThreshold) + "..."
+        : property;
+    } else {
+      return property;
+    }
+  }
+
+  isLongText(property?: string | number): boolean {
+    return (
+      typeof property === "string" && property.length > this.longTextThreshold
+    );
   }
 
   isMessage(item: NexusData): item is Message {

@@ -27,9 +27,9 @@
                 {{ getProperty(item, configItem.fieldName) }}
               </a>
               <ng-container *ngIf="!configItem.linkUrlRecipe">
-                {{ getProperty(item, configItem.fieldName) }}
+                {{ getTrimmedProperty(item, configItem.fieldName) }}
               </ng-container>
-              <div *ngIf="showMoreButton">
+              <div *ngIf="isLongText(getTrimmedProperty(item, configItem.fieldName))">
                 <button mat-button color="accent" class="float-right"
                         (click)="showMore(item)">{{ "buttons.showMore" | translate }}</button>
               </div>
@@ -129,7 +129,7 @@
                   {{ getProperty(item, configItem.fieldName) }}
                 </ng-container>
                 <mat-icon *ngIf="configItem.fieldName === 'description'" class="copyToClipboard"
-                          [cdkCopyToClipboard]="getProperty(item, configItem.fieldName, false)">content_copy
+                          [cdkCopyToClipboard]="getProperty(item, configItem.fieldName)">content_copy
                 </mat-icon>
               </ng-container>
               <ng-container *ngIf="configItem.additionalFieldName">
