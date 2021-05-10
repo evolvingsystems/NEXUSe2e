@@ -61,9 +61,9 @@ public class UserHandler implements Handler {
         Set<String> actionKeys = new HashSet<>();
         switch (permissionKey) {
             case "ModifyMessage.do":
-                actionKeys.add("message.requeue");
-                actionKeys.add("message.stop");
-                actionKeys.add("message.delete");
+                actionKeys.add("messages.requeue");
+                actionKeys.add("messages.stop");
+                actionKeys.add("conversations.delete");
                 break;
             case "MessageView.do":
                 actionKeys.add("messages.view");
