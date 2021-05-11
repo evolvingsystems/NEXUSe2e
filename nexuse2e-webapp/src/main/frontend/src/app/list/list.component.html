@@ -77,7 +77,7 @@
             <ng-container *ngFor="let configItem of mobileConfig">
               <tr *ngIf="!configItem.isHeader">
                 <td class="label">{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</td>
-                <td [class]="configItem.fieldName">
+                <td [class]="configItem.fieldName" [class.whiteSpaceBreak]="showForDetailPage">
                   <ng-container *ngIf="configItem.fieldName">
                     <a *ngIf="configItem.linkUrlRecipe"
                        [routerLink]="getUrl(item, configItem.linkUrlRecipe)">

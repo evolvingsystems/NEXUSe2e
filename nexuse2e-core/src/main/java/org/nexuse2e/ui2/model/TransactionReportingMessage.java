@@ -35,6 +35,7 @@ public class TransactionReportingMessage {
     private String referencedMessageId;
     private Integer retries;
     private Date expirationDate;
+    private String trp;
     private List<TransactionReportingMessagePayload> messagePayloads;
     private HashMap<String, String> messageLabels;
     private List<StatisticsEngineLog> engineLogs;
@@ -67,6 +68,7 @@ public class TransactionReportingMessage {
         }
         retries = message.getRetries();
         expirationDate = message.getExpirationDate();
+        trp = message.getTRP().getProtocol() + " / " + message.getTRP().getVersion();
         messagePayloads = getTransactionReportingMessagePayloads(message.getMessagePayloads());
         messageLabels = getMessageLabelMap(message.getMessageLabels());
         engineLogs = getStatisticsEngineLogs(conversationId, messageId);
@@ -255,6 +257,14 @@ public class TransactionReportingMessage {
 
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public String getTrp() {
+        return trp;
+    }
+
+    public void setTrp(String trp) {
+        this.trp = trp;
     }
 
     public List<TransactionReportingMessagePayload> getMessagePayloads() {

@@ -1,1 +1,9 @@
-<p>message-detail works!</p>
+<h1>{{ "labels.messageDetail" | translate }}</h1>
+<div class="action-button-panel">
+  <button mat-icon-button aria-label="Back" (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</div>
+<app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="message"
+          itemType="message"
+          [isSelectable]="false" showForDetailPage="true"></app-list>

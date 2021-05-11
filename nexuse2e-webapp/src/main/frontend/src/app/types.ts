@@ -16,11 +16,13 @@ export interface Message extends NexusData {
 }
 
 export interface MessageDetail extends Message {
+  direction: string;
   modifiedDate: string;
   endDate: string;
   referencedMessageId: string;
   retries: string;
   expirationDate: string;
+  trp: string;
   messagePayloads: unknown[]; //TODO
   messageLabels: unknown[]; //TODO
   engineLogs: EngineLog[];

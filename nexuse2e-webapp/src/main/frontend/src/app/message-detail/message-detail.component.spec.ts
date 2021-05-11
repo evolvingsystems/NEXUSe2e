@@ -6,6 +6,9 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatIconModule } from "@angular/material/icon";
+import { ListComponent } from "../list/list.component";
+import { MatDialogModule } from "@angular/material/dialog";
 
 describe("MessageDetailComponent", () => {
   let component: MessageDetailComponent;
@@ -18,8 +21,10 @@ describe("MessageDetailComponent", () => {
         HttpClientTestingModule,
         TranslateModule.forRoot(),
         MatSnackBarModule,
+        MatIconModule,
+        MatDialogModule,
       ],
-      declarations: [MessageDetailComponent],
+      declarations: [MessageDetailComponent, ListComponent],
       providers: [
         {
           provide: ActivatedRoute,

@@ -134,11 +134,11 @@ a {
     table-layout: fixed;
     width: 100%;
 
-    td {
+    td:not(.label) {
       white-space: nowrap;
       overflow: hidden;
 
-      &:before {
+      &:not(.whiteSpaceBreak):before {
         content: "";
         width: 40px;
         height: 20px;
@@ -154,12 +154,19 @@ a {
           background: transparent;
         }
       }
+
+      &.whiteSpaceBreak {
+        white-space: normal;
+        word-break: break-word;
+      }
     }
 
     .label {
       width: 120px;
       font-weight: bold;
       vertical-align: baseline;
+      word-break: break-word;
+      white-space: normal;
     }
   }
 }

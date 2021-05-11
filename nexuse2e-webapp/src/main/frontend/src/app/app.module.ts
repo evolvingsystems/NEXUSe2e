@@ -116,6 +116,11 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
       },
       {
+        path: "message/:id",
+        component: MessageDetailComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
         path: "engine-log",
         component: EngineLogComponent,
         canActivate: [AuthGuardService],

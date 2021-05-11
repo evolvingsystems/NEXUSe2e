@@ -1,9 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
-import { MessageDetail, NotificationItem } from "../types";
+import { ListConfig, MessageDetail, NotificationItem } from "../types";
 import { DataService } from "../services/data.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-message-detail",
@@ -13,10 +14,36 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 export class MessageDetailComponent implements OnInit {
   message: MessageDetail[] = [];
 
+  messageConfig: ListConfig[] = [
+    {
+      fieldName: "messageId",
+    },
+    {
+      fieldName: "conversationId",
+      linkUrlRecipe: "../../conversation/$nxConversationId$",
+    },
+    { fieldName: "choreographyId" },
+    { fieldName: "partnerId" },
+    { fieldName: "typeName", label: "messageType" },
+    { fieldName: "direction" },
+    { fieldName: "referencedMessageId" },
+    { fieldName: "actionId" },
+    { fieldName: "backendStatus" },
+    { fieldName: "createdDate" },
+    { fieldName: "modifiedDate" },
+    { fieldName: "endDate" },
+    { fieldName: "turnAroundTime" },
+    { fieldName: "expirationDate" },
+    { fieldName: "retries" },
+    { fieldName: "trp", label: "protocolVersion" },
+    { fieldName: "status" },
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private dataService: DataService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -37,5 +64,9 @@ export class MessageDetailComponent implements OnInit {
         } as NotificationItem,
       });
     }
+  }
+
+  back() {
+    this.location.back();
   }
 }
