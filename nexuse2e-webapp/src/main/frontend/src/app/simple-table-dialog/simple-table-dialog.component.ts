@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { ListModalDialog, NexusData } from "../types";
-import { ListConfig } from "../list/list.component";
+import { ListConfig, ListModalDialog, NexusData } from "../types";
+
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({

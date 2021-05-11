@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { SelectionService } from "../services/selection.service";
-import { ListConfig } from "../list/list.component";
 import { SessionService } from "../services/session.service";
-import { Action, NexusData } from "../types";
+import { Action, ListConfig, NexusData } from "../types";
 import { ScreensizeService } from "../services/screensize.service";
 import { PermissionService } from "../services/permission.service";
 

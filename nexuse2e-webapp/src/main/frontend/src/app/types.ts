@@ -1,5 +1,3 @@
-import { ListConfig } from "./list/list.component";
-
 export interface NexusData {}
 
 export interface Message extends NexusData {
@@ -54,6 +52,33 @@ export interface Action {
 export interface NotificationItem {
   snackType: string;
   textLabel: string;
+}
+
+export interface LoginData {
+  user: string;
+  password: string;
+}
+
+export enum FilterType {
+  TEXT,
+  SELECT,
+  DATE_TIME_RANGE,
+}
+
+export interface Filter {
+  fieldName: string;
+  filterType: FilterType;
+  allowedValues?: string[];
+  defaultValue?: string | DateRange;
+}
+
+export interface ListConfig {
+  fieldName: string;
+  additionalFieldName?: string;
+  label?: string;
+  linkUrlRecipe?: string;
+  additionalLinkUrlRecipe?: string;
+  isHeader?: boolean;
 }
 
 export interface ListModalDialog {

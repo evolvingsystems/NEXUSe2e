@@ -44,7 +44,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { SelectFilterComponent } from "./select-filter/select-filter.component";
 import { MatTableModule } from "@angular/material/table";
 import { TextFilterComponent } from "./text-filter/text-filter.component";
-import { DateTimeRangeFilterComponent } from "./date-time-range-filter/date-time-range-filter.component";
+import { DateRangeFilterComponent } from "./date-range-filter/date-range-filter.component";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.component";
@@ -144,7 +144,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     FilterPanelComponent,
     SelectFilterComponent,
     TextFilterComponent,
-    DateTimeRangeFilterComponent,
+    DateRangeFilterComponent,
     MasterSelectComponent,
     LoadingSpinnerComponent,
     ListComponent,

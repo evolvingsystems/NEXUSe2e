@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ActiveFilterList, DateRange } from "../types";
 
 @Component({
-  selector: "app-date-time-range-filter",
-  templateUrl: "./date-time-range-filter.component.html",
-  styleUrls: ["./date-time-range-filter.component.scss"],
+  selector: "app-date-range-filter",
+  templateUrl: "./date-range-filter.component.html",
+  styleUrls: ["./date-range-filter.component.scss"],
 })
-export class DateTimeRangeFilterComponent {
+export class DateRangeFilterComponent {
   @Input() fieldName!: string;
   @Input() selectedValue?: DateRange;
   @Input() maxStartDate: Date = new Date();

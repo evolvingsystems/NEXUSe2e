@@ -16,7 +16,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { PaginatedListComponent } from "../paginated-list/paginated-list.component";
 import { SelectFilterComponent } from "../select-filter/select-filter.component";
 import { TextFilterComponent } from "../text-filter/text-filter.component";
-import { DateTimeRangeFilterComponent } from "../date-time-range-filter/date-time-range-filter.component";
+import { DateRangeFilterComponent } from "../date-range-filter/date-range-filter.component";
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -48,7 +48,7 @@ describe("MessageListComponent", () => {
         MatAutocompleteModule,
         MatTableModule,
         MatCheckboxModule,
-        MatSnackBarModule
+        MatSnackBarModule,
       ],
       declarations: [
         MessageListComponent,
@@ -56,7 +56,7 @@ describe("MessageListComponent", () => {
         PaginatedListComponent,
         SelectFilterComponent,
         TextFilterComponent,
-        DateTimeRangeFilterComponent,
+        DateRangeFilterComponent,
         LoadingSpinnerComponent,
         ListComponent,
         ActionButtonComponent,

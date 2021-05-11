@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { DateTimeRangeFilterComponent } from "./date-time-range-filter.component";
+import { DateRangeFilterComponent } from "./date-range-filter.component";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatInputModule } from "@angular/material/input";
 import { TranslateModule } from "@ngx-translate/core";
@@ -12,13 +12,13 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { ActiveFilterList } from "../types";
 
-describe("DateTimeRangeFilterComponent", () => {
-  let component: DateTimeRangeFilterComponent;
-  let fixture: ComponentFixture<DateTimeRangeFilterComponent>;
+describe("DateRangeFilterComponent", () => {
+  let component: DateRangeFilterComponent;
+  let fixture: ComponentFixture<DateRangeFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DateTimeRangeFilterComponent],
+      declarations: [DateRangeFilterComponent],
       imports: [
         TranslateModule.forRoot(),
         MatDatepickerModule,
@@ -33,7 +33,7 @@ describe("DateTimeRangeFilterComponent", () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DateTimeRangeFilterComponent);
+    fixture = TestBed.createComponent(DateRangeFilterComponent);
     component = fixture.componentInstance;
   });
 
