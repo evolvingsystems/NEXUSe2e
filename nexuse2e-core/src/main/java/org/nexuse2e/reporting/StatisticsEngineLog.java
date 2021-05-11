@@ -70,6 +70,7 @@ public class StatisticsEngineLog {
     }
 
     private String getSeverityNameFromLevel(int level) {
+        // Integer.MIN_VALUE represents "All" in log4j
         if (level == Integer.MIN_VALUE) {
             return null;
         }
