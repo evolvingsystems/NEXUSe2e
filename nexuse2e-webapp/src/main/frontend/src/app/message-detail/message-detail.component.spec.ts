@@ -9,6 +9,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatIconModule } from "@angular/material/icon";
 import { ListComponent } from "../list/list.component";
 import { MatDialogModule } from "@angular/material/dialog";
+import { ActionButtonComponent } from "../action-button/action-button.component";
 
 describe("MessageDetailComponent", () => {
   let component: MessageDetailComponent;
@@ -24,7 +25,11 @@ describe("MessageDetailComponent", () => {
         MatIconModule,
         MatDialogModule,
       ],
-      declarations: [MessageDetailComponent, ListComponent],
+      declarations: [
+        MessageDetailComponent,
+        ListComponent,
+        ActionButtonComponent,
+      ],
       providers: [
         {
           provide: ActivatedRoute,

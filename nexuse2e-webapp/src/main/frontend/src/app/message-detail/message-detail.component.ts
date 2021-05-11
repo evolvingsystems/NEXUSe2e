@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
 import {
+  Action,
   EngineLog,
   ListConfig,
   MessageDetail,
@@ -67,6 +68,19 @@ export class MessageDetailComponent implements OnInit {
     },
   ];
 
+  actions: Action[] = [
+    {
+      label: "requeue",
+      icon: "refresh",
+      actionKey: "/message/requeue",
+    },
+    {
+      label: "stop",
+      icon: "stop",
+      actionKey: "/message/stop",
+    },
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private dataService: DataService,
@@ -93,6 +107,12 @@ export class MessageDetailComponent implements OnInit {
         } as NotificationItem,
       });
     }
+  }
+
+  update() {
+    // message needs to be resetted otherwise it pushes message as new item in loadMessage
+    this.message = [];
+    this.loadMessage(String(this.route.snapshot.paramMap.get("id")));
   }
 
   back() {

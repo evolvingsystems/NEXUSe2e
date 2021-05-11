@@ -3,6 +3,13 @@
   <button mat-icon-button aria-label="Back" (click)="back()">
     <mat-icon>arrow_back</mat-icon>
   </button>
+  <ng-container *ngFor="let action of actions">
+    <app-action-button
+      [action]="action"
+      (triggerReload)="update()"
+      [affectedItems]="message">
+    </app-action-button>
+  </ng-container>
 </div>
 <app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="message"
           itemType="message"

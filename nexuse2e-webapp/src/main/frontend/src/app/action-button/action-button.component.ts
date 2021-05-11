@@ -32,8 +32,14 @@ export class ActionButtonComponent implements OnInit {
       case "/messages/stop":
         await this.actionService.stopMessages();
         break;
+      case "/message/stop":
+        await this.actionService.stopMessages(this.affectedItems);
+        break;
       case "/messages/requeue":
         await this.actionService.requeueMessages();
+        break;
+      case "/message/requeue":
+        await this.actionService.requeueMessages(this.affectedItems);
         break;
       case "/conversations/delete":
         await this.actionService.deleteConversations();
