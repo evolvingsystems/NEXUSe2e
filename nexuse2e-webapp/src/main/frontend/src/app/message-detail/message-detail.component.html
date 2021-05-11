@@ -7,3 +7,16 @@
 <app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="message"
           itemType="message"
           [isSelectable]="false" showForDetailPage="true"></app-list>
+
+<div class="toggleSection">
+  <div class="toggle-Header" (click)=toggleLogArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ logsExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.logs" | translate }}</span>
+  </div>
+  <ng-container *ngIf="logsExpanded">
+    <app-list [desktopConfig]="logConfig" [mobileConfig]="logConfig" [items]="engineLogs" itemType="message"
+              [isSelectable]="false"></app-list>
+  </ng-container>
+</div>

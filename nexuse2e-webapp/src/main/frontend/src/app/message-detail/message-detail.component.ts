@@ -1,7 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
-import { ListConfig, MessageDetail, NotificationItem } from "../types";
+import {
+  EngineLog,
+  ListConfig,
+  MessageDetail,
+  NotificationItem,
+} from "../types";
 import { DataService } from "../services/data.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Location } from "@angular/common";
@@ -13,6 +18,8 @@ import { Location } from "@angular/common";
 })
 export class MessageDetailComponent implements OnInit {
   message: MessageDetail[] = [];
+  engineLogs: EngineLog[] = [];
+  logsExpanded = true;
 
   messageConfig: ListConfig[] = [
     {
@@ -39,6 +46,27 @@ export class MessageDetailComponent implements OnInit {
     { fieldName: "status" },
   ];
 
+  logConfig: ListConfig[] = [
+    {
+      fieldName: "severity",
+    },
+    {
+      fieldName: "createdDate",
+    },
+    {
+      fieldName: "description",
+    },
+    {
+      fieldName: "origin",
+    },
+    {
+      fieldName: "className",
+    },
+    {
+      fieldName: "methodName",
+    },
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private dataService: DataService,
@@ -55,6 +83,7 @@ export class MessageDetailComponent implements OnInit {
     try {
       const item = await this.dataService.getMessageById(nxMessageId);
       this.message.push(item);
+      this.engineLogs = item.engineLogs || [];
     } catch {
       this._snackBar.openFromComponent(NotificationComponent, {
         duration: 5000,
@@ -68,5 +97,9 @@ export class MessageDetailComponent implements OnInit {
 
   back() {
     this.location.back();
+  }
+
+  toggleLogArea() {
+    this.logsExpanded = !this.logsExpanded;
   }
 }
