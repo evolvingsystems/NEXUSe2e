@@ -68,7 +68,9 @@ export class PaginatedListComponent implements OnInit {
 
   isSelectable(): boolean {
     if (this.actions) {
-      return this.actions.some(a => this.permissionService.isUserPermitted(a.actionKey));
+      return this.actions.some((a) =>
+        this.permissionService.isUserPermitted(a.actionKey)
+      );
     }
     return false;
   }
