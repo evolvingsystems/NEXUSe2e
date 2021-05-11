@@ -10,7 +10,7 @@ import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
 import { ScreensizeService } from "../services/screensize.service";
 import { MatDialog } from "@angular/material/dialog";
-import { ModalDialogComponent } from "../modal-dialog/modal-dialog.component";
+import { SimpleTableDialogComponent } from "../simple-table-dialog/simple-table-dialog.component";
 import { NotificationComponent } from "../notification/notification.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
@@ -132,7 +132,7 @@ export class ListComponent implements OnInit {
   }
 
   showMore(item: NexusData) {
-    this.dialog.open(ModalDialogComponent, {
+    this.dialog.open(SimpleTableDialogComponent, {
       maxWidth: this.modalDialogMaxWidth,
       data: {
         items: [item],

@@ -24,6 +24,7 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ListComponent } from "../list/list.component";
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
+import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("ConversationListComponent", () => {
@@ -60,6 +61,7 @@ describe("ConversationListComponent", () => {
         ListComponent,
         StringPipe,
         DateRangePipe,
+        ActionButtonComponent,
       ],
     }).compileComponents();
   });

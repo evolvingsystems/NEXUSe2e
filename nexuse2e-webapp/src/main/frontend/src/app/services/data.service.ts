@@ -28,9 +28,9 @@ export class DataService {
       if (this.cache[key]) {
         return this.cache[key] as Promise<T>;
       }
-      return this.cache[key] = this.http
+      return (this.cache[key] = this.http
         .get<T>(this.API_URL + path, { params: params })
-        .toPromise();
+        .toPromise());
     }
     return this.http
       .get<T>(this.API_URL + path, { params: params })
@@ -132,6 +132,10 @@ export class DataService {
       false,
       DataService.buildFilterParams(activeFilters)
     );
+  }
+
+  deleteConversations(conversationIds: string[]): Promise<void> {
+    return this.post("/conversations/delete", conversationIds);
   }
 
   getEngineLogs(

@@ -8,6 +8,7 @@ import { By } from "@angular/platform-browser";
 import { MatCardModule } from "@angular/material/card";
 import { ListComponent } from "../list/list.component";
 import { ScreensizeService } from "../services/screensize.service";
+import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { HttpClientModule } from "@angular/common/http";
@@ -27,7 +28,11 @@ describe("PaginatedListComponent", () => {
         MatSnackBarModule,
         HttpClientModule,
       ],
-      declarations: [PaginatedListComponent, ListComponent],
+      declarations: [
+        PaginatedListComponent,
+        ListComponent,
+        ActionButtonComponent,
+      ],
     }).compileComponents();
   });
 

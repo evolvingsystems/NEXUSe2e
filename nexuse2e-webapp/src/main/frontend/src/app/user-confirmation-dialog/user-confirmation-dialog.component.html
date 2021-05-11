@@ -1,0 +1,7 @@
+<h2 mat-dialog-title>{{ "dialog." + notificationTitleLabel | translate}}</h2>
+<mat-dialog-content class="mat-typography">{{ "dialog." + notificationTextLabel | translate}}</mat-dialog-content>
+<mat-dialog-actions class="dialog-actions">
+  <button mat-button mat-dialog-close>{{ "buttons.cancel" | translate }}</button>
+  <button mat-button [mat-dialog-close]="true"
+          cdkFocusInitial>{{ (confirmButtonLabel ? "buttons." + confirmButtonLabel : "buttons.ok") | translate }}</button>
+</mat-dialog-actions>

@@ -4,11 +4,11 @@ import { ListConfig } from "../list/list.component";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
-  selector: "app-modal-dialog",
-  templateUrl: "./modal-dialog.component.html",
-  styleUrls: ["./modal-dialog.component.scss"],
+  selector: "app-simple-table-dialog",
+  templateUrl: "./simple-table-dialog.component.html",
+  styleUrls: ["./simple-table-dialog.component.scss"],
 })
-export class ModalDialogComponent implements OnInit {
+export class SimpleTableDialogComponent implements OnInit {
   items: NexusData[] = [];
   itemType!: string;
   mobileConfig: ListConfig[] = [];
