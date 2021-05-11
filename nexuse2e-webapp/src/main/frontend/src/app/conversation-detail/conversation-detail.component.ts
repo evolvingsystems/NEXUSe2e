@@ -141,6 +141,6 @@ export class ConversationDetailComponent implements OnInit {
   }
 
   redirect() {
-    this.router.navigateByUrl("/reporting/transaction-reporting/conversations"); //TODO
+    this.router.navigateByUrl("/reporting/transaction-reporting/conversations");
   }
 }

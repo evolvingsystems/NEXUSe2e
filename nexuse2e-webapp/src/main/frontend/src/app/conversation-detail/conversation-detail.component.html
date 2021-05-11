@@ -6,7 +6,8 @@
   <ng-container *ngFor="let action of actions">
     <app-action-button
       [action]="action"
-      (triggerReload)="redirect()">
+      (triggerReload)="redirect()"
+      [affectedItems]="conversation">
     </app-action-button>
   </ng-container>
 </div>
