@@ -49,14 +49,17 @@ public interface TransactionDAO {
 
     /**
      * Gets a <code>ConversationPojo</code> by it's primary key.
+     *
      * @param nxConversationId The NEXUS conversation ID.
      * @return The conversation, or <code>null</code> if none with the given ID exists.
      */
-    public abstract ConversationPojo getConversationByConversationId( int nxConversationId ); // getConversationByConversationId
+    public abstract ConversationPojo getConversationByConversationId(int nxConversationId); // getConversationByConversationId
 
-    public abstract MessagePojo getMessageByMessageId( String messageId ) throws NexusException;
+    public abstract MessagePojo getMessageByMessageId(String messageId) throws NexusException;
 
-    public abstract MessagePojo getMessageByReferencedMessageId( String messageId ) throws NexusException;
+    MessagePojo getMessageByNxMessageId(Integer nxMessageId) throws NexusException;
+
+    public abstract MessagePojo getMessageByReferencedMessageId(String messageId) throws NexusException;
 
     /**
      * @param status
@@ -84,7 +87,6 @@ public interface TransactionDAO {
     public abstract List<MessagePojo> getActiveMessages() throws NexusException; // getActiveMessages
 
     /**
-     * @param nxConversationId
      * @param status
      * @param nxChoreographyId
      * @param nxPartnerId
@@ -198,8 +200,6 @@ public interface TransactionDAO {
     /**
      * @param start
      * @param end
-     * @param session
-     * @param transaction
      * @return
      * @throws NexusException
      */
@@ -216,15 +216,13 @@ public interface TransactionDAO {
 
     /**
      * @param status
-     * @param choreographyId
-     * @param participantId
      * @param conversationId
      * @param start
      * @param end
      * @param field
      * @param ascending
      * @return
-     * @throws PersistenceException
+     * @throws NexusException
      */
     public abstract int getConversationsCount( String status, int nxChoreographyId, int nxPartnerId,
             String conversationId, Date start, Date end, int field, boolean ascending ) throws NexusException;
@@ -234,8 +232,6 @@ public interface TransactionDAO {
 
     /**
      * @param partner
-     * @param session
-     * @param transaction
      * @return
      * @throws NexusException
      */
@@ -244,8 +240,6 @@ public interface TransactionDAO {
     /**
      * @param partner
      * @param choreography
-     * @param session
-     * @param transaction
      * @return
      * @throws NexusException
      */
@@ -260,8 +254,6 @@ public interface TransactionDAO {
 
     /**
      * @param partner
-     * @param session
-     * @param transaction
      * @return
      * @throws NexusException
      */
@@ -270,16 +262,12 @@ public interface TransactionDAO {
 
     /**
      * @param messagePojo
-     * @param session
-     * @param transaction
      * @throws NexusException
      */
     public abstract void deleteMessage( MessagePojo messagePojo ) throws NexusException; // updateMessage
 
     /**
      * @param conversationPojo
-     * @param session
-     * @param transaction
      * @throws NexusException
      */
     public abstract void deleteConversation( ConversationPojo conversationPojo ) throws NexusException; // updateMessage
@@ -289,8 +277,6 @@ public interface TransactionDAO {
      * @param outbound
      * @param field
      * @param ascending
-     * @param session
-     * @param transaction
      * @return
      * @throws NexusException
      */
@@ -327,8 +313,6 @@ public interface TransactionDAO {
 
     /**
      * @param logEntry
-     * @param session
-     * @param transaction
      */
     public abstract void deleteLogEntry( LogPojo logEntry ) throws NexusException;
 

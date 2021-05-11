@@ -15,6 +15,17 @@ export interface Message extends NexusData {
   turnAroundTime: string;
 }
 
+export interface MessageDetail extends Message {
+  modifiedDate: string;
+  endDate: string;
+  referencedMessageId: string;
+  retries: string;
+  expirationDate: string;
+  messagePayloads: unknown[]; //TODO
+  messageLabels: unknown[]; //TODO
+  engineLogs: EngineLog[];
+}
+
 export interface Conversation extends NexusData {
   choreographyId: string;
   conversationId: string;

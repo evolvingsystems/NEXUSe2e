@@ -1,21 +1,21 @@
-/**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+/*
+   NEXUSe2e Business Messaging Open Source
+   Copyright 2000-2021, direkt gruppe GmbH
+
+   This is free software; you can redistribute it and/or modify it
+   under the terms of the GNU Lesser General Public License as
+   published by the Free Software Foundation version 3 of
+   the License.
+
+   This software is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with this software; if not, write to the Free
+   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+   02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.controller;
 
@@ -108,12 +108,13 @@ public class TransactionServiceImpl implements TransactionService {
     protected ConversationPojo complete( ConversationPojo conversation ) throws NexusException {
         return complete( conversation, true );
     }
-    
+
     /**
      * Completes the given <code>ConversationPojo</code> by using the current engine configuration.
-     * @param message The conversation to be completed.
+     *
+     * @param conversation     The conversation to be completed.
      * @param completeMessages If <code>true</code>, child messages will be completed as well.
-     * Pass <code>true</code> if in doubt.
+     *                         Pass <code>true</code> if in doubt.
      * @return A conversation pojo filled with the fields that were initially set up with proxies
      * for lazy loading. This is a reference to the object passed as argument.
      * @throws NexusException If something went wrong
@@ -292,19 +293,23 @@ public class TransactionServiceImpl implements TransactionService {
      */
     public MessagePojo getMessage( String messageId ) throws NexusException {
 
-        return getMessage( messageId, false );
+        return getMessage(messageId, false);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.controller.TransactionService#getMessage(java.lang.String)
      */
-    public MessagePojo getMessage( String messageId, boolean isReferencedMessageId ) throws NexusException {
+    public MessagePojo getMessage(String messageId, boolean isReferencedMessageId) throws NexusException {
 
-        if ( isReferencedMessageId ) {
-            return complete( getTransactionDao().getMessageByReferencedMessageId( messageId ) );
+        if (isReferencedMessageId) {
+            return complete(getTransactionDao().getMessageByReferencedMessageId(messageId));
         } else {
-            return complete( getTransactionDao().getMessageByMessageId( messageId ) );
+            return complete(getTransactionDao().getMessageByMessageId(messageId));
         }
+    }
+
+    public MessagePojo getMessage(Integer nxMessageId) throws NexusException {
+        return complete(getTransactionDao().getMessageByNxMessageId(nxMessageId));
     }
 
     /* (non-Javadoc)
@@ -682,8 +687,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     /**
      * @param conversation
-     * @param session
-     * @param transaction
      * @throws NexusException
      */
     public void deleteConversation( ConversationPojo conversation )

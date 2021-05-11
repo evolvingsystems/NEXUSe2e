@@ -7,6 +7,7 @@ import {
   ConversationDetail,
   EngineLog,
   Message,
+  MessageDetail,
 } from "../types";
 
 @Injectable({
@@ -103,6 +104,12 @@ export class DataService {
     params = params.append("pageIndex", String(pageIndex));
     params = params.append("itemsPerPage", String(itemsPerPage));
     return this.get<Message[]>("/messages", false, params);
+  }
+
+  getMessageById(nxMessageId: string) {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append("nxMessageId", String(nxMessageId));
+    return this.get<MessageDetail>("/message", false, httpParams);
   }
 
   getMessagesCount(activeFilters: ActiveFilterList = {}): Promise<number> {
