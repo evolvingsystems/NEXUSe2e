@@ -54,6 +54,21 @@ export interface EngineLog extends NexusData {
   methodName: string;
 }
 
+export interface Choreography extends NexusData {
+  nxChoreographyId: number;
+  name: string;
+  lastInboundTime: string;
+  lastOutboundTime: string;
+}
+
+export interface Partner extends NexusData {
+  partnerId: string;
+  nxPartnerId: number;
+  name: string;
+  lastInboundTime: string;
+  lastOutboundTime: string;
+}
+
 export interface DateRange {
   startDate: Date | undefined;
   endDate: Date | undefined;

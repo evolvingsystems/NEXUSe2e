@@ -3,11 +3,13 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import {
   ActiveFilterList,
+  Choreography,
   Conversation,
   ConversationDetail,
   EngineLog,
   Message,
   MessageDetail,
+  Partner,
 } from "../types";
 
 @Injectable({
@@ -189,6 +191,14 @@ export class DataService {
 
   getVersion(): Promise<string[]> {
     return this.get<string[]>("/version");
+  }
+
+  getStatisticsChoreographies() {
+    return this.get<Choreography[]>("/choreographies");
+  }
+
+  getStatisticsPartners() {
+    return this.get<Partner[]>("/partners");
   }
 
   private post(path: string, body: unknown): Promise<void> {
