@@ -78,12 +78,12 @@ export class MessageListComponent implements OnInit {
   mobileConfig: ListConfig[] = [
     {
       fieldName: "messageId",
-      linkUrlRecipe: "$nxMessageId$",
+      linkUrlRecipe: "../../message/$nxMessageId$",
       isHeader: true,
     },
     {
       fieldName: "conversationId",
-      linkUrlRecipe: "../conversations/$nxConversationId$",
+      linkUrlRecipe: "../../conversation/$nxConversationId$",
     },
     { fieldName: "partnerId" },
     { fieldName: "typeName", label: "messageType" },
@@ -98,11 +98,11 @@ export class MessageListComponent implements OnInit {
   desktopConfig: ListConfig[] = [
     {
       fieldName: "messageId",
-      linkUrlRecipe: "$nxMessageId$",
+      linkUrlRecipe: "../../message/$nxMessageId$",
     },
     {
       fieldName: "conversationId",
-      linkUrlRecipe: "../conversations/$nxConversationId$",
+      linkUrlRecipe: "../../conversation/$nxConversationId$",
     },
     { fieldName: "partnerId" },
     { fieldName: "status" },

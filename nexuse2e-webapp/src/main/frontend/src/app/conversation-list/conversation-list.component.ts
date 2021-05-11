@@ -60,7 +60,7 @@ export class ConversationListComponent implements OnInit {
   mobileConfig: ListConfig[] = [
     {
       fieldName: "conversationId",
-      linkUrlRecipe: "$nxConversationId$",
+      linkUrlRecipe: "../../conversation/$nxConversationId$",
       isHeader: true,
     },
     { fieldName: "choreographyId" },
@@ -71,7 +71,7 @@ export class ConversationListComponent implements OnInit {
   desktopConfig: ListConfig[] = [
     {
       fieldName: "conversationId",
-      linkUrlRecipe: "$nxConversationId$",
+      linkUrlRecipe: "../../conversation/$nxConversationId$",
     },
     {
       fieldName: "partnerId",

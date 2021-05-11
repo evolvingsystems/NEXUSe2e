@@ -1,7 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { ActiveFilterList, Conversation, EngineLog, Message } from "../types";
+import {
+  ActiveFilterList,
+  Conversation,
+  ConversationDetail,
+  EngineLog,
+  Message,
+} from "../types";
 
 @Injectable({
   providedIn: "root",
@@ -132,6 +138,15 @@ export class DataService {
       false,
       DataService.buildFilterParams(activeFilters)
     );
+  }
+
+  getConversationById(nxConversationId: string) {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append(
+      "nxConversationId",
+      String(nxConversationId)
+    );
+    return this.get<ConversationDetail>("/conversation", false, httpParams);
   }
 
   deleteConversations(conversationIds: string[]): Promise<void> {
