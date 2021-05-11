@@ -15,6 +15,59 @@
           itemType="message"
           [isSelectable]="false" showForDetailPage="true"></app-list>
 
+<div class="toggleSection" *ngIf="messagePayloads">
+  <div class="toggle-Header" (click)=toggleContentArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ contentExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.content" | translate }}</span>
+  </div>
+  <ng-container *ngIf="contentExpanded">
+    <mat-card class="withoutBorder">
+      <table class="table-scrollable">
+        <tr>
+          <th class="label">{{ "labels.component" | translate }}</th>
+          <th class="label">{{ "labels.mimeType" | translate }}</th>
+          <th class="label">{{ "labels.action" | translate }}</th>
+        </tr>
+        <tr>
+          <td>{{ "labels.header" | translate }}</td>
+          <td>text/xml</td>
+          <td><a [href]="buildDataSaveUrl()">{{ "labels.view" | translate }}</a></td>
+        </tr>
+        <ng-container *ngFor="let payload of messagePayloads; let i = index">
+          <tr>
+            <td>{{ "labels.payload" | translate }} {{ i }}</td>
+            <td>{{ payload.mimeType }}</td>
+            <td><a [href]="buildDataSaveUrl(i)">{{ "labels.view" | translate }}</a></td>
+          </tr>
+        </ng-container>
+      </table>
+    </mat-card>
+  </ng-container>
+</div>
+
+<div class="toggleSection" *ngIf="messageLabels">
+  <div class="toggle-Header" (click)=toggleMessageLabelsArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ messageLabelsExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.messageLabels" | translate }}</span>
+  </div>
+  <ng-container *ngIf="messageLabelsExpanded">
+    <mat-card class="withoutBorder">
+      <table class="mat-table">
+        <ng-container *ngFor="let messageLabel of messageLabels | keyvalue ">
+          <tr>
+            <td class="label">{{ messageLabel.key }}</td>
+            <td>{{ messageLabel.value }}</td>
+          </tr>
+        </ng-container>
+      </table>
+    </mat-card>
+  </ng-container>
+</div>
+
 <div class="toggleSection">
   <div class="toggle-Header" (click)=toggleLogArea()>
     <button mat-icon-button aria-label="Toggle">

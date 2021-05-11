@@ -23,8 +23,8 @@ export interface MessageDetail extends Message {
   retries: string;
   expirationDate: string;
   trp: string;
-  messagePayloads: unknown[]; //TODO
-  messageLabels: unknown[]; //TODO
+  messagePayloads: Payload[];
+  messageLabels: ReadonlyMap<string, string>;
   engineLogs: EngineLog[];
 }
 
@@ -67,6 +67,12 @@ export interface Action {
   label: string;
   icon?: string;
   actionKey: string;
+}
+
+export interface Payload {
+  mimeType: string;
+  contentId: string;
+  id: number;
 }
 
 export interface NotificationItem {

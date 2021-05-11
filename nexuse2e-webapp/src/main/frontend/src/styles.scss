@@ -112,9 +112,12 @@ a {
 /* Card Element */
 .mat-card {
   margin-bottom: 15px;
-  border-left: 5px $gray4 solid;
   padding: 8px;
   color: $gray2;
+
+  &:not(.withoutBorder) {
+    border-left: 5px $gray4 solid;
+  }
 
   .card-header {
     padding-bottom: 4px;
@@ -167,6 +170,7 @@ a {
       vertical-align: baseline;
       word-break: break-word;
       white-space: normal;
+      text-align: left;
     }
   }
 }

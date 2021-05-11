@@ -6,7 +6,9 @@ import {
   EngineLog,
   ListConfig,
   MessageDetail,
+  NexusData,
   NotificationItem,
+  Payload,
 } from "../types";
 import { DataService } from "../services/data.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -20,6 +22,10 @@ import { Location } from "@angular/common";
 export class MessageDetailComponent implements OnInit {
   message: MessageDetail[] = [];
   engineLogs: EngineLog[] = [];
+  messagePayloads: Payload[] = [];
+  messageLabels?: ReadonlyMap<string, string>;
+  contentExpanded = true;
+  messageLabelsExpanded = true;
   logsExpanded = true;
 
   messageConfig: ListConfig[] = [
@@ -98,6 +104,8 @@ export class MessageDetailComponent implements OnInit {
       const item = await this.dataService.getMessageById(nxMessageId);
       this.message.push(item);
       this.engineLogs = item.engineLogs || [];
+      this.messagePayloads = item.messagePayloads || [];
+      this.messageLabels = item.messageLabels || {};
     } catch {
       this._snackBar.openFromComponent(NotificationComponent, {
         duration: 5000,
@@ -115,8 +123,37 @@ export class MessageDetailComponent implements OnInit {
     this.loadMessage(String(this.route.snapshot.paramMap.get("id")));
   }
 
+  buildDataSaveUrl(itemNumber?: number): string {
+    if (this.isMessageDetail(this.message)) {
+      return (
+        "/api/DataSaveAs.do?type=content&choreographyId=" +
+        this.message.choreographyId +
+        "&participantId=" +
+        this.message.partnerId +
+        "&conversationId=" +
+        this.message.conversationId +
+        "&messageId=" +
+        this.message.messageId +
+        (itemNumber !== undefined ? "&no=" + itemNumber : "")
+      );
+    }
+    return "";
+  }
+
+  isMessageDetail(item: NexusData): item is MessageDetail {
+    return (item as MessageDetail).engineLogs !== undefined;
+  }
+
   back() {
     this.location.back();
+  }
+
+  toggleContentArea() {
+    this.contentExpanded = !this.contentExpanded;
+  }
+
+  toggleMessageLabelsArea() {
+    this.messageLabelsExpanded = !this.messageLabelsExpanded;
   }
 
   toggleLogArea() {
