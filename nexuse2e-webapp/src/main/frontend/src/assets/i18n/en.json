@@ -97,7 +97,8 @@
     "messageStatusError": "An error occurred while trying to change message status, check the engine log for details",
     "conversationDeleteError": "An error occurred while trying to delete conversation(s), check the engine log for details",
     "copiedToClipboard": "Content copied to clipboard!",
-    "conversationGetError": "An error occurred while getting the conversation information"
+    "conversationGetError": "An error occurred while getting the conversation information",
+    "messageGetError": "An error occurred while getting the message information"
   },
   "dialog": {
     "deleteConversationTitle": "Delete conversation?",

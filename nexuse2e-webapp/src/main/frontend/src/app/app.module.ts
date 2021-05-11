@@ -61,6 +61,7 @@ import { ClipboardModule } from "@angular/cdk/clipboard";
 import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
 import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
+import { MessageDetailComponent } from "./message-detail/message-detail.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -161,6 +162,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NotificationComponent,
     UserConfirmationDialogComponent,
     ConversationDetailComponent,
+    MessageDetailComponent,
   ],
   imports: [
     BrowserModule,
