@@ -31,10 +31,9 @@ export class LoginComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    try {
-      await this.dataService.getLoggedIn();
-      await this.router.navigate(["/dashboard"]);
-    } catch {
+    if (await this.dataService.isLoggedIn()) {
+      this.router.navigate(["/dashboard"]);
+    } else {
       this.isHttps = location.protocol === "https:";
       this.machineName = await this.dataService.getMachineName();
     }
