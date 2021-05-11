@@ -1,3 +1,5 @@
+import { ListConfig } from "./list/list.component";
+
 export interface NexusData {}
 
 export interface Message extends NexusData {
@@ -26,6 +28,14 @@ export interface Conversation extends NexusData {
   turnAroundTime: string;
 }
 
+export interface EngineLog extends NexusData {
+  description: string;
+  createdDate: string;
+  severity: string;
+  className: string;
+  methodName: string;
+}
+
 export interface DateRange {
   startDate: Date | undefined;
   endDate: Date | undefined;
@@ -44,4 +54,11 @@ export interface Action {
 export interface NotificationItem {
   snackType: string;
   textLabel: string;
+}
+
+export interface ListModalDialog {
+  items: NexusData[];
+  itemType: string;
+  mobileConfig: ListConfig[];
+  desktopConfig: ListConfig[];
 }

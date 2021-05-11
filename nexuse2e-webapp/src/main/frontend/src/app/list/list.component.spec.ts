@@ -7,6 +7,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { messages } from "../test-data";
 import { MatCardModule } from "@angular/material/card";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("ListComponent", () => {
   let component: ListComponent;
@@ -20,6 +22,8 @@ describe("ListComponent", () => {
         MatCardModule,
         RouterTestingModule,
         TranslateModule.forRoot(),
+        MatDialogModule,
+        MatSnackBarModule,
       ],
       declarations: [ListComponent],
     }).compileComponents();
@@ -63,6 +67,7 @@ describe("ListComponent", () => {
     ];
     component.items = messages;
     component.itemType = "message";
+    component.showAsSimpleTable = false;
     fixture.detectChanges();
   });
 
@@ -102,6 +107,24 @@ describe("ListComponent", () => {
     };
     const propertyValue = component.getProperty(message, "nxConversationId");
     expect(propertyValue).toEqual(message.nxConversationId);
+  });
+
+  it("should return trimmed property + '...', if it is called", () => {
+    const engineLog = {
+      description:
+        "Error sending message: 8e59df58-8c39-4821-837b-5dbc71866f1c/85932ca0-13db-4ed2-9127-ecefa100c74e: Message submission failed, server http://localhost:8080/NEXUSe2e/handler/ebxml20 responded with status: 404",
+      createdDate: "01-12-2022 15:21:03 GMT",
+      severity: "ERROR",
+      className: "org.nexuse2e.Engine",
+      methodName: "start",
+    };
+    const trimmedPropertyValue = component.getTrimmedProperty(
+      engineLog,
+      "description"
+    );
+    expect(trimmedPropertyValue).toEqual(
+      engineLog.description.substr(0, component["longTextThreshold"]) + "..."
+    );
   });
 
   it("should display one column for each configured ListConfig item in desktop", () => {
