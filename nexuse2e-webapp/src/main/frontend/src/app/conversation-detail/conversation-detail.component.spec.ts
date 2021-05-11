@@ -9,6 +9,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MatIconModule } from "@angular/material/icon";
 import { ListComponent } from "../list/list.component";
 import { MatDialogModule } from "@angular/material/dialog";
+import { ActionButtonComponent } from "../action-button/action-button.component";
 
 describe("ConversationDetailComponent", () => {
   let component: ConversationDetailComponent;
@@ -24,7 +25,11 @@ describe("ConversationDetailComponent", () => {
         MatIconModule,
         MatDialogModule,
       ],
-      declarations: [ConversationDetailComponent, ListComponent],
+      declarations: [
+        ConversationDetailComponent,
+        ListComponent,
+        ActionButtonComponent,
+      ],
       providers: [
         {
           provide: ActivatedRoute,

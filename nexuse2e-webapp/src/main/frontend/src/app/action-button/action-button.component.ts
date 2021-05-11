@@ -35,7 +35,10 @@ export class ActionButtonComponent implements OnInit {
         await this.actionService.requeueMessages();
         break;
       case "/conversations/delete":
-        await this.actionService.deleteConversations();
+        await this.actionService.deleteSelectedConversations();
+        break;
+      case "/conversation/delete":
+        await this.actionService.deleteConversationById();
         break;
     }
     this.inProgress = false;

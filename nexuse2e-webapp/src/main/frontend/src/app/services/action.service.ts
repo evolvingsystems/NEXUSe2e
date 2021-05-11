@@ -52,11 +52,20 @@ export class ActionService {
     }
   }
 
-  async deleteConversations() {
+  deleteSelectedConversations() {
     const conversations = this.selectionService.getSelectedItems(
       "conversation"
     );
 
+    this.deleteConversations(conversations);
+  }
+
+  deleteConversationById() {
+    // const conversation: any[] = [];
+    // this.deleteConversations(conversation);
+  }
+
+  private async deleteConversations(conversations: unknown[]) {
     const dialogRef = this._dialog.open(UserConfirmationDialogComponent, {
       data: {
         notificationTitleLabel:

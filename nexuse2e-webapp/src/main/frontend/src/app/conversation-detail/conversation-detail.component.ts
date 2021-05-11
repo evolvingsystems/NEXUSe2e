@@ -7,7 +7,7 @@ import {
   Message,
   NotificationItem,
 } from "../types";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../services/data.service";
 import { Location } from "@angular/common";
 import { NotificationComponent } from "../notification/notification.component";
@@ -90,16 +90,23 @@ export class ConversationDetailComponent implements OnInit {
     },
   ];
 
-  actions: Action[] = [];
+  actions: Action[] = [
+    {
+      label: "delete",
+      icon: "delete",
+      actionKey: "/conversation/delete",
+    },
+  ];
 
   constructor(
     private route: ActivatedRoute,
     private dataService: DataService,
     private location: Location,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     const id = String(this.route.snapshot.paramMap.get("id"));
     this.loadConversation(id);
   }
@@ -131,5 +138,9 @@ export class ConversationDetailComponent implements OnInit {
 
   toggleLogArea() {
     this.logsExpanded = !this.logsExpanded;
+  }
+
+  redirect() {
+    this.router.navigateByUrl("/reporting/transaction-reporting/conversations"); //TODO
   }
 }
