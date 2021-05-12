@@ -34,6 +34,9 @@ export class ActionButtonComponent implements OnInit {
       case "/messages/requeue":
         await this.actionService.requeueMessages();
         break;
+      case "/conversations/delete":
+        await this.actionService.deleteConversations();
+        break;
     }
     this.inProgress = false;
     this.triggerReload.emit();

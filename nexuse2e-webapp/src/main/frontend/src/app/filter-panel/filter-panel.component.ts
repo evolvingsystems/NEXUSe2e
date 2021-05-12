@@ -1,20 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { ActiveFilterList, DateRange } from "../types";
+import { ActiveFilterList, DateRange, Filter, FilterType } from "../types";
 import { SessionService } from "../services/session.service";
 import { ScreensizeService } from "../services/screensize.service";
-
-export enum FilterType {
-  TEXT,
-  SELECT,
-  DATE_TIME_RANGE,
-}
-
-export interface Filter {
-  fieldName: string;
-  filterType: FilterType;
-  allowedValues?: string[];
-  defaultValue?: string | DateRange;
-}
 
 @Component({
   selector: "app-filter-panel",

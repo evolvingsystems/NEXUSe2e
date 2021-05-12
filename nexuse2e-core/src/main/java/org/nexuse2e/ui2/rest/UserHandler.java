@@ -87,6 +87,7 @@ public class UserHandler implements Handler {
             case "ModifyMessage.do":
                 endpoints.add("/messages/requeue");
                 endpoints.add("/messages/stop");
+                endpoints.add("/conversations/delete");
                 break;
             default:
                 endpoints.add(actionName);

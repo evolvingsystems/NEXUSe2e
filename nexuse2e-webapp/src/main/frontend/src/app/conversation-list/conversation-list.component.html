@@ -1,12 +1,13 @@
 <app-filter-panel
   [filters]="filters"
   itemType="conversation"
-  (filterChange)="filterMessages($event)"
+  (filterChange)="filterConversations($event)"
 ></app-filter-panel>
 <app-paginated-list [totalItemCount]="totalConversationCount"
                     [defaultPageSize]="defaultPageSize"
                     [mobileConfig]="mobileConfig"
                     [desktopConfig]="desktopConfig"
+                    [actions]="actions"
                     [items]="conversations"
                     itemType="conversation"
                     (triggerReload)="loadConversations($event.pageIndex, $event.pageSize)">

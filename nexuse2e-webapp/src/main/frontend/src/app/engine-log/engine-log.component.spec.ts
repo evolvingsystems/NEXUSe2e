@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ConversationListComponent } from "./conversation-list.component";
+import { EngineLogComponent } from "./engine-log.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { FilterPanelComponent } from "../filter-panel/filter-panel.component";
@@ -22,14 +22,14 @@ import { MatTableModule } from "@angular/material/table";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { ListComponent } from "../list/list.component";
+import { MatCardModule } from "@angular/material/card";
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
-import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 
-describe("ConversationListComponent", () => {
-  let component: ConversationListComponent;
-  let fixture: ComponentFixture<ConversationListComponent>;
+describe("EngineLogComponent", () => {
+  let component: EngineLogComponent;
+  let fixture: ComponentFixture<EngineLogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -48,10 +48,11 @@ describe("ConversationListComponent", () => {
         MatAutocompleteModule,
         MatTableModule,
         MatCheckboxModule,
+        MatCardModule,
         MatSnackBarModule,
       ],
       declarations: [
-        ConversationListComponent,
+        EngineLogComponent,
         FilterPanelComponent,
         PaginatedListComponent,
         SelectFilterComponent,
@@ -61,13 +62,12 @@ describe("ConversationListComponent", () => {
         ListComponent,
         StringPipe,
         DateRangePipe,
-        ActionButtonComponent,
       ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ConversationListComponent);
+    fixture = TestBed.createComponent(EngineLogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

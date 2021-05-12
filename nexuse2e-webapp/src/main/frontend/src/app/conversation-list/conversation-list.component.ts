@@ -1,9 +1,13 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, Conversation } from "../types";
+import {
+  Action,
+  ActiveFilterList,
+  Conversation,
+  Filter,
+  FilterType,
+  ListConfig,
+} from "../types";
 import { DataService } from "../services/data.service";
-import { Filter, FilterType } from "../filter-panel/filter-panel.component";
-import { ListConfig } from "../list/list.component";
-import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-conversation-list",
@@ -90,6 +94,14 @@ export class ConversationListComponent implements OnInit {
     },
   ];
 
+  actions: Action[] = [
+    {
+      label: "delete",
+      icon: "delete",
+      actionKey: "/conversations/delete",
+    },
+  ];
+
   constructor(private dataService: DataService, private sessionService: SessionService) {
   }
 
@@ -119,7 +131,7 @@ export class ConversationListComponent implements OnInit {
     );
   }
 
-  filterMessages(activeFilters: ActiveFilterList) {
+  filterConversations(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshConversationCount();
     this.loadConversations(0,

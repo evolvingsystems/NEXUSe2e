@@ -15,7 +15,10 @@
     "delete": "Delete",
     "filter": "Filter",
     "resetFilter": "Reset filter",
-    "reset": "Reset"
+    "reset": "Reset",
+    "showMore": "Show more",
+    "cancel": "Cancel",
+    "ok": "OK"
   },
   "labels": {
     "nexuse2e": "NEXUSe2e",
@@ -52,7 +55,14 @@
     "step": "Step",
     "dateTimeFieldPlaceholder": "choose a date",
     "typeToSearch": "type to search",
-    "searchByFragment": "enter ID fragment"
+    "searchByFragment": "enter fragment",
+    "issuedDate": "Issued Date",
+    "description": "Description",
+    "className": "Class Name",
+    "methodName": "Method Name",
+    "origin": "Origin",
+    "severity": "Severity",
+    "messageText": "Message Text"
   },
   "status": {
     "FAILED": "Failed",
@@ -73,9 +83,20 @@
     "COMPLETED": "Completed",
     "OUTBOUND": "Outbound",
     "NORMAL": "Normal",
-    "ACKNOWLEDGEMENT": "Acknowledgement"
+    "ACKNOWLEDGEMENT": "Acknowledgement",
+    "WARN": "Warning",
+    "INFO": "Info",
+    "DEBUG": "Debug",
+    "TRACE": "Trace"
   },
-  "actions": {
-    "messageStatusError": "An error occurred while trying to change message status, check the engine log for details"
+  "notifications": {
+    "messageStatusError": "An error occurred while trying to change message status, check the engine log for details",
+    "conversationDeleteError": "An error occurred while trying to delete conversation(s), check the engine log for details",
+    "copiedToClipboard": "Content copied to clipboard!"
+  },
+  "dialog": {
+    "deleteConversationTitle": "Delete conversation?",
+    "deleteConversationsTitle": "Delete conversations?",
+    "actionNotReversible": "This action cannot be reversed."
   }
 }

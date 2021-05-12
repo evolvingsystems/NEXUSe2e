@@ -690,7 +690,9 @@ public class TransactionServiceImpl implements TransactionService {
             throws NexusException {
 
         if (conversation != null) {
-            getTransactionDao().deleteConversation( conversation );
+            getTransactionDao().deleteConversation(conversation);
+        } else {
+            throw new NexusException("Cannot delete conversation with conversation = null");
         }
 
     }
