@@ -1,0 +1,42 @@
+<h1>{{ "labels.conversationDetail" | translate }}</h1>
+<div class="action-button-panel">
+  <button mat-icon-button aria-label="Back" (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <ng-container *ngFor="let action of actions">
+    <app-action-button
+      [action]="action"
+      (triggerReload)="redirect()"
+      [affectedItems]="conversation">
+    </app-action-button>
+  </ng-container>
+</div>
+<app-list [desktopConfig]="conversationConfig" [mobileConfig]="conversationConfig" [items]="conversation"
+          itemType="conversation"
+          [isSelectable]="false" showForDetailPage="true"></app-list>
+
+<div class="toggleSection">
+  <div class="toggle-Header" (click)=toggleMessagesArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ messagesExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.messages" | translate }}</span>
+  </div>
+  <ng-container *ngIf="messagesExpanded">
+    <app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="messages" itemType="message"
+              [isSelectable]="false"></app-list>
+  </ng-container>
+</div>
+
+<div class="toggleSection">
+  <div class="toggle-Header" (click)=toggleLogArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ logsExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.logs" | translate }}</span>
+  </div>
+  <ng-container *ngIf="logsExpanded">
+    <app-list [desktopConfig]="logConfig" [mobileConfig]="logConfig" [items]="engineLogs" itemType="message"
+              [isSelectable]="false"></app-list>
+  </ng-container>
+</div>

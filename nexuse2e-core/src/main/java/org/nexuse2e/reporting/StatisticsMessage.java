@@ -20,6 +20,7 @@
 package org.nexuse2e.reporting;
 
 import org.nexuse2e.MessageStatus;
+import org.nexuse2e.configuration.PipelineType;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.util.DateUtil;
 
@@ -41,6 +42,7 @@ public class StatisticsMessage {
     private String backendStatus;
     private Date endDate;
     private String turnAroundTime;
+    private PipelineType direction;
 
     public StatisticsMessage(Object[] record) {
         messageId = (String) record[0];
@@ -73,6 +75,7 @@ public class StatisticsMessage {
         } else {
             turnAroundTime = DateUtil.getDiffTimeRounded(createdDate, endDate);
         }
+        direction = message.isOutbound() ? PipelineType.OUTBOUND : PipelineType.INBOUND;
     }
 
     public String getMessageId() {
@@ -185,5 +188,13 @@ public class StatisticsMessage {
 
     public void setTurnAroundTime(String turnAroundTime) {
         this.turnAroundTime = turnAroundTime;
+    }
+
+    public PipelineType getDirection() {
+        return direction;
+    }
+
+    public void setDirection(PipelineType direction) {
+        this.direction = direction;
     }
 }

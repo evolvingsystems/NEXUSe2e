@@ -29,6 +29,7 @@ export class ListComponent implements OnInit {
   @Input() desktopConfig: ListConfig[] = [];
   @Input() isSelectable?: boolean;
   @Input() showAsSimpleTable?: boolean;
+  @Input() showForDetailPage?: boolean;
   displayedColumns: string[] = ["select"];
   headerElement?: ListConfig;
   simpleTableConfig: ListConfig[] = [];

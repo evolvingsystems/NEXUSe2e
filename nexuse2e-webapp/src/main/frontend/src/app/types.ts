@@ -26,6 +26,13 @@ export interface Conversation extends NexusData {
   turnAroundTime: string;
 }
 
+export interface ConversationDetail extends Conversation {
+  modifiedDate: string;
+  endDate: string;
+  messages: Message[];
+  engineLogs: EngineLog[];
+}
+
 export interface EngineLog extends NexusData {
   description: string;
   createdDate: string;

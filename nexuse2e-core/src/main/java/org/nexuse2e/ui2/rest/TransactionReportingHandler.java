@@ -16,6 +16,7 @@ import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.StatisticsConversation;
 import org.nexuse2e.reporting.StatisticsEngineLog;
 import org.nexuse2e.reporting.StatisticsMessage;
+import org.nexuse2e.ui2.model.TransactionReportingConversation;
 import org.nexuse2e.util.DateWithTimezoneSerializer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,8 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/participants/ids".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/choreographies/ids".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/engine-logs".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/conversation".equalsIgnoreCase(path));
     }
 
     @Override
@@ -69,6 +71,9 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/engine-logs/count":
                     this.handleEngineLogRequest(request, response, true);
+                    break;
+                case "/conversation":
+                    this.returnConversationById(request, response);
                     break;
             }
         }
@@ -289,6 +294,21 @@ public class TransactionReportingHandler implements Handler {
             response.getOutputStream().print(conversationJson);
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required parameters: pageIndex and itemsPerPage");
+        }
+    }
+
+    private void returnConversationById(HttpServletRequest request, HttpServletResponse response) throws NexusException, IOException {
+        String nxConversationId = request.getParameter("nxConversationId");
+        if (StringUtils.isNumeric(nxConversationId)) {
+            ConversationPojo conversationPojo = Engine.getInstance().getTransactionService().getConversation(Integer.parseInt(nxConversationId));
+
+            TransactionReportingConversation conversation = new TransactionReportingConversation(conversationPojo);
+
+            Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+            String conversationJson = gson.toJson(conversation);
+            response.getOutputStream().print(conversationJson);
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error while getting conversation by id, id is not numeric: " + nxConversationId);
         }
     }
 

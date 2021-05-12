@@ -60,6 +60,7 @@ import { SimpleTableDialogComponent } from "./simple-table-dialog/simple-table-d
 import { ClipboardModule } from "@angular/cdk/clipboard";
 import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
+import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -109,6 +110,11 @@ const routes: Routes = [
         ],
       },
       {
+        path: "conversation/:id",
+        component: ConversationDetailComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
         path: "engine-log",
         component: EngineLogComponent,
         canActivate: [AuthGuardService],
@@ -154,6 +160,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SimpleTableDialogComponent,
     NotificationComponent,
     UserConfirmationDialogComponent,
+    ConversationDetailComponent,
   ],
   imports: [
     BrowserModule,
