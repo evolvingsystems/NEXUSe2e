@@ -14,7 +14,7 @@ import {
 @Component({
   selector: "app-engine-log",
   templateUrl: "./engine-log.component.html",
-  styleUrls: ["./engine-log.component.scss"],
+  styles: [],
 })
 export class EngineLogComponent implements OnInit {
   totalEngineLogCount?: number;

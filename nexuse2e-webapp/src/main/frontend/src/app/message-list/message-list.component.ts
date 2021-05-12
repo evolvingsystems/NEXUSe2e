@@ -16,7 +16,7 @@ import {
 @Component({
   selector: "app-message-list",
   templateUrl: "./message-list.component.html",
-  styleUrls: ["./message-list.component.scss"],
+  styles: [],
 })
 export class MessageListComponent implements OnInit {
   totalMessageCount?: number;

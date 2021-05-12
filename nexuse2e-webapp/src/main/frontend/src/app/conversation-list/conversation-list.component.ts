@@ -16,7 +16,7 @@ import {
 @Component({
   selector: "app-conversation-list",
   templateUrl: "./conversation-list.component.html",
-  styleUrls: ["./conversation-list.component.scss"],
+  styles: [],
 })
 export class ConversationListComponent implements OnInit {
   totalConversationCount?: number;
