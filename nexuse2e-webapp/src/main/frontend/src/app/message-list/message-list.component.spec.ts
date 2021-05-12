@@ -26,6 +26,7 @@ import { ActionButtonComponent } from "../action-button/action-button.component"
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
 
 describe("MessageListComponent", () => {
   let component: MessageListComponent;
@@ -62,6 +63,16 @@ describe("MessageListComponent", () => {
         ActionButtonComponent,
         StringPipe,
         DateRangePipe,
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+            },
+          },
+        },
       ],
     }).compileComponents();
   });

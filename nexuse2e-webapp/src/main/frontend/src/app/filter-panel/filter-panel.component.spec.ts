@@ -46,20 +46,18 @@ describe("FilterPanelComponent", () => {
         MatDatepickerModule,
         MatNativeDateModule,
         BrowserAnimationsModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
       ],
       providers: [
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              paramMap: {
-                get: () => 233,
-              },
+              queryParams: {},
             },
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 
