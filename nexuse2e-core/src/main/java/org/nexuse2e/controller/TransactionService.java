@@ -1,21 +1,21 @@
-/**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+/*
+   NEXUSe2e Business Messaging Open Source
+   Copyright 2000-2021, direkt gruppe GmbH
+
+   This is free software; you can redistribute it and/or modify it
+   under the terms of the GNU Lesser General Public License as
+   published by the Free Software Foundation version 3 of
+   the License.
+
+   This software is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with this software; if not, write to the Free
+   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+   02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.controller;
 
@@ -113,42 +113,41 @@ public interface TransactionService extends Manageable {
      * or <code>null</code> if <code>messagePojo</code> is <code>null</code>.
      */
     public abstract MessageContext createMessageContext( MessagePojo messagePojo );
-    
-    /**
-     * @param messageId
-     * @return
-     * 
-     * EbXML 2.0 Spec
-     * 878 The REQUIRED element MessageId is a globally unique identifier for each message conforming to   
-     * 879 MessageId [RFC2822].
-     */
-    public abstract MessagePojo getMessage( String messageId ) throws NexusException;
 
     /**
      * @param messageId
-     * @return
-     * 
-     * EbXML 2.0 Spec
-     * 878 The REQUIRED element MessageId is a globally unique identifier for each message conforming to   
+     * @return EbXML 2.0 Spec
+     * 878 The REQUIRED element MessageId is a globally unique identifier for each message conforming to
      * 879 MessageId [RFC2822].
      */
-    public abstract MessagePojo getMessage( String messageId, boolean isReferencedMessageId ) throws NexusException;
+    public abstract MessagePojo getMessage(String messageId) throws NexusException;
+
+    /**
+     * @param messageId
+     * @return EbXML 2.0 Spec
+     * 878 The REQUIRED element MessageId is a globally unique identifier for each message conforming to
+     * 879 MessageId [RFC2822].
+     */
+    public abstract MessagePojo getMessage(String messageId, boolean isReferencedMessageId) throws NexusException;
+
+    MessagePojo getMessage(Integer nxMessageId) throws NexusException;
 
     /**
      * Creates a message context for the message with the given message ID if the message exists.
+     *
      * @param messageId The message ID. Must not be <code>null</code>.
      * @return The message context, or <code>null</code> if no such message ID was found.
      * @throws NexusException If something went wrong.
      */
-    public abstract MessageContext getMessageContext( String messageId ) throws NexusException;
-    
+    public abstract MessageContext getMessageContext(String messageId) throws NexusException;
+
     /**
      * @param messageId
      * @return
      * @throws NexusException
      */
-    public abstract MessageContext getMessageContext( String messageId, boolean isReferencedMessageId ) throws NexusException;
-    
+    public abstract MessageContext getMessageContext(String messageId, boolean isReferencedMessageId) throws NexusException;
+
     /**
      * @param status
      * @param nxChoreographyId
@@ -381,8 +380,6 @@ public interface TransactionService extends Manageable {
      * @param outbound
      * @param field
      * @param ascending
-     * @param session
-     * @param transaction
      * @return
      * @throws NexusException
      */
@@ -391,8 +388,6 @@ public interface TransactionService extends Manageable {
 
     /**
      * @param message
-     * @param session
-     * @param transaction
      * @throws NexusException
      */
     public abstract void deleteMessage( MessagePojo message )
@@ -462,7 +457,6 @@ public interface TransactionService extends Manageable {
             PartnerPojo partner, ConversationPojo conversation, int field, boolean ascending ) throws NexusException;
 
     /**
-     * @param origin
      * @param severity
      * @param messageText
      * @param start
@@ -470,7 +464,7 @@ public interface TransactionService extends Manageable {
      * @param field
      * @param ascending
      * @return
-     * @throws PersistenceException
+     * @throws NexusException
      */
     public abstract int getLogEntriesForReportCount( String severity, String messageText, Date start, Date end,
             int field, boolean ascending ) throws NexusException;
@@ -485,7 +479,7 @@ public interface TransactionService extends Manageable {
      * @param field
      * @param ascending
      * @return
-     * @throws PersistenceException
+     * @throws NexusException
      */
     public abstract List<LogPojo> getLogEntriesForReport( String severity, String messageText, Date start, Date end,
             int itemsPerPage, int page, int field, boolean ascending ) throws NexusException;

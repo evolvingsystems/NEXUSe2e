@@ -46,7 +46,7 @@ public class TransactionReportingConversation {
             this.turnAroundTime = DateUtil.getDiffTimeRounded(this.createdDate, this.endDate);
         }
         this.messages = getStatisticsMessages(conversation.getMessages());
-        this.engineLogs = getEngineLogs(conversationId);
+        this.engineLogs = getStatisticsEngineLogs(conversationId);
     }
 
     private List<StatisticsMessage> getStatisticsMessages(List<MessagePojo> messages) {
@@ -57,7 +57,7 @@ public class TransactionReportingConversation {
         return messageList;
     }
 
-    private List<StatisticsEngineLog> getEngineLogs(String conversationId) {
+    private List<StatisticsEngineLog> getStatisticsEngineLogs(String conversationId) {
         List<StatisticsEngineLog> logEntryList = new LinkedList<>();
 
         try {
@@ -161,11 +161,11 @@ public class TransactionReportingConversation {
         this.messages = messages;
     }
 
-    public List<StatisticsEngineLog> getErrorMessages() {
+    public List<StatisticsEngineLog> getEngineLogs() {
         return engineLogs;
     }
 
-    public void setErrorMessages(List<StatisticsEngineLog> engineLogs) {
+    public void setEngineLogs(List<StatisticsEngineLog> engineLogs) {
         this.engineLogs = engineLogs;
     }
 }

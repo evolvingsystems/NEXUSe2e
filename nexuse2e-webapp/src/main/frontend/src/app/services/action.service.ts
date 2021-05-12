@@ -18,8 +18,9 @@ export class ActionService {
     private _dialog: MatDialog
   ) {}
 
-  async stopMessages() {
-    const messages = this.selectionService.getSelectedItems("message");
+  async stopMessages(affectedItems?: unknown[]) {
+    const messages =
+      affectedItems || this.selectionService.getSelectedItems("message");
     try {
       await this.dataService.stopMessages(
         messages.map((m) => (m as Message).messageId)
@@ -35,8 +36,9 @@ export class ActionService {
     }
   }
 
-  async requeueMessages() {
-    const messages = this.selectionService.getSelectedItems("message");
+  async requeueMessages(affectedItems?: unknown[]) {
+    const messages =
+      affectedItems || this.selectionService.getSelectedItems("message");
     try {
       await this.dataService.requeueMessages(
         messages.map((m) => (m as Message).messageId)

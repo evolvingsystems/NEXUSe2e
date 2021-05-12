@@ -15,6 +15,19 @@ export interface Message extends NexusData {
   turnAroundTime: string;
 }
 
+export interface MessageDetail extends Message {
+  direction: string;
+  modifiedDate: string;
+  endDate: string;
+  referencedMessageId: string;
+  retries: string;
+  expirationDate: string;
+  trp: string;
+  messagePayloads: Payload[];
+  messageLabels: ReadonlyMap<string, string>;
+  engineLogs: EngineLog[];
+}
+
 export interface Conversation extends NexusData {
   choreographyId: string;
   conversationId: string;
@@ -54,6 +67,20 @@ export interface Action {
   label: string;
   icon?: string;
   actionKey: string;
+}
+
+export interface Payload {
+  mimeType: string;
+  contentId: string;
+  id: number;
+}
+
+export interface PayloadParams {
+  choreographyId: string;
+  partnerId: string;
+  conversationId: string;
+  messageId: string;
+  payloadId: string | undefined;
 }
 
 export interface NotificationItem {
