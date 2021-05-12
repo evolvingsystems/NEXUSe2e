@@ -11,10 +11,10 @@ import { Location } from "@angular/common";
 import { NotificationComponent } from "../notification/notification.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import {
-  actions,
-  conversationConfig,
-  logConfig,
-  messageConfig,
+  CONV_DETAIL__ACTIONS,
+  CONV_DETAIL__CONVERSATION_CONFIG,
+  CONV_DETAIL__LOG_CONFIG,
+  CONV_DETAIL__MESSAGE_CONFIG,
 } from "./conversation-detail.config";
 
 @Component({
@@ -28,10 +28,10 @@ export class ConversationDetailComponent implements OnInit {
   engineLogs: EngineLog[] = [];
   messagesExpanded = true;
   logsExpanded = true;
-  conversationConfig = conversationConfig;
-  messageConfig = messageConfig;
-  logConfig = logConfig;
-  actions = actions;
+  conversationConfig = CONV_DETAIL__CONVERSATION_CONFIG;
+  messageConfig = CONV_DETAIL__MESSAGE_CONFIG;
+  logConfig = CONV_DETAIL__LOG_CONFIG;
+  actions = CONV_DETAIL__ACTIONS;
 
   constructor(
     private route: ActivatedRoute,

@@ -1,7 +1,7 @@
 import { Action, ListConfig } from "../types";
 
 // START DISPLAY CONFIG
-export const conversationConfig: ListConfig[] = [
+export const CONV_DETAIL__CONVERSATION_CONFIG: ListConfig[] = [
   {
     fieldName: "conversationId",
   },
@@ -28,7 +28,7 @@ export const conversationConfig: ListConfig[] = [
   },
 ];
 
-export const messageConfig: ListConfig[] = [
+export const CONV_DETAIL__MESSAGE_CONFIG: ListConfig[] = [
   {
     fieldName: "messageId",
     linkUrlRecipe: "../../message/$nxMessageId$",
@@ -46,7 +46,7 @@ export const messageConfig: ListConfig[] = [
   { fieldName: "status" },
 ];
 
-export const logConfig: ListConfig[] = [
+export const CONV_DETAIL__LOG_CONFIG: ListConfig[] = [
   {
     fieldName: "severity",
   },
@@ -69,7 +69,7 @@ export const logConfig: ListConfig[] = [
 // END DISPLAY CONFIG
 
 // START ACTIONS
-export const actions: Action[] = [
+export const CONV_DETAIL__ACTIONS: Action[] = [
   {
     label: "delete",
     icon: "delete",
