@@ -75,6 +75,14 @@ export interface Payload {
   id: number;
 }
 
+export interface PayloadParams {
+  choreographyId: string;
+  partnerId: string;
+  conversationId: string;
+  messageId: string;
+  payloadId: string | undefined;
+}
+
 export interface NotificationItem {
   snackType: string;
   textLabel: string;

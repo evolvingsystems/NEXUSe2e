@@ -33,13 +33,13 @@
         <tr>
           <td>{{ "labels.header" | translate }}</td>
           <td>text/xml</td>
-          <td><a [href]="buildDataSaveUrl()">{{ "labels.view" | translate }}</a></td>
+          <td><a [href]="buildDownloadPayloadLink()">{{ "labels.view" | translate }}</a></td>
         </tr>
         <ng-container *ngFor="let payload of messagePayloads;">
           <tr>
             <td>{{ "labels.payload" | translate }} {{ payload.id }}</td>
             <td>{{ payload.mimeType }}</td>
-            <td><a [href]="buildDataSaveUrl(payload.id)">{{ "labels.view" | translate }}</a></td>
+            <td><a [href]="buildDownloadPayloadLink(payload.id)">{{ "labels.view" | translate }}</a></td>
           </tr>
         </ng-container>
       </table>

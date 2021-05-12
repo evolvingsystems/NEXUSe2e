@@ -8,6 +8,7 @@ import {
   EngineLog,
   Message,
   MessageDetail,
+  PayloadParams,
 } from "../types";
 
 @Injectable({
@@ -191,17 +192,17 @@ export class DataService {
     return this.get<string[]>("/version");
   }
 
-  downloadPayload(message: MessageDetail, payloadId?: number) {
+  getDownloadPayloadLink(item: PayloadParams) {
     return (
       "/DataSaveAs.do?type=content&choreographyId=" +
-      message.choreographyId +
+      item.choreographyId +
       "&participantId=" +
-      message.partnerId +
+      item.partnerId +
       "&conversationId=" +
-      message.conversationId +
+      item.conversationId +
       "&messageId=" +
-      message.messageId +
-      (payloadId !== undefined ? "&no=" + payloadId : "")
+      item.messageId +
+      (item.payloadId !== undefined ? "&no=" + item.payloadId : "")
     );
   }
 

@@ -123,11 +123,19 @@ export class MessageDetailComponent implements OnInit {
     this.loadMessage(String(this.route.snapshot.paramMap.get("id")));
   }
 
-  buildDataSaveUrl(payloadId?: number): string {
+  buildDownloadPayloadLink(payloadId?: number): string {
     const message = this.messages[0];
     if (this.isMessageDetail(message)) {
-      return this.dataService.downloadPayload(message, payloadId);
+      const affectedPayload = {
+        choreographyId: message.choreographyId,
+        partnerId: message.partnerId,
+        conversationId: message.conversationId,
+        messageId: message.messageId,
+        payloadId: payloadId ? payloadId.toString() : undefined,
+      };
+      return this.dataService.getDownloadPayloadLink(affectedPayload);
     }
+
     return "";
   }
 
