@@ -14,12 +14,13 @@ export const participantFilter: Filter = {
   fieldName: "partnerId",
   filterType: FilterType.TEXT,
 };
+
 export const choreographyFilter: Filter = {
   fieldName: "choreographyId",
   filterType: FilterType.TEXT,
 };
 
-export const filters = [
+export const CONV_LIST__FILTERS = [
   {
     fieldName: "startEndDateRange",
     filterType: FilterType.DATE_TIME_RANGE,
@@ -44,8 +45,9 @@ export const activeFilters: ActiveFilterList = {};
 // END FILTERS
 
 // START DISPLAY CONFIG
-export const defaultPageSize = 20;
-export const mobileConfig: ListConfig[] = [
+export const CONV_LIST__DEFAULT_PAGE_SIZE = 20;
+
+export const CONV_LIST__MOBILE_CONFIG: ListConfig[] = [
   {
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
@@ -56,7 +58,7 @@ export const mobileConfig: ListConfig[] = [
   { fieldName: "createdDate" },
 ];
 
-export const desktopConfig: ListConfig[] = [
+export const CONV_LIST__DESKTOP_CONFIG: ListConfig[] = [
   {
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
@@ -83,7 +85,7 @@ export const desktopConfig: ListConfig[] = [
 // END DISPLAY CONFIG
 
 // START ACTIONS
-export const actions: Action[] = [
+export const CONV_LIST__ACTIONS: Action[] = [
   {
     label: "delete",
     icon: "delete",

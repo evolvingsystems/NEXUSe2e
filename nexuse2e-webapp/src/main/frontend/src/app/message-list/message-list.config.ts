@@ -14,12 +14,13 @@ export const participantFilter: Filter = {
   fieldName: "partnerId",
   filterType: FilterType.TEXT,
 };
+
 export const choreographyFilter: Filter = {
   fieldName: "choreographyId",
   filterType: FilterType.TEXT,
 };
 
-export const filters = [
+export const MESS_LIST__FILTERS = [
   {
     fieldName: "startEndDateRange",
     filterType: FilterType.DATE_TIME_RANGE,
@@ -61,9 +62,9 @@ export const activeFilters: ActiveFilterList = {};
 // END FILTERS
 
 // START DISPLAY CONFIG
-export const defaultPageSize = 20;
+export const MESS_LIST__DEFAULT_PAGE_SIZE = 20;
 
-export const desktopConfig: ListConfig[] = [
+export const MESS_LIST__DESKTOP_CONFIG: ListConfig[] = [
   {
     fieldName: "messageId",
     linkUrlRecipe: "../../message/$nxMessageId$",
@@ -85,7 +86,7 @@ export const desktopConfig: ListConfig[] = [
   { fieldName: "turnAroundTime" },
 ];
 
-export const mobileConfig: ListConfig[] = [
+export const MESS_LIST__MOBILE_CONFIG: ListConfig[] = [
   {
     fieldName: "messageId",
     linkUrlRecipe: "../../message/$nxMessageId$",
@@ -107,7 +108,7 @@ export const mobileConfig: ListConfig[] = [
 // END DISPLAY CONFIG
 
 // START ACTIONS
-export const actions: Action[] = [
+export const MESS_LIST__ACTIONS: Action[] = [
   {
     label: "requeue",
     icon: "refresh",

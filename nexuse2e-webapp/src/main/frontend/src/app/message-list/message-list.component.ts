@@ -1,16 +1,16 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, Message, } from "../types";
+import { ActiveFilterList, Message } from "../types";
 import { DataService } from "../services/data.service";
 import { SessionService } from "../services/session.service";
 import {
-  actions,
+  MESS_LIST__ACTIONS,
   activeFilters,
   choreographyFilter,
-  defaultPageSize,
-  desktopConfig,
-  filters,
-  mobileConfig,
-  participantFilter
+  MESS_LIST__DEFAULT_PAGE_SIZE,
+  MESS_LIST__DESKTOP_CONFIG,
+  MESS_LIST__FILTERS,
+  MESS_LIST__MOBILE_CONFIG,
+  participantFilter,
 } from "./message-list.config";
 
 @Component({
@@ -22,15 +22,17 @@ export class MessageListComponent implements OnInit {
   totalMessageCount?: number;
   messages: Message[] = [];
   loaded = false;
-  defaultPageSize = defaultPageSize;
-  desktopConfig = desktopConfig;
-  mobileConfig = mobileConfig;
-  filters = filters;
+  defaultPageSize = MESS_LIST__DEFAULT_PAGE_SIZE;
+  desktopConfig = MESS_LIST__DESKTOP_CONFIG;
+  mobileConfig = MESS_LIST__MOBILE_CONFIG;
+  filters = MESS_LIST__FILTERS;
   activeFilters = activeFilters;
-  actions = actions;
+  actions = MESS_LIST__ACTIONS;
 
-  constructor(private dataService: DataService, private sessionService: SessionService) {
-  }
+  constructor(
+    private dataService: DataService,
+    private sessionService: SessionService
+  ) {}
 
   async ngOnInit() {
     participantFilter.allowedValues = await this.dataService.getPartnerIds();
@@ -56,6 +58,9 @@ export class MessageListComponent implements OnInit {
   filterMessages(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshMessageCount();
-    this.loadMessages(0, this.sessionService.getPageSize("message") || this.defaultPageSize);
+    this.loadMessages(
+      0,
+      this.sessionService.getPageSize("message") || this.defaultPageSize
+    );
   }
 }

@@ -8,7 +8,7 @@ export const END_DATE_DEFAULT: Date = new Date(
   new Date().setHours(24, 0, 0, 0)
 );
 
-export const filters = [
+export const ENGINE_LOG__FILTERS = [
   {
     fieldName: "startEndDateRange",
     filterType: FilterType.DATE_TIME_RANGE,
@@ -31,13 +31,14 @@ export const activeFilters: ActiveFilterList = {};
 // END FILTERS
 
 // START DISPLAY CONFIG
-export const defaultPageSize = 50;
-export const mobileConfig: ListConfig[] = [
+export const ENGINE_LOG__DEFAULT_PAGE_SIZE = 50;
+
+export const ENGINE_LOG__MOBILE_CONFIG: ListConfig[] = [
   { fieldName: "createdDate" },
   { fieldName: "description" },
 ];
 
-export const desktopConfig: ListConfig[] = [
+export const ENGINE_LOG__DESKTOP_CONFIG: ListConfig[] = [
   {
     fieldName: "createdDate",
   },
