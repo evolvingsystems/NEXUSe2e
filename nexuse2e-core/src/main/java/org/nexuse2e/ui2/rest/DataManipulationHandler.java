@@ -61,7 +61,7 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An internal server error occurred while trying to requeue messages: " + failedMessageIds);
+                    "An error occurred when trying to delete " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
         }
     }
 
@@ -83,30 +83,30 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An internal server error occurred while trying to stop messages: " + failedMessageIds);
+                    "An error occurred when trying to delete " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
         }
     }
 
     private void deleteConversations(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestBody = readAll(request.getInputStream());
         String[] conversationIds = new Gson().fromJson(requestBody, String[].class);
-        ArrayList<String> failedConversations = new ArrayList<>();
+        ArrayList<String> failedConversationIds = new ArrayList<>();
 
         for (String conversationId : conversationIds) {
             try {
                 ConversationPojo conversation = Engine.getInstance().getTransactionService().getConversation(conversationId);
                 Engine.getInstance().getTransactionService().deleteConversation(conversation);
             } catch (NexusException e) {
-                failedConversations.add(conversationId);
+                failedConversationIds.add(conversationId);
                 LOG.error("An error occurred while trying to delete conversation " + conversationId, e);
             }
         }
 
-        if (failedConversations.isEmpty()) {
+        if (failedConversationIds.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An internal server error occurred while trying to delete conversations: " + failedConversations);
+                    "An error occurred when trying to delete " + failedConversationIds.size() + " / " + conversationIds.length + " conversations: " + failedConversationIds);
         }
     }
 }
