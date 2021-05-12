@@ -53,10 +53,15 @@ export class DataService {
     return this.get<string>("/full-username");
   }
 
-  getLoggedIn() {
-    // This response should not be cached because otherwise,
-    // the user would not be logged out if their session expired
-    return this.get("/logged-in", false);
+  async isLoggedIn(): Promise<boolean> {
+    try {
+      // This response should not be cached because otherwise,
+      // the user would not be logged out if their session expired
+      await this.get("/logged-in", false);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   getPermittedActions(): Promise<string[]> {

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActiveFilterList, EngineLog, FilterType, ListConfig } from "../types";
 
 import { DataService } from "../services/data.service";
+import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-engine-log",
@@ -18,6 +19,7 @@ export class EngineLogComponent implements OnInit {
   static readonly END_DATE_DEFAULT: Date = new Date(
     new Date().setHours(24, 0, 0, 0)
   );
+  defaultPageSize = 50;
 
   filters = [
     {
@@ -60,7 +62,8 @@ export class EngineLogComponent implements OnInit {
     },
   ];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private sessionService: SessionService) {
+  }
 
   ngOnInit(): void {}
 
@@ -83,5 +86,6 @@ export class EngineLogComponent implements OnInit {
   filterEngineLogs(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshEngineLogCount();
+    this.loadEngineLogs(0, this.sessionService.getPageSize("engine.log") || this.defaultPageSize);
   }
 }

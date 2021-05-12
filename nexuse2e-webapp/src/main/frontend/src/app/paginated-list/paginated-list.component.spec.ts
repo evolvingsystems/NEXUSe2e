@@ -8,10 +8,10 @@ import { By } from "@angular/platform-browser";
 import { MatCardModule } from "@angular/material/card";
 import { ListComponent } from "../list/list.component";
 import { ScreensizeService } from "../services/screensize.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { HttpClientModule } from "@angular/common/http";
 
 describe("PaginatedListComponent", () => {
   let component: PaginatedListComponent;
@@ -24,9 +24,9 @@ describe("PaginatedListComponent", () => {
         MatPaginatorModule,
         BrowserAnimationsModule,
         MatCardModule,
+        HttpClientTestingModule,
         MatDialogModule,
         MatSnackBarModule,
-        HttpClientModule,
       ],
       declarations: [
         PaginatedListComponent,
@@ -45,18 +45,6 @@ describe("PaginatedListComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
-  });
-
-  it("should initially load the first page of items if there are any", async () => {
-    spyOn(component.triggerReload, "emit");
-    component.totalItemCount = 5;
-
-    await component.ngOnInit();
-
-    expect(component.triggerReload.emit).toHaveBeenCalledWith({
-      pageIndex: 0,
-      pageSize: component.pageSize,
-    });
   });
 
   it("if mobile is true, it should render one item card for each item on the page", async () => {
