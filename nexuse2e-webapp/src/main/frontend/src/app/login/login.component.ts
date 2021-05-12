@@ -1,7 +1,7 @@
 import { Component, Injectable, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DataService } from "../services/data.service";
-import { NavigationService } from "../navigation/navigation.service";
+import { NavigationService } from "../services/navigation.service";
 import { PermissionService } from "../services/permission.service";
 import { LoginData } from "../types";
 

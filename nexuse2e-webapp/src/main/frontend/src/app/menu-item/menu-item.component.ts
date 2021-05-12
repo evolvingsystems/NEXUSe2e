@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Route, Router } from "@angular/router";
-import { NavigationService } from "../navigation/navigation.service";
+import { NavigationService } from "../services/navigation.service";
 
 @Component({
   selector: "app-menu-item",
