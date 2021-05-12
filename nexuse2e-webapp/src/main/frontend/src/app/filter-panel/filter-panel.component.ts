@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActiveFilterList, DateRange, Filter, FilterType } from "../types";
 import { SessionService } from "../services/session.service";
 import { ScreensizeService } from "../services/screensize.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-filter-panel",
@@ -18,15 +19,22 @@ export class FilterPanelComponent implements OnInit {
 
   constructor(
     public screenSizeService: ScreensizeService,
-    public sessionService: SessionService
-  ) {}
+    public sessionService: SessionService,
+    private route: ActivatedRoute
+  ) {
+  }
 
-  ngOnInit(): void {
-    this.activeFilters = this.sessionService.getActiveFilters(this.itemType);
+  ngOnInit() {
+    const filtersFromRoute = this.extractFiltersFromRouteParams();
+    this.activeFilters = Object.keys(filtersFromRoute).length ? filtersFromRoute : this.sessionService.getActiveFilters(this.itemType);
     if (Object.keys(this.activeFilters).length === 0) {
       this.setDefaultValues();
     }
     this.applyFilters();
+  }
+
+  extractFiltersFromRouteParams(): ActiveFilterList {
+    return Object.assign({}, this.route.snapshot.queryParams);
   }
 
   getFilterType() {
@@ -52,11 +60,11 @@ export class FilterPanelComponent implements OnInit {
 
   applyFilters() {
     this.filterChange.emit(this.activeFilters);
-    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
   }
 
   handleFilterAction() {
     this.applyFilters();
+    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
     this.expanded = false;
   }
 
@@ -80,6 +88,7 @@ export class FilterPanelComponent implements OnInit {
     this.activeFilters = {};
     this.setDefaultValues();
     this.applyFilters();
+    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
   }
 
   setDefaultValues() {
