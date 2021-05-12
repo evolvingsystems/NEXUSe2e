@@ -38,18 +38,6 @@ describe("PaginatedListComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should initially load the first page of items if there are any", async () => {
-    spyOn(component.triggerReload, "emit");
-    component.totalItemCount = 5;
-
-    await component.ngOnInit();
-
-    expect(component.triggerReload.emit).toHaveBeenCalledWith({
-      pageIndex: 0,
-      pageSize: component.pageSize,
-    });
-  });
-
   it("if mobile is true, it should render one item card for each item on the page", async () => {
     component.items = messages;
     spyOn(screensizeService, "isMobile").and.returnValue(true);

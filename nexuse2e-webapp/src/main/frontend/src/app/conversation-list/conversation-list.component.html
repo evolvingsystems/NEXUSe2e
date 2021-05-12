@@ -4,6 +4,7 @@
   (filterChange)="filterMessages($event)"
 ></app-filter-panel>
 <app-paginated-list [totalItemCount]="totalConversationCount"
+                    [defaultPageSize]="defaultPageSize"
                     [mobileConfig]="mobileConfig"
                     [desktopConfig]="desktopConfig"
                     [items]="conversations"

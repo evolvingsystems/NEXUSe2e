@@ -13,7 +13,8 @@ import { PermissionService } from "../services/permission.service";
   styleUrls: ["./paginated-list.component.scss"],
 })
 export class PaginatedListComponent implements OnInit {
-  private _totalItemCount!: number;
+  @Input() totalItemCount!: number;
+  @Input() defaultPageSize?: number;
   @Input() items: NexusData[] = [];
   @Input() itemType!: string;
   @Input() mobileConfig: ListConfig[] = [];
@@ -32,23 +33,13 @@ export class PaginatedListComponent implements OnInit {
     public screenSizeService: ScreensizeService,
     private sessionService: SessionService,
     private permissionService: PermissionService
-  ) {}
-
-  ngOnInit(): void {}
-
-  @Input()
-  set totalItemCount(value: number) {
-    this._totalItemCount = value;
-    this.pageIndex = 0;
-    const savedPageSize = this.sessionService.getPageSize(this.itemType);
-    if (savedPageSize) {
-      this.pageSize = savedPageSize;
-    }
-    this.update();
+  ) {
   }
 
-  get totalItemCount() {
-    return this._totalItemCount;
+  ngOnInit(): void {
+    if (this.defaultPageSize) {
+      this.pageSize = this.defaultPageSize;
+    }
   }
 
   onPageChange(pageEvent: PageEvent) {
