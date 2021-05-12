@@ -1,13 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  Action,
-  ActiveFilterList,
-  Filter,
-  FilterType,
-  ListConfig,
-  Message,
-} from "../types";
+import { Action, ActiveFilterList, Filter, FilterType, ListConfig, Message, } from "../types";
 import { DataService } from "../services/data.service";
+import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-message-list",

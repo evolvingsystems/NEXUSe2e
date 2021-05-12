@@ -1,13 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  Action,
-  ActiveFilterList,
-  Conversation,
-  Filter,
-  FilterType,
-  ListConfig,
-} from "../types";
+import { Action, ActiveFilterList, Conversation, Filter, FilterType, ListConfig, } from "../types";
 import { DataService } from "../services/data.service";
+import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-conversation-list",
