@@ -7,6 +7,8 @@ import {
   ConversationDetail,
   EngineLog,
   Message,
+  MessageDetail,
+  PayloadParams,
 } from "../types";
 
 @Injectable({
@@ -110,6 +112,12 @@ export class DataService {
     return this.get<Message[]>("/messages", false, params);
   }
 
+  getMessageById(nxMessageId: string) {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append("nxMessageId", String(nxMessageId));
+    return this.get<MessageDetail>("/message", false, httpParams);
+  }
+
   getMessagesCount(activeFilters: ActiveFilterList = {}): Promise<number> {
     return this.get<number>(
       "/messages/count",
@@ -187,6 +195,20 @@ export class DataService {
 
   getVersion(): Promise<string[]> {
     return this.get<string[]>("/version");
+  }
+
+  getDownloadPayloadLink(item: PayloadParams) {
+    return (
+      "/DataSaveAs.do?type=content&choreographyId=" +
+      item.choreographyId +
+      "&participantId=" +
+      item.partnerId +
+      "&conversationId=" +
+      item.conversationId +
+      "&messageId=" +
+      item.messageId +
+      (item.payloadId !== undefined ? "&no=" + item.payloadId : "")
+    );
   }
 
   private post(path: string, body: unknown): Promise<void> {
