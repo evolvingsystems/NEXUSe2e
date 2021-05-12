@@ -191,6 +191,20 @@ export class DataService {
     return this.get<string[]>("/version");
   }
 
+  downloadPayload(message: MessageDetail, payloadId?: number) {
+    return (
+      "/DataSaveAs.do?type=content&choreographyId=" +
+      message.choreographyId +
+      "&participantId=" +
+      message.partnerId +
+      "&conversationId=" +
+      message.conversationId +
+      "&messageId=" +
+      message.messageId +
+      (payloadId !== undefined ? "&no=" + payloadId : "")
+    );
+  }
+
   private post(path: string, body: unknown): Promise<void> {
     return this.http.post<void>(this.API_URL + path, body).toPromise();
   }

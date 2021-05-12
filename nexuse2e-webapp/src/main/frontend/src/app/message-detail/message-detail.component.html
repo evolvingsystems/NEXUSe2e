@@ -7,15 +7,15 @@
     <app-action-button
       [action]="action"
       (triggerReload)="update()"
-      [affectedItems]="message">
+      [affectedItems]="messages">
     </app-action-button>
   </ng-container>
 </div>
-<app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="message"
+<app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="messages"
           itemType="message"
           [isSelectable]="false" showForDetailPage="true"></app-list>
 
-<div class="toggleSection" *ngIf="messagePayloads">
+<div class="toggleSection" *ngIf="messagePayloads?.length">
   <div class="toggle-Header" (click)=toggleContentArea()>
     <button mat-icon-button aria-label="Toggle">
       <mat-icon>{{ contentExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
@@ -35,11 +35,11 @@
           <td>text/xml</td>
           <td><a [href]="buildDataSaveUrl()">{{ "labels.view" | translate }}</a></td>
         </tr>
-        <ng-container *ngFor="let payload of messagePayloads; let i = index">
+        <ng-container *ngFor="let payload of messagePayloads;">
           <tr>
-            <td>{{ "labels.payload" | translate }} {{ i }}</td>
+            <td>{{ "labels.payload" | translate }} {{ payload.id }}</td>
             <td>{{ payload.mimeType }}</td>
-            <td><a [href]="buildDataSaveUrl(i)">{{ "labels.view" | translate }}</a></td>
+            <td><a [href]="buildDataSaveUrl(payload.id)">{{ "labels.view" | translate }}</a></td>
           </tr>
         </ng-container>
       </table>

@@ -20,7 +20,7 @@ import { Location } from "@angular/common";
   styleUrls: ["./message-detail.component.scss"],
 })
 export class MessageDetailComponent implements OnInit {
-  message: MessageDetail[] = [];
+  messages: MessageDetail[] = [];
   engineLogs: EngineLog[] = [];
   messagePayloads: Payload[] = [];
   messageLabels?: ReadonlyMap<string, string>;
@@ -102,7 +102,7 @@ export class MessageDetailComponent implements OnInit {
   async loadMessage(nxMessageId: string) {
     try {
       const item = await this.dataService.getMessageById(nxMessageId);
-      this.message.push(item);
+      this.messages.push(item);
       this.engineLogs = item.engineLogs || [];
       this.messagePayloads = item.messagePayloads || [];
       this.messageLabels = item.messageLabels || {};
@@ -119,23 +119,14 @@ export class MessageDetailComponent implements OnInit {
 
   update() {
     // message needs to be resetted otherwise it pushes message as new item in loadMessage
-    this.message = [];
+    this.messages = [];
     this.loadMessage(String(this.route.snapshot.paramMap.get("id")));
   }
 
-  buildDataSaveUrl(itemNumber?: number): string {
-    if (this.isMessageDetail(this.message)) {
-      return (
-        "/api/DataSaveAs.do?type=content&choreographyId=" +
-        this.message.choreographyId +
-        "&participantId=" +
-        this.message.partnerId +
-        "&conversationId=" +
-        this.message.conversationId +
-        "&messageId=" +
-        this.message.messageId +
-        (itemNumber !== undefined ? "&no=" + itemNumber : "")
-      );
+  buildDataSaveUrl(payloadId?: number): string {
+    const message = this.messages[0];
+    if (this.isMessageDetail(message)) {
+      return this.dataService.downloadPayload(message, payloadId);
     }
     return "";
   }
