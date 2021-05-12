@@ -1,12 +1,14 @@
-import { Action, ActiveFilterList, Filter, FilterType, ListConfig } from "../types";
+import {
+  Action,
+  ActiveFilterList,
+  Filter,
+  FilterType,
+  ListConfig,
+} from "../types";
 
 // START FILTERS
-const START_DATE_DEFAULT: Date = new Date(
-  new Date().setHours(0, 0, 0, 0)
-);
-const END_DATE_DEFAULT: Date = new Date(
-  new Date().setHours(24, 0, 0, 0)
-);
+const START_DATE_DEFAULT: Date = new Date(new Date().setHours(0, 0, 0, 0));
+const END_DATE_DEFAULT: Date = new Date(new Date().setHours(24, 0, 0, 0));
 
 export const participantFilter: Filter = {
   fieldName: "partnerId",
@@ -46,7 +48,7 @@ export const defaultPageSize = 20;
 export const mobileConfig: ListConfig[] = [
   {
     fieldName: "conversationId",
-    linkUrlRecipe: "$nxConversationId$",
+    linkUrlRecipe: "../../conversation/$nxConversationId$",
     isHeader: true,
   },
   { fieldName: "choreographyId" },
@@ -57,7 +59,7 @@ export const mobileConfig: ListConfig[] = [
 export const desktopConfig: ListConfig[] = [
   {
     fieldName: "conversationId",
-    linkUrlRecipe: "$nxConversationId$",
+    linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   {
     fieldName: "partnerId",

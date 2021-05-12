@@ -1,9 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import {
-  Action,
   ConversationDetail,
   EngineLog,
-  ListConfig,
   Message,
   NotificationItem,
 } from "../types";
@@ -12,6 +10,12 @@ import { DataService } from "../services/data.service";
 import { Location } from "@angular/common";
 import { NotificationComponent } from "../notification/notification.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import {
+  actions,
+  conversationConfig,
+  logConfig,
+  messageConfig,
+} from "./conversation-detail.config";
 
 @Component({
   selector: "app-conversation-detail",
@@ -24,79 +28,10 @@ export class ConversationDetailComponent implements OnInit {
   engineLogs: EngineLog[] = [];
   messagesExpanded = true;
   logsExpanded = true;
-  conversationConfig: ListConfig[] = [
-    {
-      fieldName: "conversationId",
-    },
-    {
-      fieldName: "createdDate",
-    },
-    {
-      fieldName: "modifiedDate",
-    },
-    {
-      fieldName: "endDate",
-    },
-    {
-      fieldName: "turnAroundTime",
-    },
-    {
-      fieldName: "partnerId",
-    },
-    {
-      fieldName: "currentAction",
-    },
-    {
-      fieldName: "status",
-    },
-  ];
-
-  messageConfig: ListConfig[] = [
-    {
-      fieldName: "messageId",
-      linkUrlRecipe: "../../message/$nxMessageId$",
-    },
-    { fieldName: "typeName", label: "messageType" },
-    {
-      fieldName: "choreographyId",
-      additionalFieldName: "actionId",
-      label: "step",
-    },
-    { fieldName: "direction" },
-    { fieldName: "createdDate" },
-    { fieldName: "endDate" },
-    { fieldName: "turnAroundTime" },
-    { fieldName: "status" },
-  ];
-
-  logConfig: ListConfig[] = [
-    {
-      fieldName: "severity",
-    },
-    {
-      fieldName: "createdDate",
-    },
-    {
-      fieldName: "description",
-    },
-    {
-      fieldName: "origin",
-    },
-    {
-      fieldName: "className",
-    },
-    {
-      fieldName: "methodName",
-    },
-  ];
-
-  actions: Action[] = [
-    {
-      label: "delete",
-      icon: "delete",
-      actionKey: "/conversation/delete",
-    },
-  ];
+  conversationConfig = conversationConfig;
+  messageConfig = messageConfig;
+  logConfig = logConfig;
+  actions = actions;
 
   constructor(
     private route: ActivatedRoute,

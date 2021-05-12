@@ -1,12 +1,14 @@
-import { Action, ActiveFilterList, Filter, FilterType, ListConfig } from "../types";
+import {
+  Action,
+  ActiveFilterList,
+  Filter,
+  FilterType,
+  ListConfig,
+} from "../types";
 
 // START FILTERS
-const START_DATE_DEFAULT: Date = new Date(
-  new Date().setHours(0, 0, 0, 0)
-);
-const END_DATE_DEFAULT: Date = new Date(
-  new Date().setHours(24, 0, 0, 0)
-);
+const START_DATE_DEFAULT: Date = new Date(new Date().setHours(0, 0, 0, 0));
+const END_DATE_DEFAULT: Date = new Date(new Date().setHours(24, 0, 0, 0));
 
 export const participantFilter: Filter = {
   fieldName: "partnerId",
@@ -64,11 +66,11 @@ export const defaultPageSize = 20;
 export const desktopConfig: ListConfig[] = [
   {
     fieldName: "messageId",
-    linkUrlRecipe: "$nxMessageId$",
+    linkUrlRecipe: "../../message/$nxMessageId$",
   },
   {
     fieldName: "conversationId",
-    linkUrlRecipe: "../conversations/$nxConversationId$",
+    linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   { fieldName: "partnerId" },
   { fieldName: "status" },
@@ -86,12 +88,12 @@ export const desktopConfig: ListConfig[] = [
 export const mobileConfig: ListConfig[] = [
   {
     fieldName: "messageId",
-    linkUrlRecipe: "$nxMessageId$",
+    linkUrlRecipe: "../../message/$nxMessageId$",
     isHeader: true,
   },
   {
     fieldName: "conversationId",
-    linkUrlRecipe: "../conversations/$nxConversationId$",
+    linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   { fieldName: "partnerId" },
   { fieldName: "typeName", label: "messageType" },
