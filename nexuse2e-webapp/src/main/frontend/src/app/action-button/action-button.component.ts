@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { Action } from "../types";
+import { Action, NexusData } from "../types";
 import { PermissionService } from "../services/permission.service";
 import { ActionService } from "../services/action.service";
 
@@ -10,6 +10,7 @@ import { ActionService } from "../services/action.service";
 })
 export class ActionButtonComponent implements OnInit {
   @Input() action!: Action;
+  @Input() affectedItems?: NexusData[];
   @Output() triggerReload: EventEmitter<void> = new EventEmitter();
   isPermitted = false;
   inProgress = false;
@@ -36,6 +37,9 @@ export class ActionButtonComponent implements OnInit {
         break;
       case "/conversations/delete":
         await this.actionService.deleteConversations();
+        break;
+      case "/conversation/delete":
+        await this.actionService.deleteConversations(this.affectedItems);
         break;
     }
     this.inProgress = false;

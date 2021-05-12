@@ -52,10 +52,9 @@ export class ActionService {
     }
   }
 
-  async deleteConversations() {
-    const conversations = this.selectionService.getSelectedItems(
-      "conversation"
-    );
+  async deleteConversations(affectedItems?: unknown[]) {
+    const conversations =
+      affectedItems || this.selectionService.getSelectedItems("conversation");
 
     const dialogRef = this._dialog.open(UserConfirmationDialogComponent, {
       data: {

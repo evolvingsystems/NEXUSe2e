@@ -44,10 +44,10 @@ h1, h2 {
   h1 {
     background: $gray4;
     padding: 3px 15px 0 15px;
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 0;
+    font-size: 11px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    margin-bottom: 0 !important;
   }
 }
 
@@ -97,6 +97,10 @@ a {
 
 .relativeWrapper {
   position: relative;
+}
+
+.subtitle {
+  font-size: 18px;
 }
 
 @media(min-width: $desktopBreakpoint) {
@@ -259,3 +263,17 @@ a {
   }
 }
 
+/* Toggle Section */
+.toggleSection {
+  margin-bottom: 15px;
+
+  .toggle-Header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .padded {
+    padding: 0 10px 10px 10px !important;
+  }
+}
