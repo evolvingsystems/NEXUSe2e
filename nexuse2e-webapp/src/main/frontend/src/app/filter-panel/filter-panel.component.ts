@@ -51,8 +51,8 @@ export class FilterPanelComponent implements OnInit {
   }
 
   applyFilters() {
-    this.filterChange.emit(this.activeFilters);
     this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
+    this.filterChange.emit(this.activeFilters);
   }
 
   handleFilterAction() {
