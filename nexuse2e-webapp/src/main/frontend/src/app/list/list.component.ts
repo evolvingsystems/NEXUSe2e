@@ -1,11 +1,13 @@
 import { Component, Input, OnInit } from "@angular/core";
 import {
+  Choreography,
   Conversation,
   EngineLog,
   ListConfig,
   Message,
   NexusData,
   NotificationItem,
+  Partner,
 } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
@@ -30,6 +32,7 @@ export class ListComponent implements OnInit {
   @Input() isSelectable?: boolean;
   @Input() showAsSimpleTable?: boolean;
   @Input() showForDetailPage?: boolean;
+  @Input() showWithoutBorder?: boolean;
   displayedColumns: string[] = ["select"];
   headerElement?: ListConfig;
   simpleTableConfig: ListConfig[] = [];
@@ -71,6 +74,12 @@ export class ListComponent implements OnInit {
     if (this.isEngineLog(item)) {
       return item[propertyName as keyof EngineLog];
     }
+    if (this.isChoreography(item)) {
+      return item[propertyName as keyof Choreography];
+    }
+    if (this.isPartner(item)) {
+      return item[propertyName as keyof Partner];
+    }
   }
 
   getTrimmedProperty(item: NexusData, fieldName: string) {
@@ -101,6 +110,14 @@ export class ListComponent implements OnInit {
 
   isEngineLog(item: NexusData): item is EngineLog {
     return (item as EngineLog).methodName !== undefined;
+  }
+
+  isChoreography(item: NexusData): item is Choreography {
+    return (item as Choreography).nxChoreographyId !== undefined;
+  }
+
+  isPartner(item: NexusData): item is Partner {
+    return (item as Partner).nxPartnerId !== undefined;
   }
 
   getUrl(item: NexusData, linkUrlRecipe: string): string {

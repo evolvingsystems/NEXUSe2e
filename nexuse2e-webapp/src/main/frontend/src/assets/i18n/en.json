@@ -83,7 +83,12 @@
     "dashboard": "Dashboard",
     "successfulMessages": "Successful Messages",
     "choreographies": "Choreographies",
-    "partners": "Partners"
+    "partners": "Partners",
+    "choreography": "Choreography",
+    "partner": "Partner",
+    "lastInboundTime": "Last Inbound",
+    "lastOutboundTime": "Last Outbound",
+    "noSuccessfullySentMessages": "no successfully sent messages"
   },
   "status": {
     "FAILED": "Failed",

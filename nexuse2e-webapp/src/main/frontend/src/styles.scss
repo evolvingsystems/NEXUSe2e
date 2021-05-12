@@ -115,10 +115,6 @@ a {
   padding: 8px;
   color: $gray2;
 
-  &:not(.withoutBorder) {
-    border-left: 5px $gray4 solid;
-  }
-
   .card-header {
     padding-bottom: 4px;
     padding-left: 2px;
@@ -225,7 +221,6 @@ a {
 
   .mat-cell {
     &[class*="-column-select"] {
-      border-left: 8px solid $gray4;
       padding-left: 16px;
     }
   }
@@ -260,17 +255,21 @@ a {
 }
 
 /* Status Colors */
-.statusLeftBorderColor {
-  &.error, &.failed, &.fatal {
-    border-left-color: $error !important;
-  }
+.statusLeftBorder {
+  border-left: 5px $gray4 solid;
 
-  &.unknown, &.created, &.idle, &.stopped, &.retrying, &.warn {
-    border-left-color: $warning !important;
-  }
+  &.statusLeftBorderColor {
+    &.error, &.failed, &.fatal {
+      border-left-color: $error !important;
+    }
 
-  &.completed, &.sent {
-    border-left-color: $success !important;
+    &.unknown, &.created, &.idle, &.stopped, &.retrying, &.warn {
+      border-left-color: $warning !important;
+    }
+
+    &.completed, &.sent {
+      border-left-color: $success !important;
+    }
   }
 }
 
