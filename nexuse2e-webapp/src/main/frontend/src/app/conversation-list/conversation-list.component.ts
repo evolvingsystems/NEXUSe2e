@@ -1,13 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  Action,
-  ActiveFilterList,
-  Conversation,
-  Filter,
-  FilterType,
-  ListConfig,
-} from "../types";
+import { Action, ActiveFilterList, Conversation, Filter, FilterType, ListConfig, } from "../types";
 import { DataService } from "../services/data.service";
+import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-conversation-list",
@@ -24,6 +18,7 @@ export class ConversationListComponent implements OnInit {
   static readonly END_DATE_DEFAULT: Date = new Date(
     new Date().setHours(24, 0, 0, 0)
   );
+  defaultPageSize = 20;
 
   private participantFilter: Filter = {
     fieldName: "partnerId",
@@ -101,7 +96,8 @@ export class ConversationListComponent implements OnInit {
     },
   ];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private sessionService: SessionService) {
+  }
 
   async ngOnInit() {
     [
@@ -132,5 +128,7 @@ export class ConversationListComponent implements OnInit {
   filterConversations(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshConversationCount();
+    this.loadConversations(0,
+      this.sessionService.getPageSize("conversation") || this.defaultPageSize);
   }
 }

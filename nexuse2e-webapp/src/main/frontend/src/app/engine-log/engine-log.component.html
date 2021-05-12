@@ -4,6 +4,7 @@
   (filterChange)="filterEngineLogs($event)"
 ></app-filter-panel>
 <app-paginated-list [totalItemCount]="totalEngineLogCount"
+                    [defaultPageSize]="defaultPageSize"
                     [mobileConfig]="mobileConfig"
                     [desktopConfig]="desktopConfig"
                     [items]="engineLogs"

@@ -1,13 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  Action,
-  ActiveFilterList,
-  Filter,
-  FilterType,
-  ListConfig,
-  Message,
-} from "../types";
+import { Action, ActiveFilterList, Filter, FilterType, ListConfig, Message, } from "../types";
 import { DataService } from "../services/data.service";
+import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-message-list",
@@ -24,6 +18,7 @@ export class MessageListComponent implements OnInit {
   static readonly END_DATE_DEFAULT: Date = new Date(
     new Date().setHours(24, 0, 0, 0)
   );
+  defaultPageSize = 20;
 
   private participantFilter: Filter = {
     fieldName: "partnerId",
@@ -130,7 +125,8 @@ export class MessageListComponent implements OnInit {
     },
   ];
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private sessionService: SessionService) {
+  }
 
   async ngOnInit() {
     this.participantFilter.allowedValues = await this.dataService.getPartnerIds();
@@ -156,5 +152,6 @@ export class MessageListComponent implements OnInit {
   filterMessages(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshMessageCount();
+    this.loadMessages(0, this.sessionService.getPageSize("message") || this.defaultPageSize);
   }
 }
