@@ -62,6 +62,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
 import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
 import { MessageDetailComponent } from "./message-detail/message-detail.component";
+import { SuccessfulMessagesListComponent } from "./successful-messages-list/successful-messages-list.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -168,6 +169,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     UserConfirmationDialogComponent,
     ConversationDetailComponent,
     MessageDetailComponent,
+    SuccessfulMessagesListComponent,
   ],
   imports: [
     BrowserModule,

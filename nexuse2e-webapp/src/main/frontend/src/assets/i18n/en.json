@@ -79,7 +79,11 @@
     "action": "Action",
     "header": "Header",
     "view": "View",
-    "payload": "Payload"
+    "payload": "Payload",
+    "dashboard": "Dashboard",
+    "successfulMessages": "Successful Messages",
+    "choreographies": "Choreographies",
+    "partners": "Partners"
   },
   "status": {
     "FAILED": "Failed",
