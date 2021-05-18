@@ -2,9 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
 import {
-  Action,
   EngineLog,
-  ListConfig,
   MessageDetail,
   NexusData,
   NotificationItem,
@@ -13,6 +11,11 @@ import {
 import { DataService } from "../services/data.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Location } from "@angular/common";
+import {
+  MESS_DETAIL__ACTIONS,
+  MESS_DETAIL__LOG_CONFIG,
+  MESS_DETAIL__MESSAGE_CONFIG,
+} from "./message-detail.config";
 
 @Component({
   selector: "app-message-detail",
@@ -27,65 +30,9 @@ export class MessageDetailComponent implements OnInit {
   contentExpanded = true;
   messageLabelsExpanded = true;
   logsExpanded = true;
-
-  messageConfig: ListConfig[] = [
-    {
-      fieldName: "messageId",
-    },
-    {
-      fieldName: "conversationId",
-      linkUrlRecipe: "../../conversation/$nxConversationId$",
-    },
-    { fieldName: "choreographyId" },
-    { fieldName: "partnerId" },
-    { fieldName: "typeName", label: "messageType" },
-    { fieldName: "direction" },
-    { fieldName: "referencedMessageId" },
-    { fieldName: "actionId" },
-    { fieldName: "backendStatus" },
-    { fieldName: "createdDate" },
-    { fieldName: "modifiedDate" },
-    { fieldName: "endDate" },
-    { fieldName: "turnAroundTime" },
-    { fieldName: "expirationDate" },
-    { fieldName: "retries" },
-    { fieldName: "trp", label: "protocolVersion" },
-    { fieldName: "status" },
-  ];
-
-  logConfig: ListConfig[] = [
-    {
-      fieldName: "severity",
-    },
-    {
-      fieldName: "createdDate",
-    },
-    {
-      fieldName: "description",
-    },
-    {
-      fieldName: "origin",
-    },
-    {
-      fieldName: "className",
-    },
-    {
-      fieldName: "methodName",
-    },
-  ];
-
-  actions: Action[] = [
-    {
-      label: "requeue",
-      icon: "refresh",
-      actionKey: "/message/requeue",
-    },
-    {
-      label: "stop",
-      icon: "stop",
-      actionKey: "/message/stop",
-    },
-  ];
+  messageConfig = MESS_DETAIL__MESSAGE_CONFIG;
+  logConfig = MESS_DETAIL__LOG_CONFIG;
+  actions = MESS_DETAIL__ACTIONS;
 
   constructor(
     private route: ActivatedRoute,

@@ -35,12 +35,12 @@ describe("ListComponent", () => {
     component.mobileConfig = [
       {
         fieldName: "messageId",
-        linkUrlRecipe: "$nxMessageId$",
+        linkUrlRecipe: "../../message/$nxMessageId$",
         isHeader: true,
       },
       {
         fieldName: "conversationId",
-        linkUrlRecipe: "../conversations/$nxConversationId$",
+        linkUrlRecipe: "../../conversation/$nxConversationId$",
       },
       { fieldName: "partnerId" },
       { fieldName: "typeName" },
@@ -50,11 +50,11 @@ describe("ListComponent", () => {
     component.desktopConfig = [
       {
         fieldName: "messageId",
-        linkUrlRecipe: "$nxMessageId$",
+        linkUrlRecipe: "../../message/$nxMessageId$",
       },
       {
         fieldName: "conversationId",
-        linkUrlRecipe: "../conversations/$nxConversationId$",
+        linkUrlRecipe: "../../conversation/$nxConversationId$",
       },
       { fieldName: "partnerId" },
       { fieldName: "status" },
@@ -80,7 +80,7 @@ describe("ListComponent", () => {
     component.mobileConfig = [
       {
         fieldName: "messageId",
-        linkUrlRecipe: "$nxMessageId$",
+        linkUrlRecipe: "../../message/$nxMessageId$",
         isHeader: true,
       },
     ];
