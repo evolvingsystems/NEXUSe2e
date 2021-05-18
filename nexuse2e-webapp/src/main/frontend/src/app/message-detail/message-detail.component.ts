@@ -27,6 +27,7 @@ export class MessageDetailComponent implements OnInit {
   engineLogs: EngineLog[] = [];
   messagePayloads: Payload[] = [];
   messageLabels?: ReadonlyMap<string, string>;
+  loaded = false;
   contentExpanded = true;
   messageLabelsExpanded = true;
   logsExpanded = true;
@@ -47,6 +48,7 @@ export class MessageDetailComponent implements OnInit {
   }
 
   async loadMessage(nxMessageId: string) {
+    this.loaded = false;
     try {
       const item = await this.dataService.getMessageById(nxMessageId);
       this.messages.push(item);
@@ -62,6 +64,7 @@ export class MessageDetailComponent implements OnInit {
         } as NotificationItem,
       });
     }
+    this.loaded = true;
   }
 
   update() {
