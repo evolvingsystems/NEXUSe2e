@@ -2,7 +2,7 @@
 
 .content-container {
   box-sizing: border-box;
-  height: 100vh;
+  height: calc(100vh - 50px);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -10,5 +10,6 @@
 @media(min-width: $desktopBreakpoint) {
   .content-container {
     margin-left: 350px;
+    height: calc(100vh - 75px);
   }
 }
