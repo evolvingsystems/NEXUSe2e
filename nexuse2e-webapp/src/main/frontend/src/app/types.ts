@@ -1,4 +1,8 @@
-export interface NexusData {}
+export interface NexusData {
+  status?: string;
+  severity?: string;
+  createdDate: string;
+}
 
 export interface Message extends NexusData {
   messageId: string;
