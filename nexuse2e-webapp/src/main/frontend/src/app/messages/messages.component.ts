@@ -11,14 +11,14 @@ import {
   MESS_LIST__FILTERS,
   MESS_LIST__MOBILE_CONFIG,
   participantFilter,
-} from "./message-list.config";
+} from "./messages.config";
 
 @Component({
-  selector: "app-message-list",
-  templateUrl: "./message-list.component.html",
+  selector: "app-messages",
+  templateUrl: "./messages.component.html",
   styles: [],
 })
-export class MessageListComponent implements OnInit {
+export class MessagesComponent implements OnInit {
   totalMessageCount?: number;
   messages: Message[] = [];
   loaded = false;
