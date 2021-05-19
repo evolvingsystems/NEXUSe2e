@@ -3,8 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
 import {
   EngineLog,
+  isMessageDetail,
   MessageDetail,
-  NexusData,
   NotificationItem,
   Payload,
 } from "../types";
@@ -72,7 +72,7 @@ export class MessageDetailComponent implements OnInit {
 
   buildDownloadPayloadLink(payloadId?: number): string {
     const message = this.messages[0];
-    if (this.isMessageDetail(message)) {
+    if (isMessageDetail(message)) {
       const affectedPayload = {
         choreographyId: message.choreographyId,
         partnerId: message.partnerId,
@@ -84,10 +84,6 @@ export class MessageDetailComponent implements OnInit {
     }
 
     return "";
-  }
-
-  isMessageDetail(item: NexusData): item is MessageDetail {
-    return (item as MessageDetail).engineLogs !== undefined;
   }
 
   back() {
