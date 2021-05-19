@@ -48,7 +48,7 @@ export class MessageDetailComponent implements OnInit {
 
   async loadMessage(nxMessageId: string) {
     try {
-      const item = await this.dataService.getMessageById(nxMessageId);
+      const item = await this.dataService.getMessageByNxId(nxMessageId);
       this.messages.push(item);
       this.engineLogs = item.engineLogs || [];
       this.messagePayloads = item.messagePayloads || [];

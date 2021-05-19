@@ -48,7 +48,9 @@ export class ConversationDetailComponent implements OnInit {
 
   async loadConversation(nxConversationId: string) {
     try {
-      const item = await this.dataService.getConversationById(nxConversationId);
+      const item = await this.dataService.getConversationByNxId(
+        nxConversationId
+      );
       this.conversation.push(item);
       this.messages = item.messages || [];
       this.engineLogs = item.engineLogs || [];
