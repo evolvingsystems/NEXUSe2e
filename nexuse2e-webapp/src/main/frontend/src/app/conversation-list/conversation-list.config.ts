@@ -60,6 +60,9 @@ export const CONV_LIST__MOBILE_CONFIG: ListConfig[] = [
 
 export const CONV_LIST__DESKTOP_CONFIG: ListConfig[] = [
   {
+    fieldName: "status",
+  },
+  {
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
@@ -74,9 +77,6 @@ export const CONV_LIST__DESKTOP_CONFIG: ListConfig[] = [
   },
   {
     fieldName: "createdDate",
-  },
-  {
-    fieldName: "status",
   },
   {
     fieldName: "turnAroundTime",
