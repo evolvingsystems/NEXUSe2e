@@ -2,9 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
 import {
-  Action,
   EngineLog,
-  ListConfig,
   MessageDetail,
   NexusData,
   NotificationItem,
@@ -13,6 +11,11 @@ import {
 import { DataService } from "../services/data.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Location } from "@angular/common";
+import {
+  MESS_DETAIL__ACTIONS,
+  MESS_DETAIL__LOG_CONFIG,
+  MESS_DETAIL__MESSAGE_CONFIG,
+} from "./message-detail.config";
 
 @Component({
   selector: "app-message-detail",
@@ -20,72 +23,16 @@ import { Location } from "@angular/common";
   styleUrls: ["./message-detail.component.scss"],
 })
 export class MessageDetailComponent implements OnInit {
-  message: MessageDetail[] = [];
+  messages: MessageDetail[] = [];
   engineLogs: EngineLog[] = [];
   messagePayloads: Payload[] = [];
   messageLabels?: ReadonlyMap<string, string>;
   contentExpanded = true;
   messageLabelsExpanded = true;
   logsExpanded = true;
-
-  messageConfig: ListConfig[] = [
-    {
-      fieldName: "messageId",
-    },
-    {
-      fieldName: "conversationId",
-      linkUrlRecipe: "../../conversation/$nxConversationId$",
-    },
-    { fieldName: "choreographyId" },
-    { fieldName: "partnerId" },
-    { fieldName: "typeName", label: "messageType" },
-    { fieldName: "direction" },
-    { fieldName: "referencedMessageId" },
-    { fieldName: "actionId" },
-    { fieldName: "backendStatus" },
-    { fieldName: "createdDate" },
-    { fieldName: "modifiedDate" },
-    { fieldName: "endDate" },
-    { fieldName: "turnAroundTime" },
-    { fieldName: "expirationDate" },
-    { fieldName: "retries" },
-    { fieldName: "trp", label: "protocolVersion" },
-    { fieldName: "status" },
-  ];
-
-  logConfig: ListConfig[] = [
-    {
-      fieldName: "severity",
-    },
-    {
-      fieldName: "createdDate",
-    },
-    {
-      fieldName: "description",
-    },
-    {
-      fieldName: "origin",
-    },
-    {
-      fieldName: "className",
-    },
-    {
-      fieldName: "methodName",
-    },
-  ];
-
-  actions: Action[] = [
-    {
-      label: "requeue",
-      icon: "refresh",
-      actionKey: "/message/requeue",
-    },
-    {
-      label: "stop",
-      icon: "stop",
-      actionKey: "/message/stop",
-    },
-  ];
+  messageConfig = MESS_DETAIL__MESSAGE_CONFIG;
+  logConfig = MESS_DETAIL__LOG_CONFIG;
+  actions = MESS_DETAIL__ACTIONS;
 
   constructor(
     private route: ActivatedRoute,
@@ -102,7 +49,7 @@ export class MessageDetailComponent implements OnInit {
   async loadMessage(nxMessageId: string) {
     try {
       const item = await this.dataService.getMessageById(nxMessageId);
-      this.message.push(item);
+      this.messages.push(item);
       this.engineLogs = item.engineLogs || [];
       this.messagePayloads = item.messagePayloads || [];
       this.messageLabels = item.messageLabels || {};
@@ -119,24 +66,23 @@ export class MessageDetailComponent implements OnInit {
 
   update() {
     // message needs to be resetted otherwise it pushes message as new item in loadMessage
-    this.message = [];
+    this.messages = [];
     this.loadMessage(String(this.route.snapshot.paramMap.get("id")));
   }
 
-  buildDataSaveUrl(itemNumber?: number): string {
-    if (this.isMessageDetail(this.message)) {
-      return (
-        "/api/DataSaveAs.do?type=content&choreographyId=" +
-        this.message.choreographyId +
-        "&participantId=" +
-        this.message.partnerId +
-        "&conversationId=" +
-        this.message.conversationId +
-        "&messageId=" +
-        this.message.messageId +
-        (itemNumber !== undefined ? "&no=" + itemNumber : "")
-      );
+  buildDownloadPayloadLink(payloadId?: number): string {
+    const message = this.messages[0];
+    if (this.isMessageDetail(message)) {
+      const affectedPayload = {
+        choreographyId: message.choreographyId,
+        partnerId: message.partnerId,
+        conversationId: message.conversationId,
+        messageId: message.messageId,
+        payloadId: payloadId ? payloadId.toString() : undefined,
+      };
+      return this.dataService.getDownloadPayloadLink(affectedPayload);
     }
+
     return "";
   }
 

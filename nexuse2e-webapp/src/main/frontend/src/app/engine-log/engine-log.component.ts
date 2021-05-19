@@ -1,66 +1,35 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, EngineLog, FilterType, ListConfig } from "../types";
+import { ActiveFilterList, EngineLog } from "../types";
 
 import { DataService } from "../services/data.service";
+import { SessionService } from "../services/session.service";
+import {
+  activeFilters,
+  ENGINE_LOG__DEFAULT_PAGE_SIZE,
+  ENGINE_LOG__DESKTOP_CONFIG,
+  ENGINE_LOG__FILTERS,
+  ENGINE_LOG__MOBILE_CONFIG,
+} from "./engine-log.config";
 
 @Component({
   selector: "app-engine-log",
   templateUrl: "./engine-log.component.html",
-  styleUrls: ["./engine-log.component.scss"],
+  styles: [],
 })
 export class EngineLogComponent implements OnInit {
   totalEngineLogCount?: number;
   engineLogs: EngineLog[] = [];
   loaded = false;
-  static readonly START_DATE_DEFAULT: Date = new Date(
-    new Date().setHours(0, 0, 0, 0)
-  );
-  static readonly END_DATE_DEFAULT: Date = new Date(
-    new Date().setHours(24, 0, 0, 0)
-  );
+  defaultPageSize = ENGINE_LOG__DEFAULT_PAGE_SIZE;
+  desktopConfig = ENGINE_LOG__DESKTOP_CONFIG;
+  mobileConfig = ENGINE_LOG__MOBILE_CONFIG;
+  filters = ENGINE_LOG__FILTERS;
+  activeFilters = activeFilters;
 
-  filters = [
-    {
-      fieldName: "startEndDateRange",
-      filterType: FilterType.DATE_TIME_RANGE,
-      defaultValue: {
-        startDate: EngineLogComponent.START_DATE_DEFAULT,
-        endDate: EngineLogComponent.END_DATE_DEFAULT,
-      },
-    },
-    {
-      fieldName: "severity",
-      filterType: FilterType.SELECT,
-      allowedValues: ["ERROR", "WARN", "INFO", "DEBUG", "TRACE"],
-    },
-    {
-      fieldName: "messageText",
-      filterType: FilterType.TEXT,
-    },
-  ];
-  activeFilters: ActiveFilterList = {};
-
-  mobileConfig: ListConfig[] = [
-    { fieldName: "createdDate" },
-    { fieldName: "description" },
-  ];
-
-  desktopConfig: ListConfig[] = [
-    {
-      fieldName: "createdDate",
-    },
-    {
-      fieldName: "description",
-    },
-    {
-      fieldName: "className",
-    },
-    {
-      fieldName: "methodName",
-    },
-  ];
-
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private sessionService: SessionService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -83,5 +52,9 @@ export class EngineLogComponent implements OnInit {
   filterEngineLogs(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshEngineLogCount();
+    this.loadEngineLogs(
+      0,
+      this.sessionService.getPageSize("engine.log") || this.defaultPageSize
+    );
   }
 }
