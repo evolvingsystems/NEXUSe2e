@@ -42,7 +42,7 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/message".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/conversation-status".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path));
     }
 
     @Override
@@ -80,8 +80,8 @@ public class TransactionReportingHandler implements Handler {
                 case "/message":
                     this.returnMessageByNxId(request, response);
                     break;
-                case "/conversation-status":
-                    this.returnConversationsCounts(response);
+                case "/conversation-status-counts":
+                    this.returnConversationStatusCounts(response);
                     break;
             }
         }
@@ -436,7 +436,7 @@ public class TransactionReportingHandler implements Handler {
         response.getOutputStream().print(message);
     }
 
-    private void returnConversationsCounts(HttpServletResponse response) throws NexusException, IOException {
+    private void returnConversationStatusCounts(HttpServletResponse response) throws NexusException, IOException {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());

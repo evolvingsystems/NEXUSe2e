@@ -211,6 +211,12 @@ export class DataService {
     );
   }
 
+  getConversationStatusCounts(): Promise<{ [status: string]: number }> {
+    return this.get<{ [status: string]: number }>(
+      "/conversation-status-counts"
+    );
+  }
+
   private post(path: string, body: unknown): Promise<void> {
     return this.http.post<void>(this.API_URL + path, body).toPromise();
   }
