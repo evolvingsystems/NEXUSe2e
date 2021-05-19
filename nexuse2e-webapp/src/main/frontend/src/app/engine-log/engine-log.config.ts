@@ -1,4 +1,9 @@
-import { ActiveFilterList, FilterType, ListConfig } from "../types";
+import {
+  ActiveFilterList,
+  FilterType,
+  ColumnConfig,
+  ColumnType,
+} from "../types";
 
 // START FILTERS
 export const START_DATE_DEFAULT: Date = new Date(
@@ -33,22 +38,26 @@ export const activeFilters: ActiveFilterList = {};
 // START DISPLAY CONFIG
 export const ENGINE_LOG__DEFAULT_PAGE_SIZE = 50;
 
-export const ENGINE_LOG__MOBILE_CONFIG: ListConfig[] = [
-  { fieldName: "createdDate" },
-  { fieldName: "description" },
+export const ENGINE_LOG__MOBILE_CONFIG: ColumnConfig[] = [
+  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
+  { columnType: ColumnType.BASIC, fieldName: "description" },
 ];
 
-export const ENGINE_LOG__DESKTOP_CONFIG: ListConfig[] = [
+export const ENGINE_LOG__DESKTOP_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.BASIC,
     fieldName: "createdDate",
   },
   {
+    columnType: ColumnType.LONG_TEXT,
     fieldName: "description",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "className",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "methodName",
   },
 ];

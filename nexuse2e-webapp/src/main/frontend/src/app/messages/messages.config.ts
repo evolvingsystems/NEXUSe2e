@@ -1,9 +1,11 @@
 import {
   Action,
   ActiveFilterList,
+  ColumnConfig,
+  ColumnType,
   Filter,
   FilterType,
-  ListConfig,
+  Separator,
 } from "../types";
 
 // START FILTERS
@@ -64,46 +66,54 @@ export const activeFilters: ActiveFilterList = {};
 // START DISPLAY CONFIG
 export const MESS_LIST__DEFAULT_PAGE_SIZE = 20;
 
-export const MESS_LIST__DESKTOP_CONFIG: ListConfig[] = [
+export const MESS_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.LINK,
     fieldName: "messageId",
     linkUrlRecipe: "../../message/$nxMessageId$",
   },
   {
+    columnType: ColumnType.LINK,
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
-  { fieldName: "partnerId" },
-  { fieldName: "status" },
-  { fieldName: "backendStatus" },
-  { fieldName: "typeName", label: "messageType" },
+  { columnType: ColumnType.BASIC, fieldName: "partnerId" },
+  { columnType: ColumnType.BASIC, fieldName: "status" },
+  { columnType: ColumnType.BASIC, fieldName: "backendStatus" },
+  { columnType: ColumnType.BASIC, fieldName: "typeName", label: "messageType" },
   {
+    columnType: ColumnType.SPLIT_WITH_BASIC,
     fieldName: "choreographyId",
     additionalFieldName: "actionId",
     label: "step",
+    separator: Separator.VERTICAL_BAR,
   },
-  { fieldName: "createdDate" },
-  { fieldName: "turnAroundTime" },
+  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
+  { columnType: ColumnType.BASIC, fieldName: "turnAroundTime" },
 ];
 
-export const MESS_LIST__MOBILE_CONFIG: ListConfig[] = [
+export const MESS_LIST__MOBILE_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.LINK,
     fieldName: "messageId",
     linkUrlRecipe: "../../message/$nxMessageId$",
     isHeader: true,
   },
   {
+    columnType: ColumnType.LINK,
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
-  { fieldName: "partnerId" },
-  { fieldName: "typeName", label: "messageType" },
+  { columnType: ColumnType.BASIC, fieldName: "partnerId" },
+  { columnType: ColumnType.BASIC, fieldName: "typeName", label: "messageType" },
   {
+    columnType: ColumnType.SPLIT_WITH_BASIC,
     fieldName: "choreographyId",
     additionalFieldName: "actionId",
     label: "step",
+    separator: Separator.VERTICAL_BAR,
   },
-  { fieldName: "createdDate" },
+  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
 ];
 // END DISPLAY CONFIG
 

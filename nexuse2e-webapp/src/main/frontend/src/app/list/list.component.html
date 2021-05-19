@@ -18,33 +18,42 @@
             </td>
           </ng-container>
 
-          <ng-container *ngFor="let configItem of desktopConfig" [matColumnDef]="configItem.fieldName">
+          <ng-container *ngFor="let columnConfigItem of desktopConfig" [matColumnDef]="columnConfigItem.fieldName">
             <th mat-header-cell
-                *matHeaderCellDef>{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</th>
+                *matHeaderCellDef>{{ "labels." + (columnConfigItem.label || columnConfigItem.fieldName) | translate }}</th>
             <td mat-cell *matCellDef="let item">
-              <ng-container *ngIf="configItem.fieldName">
-                <a *ngIf="configItem.linkUrlRecipe"
-                   [routerLink]="getUrl(item, configItem.linkUrlRecipe)">
-                  {{ getProperty(item, configItem.fieldName) }}
-                </a>
-                <ng-container *ngIf="!configItem.linkUrlRecipe">
-                  {{ getTrimmedProperty(item, configItem.fieldName) }}
-                </ng-container>
-                <div *ngIf="isLongText(getTrimmedProperty(item, configItem.fieldName))">
+              <ng-container
+                *ngIf="columnConfigItem.columnType == columnType().BASIC || columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC">
+                <span>{{ getProperty(item, columnConfigItem.fieldName) }}</span>
+              </ng-container>
+              <ng-container *ngIf="columnConfigItem.columnType == columnType().LONG_TEXT">
+                <span>{{ getTrimmedProperty(item, columnConfigItem.fieldName) }}</span>
+                <div *ngIf="isLongText(getTrimmedProperty(item, columnConfigItem.fieldName))">
                   <button mat-button color="accent" class="float-right"
                           (click)="showMore(item)">{{ "buttons.showMore" | translate }}</button>
                 </div>
               </ng-container>
-              <ng-container *ngIf="configItem.additionalFieldName">
-                    <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">
-                      <span>(</span>
-                      <a [routerLink]="getUrl(item, configItem.additionalLinkUrlRecipe)">
-                        {{ "" + getProperty(item, configItem.additionalFieldName) + "" }}
+              <ng-container *ngIf="columnConfigItem.columnType == columnType().LINK">
+                <a [routerLink]="getUrl(item, columnConfigItem.linkUrlRecipe)">
+                  {{ getProperty(item, columnConfigItem.fieldName) }}
+                </a>
+              </ng-container>
+              <ng-container *ngIf="columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC">
+                <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
+                  <span class="additional-field">
+                    <span *ngIf="columnConfigItem.separator == separator().VERTICAL_BAR"
+                          class="separator-padding">|</span>
+                    <span *ngIf="columnConfigItem.separator == separator().BRACKETS">(</span>
+                      <ng-container *ngIf="columnConfigItem.additionalLinkUrlRecipe">
+                        <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)">
+                        {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
                       </a>
-                      <span>)</span>
-                    </span>
-                <ng-container *ngIf="!configItem.additionalLinkUrlRecipe">
-                  {{ " | " + getProperty(item, configItem.additionalFieldName) }}
+                      </ng-container>
+                      <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
+                        {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+                      </ng-container>
+                    <span *ngIf="columnConfigItem.separator == separator().BRACKETS">)</span>
+                  </span>
                 </ng-container>
               </ng-container>
             </td>
@@ -74,33 +83,43 @@
             </a>
           </div>
           <table>
-            <ng-container *ngFor="let configItem of mobileConfig">
-              <tr *ngIf="!configItem.isHeader">
-                <td class="label">{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</td>
-                <td [class]="configItem.fieldName" [class.whiteSpaceBreak]="showForDetailPage">
-                  <ng-container *ngIf="configItem.fieldName">
-                    <a *ngIf="configItem.linkUrlRecipe"
-                       [routerLink]="getUrl(item, configItem.linkUrlRecipe)">
-                      {{ getProperty(item, configItem.fieldName) }}
-                    </a>
-                    <ng-container *ngIf="!configItem.linkUrlRecipe">
-                      {{ getTrimmedProperty(item, configItem.fieldName) }}
-                    </ng-container>
-                    <div *ngIf="isLongText(getTrimmedProperty(item, configItem.fieldName))">
+            <ng-container *ngFor="let columnConfigItem of mobileConfig">
+              <tr *ngIf="!columnConfigItem.isHeader">
+                <td
+                  class="label">{{ "labels." + (columnConfigItem.label || columnConfigItem.fieldName) | translate }}</td>
+                <td [class]="columnConfigItem.fieldName" [class.whiteSpaceBreak]="showForDetailPage">
+                  <ng-container
+                    *ngIf="columnConfigItem.columnType == columnType().BASIC || columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC">
+                    <span>{{ getProperty(item, columnConfigItem.fieldName) }}</span>
+                  </ng-container>
+                  <ng-container *ngIf="columnConfigItem.columnType == columnType().LONG_TEXT">
+                    <span>{{ getTrimmedProperty(item, columnConfigItem.fieldName) }}</span>
+                    <div *ngIf="isLongText(getTrimmedProperty(item, columnConfigItem.fieldName))">
                       <button mat-button color="accent" class="float-right"
                               (click)="showMore(item)">{{ "buttons.showMore" | translate }}</button>
                     </div>
                   </ng-container>
-                  <ng-container *ngIf="configItem.additionalFieldName">
-                    <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">
-                      <span>(</span>
-                      <a [routerLink]="getUrl(item, configItem.additionalLinkUrlRecipe)">
-                        {{ "" + getProperty(item, configItem.additionalFieldName) + "" }}
-                      </a>
-                      <span>)</span>
-                    </span>
-                    <ng-container *ngIf="!configItem.additionalLinkUrlRecipe">
-                      {{ " | " + getProperty(item, configItem.additionalFieldName) }}
+                  <ng-container *ngIf="columnConfigItem.columnType == columnType().LINK">
+                    <a [routerLink]="getUrl(item, columnConfigItem.linkUrlRecipe)">
+                      {{ getProperty(item, columnConfigItem.fieldName) }}
+                    </a>
+                  </ng-container>
+                  <ng-container *ngIf="columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC">
+                    <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
+                      <span class="additional-field">
+                        <span *ngIf="columnConfigItem.separator == separator().VERTICAL_BAR"
+                              class="separator-padding">|</span>
+                        <span *ngIf="columnConfigItem.separator == separator().BRACKETS">(</span>
+                          <ng-container *ngIf="columnConfigItem.additionalLinkUrlRecipe">
+                            <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)">
+                            {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+                          </a>
+                          </ng-container>
+                          <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
+                            {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+                          </ng-container>
+                        <span *ngIf="columnConfigItem.separator == separator().BRACKETS">)</span>
+                      </span>
                     </ng-container>
                   </ng-container>
                 </td>
@@ -117,34 +136,42 @@
   <div class="padded relativeWrapper">
     <div *ngFor="let item of items" class="simple-table">
       <table>
-        <ng-container *ngFor="let configItem of simpleTableConfig">
-          <tr *ngIf="!configItem.isHeader">
-            <td class="label">{{ "labels." + (configItem.label || configItem.fieldName) | translate }}</td>
-            <td [class]="configItem.fieldName" class="relativeWrapper"
-                [class.columnWithCopyIcon]="configItem.fieldName === 'description'">
-              <ng-container *ngIf="configItem.fieldName">
-                <a *ngIf="configItem.linkUrlRecipe"
-                   [routerLink]="getUrl(item, configItem.linkUrlRecipe)">
-                  {{ getProperty(item, configItem.fieldName) }}
-                </a>
-                <ng-container *ngIf="!configItem.linkUrlRecipe">
-                  {{ getProperty(item, configItem.fieldName) }}
-                </ng-container>
-                <mat-icon *ngIf="configItem.fieldName === 'description'" class="copyToClipboard"
-                          [cdkCopyToClipboard]="getProperty(item, configItem.fieldName)"
+        <ng-container *ngFor="let columnConfigItem of simpleTableConfig">
+          <tr *ngIf="!columnConfigItem.isHeader">
+            <td class="label">{{ "labels." + (columnConfigItem.label || columnConfigItem.fieldName) | translate }}</td>
+            <td [class]="columnConfigItem.fieldName" class="relativeWrapper"
+                [class.columnWithCopyIcon]="columnConfigItem.fieldName === 'description'">
+
+
+              <ng-container
+                *ngIf="columnConfigItem.columnType == columnType().BASIC || columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC || columnConfigItem.columnType == columnType().LONG_TEXT">
+                <span>{{ getProperty(item, columnConfigItem.fieldName) }}</span>
+                <mat-icon *ngIf="columnConfigItem.fieldName === 'description'" class="copyToClipboard"
+                          [cdkCopyToClipboard]="getProperty(item, columnConfigItem.fieldName)"
                           (click)="showCopiedNotification()">content_copy
                 </mat-icon>
               </ng-container>
-              <ng-container *ngIf="configItem.additionalFieldName">
-                <span *ngIf="configItem.additionalLinkUrlRecipe" class="additional-field">
-                  <span>(</span>
-                  <a [routerLink]="getUrl(item, configItem.additionalLinkUrlRecipe)">
-                    {{ "" + getProperty(item, configItem.additionalFieldName) + "" }}
-                  </a>
-                  <span>)</span>
-                </span>
-                <ng-container *ngIf="!configItem.additionalLinkUrlRecipe">
-                  {{ " | " + getProperty(item, configItem.additionalFieldName) }}
+              <ng-container *ngIf="columnConfigItem.columnType == columnType().LINK">
+                <a [routerLink]="getUrl(item, columnConfigItem.linkUrlRecipe)">
+                  {{ getProperty(item, columnConfigItem.fieldName) }}
+                </a>
+              </ng-container>
+              <ng-container *ngIf="columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC">
+                <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
+                      <span class="additional-field">
+                        <span *ngIf="columnConfigItem.separator == separator().VERTICAL_BAR"
+                              class="separator-padding">|</span>
+                        <span *ngIf="columnConfigItem.separator == separator().BRACKETS">(</span>
+                          <ng-container *ngIf="columnConfigItem.additionalLinkUrlRecipe">
+                            <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)">
+                            {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+                          </a>
+                          </ng-container>
+                          <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
+                            {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+                          </ng-container>
+                        <span *ngIf="columnConfigItem.separator == separator().BRACKETS">)</span>
+                      </span>
                 </ng-container>
               </ng-container>
             </td>

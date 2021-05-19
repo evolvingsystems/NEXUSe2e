@@ -9,6 +9,7 @@ import { messages } from "../test-data";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { ColumnType } from "../types";
 
 describe("ListComponent", () => {
   let component: ListComponent;
@@ -34,36 +35,40 @@ describe("ListComponent", () => {
     component = fixture.componentInstance;
     component.mobileConfig = [
       {
+        columnType: ColumnType.LINK,
         fieldName: "messageId",
         linkUrlRecipe: "../../message/$nxMessageId$",
         isHeader: true,
       },
       {
+        columnType: ColumnType.LINK,
         fieldName: "conversationId",
         linkUrlRecipe: "../../conversation/$nxConversationId$",
       },
-      { fieldName: "partnerId" },
-      { fieldName: "typeName" },
-      { fieldName: "actionId" },
-      { fieldName: "createdDate" },
+      { columnType: ColumnType.BASIC, fieldName: "partnerId" },
+      { columnType: ColumnType.BASIC, fieldName: "typeName" },
+      { columnType: ColumnType.BASIC, fieldName: "actionId" },
+      { columnType: ColumnType.BASIC, fieldName: "createdDate" },
     ];
     component.desktopConfig = [
       {
+        columnType: ColumnType.LINK,
         fieldName: "messageId",
         linkUrlRecipe: "../../message/$nxMessageId$",
       },
       {
+        columnType: ColumnType.LINK,
         fieldName: "conversationId",
         linkUrlRecipe: "../../conversation/$nxConversationId$",
       },
-      { fieldName: "partnerId" },
-      { fieldName: "status" },
-      { fieldName: "backendStatus" },
-      { fieldName: "typeName" },
-      { fieldName: "choreographyId" },
-      { fieldName: "actionId" },
-      { fieldName: "createdDate" },
-      { fieldName: "turnAroundTime" },
+      { columnType: ColumnType.BASIC, fieldName: "partnerId" },
+      { columnType: ColumnType.BASIC, fieldName: "status" },
+      { columnType: ColumnType.BASIC, fieldName: "backendStatus" },
+      { columnType: ColumnType.BASIC, fieldName: "typeName" },
+      { columnType: ColumnType.BASIC, fieldName: "choreographyId" },
+      { columnType: ColumnType.BASIC, fieldName: "actionId" },
+      { columnType: ColumnType.BASIC, fieldName: "createdDate" },
+      { columnType: ColumnType.BASIC, fieldName: "turnAroundTime" },
     ];
     component.items = messages;
     component.itemType = "message";
@@ -79,6 +84,7 @@ describe("ListComponent", () => {
     spyOn(component.screenSizeService, "isMobile").and.returnValue(true);
     component.mobileConfig = [
       {
+        columnType: ColumnType.LINK,
         fieldName: "messageId",
         linkUrlRecipe: "../../message/$nxMessageId$",
         isHeader: true,
@@ -127,7 +133,7 @@ describe("ListComponent", () => {
     );
   });
 
-  it("should display one column for each configured ListConfig item in desktop", () => {
+  it("should display one column for each configured ColumnConfig item in desktop", () => {
     spyOn(component.screenSizeService, "isMobile").and.returnValue(false);
     fixture.detectChanges();
     const columns = fixture.nativeElement.querySelectorAll("th");

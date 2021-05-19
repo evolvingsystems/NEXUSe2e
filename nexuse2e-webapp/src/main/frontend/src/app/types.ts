@@ -110,20 +110,34 @@ export interface Filter {
   defaultValue?: string | DateRange;
 }
 
-export interface ListConfig {
+export interface ColumnConfig {
+  columnType: ColumnType;
   fieldName: string;
   additionalFieldName?: string;
   label?: string;
   linkUrlRecipe?: string;
   additionalLinkUrlRecipe?: string;
   isHeader?: boolean;
+  separator?: Separator;
+}
+
+export enum ColumnType {
+  BASIC,
+  LONG_TEXT,
+  LINK,
+  SPLIT_WITH_BASIC,
+}
+
+export enum Separator {
+  VERTICAL_BAR,
+  BRACKETS,
 }
 
 export interface ListModalDialog {
   items: NexusData[];
   itemType: string;
-  mobileConfig: ListConfig[];
-  desktopConfig: ListConfig[];
+  mobileConfig: ColumnConfig[];
+  desktopConfig: ColumnConfig[];
 }
 
 export interface UserConfirmationDialog {

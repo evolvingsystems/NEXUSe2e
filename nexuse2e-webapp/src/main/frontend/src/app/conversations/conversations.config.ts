@@ -3,7 +3,8 @@ import {
   ActiveFilterList,
   Filter,
   FilterType,
-  ListConfig,
+  ColumnConfig,
+  ColumnType,
 } from "../types";
 
 // START FILTERS
@@ -47,38 +48,46 @@ export const activeFilters: ActiveFilterList = {};
 // START DISPLAY CONFIG
 export const CONV_LIST__DEFAULT_PAGE_SIZE = 20;
 
-export const CONV_LIST__MOBILE_CONFIG: ListConfig[] = [
+export const CONV_LIST__MOBILE_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.LINK,
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
     isHeader: true,
   },
-  { fieldName: "choreographyId" },
-  { fieldName: "partnerId" },
-  { fieldName: "createdDate" },
+  { columnType: ColumnType.BASIC, fieldName: "choreographyId" },
+  { columnType: ColumnType.BASIC, fieldName: "partnerId" },
+  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
 ];
 
-export const CONV_LIST__DESKTOP_CONFIG: ListConfig[] = [
+export const CONV_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.LINK,
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "partnerId",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "choreographyId",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "currentAction",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "createdDate",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "status",
   },
   {
+    columnType: ColumnType.BASIC,
     fieldName: "turnAroundTime",
   },
 ];
