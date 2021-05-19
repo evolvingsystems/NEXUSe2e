@@ -75,10 +75,10 @@ public class TransactionReportingHandler implements Handler {
                     this.handleEngineLogRequest(request, response, true);
                     break;
                 case "/conversation":
-                    this.returnConversationById(request, response);
+                    this.returnConversationByNxId(request, response);
                     break;
                 case "/message":
-                    this.returnMessageById(request, response);
+                    this.returnMessageByNxId(request, response);
                     break;
             }
         }
@@ -232,7 +232,7 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void returnMessageById(HttpServletRequest request, HttpServletResponse response) throws NexusException, IOException {
+    private void returnMessageByNxId(HttpServletRequest request, HttpServletResponse response) throws NexusException, IOException {
         String nxMessageId = request.getParameter("nxMessageId");
         if (StringUtils.isNumeric(nxMessageId)) {
             MessagePojo messagePojo = Engine.getInstance().getTransactionService().getMessage(Integer.parseInt(nxMessageId));
@@ -317,7 +317,7 @@ public class TransactionReportingHandler implements Handler {
         }
     }
 
-    private void returnConversationById(HttpServletRequest request, HttpServletResponse response) throws NexusException, IOException {
+    private void returnConversationByNxId(HttpServletRequest request, HttpServletResponse response) throws NexusException, IOException {
         String nxConversationId = request.getParameter("nxConversationId");
         if (StringUtils.isNumeric(nxConversationId)) {
             ConversationPojo conversationPojo = Engine.getInstance().getTransactionService().getConversation(Integer.parseInt(nxConversationId));

@@ -65,6 +65,7 @@ export const activeFilters: ActiveFilterList = {};
 export const MESS_LIST__DEFAULT_PAGE_SIZE = 20;
 
 export const MESS_LIST__DESKTOP_CONFIG: ListConfig[] = [
+  { fieldName: "status" },
   {
     fieldName: "messageId",
     linkUrlRecipe: "../../message/$nxMessageId$",
@@ -74,8 +75,6 @@ export const MESS_LIST__DESKTOP_CONFIG: ListConfig[] = [
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   { fieldName: "partnerId" },
-  { fieldName: "status" },
-  { fieldName: "backendStatus" },
   { fieldName: "typeName", label: "messageType" },
   {
     fieldName: "choreographyId",

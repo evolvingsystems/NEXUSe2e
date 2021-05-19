@@ -112,7 +112,7 @@ export class DataService {
     return this.get<Message[]>("/messages", false, params);
   }
 
-  getMessageById(nxMessageId: string) {
+  getMessageByNxId(nxMessageId: string) {
     let httpParams = new HttpParams();
     httpParams = httpParams.append("nxMessageId", String(nxMessageId));
     return this.get<MessageDetail>("/message", false, httpParams);
@@ -153,7 +153,7 @@ export class DataService {
     );
   }
 
-  getConversationById(nxConversationId: string) {
+  getConversationByNxId(nxConversationId: string) {
     let httpParams = new HttpParams();
     httpParams = httpParams.append(
       "nxConversationId",
