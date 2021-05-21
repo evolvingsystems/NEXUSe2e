@@ -89,7 +89,7 @@
 
 <ng-template #cellContent let-columnConfigItem="columnConfigItem" let-item="item" let-doNotTrim="doNotTrim">
   <ng-container
-    *ngIf="columnConfigItem.columnType == columnType().BASIC || columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC">
+    *ngIf="columnConfigItem.columnType == columnType().TEXT || columnConfigItem.columnType == columnType().TEXT_AND_MORE">
     <span>{{ getProperty(item, columnConfigItem.fieldName) }}</span>
   </ng-container>
   <ng-container *ngIf="columnConfigItem.columnType == columnType().LONG_TEXT">
@@ -104,13 +104,15 @@
       <span>{{ getProperty(item, columnConfigItem.fieldName) }}</span>
     </ng-container>
   </ng-container>
-  <ng-container *ngIf="columnConfigItem.columnType == columnType().LINK">
+  <ng-container
+    *ngIf="columnConfigItem.columnType == columnType().LINK || columnConfigItem.columnType == columnType().LINK_AND_MORE">
     <a [routerLink]="getUrl(item, columnConfigItem.linkUrlRecipe)">
       {{ getProperty(item, columnConfigItem.fieldName) }}
     </a>
   </ng-container>
-  <ng-container *ngIf="columnConfigItem.columnType == columnType().SPLIT_WITH_BASIC">
-    <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
+  <ng-container
+    *ngIf="columnConfigItem.columnType == columnType().TEXT_AND_MORE || columnConfigItem.columnType == columnType().LINK_AND_MORE">
+    <ng-container>
         <span class="additional-field">
           <span *ngIf="columnConfigItem.separator == separator().VERTICAL_BAR"
                 class="separator-padding">|</span>

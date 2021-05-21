@@ -39,13 +39,13 @@ export const activeFilters: ActiveFilterList = {};
 export const ENGINE_LOG__DEFAULT_PAGE_SIZE = 50;
 
 export const ENGINE_LOG__MOBILE_CONFIG: ColumnConfig[] = [
-  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
-  { columnType: ColumnType.BASIC, fieldName: "description" },
+  { columnType: ColumnType.TEXT, fieldName: "createdDate" },
+  { columnType: ColumnType.TEXT, fieldName: "description" },
 ];
 
 export const ENGINE_LOG__DESKTOP_CONFIG: ColumnConfig[] = [
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "createdDate",
   },
   {
@@ -54,11 +54,11 @@ export const ENGINE_LOG__DESKTOP_CONFIG: ColumnConfig[] = [
     showCopyIcon: true,
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "className",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "methodName",
   },
 ];

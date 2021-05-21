@@ -45,10 +45,10 @@ describe("ListComponent", () => {
         fieldName: "conversationId",
         linkUrlRecipe: "../../conversation/$nxConversationId$",
       },
-      { columnType: ColumnType.BASIC, fieldName: "partnerId" },
-      { columnType: ColumnType.BASIC, fieldName: "typeName" },
-      { columnType: ColumnType.BASIC, fieldName: "actionId" },
-      { columnType: ColumnType.BASIC, fieldName: "createdDate" },
+      { columnType: ColumnType.TEXT, fieldName: "partnerId" },
+      { columnType: ColumnType.TEXT, fieldName: "typeName" },
+      { columnType: ColumnType.TEXT, fieldName: "actionId" },
+      { columnType: ColumnType.TEXT, fieldName: "createdDate" },
     ];
     component.desktopConfig = [
       {
@@ -61,14 +61,14 @@ describe("ListComponent", () => {
         fieldName: "conversationId",
         linkUrlRecipe: "../../conversation/$nxConversationId$",
       },
-      { columnType: ColumnType.BASIC, fieldName: "partnerId" },
-      { columnType: ColumnType.BASIC, fieldName: "status" },
-      { columnType: ColumnType.BASIC, fieldName: "backendStatus" },
-      { columnType: ColumnType.BASIC, fieldName: "typeName" },
-      { columnType: ColumnType.BASIC, fieldName: "choreographyId" },
-      { columnType: ColumnType.BASIC, fieldName: "actionId" },
-      { columnType: ColumnType.BASIC, fieldName: "createdDate" },
-      { columnType: ColumnType.BASIC, fieldName: "turnAroundTime" },
+      { columnType: ColumnType.TEXT, fieldName: "partnerId" },
+      { columnType: ColumnType.TEXT, fieldName: "status" },
+      { columnType: ColumnType.TEXT, fieldName: "backendStatus" },
+      { columnType: ColumnType.TEXT, fieldName: "typeName" },
+      { columnType: ColumnType.TEXT, fieldName: "choreographyId" },
+      { columnType: ColumnType.TEXT, fieldName: "actionId" },
+      { columnType: ColumnType.TEXT, fieldName: "createdDate" },
+      { columnType: ColumnType.TEXT, fieldName: "turnAroundTime" },
     ];
     component.items = messages;
     component.itemType = "message";

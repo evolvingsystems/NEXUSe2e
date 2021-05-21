@@ -55,9 +55,9 @@ export const CONV_LIST__MOBILE_CONFIG: ColumnConfig[] = [
     linkUrlRecipe: "../../conversation/$nxConversationId$",
     isHeader: true,
   },
-  { columnType: ColumnType.BASIC, fieldName: "choreographyId" },
-  { columnType: ColumnType.BASIC, fieldName: "partnerId" },
-  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
+  { columnType: ColumnType.TEXT, fieldName: "choreographyId" },
+  { columnType: ColumnType.TEXT, fieldName: "partnerId" },
+  { columnType: ColumnType.TEXT, fieldName: "createdDate" },
 ];
 
 export const CONV_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
@@ -67,27 +67,27 @@ export const CONV_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "partnerId",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "choreographyId",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "currentAction",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "createdDate",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "status",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "turnAroundTime",
   },
 ];

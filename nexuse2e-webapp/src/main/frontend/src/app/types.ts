@@ -123,10 +123,11 @@ export interface ColumnConfig {
 }
 
 export enum ColumnType {
-  BASIC,
+  TEXT,
   LONG_TEXT,
   LINK,
-  SPLIT_WITH_BASIC,
+  TEXT_AND_MORE,
+  LINK_AND_MORE,
 }
 
 export enum Separator {

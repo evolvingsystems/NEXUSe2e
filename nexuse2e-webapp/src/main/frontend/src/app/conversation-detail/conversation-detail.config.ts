@@ -2,33 +2,33 @@ import { Action, ColumnConfig, ColumnType } from "../types";
 
 // START DISPLAY CONFIG
 export const CONV_DETAIL__CONVERSATION_CONFIG: ColumnConfig[] = [
-  { columnType: ColumnType.BASIC, fieldName: "conversationId" },
+  { columnType: ColumnType.TEXT, fieldName: "conversationId" },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "createdDate",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "modifiedDate",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "endDate",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "turnAroundTime",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "partnerId",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "currentAction",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "status",
   },
 ];
@@ -39,27 +39,27 @@ export const CONV_DETAIL__MESSAGE_CONFIG: ColumnConfig[] = [
     fieldName: "messageId",
     linkUrlRecipe: "../../message/$nxMessageId$",
   },
-  { columnType: ColumnType.BASIC, fieldName: "typeName", label: "messageType" },
+  { columnType: ColumnType.TEXT, fieldName: "typeName", label: "messageType" },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "choreographyId",
     additionalFieldName: "actionId",
     label: "step",
   },
-  { columnType: ColumnType.BASIC, fieldName: "direction" },
-  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
-  { columnType: ColumnType.BASIC, fieldName: "endDate" },
-  { columnType: ColumnType.BASIC, fieldName: "turnAroundTime" },
-  { columnType: ColumnType.BASIC, fieldName: "status" },
+  { columnType: ColumnType.TEXT, fieldName: "direction" },
+  { columnType: ColumnType.TEXT, fieldName: "createdDate" },
+  { columnType: ColumnType.TEXT, fieldName: "endDate" },
+  { columnType: ColumnType.TEXT, fieldName: "turnAroundTime" },
+  { columnType: ColumnType.TEXT, fieldName: "status" },
 ];
 
 export const CONV_DETAIL__LOG_CONFIG: ColumnConfig[] = [
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "severity",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "createdDate",
   },
   {
@@ -67,15 +67,15 @@ export const CONV_DETAIL__LOG_CONFIG: ColumnConfig[] = [
     fieldName: "description",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "origin",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "className",
   },
   {
-    columnType: ColumnType.BASIC,
+    columnType: ColumnType.TEXT,
     fieldName: "methodName",
   },
 ];

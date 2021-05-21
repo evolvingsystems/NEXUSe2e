@@ -77,19 +77,19 @@ export const MESS_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
-  { columnType: ColumnType.BASIC, fieldName: "partnerId" },
-  { columnType: ColumnType.BASIC, fieldName: "status" },
-  { columnType: ColumnType.BASIC, fieldName: "backendStatus" },
-  { columnType: ColumnType.BASIC, fieldName: "typeName", label: "messageType" },
+  { columnType: ColumnType.TEXT, fieldName: "partnerId" },
+  { columnType: ColumnType.TEXT, fieldName: "status" },
+  { columnType: ColumnType.TEXT, fieldName: "backendStatus" },
+  { columnType: ColumnType.TEXT, fieldName: "typeName", label: "messageType" },
   {
-    columnType: ColumnType.SPLIT_WITH_BASIC,
+    columnType: ColumnType.TEXT_AND_MORE,
     fieldName: "choreographyId",
     additionalFieldName: "actionId",
     label: "step",
     separator: Separator.VERTICAL_BAR,
   },
-  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
-  { columnType: ColumnType.BASIC, fieldName: "turnAroundTime" },
+  { columnType: ColumnType.TEXT, fieldName: "createdDate" },
+  { columnType: ColumnType.TEXT, fieldName: "turnAroundTime" },
 ];
 
 export const MESS_LIST__MOBILE_CONFIG: ColumnConfig[] = [
@@ -104,16 +104,16 @@ export const MESS_LIST__MOBILE_CONFIG: ColumnConfig[] = [
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
-  { columnType: ColumnType.BASIC, fieldName: "partnerId" },
-  { columnType: ColumnType.BASIC, fieldName: "typeName", label: "messageType" },
+  { columnType: ColumnType.TEXT, fieldName: "partnerId" },
+  { columnType: ColumnType.TEXT, fieldName: "typeName", label: "messageType" },
   {
-    columnType: ColumnType.SPLIT_WITH_BASIC,
+    columnType: ColumnType.TEXT_AND_MORE,
     fieldName: "choreographyId",
     additionalFieldName: "actionId",
     label: "step",
     separator: Separator.VERTICAL_BAR,
   },
-  { columnType: ColumnType.BASIC, fieldName: "createdDate" },
+  { columnType: ColumnType.TEXT, fieldName: "createdDate" },
 ];
 // END DISPLAY CONFIG
 
