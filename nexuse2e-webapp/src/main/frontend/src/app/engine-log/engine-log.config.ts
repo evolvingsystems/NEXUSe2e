@@ -51,6 +51,7 @@ export const ENGINE_LOG__DESKTOP_CONFIG: ColumnConfig[] = [
   {
     columnType: ColumnType.LONG_TEXT,
     fieldName: "description",
+    showCopyIcon: true,
   },
   {
     columnType: ColumnType.BASIC,

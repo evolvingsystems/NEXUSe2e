@@ -119,6 +119,7 @@ export interface ColumnConfig {
   additionalLinkUrlRecipe?: string;
   isHeader?: boolean;
   separator?: Separator;
+  showCopyIcon?: boolean;
 }
 
 export enum ColumnType {
