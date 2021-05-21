@@ -1,0 +1,6 @@
+<div class="status-count-bar">
+  <div *ngFor="let status of objectKeys(conversationStatusCounts)" class="segment">
+    <span>{{ status }}</span>
+    <span>{{ conversationStatusCounts[status] }}</span>
+  </div>
+</div>

@@ -162,6 +162,12 @@ export class DataService {
     return this.get<ConversationDetail>("/conversation", false, httpParams);
   }
 
+  getConversationStatusCounts(): Promise<{ [status: string]: number }> {
+    return this.get<{ [status: string]: number }>(
+      "/conversation-status-counts"
+    );
+  }
+
   deleteConversations(conversationIds: string[]): Promise<void> {
     return this.post("/conversations/delete", conversationIds);
   }
@@ -208,12 +214,6 @@ export class DataService {
       "&messageId=" +
       item.messageId +
       (item.payloadId !== undefined ? "&no=" + item.payloadId : "")
-    );
-  }
-
-  getConversationStatusCounts(): Promise<{ [status: string]: number }> {
-    return this.get<{ [status: string]: number }>(
-      "/conversation-status-counts"
     );
   }
 
