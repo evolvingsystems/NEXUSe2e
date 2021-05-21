@@ -31,7 +31,7 @@ export class ListComponent implements OnInit {
   @Input() desktopConfig: ColumnConfig[] = [];
   @Input() isSelectable?: boolean;
   @Input() showAsSimpleTable?: boolean;
-  @Input() showForDetailPage?: boolean;
+  @Input() showAlwaysAsCard?: boolean;
   displayedColumns: string[] = ["select"];
   headerElement?: ColumnConfig;
   simpleTableConfig: ColumnConfig[] = [];

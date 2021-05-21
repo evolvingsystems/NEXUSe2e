@@ -1,5 +1,5 @@
 <ng-container *ngIf="!showAsSimpleTable">
-  <ng-container *ngIf="!screenSizeService.isMobile() && !showForDetailPage">
+  <ng-container *ngIf="!screenSizeService.isMobile() && !showAlwaysAsCard">
     <div class="padded items-table-wrapper">
       <div class="table-scrollable" *ngIf="items.length">
         <table mat-table [dataSource]="items" class="mat-elevation-z8 full-width">
@@ -33,7 +33,7 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="screenSizeService.isMobile() || showForDetailPage">
+  <ng-container *ngIf="screenSizeService.isMobile() || showAlwaysAsCard">
     <div class="padded relativeWrapper">
       <app-master-select
         *ngIf="items.length && isSelectable"
@@ -55,7 +55,7 @@
               <tr *ngIf="!columnConfigItem.isHeader">
                 <td
                   class="label">{{ "labels." + (columnConfigItem.label || columnConfigItem.fieldName) | translate }}</td>
-                <td [class]="columnConfigItem.fieldName" [class.whiteSpaceBreak]="showForDetailPage">
+                <td [class]="columnConfigItem.fieldName" [class.whiteSpaceBreak]="showAlwaysAsCard">
                   <ng-container
                     *ngTemplateOutlet="cellContent; context: {columnConfigItem: columnConfigItem, item: item};"></ng-container>
                 </td>
@@ -76,7 +76,7 @@
           <tr *ngIf="!columnConfigItem.isHeader">
             <td class="label">{{ "labels." + (columnConfigItem.label || columnConfigItem.fieldName) | translate }}</td>
             <td [class]="columnConfigItem.fieldName" class="relativeWrapper"
-                [class.columnWithCopyIcon]="columnConfigItem.fieldName === 'description'">
+                [class.columnWithCopyIcon]="columnConfigItem.showCopyIcon">
               <ng-container
                 *ngTemplateOutlet="cellContent; context: {columnConfigItem: columnConfigItem, item: item, doNotTrim: showAsSimpleTable};"></ng-container>
             </td>
@@ -129,7 +129,7 @@
         </span>
     </ng-container>
   </ng-container>
-  <mat-icon *ngIf="columnConfigItem.showCopyIcon" class="copyToClipboard"
+  <mat-icon *ngIf="columnConfigItem.showCopyIcon && showAsSimpleTable" class="copyToClipboard"
             [cdkCopyToClipboard]="getProperty(item, columnConfigItem.fieldName)"
             (click)="showCopiedNotification()">content_copy
   </mat-icon>
