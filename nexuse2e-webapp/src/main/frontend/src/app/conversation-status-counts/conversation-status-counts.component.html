@@ -1,6 +1,11 @@
-<div class="status-count-bar">
-  <div *ngFor="let status of objectKeys(conversationStatusCounts)" class="segment">
-    <span>{{ status }}</span>
-    <span>{{ conversationStatusCounts[status] }}</span>
-  </div>
+<div *ngIf="objectKeys(conversationStatusCounts).length > 0" class="status-count-bar">
+  <ng-container *ngFor="let status of objectKeys(conversationStatusCounts)">
+    <div *ngIf="conversationStatusCounts[status] > 0" class="segment statusDetailedColor"
+         [style.width.%]="(conversationStatusCounts[status] / totalCount) * 100" [class]="status">
+      <span>{{ "status." + (status | uppercase) | translate }} ({{ "" + conversationStatusCounts[status] + "" }})</span>
+    </div>
+  </ng-container>
+</div>
+<div *ngIf="objectKeys(conversationStatusCounts).length === 0">
+  {{ "labels.noConversations" | translate }}
 </div>

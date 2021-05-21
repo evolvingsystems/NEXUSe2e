@@ -284,9 +284,10 @@ a {
 }
 
 // Detailed
-.statusDetailedBackgroundColor {
+.statusDetailedColor {
   &.error {
     background: $error;
+    color: $gray6;
   }
 
   &.awaiting_ack {
