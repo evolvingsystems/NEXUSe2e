@@ -8,7 +8,7 @@ import { DataService } from "../services/data.service";
 })
 export class ConversationStatusCountsComponent implements OnInit {
   conversationStatusCounts: { [status: string]: number } = {};
-  totalCount: number = 0;
+  totalCount = 0;
   objectKeys = Object.keys;
 
   constructor(private dataService: DataService) {}
@@ -20,7 +20,7 @@ export class ConversationStatusCountsComponent implements OnInit {
 
   getConversationStatusTotalCount() {
     if (Object.keys(this.conversationStatusCounts).length > 0) {
-      for (let conversationStatusCountsKey in this.conversationStatusCounts) {
+      for (const conversationStatusCountsKey in this.conversationStatusCounts) {
         this.totalCount =
           this.totalCount +
           this.conversationStatusCounts[conversationStatusCountsKey];

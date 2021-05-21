@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ConversationStatusCountsComponent } from "./conversation-status-counts.component";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("ConversationStatusCountsComponent", () => {
   let component: ConversationStatusCountsComponent;
@@ -8,6 +9,7 @@ describe("ConversationStatusCountsComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       declarations: [ConversationStatusCountsComponent],
     }).compileComponents();
   });
