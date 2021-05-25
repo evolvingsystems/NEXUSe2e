@@ -155,4 +155,10 @@ export class ListComponent implements OnInit {
       } as NotificationItem,
     });
   }
+
+  buildAffectedItems(item: NexusData): NexusData[] {
+    const affectedItems: NexusData[] = [];
+    affectedItems.push(item);
+    return affectedItems;
+  }
 }

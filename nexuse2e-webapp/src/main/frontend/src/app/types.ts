@@ -123,6 +123,7 @@ export interface ColumnConfig {
   showCopyIcon?: boolean;
   titleCase?: boolean;
   iconUrlRecipe?: string;
+  actionButton?: Action;
 }
 
 export enum ColumnType {
@@ -130,6 +131,7 @@ export enum ColumnType {
   LONG_TEXT,
   LINK,
   ICON,
+  ACTION_BUTTON,
   TEXT_AND_MORE,
   LINK_AND_MORE,
 }
