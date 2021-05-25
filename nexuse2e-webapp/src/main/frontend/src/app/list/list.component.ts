@@ -3,9 +3,11 @@ import {
   Choreography,
   Conversation,
   EngineLog,
+  isChoreography,
   isConversation,
   isEngineLog,
   isMessage,
+  isPartner,
   ListConfig,
   Message,
   NexusData,
@@ -77,10 +79,10 @@ export class ListComponent implements OnInit {
     if (isEngineLog(item)) {
       return item[propertyName as keyof EngineLog];
     }
-    if (this.isChoreography(item)) {
+    if (isChoreography(item)) {
       return item[propertyName as keyof Choreography];
     }
-    if (this.isPartner(item)) {
+    if (isPartner(item)) {
       return item[propertyName as keyof Partner];
     }
   }

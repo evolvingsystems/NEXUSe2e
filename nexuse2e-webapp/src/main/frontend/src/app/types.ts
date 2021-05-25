@@ -162,3 +162,11 @@ export function isEngineLog(item: NexusData): item is EngineLog {
 export function isDateRange(item: unknown): item is DateRange {
   return (item as DateRange).startDate !== undefined;
 }
+
+export function isChoreography(item: NexusData): item is Choreography {
+  return (item as Choreography).nxChoreographyId !== undefined;
+}
+
+export function isPartner(item: NexusData): item is Partner {
+  return (item as Partner).nxPartnerId !== undefined;
+}
