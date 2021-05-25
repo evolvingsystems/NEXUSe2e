@@ -1,23 +1,23 @@
-import { ListConfig } from "../types";
+import { ColumnConfig, ColumnType } from "../types";
 
 // START DISPLAY CONFIG
-export const SUCCESS_MESS__CHOREOGRAPHY_CONFIG: ListConfig[] = [
+export const SUCCESS_MESS__CHOREOGRAPHY_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.TEXT,
     fieldName: "name",
     label: "choreography",
-    linkUrlRecipe: "",
   },
-  { fieldName: "lastInboundTime" },
-  { fieldName: "lastOutboundTime" },
+  { columnType: ColumnType.TEXT, fieldName: "lastInboundTime" },
+  { columnType: ColumnType.TEXT, fieldName: "lastOutboundTime" },
 ];
 
-export const SUCCESS_MESS__PARTNER_CONFIG: ListConfig[] = [
+export const SUCCESS_MESS__PARTNER_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.TEXT,
     fieldName: "name",
     label: "partner",
-    linkUrlRecipe: "",
   },
-  { fieldName: "lastInboundTime" },
-  { fieldName: "lastOutboundTime" },
+  { columnType: ColumnType.TEXT, fieldName: "lastInboundTime" },
+  { columnType: ColumnType.TEXT, fieldName: "lastOutboundTime" },
 ];
 // END DISPLAY CONFIG
