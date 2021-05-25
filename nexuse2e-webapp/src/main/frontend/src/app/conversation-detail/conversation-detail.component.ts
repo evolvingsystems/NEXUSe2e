@@ -26,6 +26,7 @@ export class ConversationDetailComponent implements OnInit {
   conversation: ConversationDetail[] = [];
   messages: Message[] = [];
   engineLogs: EngineLog[] = [];
+  loaded = false;
   messagesExpanded = true;
   logsExpanded = true;
   conversationConfig = CONV_DETAIL__CONVERSATION_CONFIG;
@@ -47,8 +48,11 @@ export class ConversationDetailComponent implements OnInit {
   }
 
   async loadConversation(nxConversationId: string) {
+    this.loaded = false;
     try {
-      const item = await this.dataService.getConversationById(nxConversationId);
+      const item = await this.dataService.getConversationByNxId(
+        nxConversationId
+      );
       this.conversation.push(item);
       this.messages = item.messages || [];
       this.engineLogs = item.engineLogs || [];
@@ -61,6 +65,7 @@ export class ConversationDetailComponent implements OnInit {
         } as NotificationItem,
       });
     }
+    this.loaded = true;
   }
 
   back() {

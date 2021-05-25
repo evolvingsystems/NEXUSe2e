@@ -3,8 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import { NotificationComponent } from "../notification/notification.component";
 import {
   EngineLog,
+  isMessageDetail,
   MessageDetail,
-  NexusData,
   NotificationItem,
   Payload,
 } from "../types";
@@ -27,6 +27,7 @@ export class MessageDetailComponent implements OnInit {
   engineLogs: EngineLog[] = [];
   messagePayloads: Payload[] = [];
   messageLabels?: ReadonlyMap<string, string>;
+  loaded = false;
   contentExpanded = true;
   messageLabelsExpanded = true;
   logsExpanded = true;
@@ -47,8 +48,9 @@ export class MessageDetailComponent implements OnInit {
   }
 
   async loadMessage(nxMessageId: string) {
+    this.loaded = false;
     try {
-      const item = await this.dataService.getMessageById(nxMessageId);
+      const item = await this.dataService.getMessageByNxId(nxMessageId);
       this.messages.push(item);
       this.engineLogs = item.engineLogs || [];
       this.messagePayloads = item.messagePayloads || [];
@@ -62,6 +64,7 @@ export class MessageDetailComponent implements OnInit {
         } as NotificationItem,
       });
     }
+    this.loaded = true;
   }
 
   update() {
@@ -72,7 +75,7 @@ export class MessageDetailComponent implements OnInit {
 
   buildDownloadPayloadLink(payloadId?: number): string {
     const message = this.messages[0];
-    if (this.isMessageDetail(message)) {
+    if (isMessageDetail(message)) {
       const affectedPayload = {
         choreographyId: message.choreographyId,
         partnerId: message.partnerId,
@@ -84,10 +87,6 @@ export class MessageDetailComponent implements OnInit {
     }
 
     return "";
-  }
-
-  isMessageDetail(item: NexusData): item is MessageDetail {
-    return (item as MessageDetail).engineLogs !== undefined;
   }
 
   back() {

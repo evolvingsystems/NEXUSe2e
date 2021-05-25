@@ -10,6 +10,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { ListComponent } from "../list/list.component";
 import { MatDialogModule } from "@angular/material/dialog";
 import { ActionButtonComponent } from "../action-button/action-button.component";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 describe("ConversationDetailComponent", () => {
   let component: ConversationDetailComponent;
@@ -29,6 +30,7 @@ describe("ConversationDetailComponent", () => {
         ConversationDetailComponent,
         ListComponent,
         ActionButtonComponent,
+        LoadingSpinnerComponent,
       ],
       providers: [
         {

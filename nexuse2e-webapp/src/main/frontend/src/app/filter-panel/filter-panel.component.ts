@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { ActiveFilterList, DateRange, Filter, FilterType } from "../types";
+import { ActiveFilterList, Filter, FilterType, isDateRange } from "../types";
 import { SessionService } from "../services/session.service";
 import { ScreensizeService } from "../services/screensize.service";
 
@@ -63,17 +63,13 @@ export class FilterPanelComponent implements OnInit {
   getNumberOfActivatedFilters(): number {
     let activeLength = Object.keys(this.activeFilters).length;
     for (const value of Object.values(this.activeFilters)) {
-      if (this.isDateRange(value)) {
+      if (isDateRange(value)) {
         if (value?.startDate && value?.endDate) {
           activeLength++;
         }
       }
     }
     return activeLength;
-  }
-
-  isDateRange(item: unknown): item is DateRange {
-    return (item as DateRange).startDate !== undefined;
   }
 
   resetFiltersAndSetDefaults() {

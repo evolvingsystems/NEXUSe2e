@@ -142,3 +142,23 @@ export interface UserConfirmationDialog {
   notificationTextLabel?: string;
   confirmButtonLabel?: string;
 }
+
+export function isMessage(item: NexusData): item is Message {
+  return (item as Message).typeName !== undefined;
+}
+
+export function isMessageDetail(item: NexusData): item is MessageDetail {
+  return (item as MessageDetail).engineLogs !== undefined;
+}
+
+export function isConversation(item: NexusData): item is Conversation {
+  return (item as Conversation).currentAction !== undefined;
+}
+
+export function isEngineLog(item: NexusData): item is EngineLog {
+  return (item as EngineLog).methodName !== undefined;
+}
+
+export function isDateRange(item: unknown): item is DateRange {
+  return (item as DateRange).startDate !== undefined;
+}
