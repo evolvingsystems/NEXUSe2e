@@ -10,6 +10,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatDialogModule } from "@angular/material/dialog";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 import { MatCardModule } from "@angular/material/card";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -25,6 +26,7 @@ describe("DashboardComponent", () => {
           MatSnackBarModule,
           MatDialogModule,
           MatCardModule,
+          RouterTestingModule,
         ],
         declarations: [
           DashboardComponent,

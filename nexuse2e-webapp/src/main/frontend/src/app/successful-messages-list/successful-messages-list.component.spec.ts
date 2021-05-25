@@ -9,6 +9,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatDialogModule } from "@angular/material/dialog";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 import { MatCardModule } from "@angular/material/card";
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe("SuccessfulMessagesListComponent", () => {
   let component: SuccessfulMessagesListComponent;
@@ -23,6 +24,7 @@ describe("SuccessfulMessagesListComponent", () => {
         MatSnackBarModule,
         MatDialogModule,
         MatCardModule,
+        RouterTestingModule,
       ],
       declarations: [
         SuccessfulMessagesListComponent,
