@@ -1,5 +1,10 @@
 <h1>{{ "labels.messageDetail" | translate }}</h1>
-<div class="action-button-panel">
+
+<ng-container *ngIf="!loaded">
+  <app-loading-spinner></app-loading-spinner>
+</ng-container>
+
+<div class="action-button-panel" [hidden]="!loaded">
   <button mat-icon-button aria-label="Back" (click)="back()">
     <mat-icon>arrow_back</mat-icon>
   </button>
@@ -15,7 +20,7 @@
           itemType="message"
           [isSelectable]="false" showAlwaysAsCard="true"></app-list>
 
-<div class="toggleSection" *ngIf="messagePayloads?.length">
+<div class="toggleSection" *ngIf="messagePayloads?.length" [hidden]="!loaded">
   <div class="toggle-Header" (click)=toggleContentArea()>
     <button mat-icon-button aria-label="Toggle">
       <mat-icon>{{ contentExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
@@ -47,7 +52,7 @@
   </ng-container>
 </div>
 
-<div class="toggleSection" *ngIf="messageLabels">
+<div class="toggleSection" *ngIf="messageLabels" [hidden]="!loaded">
   <div class="toggle-Header" (click)=toggleMessageLabelsArea()>
     <button mat-icon-button aria-label="Toggle">
       <mat-icon>{{ messageLabelsExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
@@ -68,7 +73,7 @@
   </ng-container>
 </div>
 
-<div class="toggleSection">
+<div class="toggleSection" [hidden]="!loaded">
   <div class="toggle-Header" (click)=toggleLogArea()>
     <button mat-icon-button aria-label="Toggle">
       <mat-icon>{{ logsExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>

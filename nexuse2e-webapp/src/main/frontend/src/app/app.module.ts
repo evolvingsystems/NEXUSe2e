@@ -183,7 +183,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     HttpClientModule,
-    RouterModule.forRoot(routes, { useHash: true }),
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      scrollPositionRestoration: "enabled",
+    }),
     FormsModule,
     MatInputModule,
     MatButtonModule,

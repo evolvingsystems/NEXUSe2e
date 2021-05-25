@@ -62,6 +62,11 @@ export const CONV_LIST__MOBILE_CONFIG: ColumnConfig[] = [
 
 export const CONV_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.TEXT,
+    fieldName: "status",
+    titleCase: true,
+  },
+  {
     columnType: ColumnType.LINK,
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
@@ -81,11 +86,6 @@ export const CONV_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
   {
     columnType: ColumnType.TEXT,
     fieldName: "createdDate",
-  },
-  {
-    columnType: ColumnType.TEXT,
-    fieldName: "status",
-    titleCase: true,
   },
   {
     columnType: ColumnType.TEXT,

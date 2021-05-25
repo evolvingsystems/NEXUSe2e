@@ -67,6 +67,7 @@ export const activeFilters: ActiveFilterList = {};
 export const MESS_LIST__DEFAULT_PAGE_SIZE = 20;
 
 export const MESS_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
+  { columnType: ColumnType.TEXT, fieldName: "status", titleCase: true },
   {
     columnType: ColumnType.LINK,
     fieldName: "messageId",
@@ -78,8 +79,6 @@ export const MESS_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   { columnType: ColumnType.TEXT, fieldName: "partnerId" },
-  { columnType: ColumnType.TEXT, fieldName: "status", titleCase: true },
-  { columnType: ColumnType.TEXT, fieldName: "backendStatus", titleCase: true },
   {
     columnType: ColumnType.ICON,
     fieldName: "typeName",
