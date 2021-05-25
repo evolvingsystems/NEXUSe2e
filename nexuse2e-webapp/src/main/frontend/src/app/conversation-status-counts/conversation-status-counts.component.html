@@ -1,4 +1,5 @@
-<div *ngIf="objectKeys(conversationStatusCounts).length > 0" class="status-count-bar">
+<span class="subtitle padded">{{ "labels.conversationsStatusCounts" | translate }}</span>
+<div *ngIf="totalCount > 0" class="status-count-bar">
   <ng-container *ngFor="let status of objectKeys(conversationStatusCounts)">
     <div *ngIf="conversationStatusCounts[status] > 0" class="segment statusDetailedColor"
          [style.width.%]="(conversationStatusCounts[status] / totalCount) * 100" [class]="status">
@@ -6,6 +7,6 @@
     </div>
   </ng-container>
 </div>
-<div *ngIf="objectKeys(conversationStatusCounts).length === 0">
+<div *ngIf="totalCount === 0">
   {{ "labels.noConversations" | translate }}
 </div>
