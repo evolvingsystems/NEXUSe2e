@@ -30,6 +30,7 @@ export const CONV_DETAIL__CONVERSATION_CONFIG: ColumnConfig[] = [
   {
     columnType: ColumnType.TEXT,
     fieldName: "status",
+    titleCase: true,
   },
 ];
 
@@ -50,7 +51,7 @@ export const CONV_DETAIL__MESSAGE_CONFIG: ColumnConfig[] = [
   { columnType: ColumnType.TEXT, fieldName: "createdDate" },
   { columnType: ColumnType.TEXT, fieldName: "endDate" },
   { columnType: ColumnType.TEXT, fieldName: "turnAroundTime" },
-  { columnType: ColumnType.TEXT, fieldName: "status" },
+  { columnType: ColumnType.TEXT, fieldName: "status", titleCase: true },
 ];
 
 export const CONV_DETAIL__LOG_CONFIG: ColumnConfig[] = [

@@ -62,6 +62,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
 import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
 import { MessageDetailComponent } from "./message-detail/message-detail.component";
+import { CapsToTitleCasePipe } from "./pipes/caps-to-title-case.pipe";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -163,6 +164,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ActionButtonComponent,
     StringPipe,
     DateRangePipe,
+    CapsToTitleCasePipe,
     SimpleTableDialogComponent,
     NotificationComponent,
     UserConfirmationDialogComponent,

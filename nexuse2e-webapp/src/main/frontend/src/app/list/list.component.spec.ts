@@ -10,6 +10,7 @@ import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ColumnType } from "../types";
+import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 
 describe("ListComponent", () => {
   let component: ListComponent;
@@ -26,7 +27,7 @@ describe("ListComponent", () => {
         MatDialogModule,
         MatSnackBarModule,
       ],
-      declarations: [ListComponent],
+      declarations: [ListComponent, CapsToTitleCasePipe],
     }).compileComponents();
   });
 

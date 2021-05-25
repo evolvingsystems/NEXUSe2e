@@ -123,7 +123,7 @@ export class ListComponent implements OnInit {
         url += this.getProperty(item, segments[i]);
       }
     }
-    return url;
+    return url.toLowerCase();
   }
 
   toggleSelection(change: MatCheckboxChange, item: NexusData) {

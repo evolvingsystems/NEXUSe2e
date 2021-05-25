@@ -16,7 +16,7 @@ export const MESS_DETAIL__MESSAGE_CONFIG: ColumnConfig[] = [
   { columnType: ColumnType.TEXT, fieldName: "direction" },
   { columnType: ColumnType.TEXT, fieldName: "referencedMessageId" },
   { columnType: ColumnType.TEXT, fieldName: "actionId" },
-  { columnType: ColumnType.TEXT, fieldName: "backendStatus" },
+  { columnType: ColumnType.TEXT, fieldName: "backendStatus", titleCase: true },
   { columnType: ColumnType.TEXT, fieldName: "createdDate" },
   { columnType: ColumnType.TEXT, fieldName: "modifiedDate" },
   { columnType: ColumnType.TEXT, fieldName: "endDate" },
@@ -24,7 +24,7 @@ export const MESS_DETAIL__MESSAGE_CONFIG: ColumnConfig[] = [
   { columnType: ColumnType.TEXT, fieldName: "expirationDate" },
   { columnType: ColumnType.TEXT, fieldName: "retries" },
   { columnType: ColumnType.TEXT, fieldName: "trp", label: "protocolVersion" },
-  { columnType: ColumnType.TEXT, fieldName: "status" },
+  { columnType: ColumnType.TEXT, fieldName: "status", titleCase: true },
 ];
 
 export const MESS_DETAIL__LOG_CONFIG: ColumnConfig[] = [

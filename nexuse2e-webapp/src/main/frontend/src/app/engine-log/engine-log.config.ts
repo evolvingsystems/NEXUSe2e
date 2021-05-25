@@ -1,8 +1,8 @@
 import {
   ActiveFilterList,
-  FilterType,
   ColumnConfig,
   ColumnType,
+  FilterType,
 } from "../types";
 
 // START FILTERS

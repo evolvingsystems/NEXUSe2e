@@ -115,17 +115,21 @@ export interface ColumnConfig {
   fieldName: string;
   additionalFieldName?: string;
   label?: string;
+  additionalLinkText?: string;
   linkUrlRecipe?: string;
   additionalLinkUrlRecipe?: string;
   isHeader?: boolean;
   separator?: Separator;
   showCopyIcon?: boolean;
+  titleCase?: boolean;
+  iconUrlRecipe?: string;
 }
 
 export enum ColumnType {
   TEXT,
   LONG_TEXT,
   LINK,
+  ICON,
   TEXT_AND_MORE,
   LINK_AND_MORE,
 }

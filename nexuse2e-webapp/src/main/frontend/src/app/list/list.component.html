@@ -88,9 +88,12 @@
 </ng-container>
 
 <ng-template #cellContent let-columnConfigItem="columnConfigItem" let-item="item" let-doNotTrim="doNotTrim">
+  <span class="icon-property" *ngIf="columnConfigItem.columnType == columnType().ICON">
+    <img [src]="getUrl(item, columnConfigItem.iconUrlRecipe)" alt="property_icon"/>
+  </span>
   <ng-container
     *ngIf="columnConfigItem.columnType == columnType().TEXT || columnConfigItem.columnType == columnType().TEXT_AND_MORE">
-    <span>{{ getProperty(item, columnConfigItem.fieldName) }}</span>
+    <span>{{ columnConfigItem.titleCase ? (getProperty(item, columnConfigItem.fieldName) | capsToTitleCase) : getProperty(item, columnConfigItem.fieldName) }}</span>
   </ng-container>
   <ng-container *ngIf="columnConfigItem.columnType == columnType().LONG_TEXT">
     <ng-container *ngIf="!doNotTrim">
@@ -119,8 +122,8 @@
           <span *ngIf="columnConfigItem.separator == separator().BRACKETS">(</span>
             <ng-container *ngIf="columnConfigItem.additionalLinkUrlRecipe">
               <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)">
-              {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
-            </a>
+                {{ "" + columnConfigItem.additionalLinkText ? ("labels." + columnConfigItem.additionalLinkText | translate) : getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+              </a>
             </ng-container>
             <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
               {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}

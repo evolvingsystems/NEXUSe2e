@@ -78,9 +78,14 @@ export const MESS_LIST__DESKTOP_CONFIG: ColumnConfig[] = [
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
   { columnType: ColumnType.TEXT, fieldName: "partnerId" },
-  { columnType: ColumnType.TEXT, fieldName: "status" },
-  { columnType: ColumnType.TEXT, fieldName: "backendStatus" },
-  { columnType: ColumnType.TEXT, fieldName: "typeName", label: "messageType" },
+  { columnType: ColumnType.TEXT, fieldName: "status", titleCase: true },
+  { columnType: ColumnType.TEXT, fieldName: "backendStatus", titleCase: true },
+  {
+    columnType: ColumnType.ICON,
+    fieldName: "typeName",
+    label: "messageType",
+    iconUrlRecipe: "assets/img/message_type_$typeName$.png",
+  },
   {
     columnType: ColumnType.TEXT_AND_MORE,
     fieldName: "choreographyId",
