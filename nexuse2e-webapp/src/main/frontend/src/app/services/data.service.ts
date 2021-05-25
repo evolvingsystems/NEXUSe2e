@@ -199,11 +199,11 @@ export class DataService {
     return this.get<string[]>("/version");
   }
 
-  getStatisticsChoreographies() {
+  getStatisticsChoreographies(): Promise<Choreography[]> {
     return this.get<Choreography[]>("/choreographies");
   }
 
-  getStatisticsPartners() {
+  getStatisticsPartners(): Promise<Partner[]> {
     return this.get<Partner[]>("/partners");
   }
 
