@@ -108,6 +108,7 @@
     <property name="defaultCharEncoding" value="${default.charEncoding}" />
     <property name="idleGracePeriodInMinutes" value="10" />
     <property name="TransactionActivityTimeframeInWeeks" value="2" />
+    <property name="DashboardTimeFrameInDays" value="2"/>
     <property name="retryLoggingTemplate">
       <value>
         Dear admin,

@@ -10,6 +10,7 @@ export class ConversationStatusCountsComponent implements OnInit {
   conversationStatusCounts: { [status: string]: number } = {};
   totalCount = 0;
   objectKeys = Object.keys;
+  loaded = false;
 
   constructor(private dataService: DataService) {}
 
@@ -19,6 +20,7 @@ export class ConversationStatusCountsComponent implements OnInit {
   }
 
   getConversationStatusTotalCount() {
+    this.loaded = false;
     if (Object.keys(this.conversationStatusCounts).length > 0) {
       for (const conversationStatusCountsKey in this.conversationStatusCounts) {
         this.totalCount =
@@ -26,5 +28,6 @@ export class ConversationStatusCountsComponent implements OnInit {
           this.conversationStatusCounts[conversationStatusCountsKey];
       }
     }
+    this.loaded = true;
   }
 }

@@ -437,8 +437,9 @@ public class TransactionReportingHandler implements Handler {
     }
 
     private void returnConversationStatusCounts(HttpServletResponse response) throws NexusException, IOException {
+        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+        cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
         int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();

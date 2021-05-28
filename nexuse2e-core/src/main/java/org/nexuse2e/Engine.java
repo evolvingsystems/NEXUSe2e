@@ -122,23 +122,24 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     private Map<String, MimeMapping>         fileExt2MimeMappings           = new HashMap<String, MimeMapping>();
     private long engineStartTime = 0;
     private long serviceStartTime = 0;
-    private String                           timestampPattern               = null;
-    private String							 defaultCharEncoding			= null;
+    private String timestampPattern = null;
+    private String defaultCharEncoding = null;
 
-    private MimetypesFileTypeMap             mimetypesFileTypeMap           = null;
-    private boolean                          advancedRetryLogging           = false;
-    private String                           retryLoggingTemplate;
+    private MimetypesFileTypeMap mimetypesFileTypeMap = null;
+    private boolean advancedRetryLogging = false;
+    private String retryLoggingTemplate;
 
-    private int                              idleGracePeriodInMinutes       = 10;
-    private int                              transactionActivityTimeframeInWeeks = 2;
+    private int idleGracePeriodInMinutes = 10;
+    private int transactionActivityTimeframeInWeeks = 2;
+    private int dashboardTimeFrameInDays = 2;
 
     static {
         // Make sure we have the right JCE provider available...
         BouncyCastleProvider bcp = new BouncyCastleProvider();
-        Security.removeProvider( CertificateUtil.DEFAULT_JCE_PROVIDER );
-        if ( Security.getProvider( CertificateUtil.DEFAULT_JCE_PROVIDER ) == null ) {
-            LOG.debug( "Engine - static initializer - Registering BouncyCastleProvider..." );
-            Security.addProvider( bcp );
+        Security.removeProvider(CertificateUtil.DEFAULT_JCE_PROVIDER);
+        if (Security.getProvider(CertificateUtil.DEFAULT_JCE_PROVIDER) == null) {
+            LOG.debug("Engine - static initializer - Registering BouncyCastleProvider...");
+            Security.addProvider(bcp);
         }
     }
 
@@ -526,13 +527,21 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         this.transactionActivityTimeframeInWeeks = transactionActivityTimeframeInWeeks;
     }
 
+    public int getDashboardTimeFrameInDays() {
+        return dashboardTimeFrameInDays;
+    }
+
+    public void setDashboardTimeFrameInDays(int dashboardTimeFrameInDays) {
+        this.dashboardTimeFrameInDays = dashboardTimeFrameInDays;
+    }
+
     /**
      * Inner class to wrap MIME type to handler mappings
      */
     class MimeMapping {
 
-        String mimeType      = null;
-        String dataHandler   = null;
+        String mimeType = null;
+        String dataHandler = null;
         String fileExtension = null;
     }
 
