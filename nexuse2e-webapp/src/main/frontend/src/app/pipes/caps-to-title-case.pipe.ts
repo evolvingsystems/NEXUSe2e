@@ -11,9 +11,9 @@ export class CapsToTitleCasePipe implements PipeTransform {
       const titleCasePipe = new TitleCasePipe();
       const uppercase = value.toUpperCase();
       if (value === uppercase) {
-        return titleCasePipe.transform(value) as string;
+        return titleCasePipe.transform(value);
       } else {
-        return value as string;
+        return value;
       }
     } else {
       return value;
