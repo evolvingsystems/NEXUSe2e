@@ -128,6 +128,12 @@ export interface UserConfirmationDialog {
   confirmButtonLabel?: string;
 }
 
+export interface EngineTimeVariables {
+  dashboardTimeFrameInDays: number;
+  transactionActivityTimeframeInWeeks: number;
+  idleGracePeriodInMinutes: number;
+}
+
 export function isMessage(item: NexusData): item is Message {
   return (item as Message).typeName !== undefined;
 }

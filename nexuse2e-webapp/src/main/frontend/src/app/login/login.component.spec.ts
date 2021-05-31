@@ -9,12 +9,14 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { SessionService } from "../services/session.service";
 
 describe("LoginComponent", () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let router: Router;
   let dataService: DataService;
+  let sessionService: SessionService;
 
   beforeEach(
     waitForAsync(() => {
@@ -46,6 +48,7 @@ describe("LoginComponent", () => {
       component = fixture.componentInstance;
       router = TestBed.inject(Router);
       dataService = TestBed.inject(DataService);
+      sessionService = TestBed.inject(SessionService);
       fixture.detectChanges();
     })
   );
@@ -92,6 +95,8 @@ describe("LoginComponent", () => {
   it("should redirect after successful login", async () => {
     spyOn(dataService, "postLogin");
     spyOn(dataService, "getPermittedActions");
+    spyOn(dataService, "getEngineTimeVariables");
+    spyOn(sessionService, "setEngineTimeVariables");
     spyOn(router, "navigateByUrl");
     await component.login({
       user: "admin",

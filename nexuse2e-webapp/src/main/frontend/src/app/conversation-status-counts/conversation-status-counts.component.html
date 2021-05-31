@@ -1,4 +1,7 @@
-<span class="subtitle padded">{{ ("labels.conversations" | translate) + " (last " + " hours)"}}</span>
+<span class="subtitle padded">
+  <span>{{ ("labels.conversations" | translate) }}</span>
+  <span *ngIf="dashboardTimeFrameInDays"> {{ " (last " + dashboardTimeFrameInDays * 24 + " hours)" }}</span>
+</span>
 <ng-container *ngIf="!loaded">
   <app-loading-spinner></app-loading-spinner>
 </ng-container>

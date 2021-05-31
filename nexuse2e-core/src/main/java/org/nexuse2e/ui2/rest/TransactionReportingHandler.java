@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
@@ -42,7 +44,8 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/message".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path));
     }
 
     @Override
@@ -82,6 +85,9 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/conversation-status-counts":
                     this.returnConversationStatusCounts(response);
+                    break;
+                case "/engine-time-variables":
+                    this.returnEngineTimeVariables(response);
                     break;
             }
         }
@@ -459,5 +465,18 @@ public class TransactionReportingHandler implements Handler {
 
         String statusCountsJson = new Gson().toJson(statusCounts);
         response.getOutputStream().print(statusCountsJson);
+    }
+
+    private void returnEngineTimeVariables(HttpServletResponse response) throws JSONException, IOException {
+        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
+        int transactionActivityTimeframeInWeeks = Engine.getInstance().getTransactionActivityTimeframeInWeeks();
+        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
+
+        JSONObject variables = new JSONObject();
+        variables.put("dashboardTimeFrameInDays", dashboardTimeFrameInDays);
+        variables.put("transactionActivityTimeframeInWeeks", transactionActivityTimeframeInWeeks);
+        variables.put("idleGracePeriodInMinutes", idleGracePeriodInMinutes);
+
+        response.getOutputStream().print(String.valueOf(variables));
     }
 }

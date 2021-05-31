@@ -6,6 +6,7 @@ import {
   Conversation,
   ConversationDetail,
   EngineLog,
+  EngineTimeVariables,
   Message,
   MessageDetail,
   PayloadParams,
@@ -215,6 +216,10 @@ export class DataService {
       item.messageId +
       (item.payloadId !== undefined ? "&no=" + item.payloadId : "")
     );
+  }
+
+  getEngineTimeVariables(): Promise<EngineTimeVariables> {
+    return this.get<EngineTimeVariables>("/engine-time-variables");
   }
 
   private post(path: string, body: unknown): Promise<void> {

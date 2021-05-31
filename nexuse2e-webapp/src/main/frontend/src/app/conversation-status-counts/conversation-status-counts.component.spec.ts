@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ConversationStatusCountsComponent } from "./conversation-status-counts.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 describe("ConversationStatusCountsComponent", () => {
   let component: ConversationStatusCountsComponent;
@@ -11,7 +12,10 @@ describe("ConversationStatusCountsComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule, TranslateModule.forRoot()],
-      declarations: [ConversationStatusCountsComponent],
+      declarations: [
+        ConversationStatusCountsComponent,
+        LoadingSpinnerComponent,
+      ],
     }).compileComponents();
   });
 
