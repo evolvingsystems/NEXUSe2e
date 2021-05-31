@@ -18,8 +18,14 @@ export class DateRangeFilterComponent {
 
   ngOnChanges(): void {
     if (this.selectedValue) {
-      this.startDate = this.selectedValue.startDate;
-      this.endDate = this.selectedValue.endDate;
+      if (typeof this.selectedValue === "string") {
+        const parsed = JSON.parse(this.selectedValue);
+        this.startDate = new Date(parsed.startDate);
+        this.endDate = new Date(parsed.endDate);
+      } else {
+        this.startDate = this.selectedValue.startDate;
+        this.endDate = this.selectedValue.endDate;
+      }
     }
   }
 

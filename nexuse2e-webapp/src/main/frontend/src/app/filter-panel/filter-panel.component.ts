@@ -21,12 +21,13 @@ export class FilterPanelComponent implements OnInit {
     public screenSizeService: ScreensizeService,
     public sessionService: SessionService,
     private route: ActivatedRoute
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     const filtersFromRoute = this.extractFiltersFromRouteParams();
-    this.activeFilters = Object.keys(filtersFromRoute).length ? filtersFromRoute : this.sessionService.getActiveFilters(this.itemType);
+    this.activeFilters = Object.keys(filtersFromRoute).length
+      ? filtersFromRoute
+      : this.sessionService.getActiveFilters(this.itemType);
     if (Object.keys(this.activeFilters).length === 0) {
       this.setDefaultValues();
     }
@@ -34,7 +35,17 @@ export class FilterPanelComponent implements OnInit {
   }
 
   extractFiltersFromRouteParams(): ActiveFilterList {
-    return Object.assign({}, this.route.snapshot.queryParams);
+    const obj = Object.assign({}, this.route.snapshot.queryParams);
+    const startEndDateValue = this.route.snapshot.queryParamMap.get(
+      "startEndDateRange"
+    );
+    if (startEndDateValue) {
+      const obj2 = {
+        startEndDateRange: JSON.parse(startEndDateValue),
+      };
+      Object.assign(obj, obj2);
+    }
+    return obj;
   }
 
   getFilterType() {

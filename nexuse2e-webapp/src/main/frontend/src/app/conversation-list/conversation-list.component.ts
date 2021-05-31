@@ -1,5 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { Action, ActiveFilterList, Conversation, Filter, FilterType, ListConfig, } from "../types";
+import {
+  Action,
+  ActiveFilterList,
+  Conversation,
+  Filter,
+  FilterType,
+  ListConfig,
+} from "../types";
 import { DataService } from "../services/data.service";
 import { SessionService } from "../services/session.service";
 
@@ -96,8 +103,10 @@ export class ConversationListComponent implements OnInit {
     },
   ];
 
-  constructor(private dataService: DataService, private sessionService: SessionService) {
-  }
+  constructor(
+    private dataService: DataService,
+    private sessionService: SessionService
+  ) {}
 
   async ngOnInit() {
     [
@@ -128,7 +137,9 @@ export class ConversationListComponent implements OnInit {
   filterConversations(activeFilters: ActiveFilterList) {
     this.activeFilters = activeFilters;
     this.refreshConversationCount();
-    this.loadConversations(0,
-      this.sessionService.getPageSize("conversation") || this.defaultPageSize);
+    this.loadConversations(
+      0,
+      this.sessionService.getPageSize("conversation") || this.defaultPageSize
+    );
   }
 }
