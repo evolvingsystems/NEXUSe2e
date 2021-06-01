@@ -40,8 +40,11 @@ export class FilterPanelComponent implements OnInit {
       "startEndDateRange"
     );
     if (startEndDateValue) {
+      const startEndDateRange = JSON.parse(startEndDateValue);
+      startEndDateRange.startDate = new Date(startEndDateRange.startDate);
+      startEndDateRange.endDate = new Date(startEndDateRange.endDate);
       const obj2 = {
-        startEndDateRange: JSON.parse(startEndDateValue),
+        startEndDateRange: startEndDateRange,
       };
       Object.assign(obj, obj2);
     }
