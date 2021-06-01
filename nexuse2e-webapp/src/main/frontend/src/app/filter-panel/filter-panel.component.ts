@@ -35,7 +35,7 @@ export class FilterPanelComponent implements OnInit {
   }
 
   extractFiltersFromRouteParams(): ActiveFilterList {
-    const obj = Object.assign({}, this.route.snapshot.queryParams);
+    const params = Object.assign({}, this.route.snapshot.queryParams);
     const startEndDateValue = this.route.snapshot.queryParamMap.get(
       "startEndDateRange"
     );
@@ -43,12 +43,12 @@ export class FilterPanelComponent implements OnInit {
       const startEndDateRange = JSON.parse(startEndDateValue);
       startEndDateRange.startDate = new Date(startEndDateRange.startDate);
       startEndDateRange.endDate = new Date(startEndDateRange.endDate);
-      const obj2 = {
+      const convertedParams = {
         startEndDateRange: startEndDateRange,
       };
-      Object.assign(obj, obj2);
+      Object.assign(params, convertedParams);
     }
-    return obj;
+    return params;
   }
 
   getFilterType() {

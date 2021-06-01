@@ -54,6 +54,11 @@ describe("FilterPanelComponent", () => {
           useValue: {
             snapshot: {
               queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
             },
           },
         },

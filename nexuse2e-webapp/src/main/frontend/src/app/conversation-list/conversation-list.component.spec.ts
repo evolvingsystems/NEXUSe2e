@@ -70,6 +70,11 @@ describe("ConversationListComponent", () => {
           useValue: {
             snapshot: {
               queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
             },
           },
         },

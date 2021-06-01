@@ -70,6 +70,11 @@ describe("MessageListComponent", () => {
           useValue: {
             snapshot: {
               queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
             },
           },
         },

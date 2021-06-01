@@ -70,6 +70,11 @@ describe("EngineLogComponent", () => {
           useValue: {
             snapshot: {
               queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
             },
           },
         },
