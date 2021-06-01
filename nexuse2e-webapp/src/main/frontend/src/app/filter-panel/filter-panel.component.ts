@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActiveFilterList, Filter, FilterType, isDateRange } from "../types";
 import { SessionService } from "../services/session.service";
 import { ScreensizeService } from "../services/screensize.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-filter-panel",
@@ -18,15 +19,40 @@ export class FilterPanelComponent implements OnInit {
 
   constructor(
     public screenSizeService: ScreensizeService,
-    public sessionService: SessionService
+    public sessionService: SessionService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.activeFilters = this.sessionService.getActiveFilters(this.itemType);
+    const filtersFromRoute = this.extractFiltersFromRouteParams();
+    this.activeFilters = Object.keys(filtersFromRoute).length
+      ? filtersFromRoute
+      : this.sessionService.getActiveFilters(this.itemType);
     if (Object.keys(this.activeFilters).length === 0) {
       this.setDefaultValues();
     }
     this.applyFilters();
+  }
+
+  extractFiltersFromRouteParams(): ActiveFilterList {
+    const params = { ...this.route.snapshot.queryParams };
+    const startEndDateValue = this.route.snapshot.queryParamMap.get(
+      "startEndDateRange"
+    );
+    if (startEndDateValue) {
+      const startEndDateRange = JSON.parse(startEndDateValue);
+      if (startEndDateRange.startDate) {
+        startEndDateRange.startDate = new Date(startEndDateRange.startDate);
+      }
+      if (startEndDateRange.endDate) {
+        startEndDateRange.endDate = new Date(startEndDateRange.endDate);
+      }
+      const convertedParams = {
+        startEndDateRange,
+      };
+      Object.assign(params, convertedParams);
+    }
+    return params;
   }
 
   getFilterType() {
@@ -51,12 +77,12 @@ export class FilterPanelComponent implements OnInit {
   }
 
   applyFilters() {
-    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
     this.filterChange.emit(this.activeFilters);
   }
 
   handleFilterAction() {
     this.applyFilters();
+    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
     this.expanded = false;
   }
 
@@ -76,6 +102,7 @@ export class FilterPanelComponent implements OnInit {
     this.activeFilters = {};
     this.setDefaultValues();
     this.applyFilters();
+    this.sessionService.setActiveFilters(this.itemType, this.activeFilters);
   }
 
   setDefaultValues() {

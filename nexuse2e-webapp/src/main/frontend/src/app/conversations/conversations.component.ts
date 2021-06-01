@@ -1,5 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, Conversation } from "../types";
+import {
+
+  ActiveFilterList,
+  Conversation
+} from "../types";
 import { DataService } from "../services/data.service";
 import { SessionService } from "../services/session.service";
 import {
@@ -30,6 +34,7 @@ export class ConversationsComponent implements OnInit {
   actions = CONV_LIST__ACTIONS;
 
   constructor(
+
     private dataService: DataService,
     private sessionService: SessionService
   ) {}

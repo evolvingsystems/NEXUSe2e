@@ -26,6 +26,7 @@ import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
 
 describe("ConversationListComponent", () => {
   let component: ConversationsComponent;
@@ -62,6 +63,21 @@ describe("ConversationListComponent", () => {
         StringPipe,
         DateRangePipe,
         ActionButtonComponent,
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
+            },
+          },
+        },
       ],
     }).compileComponents();
   });
