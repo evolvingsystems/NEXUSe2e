@@ -4,7 +4,6 @@ import { LoginComponent } from "./login/login.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { PermissionService } from "./services/permission.service";
 import { DataService } from "./services/data.service";
-import { SessionService } from "./services/session.service";
 
 @Component({
   selector: "app-root",
@@ -18,8 +17,7 @@ export class AppComponent implements OnInit {
   constructor(
     translate: TranslateService,
     private permissionService: PermissionService,
-    private dataService: DataService,
-    private sessionService: SessionService
+    private dataService: DataService
   ) {
     translate.use("en");
   }
@@ -27,9 +25,6 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     if (await this.dataService.isLoggedIn()) {
       this.permissionService.updatePermissions();
-      this.sessionService.setEngineTimeVariables(
-        await this.dataService.getEngineTimeVariables()
-      );
     }
   }
 

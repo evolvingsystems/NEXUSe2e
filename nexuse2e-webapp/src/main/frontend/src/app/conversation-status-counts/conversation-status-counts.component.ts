@@ -1,6 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { DataService } from "../services/data.service";
-import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-conversation-status-counts",
@@ -8,20 +7,13 @@ import { SessionService } from "../services/session.service";
   styleUrls: ["./conversation-status-counts.component.scss"],
 })
 export class ConversationStatusCountsComponent implements OnInit {
+  @Input() dashboardTimeFrameInDays = 0;
   conversationStatusCounts: { [status: string]: number } = {};
   totalCount = 0;
   objectKeys = Object.keys;
   loaded = false;
-  dashboardTimeFrameInDays = 0;
 
-  constructor(
-    private dataService: DataService,
-    private sessionService: SessionService
-  ) {
-    this.dashboardTimeFrameInDays =
-      this.sessionService.getEngineTimeVariables()?.dashboardTimeFrameInDays ||
-      0;
-  }
+  constructor(private dataService: DataService) {}
 
   async ngOnInit(): Promise<void> {
     this.conversationStatusCounts = await this.dataService.getConversationStatusCounts();

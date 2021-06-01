@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { EngineTimeVariables } from "../types";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-dashboard",
@@ -6,7 +8,15 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
-  constructor() {}
+  engineTimeVariables: EngineTimeVariables = {
+    dashboardTimeFrameInDays: 0,
+    transactionActivityTimeframeInWeeks: 0,
+    idleGracePeriodInMinutes: 0,
+  };
 
-  ngOnInit() {}
+  constructor(private dataService: DataService) {}
+
+  async ngOnInit() {
+    this.engineTimeVariables = await this.dataService.getEngineTimeVariables();
+  }
 }

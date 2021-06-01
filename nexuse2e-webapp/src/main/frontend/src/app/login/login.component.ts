@@ -4,7 +4,6 @@ import { DataService } from "../services/data.service";
 import { NavigationService } from "../services/navigation.service";
 import { PermissionService } from "../services/permission.service";
 import { LoginData } from "../types";
-import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-login",
@@ -24,8 +23,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private dataService: DataService,
     private navigationService: NavigationService,
-    private permissionService: PermissionService,
-    private sessionService: SessionService
+    private permissionService: PermissionService
   ) {}
 
   async ngOnInit() {
@@ -56,9 +54,6 @@ export class LoginComponent implements OnInit {
   async login(loginData: LoginData) {
     await this.dataService.postLogin(loginData);
     this.permissionService.updatePermissions();
-    this.sessionService.setEngineTimeVariables(
-      await this.dataService.getEngineTimeVariables()
-    );
     this.navigationService.hideNavigation();
     const returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
     await this.router.navigateByUrl(returnUrl);
