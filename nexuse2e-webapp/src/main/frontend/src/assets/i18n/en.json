@@ -79,7 +79,8 @@
     "action": "Action",
     "header": "Header",
     "view": "View",
-    "payload": "Payload"
+    "payload": "Payload",
+    "requeue": "Requeue"
   },
   "status": {
     "FAILED": "Failed",

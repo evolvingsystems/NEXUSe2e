@@ -27,8 +27,8 @@ import { ReportingComponent } from "./reporting/reporting.component";
 import { TransactionReportingComponent } from "./transaction-reporting/transaction-reporting.component";
 import { EngineLogComponent } from "./engine-log/engine-log.component";
 import { MenuItemComponent } from "./menu-item/menu-item.component";
-import { MessageListComponent } from "./message-list/message-list.component";
-import { ConversationListComponent } from "./conversation-list/conversation-list.component";
+import { MessagesComponent } from "./messages/messages.component";
+import { ConversationsComponent } from "./conversations/conversations.component";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -62,6 +62,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
 import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
 import { MessageDetailComponent } from "./message-detail/message-detail.component";
+import { CapsToTitleCasePipe } from "./pipes/caps-to-title-case.pipe";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -94,7 +95,7 @@ const routes: Routes = [
           { path: "", redirectTo: "conversations", pathMatch: "full" },
           {
             path: "conversations",
-            component: ConversationListComponent,
+            component: ConversationsComponent,
             canActivate: [AuthGuardService],
             data: {
               title: "Conversations",
@@ -102,7 +103,7 @@ const routes: Routes = [
           },
           {
             path: "messages",
-            component: MessageListComponent,
+            component: MessagesComponent,
             canActivate: [AuthGuardService],
             data: {
               title: "Messages",
@@ -150,8 +151,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TransactionReportingComponent,
     EngineLogComponent,
     MenuItemComponent,
-    MessageListComponent,
-    ConversationListComponent,
+    MessagesComponent,
+    ConversationsComponent,
     PaginatedListComponent,
     FilterPanelComponent,
     SelectFilterComponent,
@@ -163,6 +164,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ActionButtonComponent,
     StringPipe,
     DateRangePipe,
+    CapsToTitleCasePipe,
     SimpleTableDialogComponent,
     NotificationComponent,
     UserConfirmationDialogComponent,

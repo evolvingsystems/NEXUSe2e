@@ -6,7 +6,9 @@ import { ActiveFilterList } from "../types";
 })
 export class SessionService {
   getActiveFilters(itemType: string): ActiveFilterList {
-    const stringFromSession = sessionStorage.getItem(`active-${itemType}-filters`);
+    const stringFromSession = sessionStorage.getItem(
+      `active-${itemType}-filters`
+    );
     if (stringFromSession) {
       return JSON.parse(stringFromSession, SessionService.jsonDateReviver);
     }
@@ -21,7 +23,10 @@ export class SessionService {
   }
 
   setActiveFilters(itemType: string, filters: ActiveFilterList) {
-    sessionStorage.setItem(`active-${itemType}-filters`, JSON.stringify(filters));
+    sessionStorage.setItem(
+      `active-${itemType}-filters`,
+      JSON.stringify(filters)
+    );
   }
 
   getPageSize(itemType: string): number | undefined {
@@ -37,7 +42,9 @@ export class SessionService {
   }
 
   getPermittedActions(): string[] {
-    const permittedActionsFromSession = sessionStorage.getItem("permitted-actions");
+    const permittedActionsFromSession = sessionStorage.getItem(
+      "permitted-actions"
+    );
     if (permittedActionsFromSession) {
       return JSON.parse(permittedActionsFromSession) as string[];
     }

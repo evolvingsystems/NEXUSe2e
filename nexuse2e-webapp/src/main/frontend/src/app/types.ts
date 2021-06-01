@@ -1,4 +1,8 @@
-export interface NexusData {}
+export interface NexusData {
+  status?: string;
+  severity?: string;
+  createdDate: string;
+}
 
 export interface Message extends NexusData {
   messageId: string;
@@ -106,20 +110,42 @@ export interface Filter {
   defaultValue?: string | DateRange;
 }
 
-export interface ListConfig {
+export interface ColumnConfig {
+  columnType: ColumnType;
   fieldName: string;
   additionalFieldName?: string;
   label?: string;
+  additionalLinkText?: string;
   linkUrlRecipe?: string;
   additionalLinkUrlRecipe?: string;
   isHeader?: boolean;
+  separator?: Separator;
+  showCopyIcon?: boolean;
+  titleCase?: boolean;
+  iconUrlRecipe?: string;
+  actionButton?: Action;
+}
+
+export enum ColumnType {
+  TEXT,
+  LONG_TEXT,
+  LINK,
+  ICON,
+  ACTION_BUTTON,
+  TEXT_AND_MORE,
+  LINK_AND_MORE,
+}
+
+export enum Separator {
+  VERTICAL_BAR,
+  BRACKETS,
 }
 
 export interface ListModalDialog {
   items: NexusData[];
   itemType: string;
-  mobileConfig: ListConfig[];
-  desktopConfig: ListConfig[];
+  mobileConfig: ColumnConfig[];
+  desktopConfig: ColumnConfig[];
 }
 
 export interface UserConfirmationDialog {

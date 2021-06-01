@@ -18,7 +18,7 @@
 </div>
 <app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="messages"
           itemType="message"
-          [isSelectable]="false" showForDetailPage="true"></app-list>
+          [isSelectable]="false" showAlwaysAsCard="true"></app-list>
 
 <div class="toggleSection" *ngIf="messagePayloads?.length" [hidden]="!loaded">
   <div class="toggle-Header" (click)=toggleContentArea()>
