@@ -7,6 +7,11 @@
 
 .additional-field {
   display: inline-flex;
+  padding-left: 3px;
+
+  .separator-padding {
+    padding-right: 3px;
+  }
 }
 
 .columnWithCopyIcon {
@@ -25,5 +30,16 @@
     height: 15px;
     font-size: 15px;
     cursor: pointer;
+  }
+}
+
+.icon-property {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 20px;
+    height: 20px;
   }
 }

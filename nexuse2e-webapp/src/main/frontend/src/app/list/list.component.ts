@@ -1,14 +1,16 @@
 import { Component, Input, OnInit } from "@angular/core";
 import {
+  ColumnConfig,
+  ColumnType,
   Conversation,
   EngineLog,
   isConversation,
   isEngineLog,
   isMessage,
-  ListConfig,
   Message,
   NexusData,
   NotificationItem,
+  Separator,
 } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
@@ -28,14 +30,14 @@ export class ListComponent implements OnInit {
   private readonly modalDialogMaxWidth: number = 1000;
   @Input() itemType!: string;
   @Input() items: NexusData[] = [];
-  @Input() mobileConfig: ListConfig[] = [];
-  @Input() desktopConfig: ListConfig[] = [];
+  @Input() mobileConfig: ColumnConfig[] = [];
+  @Input() desktopConfig: ColumnConfig[] = [];
   @Input() isSelectable?: boolean;
   @Input() showAsSimpleTable?: boolean;
-  @Input() showForDetailPage?: boolean;
+  @Input() showAlwaysAsCard?: boolean;
   displayedColumns: string[] = ["select"];
-  headerElement?: ListConfig;
-  simpleTableConfig: ListConfig[] = [];
+  headerElement?: ColumnConfig;
+  simpleTableConfig: ColumnConfig[] = [];
 
   constructor(
     private selectionService: SelectionService,
@@ -57,7 +59,15 @@ export class ListComponent implements OnInit {
     }
   }
 
-  getHeaderElement(): ListConfig | undefined {
+  columnType(): typeof ColumnType {
+    return ColumnType;
+  }
+
+  separator(): typeof Separator {
+    return Separator;
+  }
+
+  getHeaderElement(): ColumnConfig | undefined {
     return this.mobileConfig.find((e) => e.isHeader);
   }
 
@@ -104,7 +114,7 @@ export class ListComponent implements OnInit {
         url += this.getProperty(item, segments[i]);
       }
     }
-    return url;
+    return url.toLowerCase();
   }
 
   toggleSelection(change: MatCheckboxChange, item: NexusData) {
@@ -135,5 +145,11 @@ export class ListComponent implements OnInit {
         textLabel: "copiedToClipboard",
       } as NotificationItem,
     });
+  }
+
+  buildAffectedItems(item: NexusData): NexusData[] {
+    const affectedItems: NexusData[] = [];
+    affectedItems.push(item);
+    return affectedItems;
   }
 }

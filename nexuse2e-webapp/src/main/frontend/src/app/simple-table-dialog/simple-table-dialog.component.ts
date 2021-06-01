@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { ListConfig, ListModalDialog, NexusData } from "../types";
+import { ColumnConfig, ListModalDialog, NexusData } from "../types";
 
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
@@ -11,8 +11,8 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 export class SimpleTableDialogComponent implements OnInit {
   items: NexusData[] = [];
   itemType!: string;
-  mobileConfig: ListConfig[] = [];
-  desktopConfig: ListConfig[] = [];
+  mobileConfig: ColumnConfig[] = [];
+  desktopConfig: ColumnConfig[] = [];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ListModalDialog) {
     this.items = data.items;

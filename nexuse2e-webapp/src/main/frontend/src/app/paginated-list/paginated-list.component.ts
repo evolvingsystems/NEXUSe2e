@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { SelectionService } from "../services/selection.service";
 import { SessionService } from "../services/session.service";
-import { Action, ListConfig, NexusData } from "../types";
+import { Action, ColumnConfig, NexusData } from "../types";
 import { ScreensizeService } from "../services/screensize.service";
 import { PermissionService } from "../services/permission.service";
 
@@ -16,8 +16,8 @@ export class PaginatedListComponent implements OnInit {
   @Input() defaultPageSize?: number;
   @Input() items: NexusData[] = [];
   @Input() itemType!: string;
-  @Input() mobileConfig: ListConfig[] = [];
-  @Input() desktopConfig: ListConfig[] = [];
+  @Input() mobileConfig: ColumnConfig[] = [];
+  @Input() desktopConfig: ColumnConfig[] = [];
   @Input() actions?: Action[] = [];
   @Output() triggerReload: EventEmitter<{
     pageIndex: number;
@@ -32,8 +32,7 @@ export class PaginatedListComponent implements OnInit {
     public screenSizeService: ScreensizeService,
     private sessionService: SessionService,
     private permissionService: PermissionService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     if (this.defaultPageSize) {

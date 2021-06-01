@@ -15,14 +15,14 @@ import {
   CONV_LIST__FILTERS,
   CONV_LIST__MOBILE_CONFIG,
   participantFilter,
-} from "./conversation-list.config";
+} from "./conversations.config";
 
 @Component({
-  selector: "app-conversation-list",
-  templateUrl: "./conversation-list.component.html",
+  selector: "app-conversations",
+  templateUrl: "./conversations.component.html",
   styles: [],
 })
-export class ConversationListComponent implements OnInit {
+export class ConversationsComponent implements OnInit {
   totalConversationCount?: number;
   conversations: Conversation[] = [];
   loaded = false;
