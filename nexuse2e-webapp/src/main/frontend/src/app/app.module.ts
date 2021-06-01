@@ -61,6 +61,7 @@ import { ClipboardModule } from "@angular/cdk/clipboard";
 import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
 import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
+import { MessageDetailComponent } from "./message-detail/message-detail.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -115,6 +116,11 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
       },
       {
+        path: "message/:id",
+        component: MessageDetailComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
         path: "engine-log",
         component: EngineLogComponent,
         canActivate: [AuthGuardService],
@@ -161,6 +167,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     NotificationComponent,
     UserConfirmationDialogComponent,
     ConversationDetailComponent,
+    MessageDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -174,7 +181,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     HttpClientModule,
-    RouterModule.forRoot(routes, { useHash: true }),
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      scrollPositionRestoration: "enabled",
+    }),
     FormsModule,
     MatInputModule,
     MatButtonModule,

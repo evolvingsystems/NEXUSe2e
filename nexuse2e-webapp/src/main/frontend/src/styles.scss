@@ -34,6 +34,7 @@ html, body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
 }
 
 h1, h2 {
@@ -112,9 +113,12 @@ a {
 /* Card Element */
 .mat-card {
   margin-bottom: 15px;
-  border-left: 5px $gray4 solid;
   padding: 8px;
   color: $gray2;
+
+  &:not(.withoutBorder) {
+    border-left: 5px $gray4 solid;
+  }
 
   .card-header {
     padding-bottom: 4px;
@@ -134,11 +138,11 @@ a {
     table-layout: fixed;
     width: 100%;
 
-    td {
+    td:not(.label) {
       white-space: nowrap;
       overflow: hidden;
 
-      &:before {
+      &:not(.whiteSpaceBreak):before {
         content: "";
         width: 40px;
         height: 20px;
@@ -154,12 +158,20 @@ a {
           background: transparent;
         }
       }
+
+      &.whiteSpaceBreak {
+        white-space: normal;
+        word-break: break-word;
+      }
     }
 
     .label {
       width: 120px;
       font-weight: bold;
       vertical-align: baseline;
+      word-break: break-word;
+      white-space: normal;
+      text-align: left;
     }
   }
 }

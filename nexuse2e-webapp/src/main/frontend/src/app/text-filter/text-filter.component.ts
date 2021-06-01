@@ -4,7 +4,7 @@ import { ActiveFilterList } from "../types";
 @Component({
   selector: "app-text-filter",
   templateUrl: "./text-filter.component.html",
-  styleUrls: ["./text-filter.component.scss"],
+  styles: [],
 })
 export class TextFilterComponent {
   @Input() fieldName!: string;

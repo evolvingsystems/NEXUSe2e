@@ -2,6 +2,9 @@ import { Component, Input, OnInit } from "@angular/core";
 import {
   Conversation,
   EngineLog,
+  isConversation,
+  isEngineLog,
+  isMessage,
   ListConfig,
   Message,
   NexusData,
@@ -62,13 +65,13 @@ export class ListComponent implements OnInit {
     item: NexusData,
     propertyName: string
   ): string | number | undefined {
-    if (this.isMessage(item)) {
+    if (isMessage(item)) {
       return item[propertyName as keyof Message];
     }
-    if (this.isConversation(item)) {
+    if (isConversation(item)) {
       return item[propertyName as keyof Conversation];
     }
-    if (this.isEngineLog(item)) {
+    if (isEngineLog(item)) {
       return item[propertyName as keyof EngineLog];
     }
   }
@@ -89,18 +92,6 @@ export class ListComponent implements OnInit {
     return (
       typeof property === "string" && property.length > this.longTextThreshold
     );
-  }
-
-  isMessage(item: NexusData): item is Message {
-    return (item as Message).typeName !== undefined;
-  }
-
-  isConversation(item: NexusData): item is Conversation {
-    return (item as Conversation).currentAction !== undefined;
-  }
-
-  isEngineLog(item: NexusData): item is EngineLog {
-    return (item as EngineLog).methodName !== undefined;
   }
 
   getUrl(item: NexusData, linkUrlRecipe: string): string {

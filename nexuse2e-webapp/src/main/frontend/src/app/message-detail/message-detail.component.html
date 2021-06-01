@@ -1,0 +1,87 @@
+<h1>{{ "labels.messageDetail" | translate }}</h1>
+
+<ng-container *ngIf="!loaded">
+  <app-loading-spinner></app-loading-spinner>
+</ng-container>
+
+<div class="action-button-panel" [hidden]="!loaded">
+  <button mat-icon-button aria-label="Back" (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <ng-container *ngFor="let action of actions">
+    <app-action-button
+      [action]="action"
+      (triggerReload)="update()"
+      [affectedItems]="messages">
+    </app-action-button>
+  </ng-container>
+</div>
+<app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="messages"
+          itemType="message"
+          [isSelectable]="false" showForDetailPage="true"></app-list>
+
+<div class="toggleSection" *ngIf="messagePayloads?.length" [hidden]="!loaded">
+  <div class="toggle-Header" (click)=toggleContentArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ contentExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.content" | translate }}</span>
+  </div>
+  <ng-container *ngIf="contentExpanded">
+    <mat-card class="withoutBorder">
+      <table class="table-scrollable">
+        <tr>
+          <th class="label">{{ "labels.component" | translate }}</th>
+          <th class="label">{{ "labels.mimeType" | translate }}</th>
+          <th class="label">{{ "labels.action" | translate }}</th>
+        </tr>
+        <tr>
+          <td>{{ "labels.header" | translate }}</td>
+          <td>text/xml</td>
+          <td><a [href]="buildDownloadPayloadLink()">{{ "labels.view" | translate }}</a></td>
+        </tr>
+        <ng-container *ngFor="let payload of messagePayloads;">
+          <tr>
+            <td>{{ "labels.payload" | translate }} {{ payload.id }}</td>
+            <td>{{ payload.mimeType }}</td>
+            <td><a [href]="buildDownloadPayloadLink(payload.id)">{{ "labels.view" | translate }}</a></td>
+          </tr>
+        </ng-container>
+      </table>
+    </mat-card>
+  </ng-container>
+</div>
+
+<div class="toggleSection" *ngIf="messageLabels" [hidden]="!loaded">
+  <div class="toggle-Header" (click)=toggleMessageLabelsArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ messageLabelsExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.messageLabels" | translate }}</span>
+  </div>
+  <ng-container *ngIf="messageLabelsExpanded">
+    <mat-card class="withoutBorder">
+      <table class="mat-table">
+        <ng-container *ngFor="let messageLabel of messageLabels | keyvalue ">
+          <tr>
+            <td class="label">{{ messageLabel.key }}</td>
+            <td>{{ messageLabel.value }}</td>
+          </tr>
+        </ng-container>
+      </table>
+    </mat-card>
+  </ng-container>
+</div>
+
+<div class="toggleSection" [hidden]="!loaded">
+  <div class="toggle-Header" (click)=toggleLogArea()>
+    <button mat-icon-button aria-label="Toggle">
+      <mat-icon>{{ logsExpanded ? "keyboard_arrow_up" : "keyboard_arrow_down" }}</mat-icon>
+    </button>
+    <span class="subtitle">{{ "labels.logs" | translate }}</span>
+  </div>
+  <ng-container *ngIf="logsExpanded">
+    <app-list [desktopConfig]="logConfig" [mobileConfig]="logConfig" [items]="engineLogs" itemType="message"
+              [isSelectable]="false"></app-list>
+  </ng-container>
+</div>

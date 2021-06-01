@@ -7,7 +7,7 @@
                  (page)="onPageChange($event)">
   </mat-paginator>
 </div>
-<div class="action-button-panel">
+<div class="action-button-panel" *ngIf="totalItemCount">
   <ng-container *ngFor="let action of actions">
     <app-action-button
       [action]="action"

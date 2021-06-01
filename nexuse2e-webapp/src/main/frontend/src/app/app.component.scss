@@ -1,9 +1,9 @@
 @import '../styles.scss';
 
 .content-container {
-  padding-top: 50px;
   box-sizing: border-box;
-  height: 100vh;
+  /* vh cannot be used otherwise for iOS it does not show the whole content */
+  height: calc(100% - 50px);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -11,6 +11,7 @@
 @media(min-width: $desktopBreakpoint) {
   .content-container {
     margin-left: 350px;
-    padding-top: 85px;
+    /* vh cannot be used otherwise for iOS it does not show the whole content */
+    height: calc(100% - 75px);
   }
 }

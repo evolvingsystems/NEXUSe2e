@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Route, Router } from "@angular/router";
-import { NavigationService } from "../navigation/navigation.service";
+import { NavigationService } from "../services/navigation.service";
 
 @Component({
   selector: "app-menu-item",
@@ -41,6 +41,9 @@ export class MenuItemComponent implements OnInit {
 
   isActivatedRoute() {
     const activeUrlParts = this.router.url.split("/");
-    return this.route.path === activeUrlParts[activeUrlParts.length - 1];
+    const lastPartWithoutParams = activeUrlParts[
+      activeUrlParts.length - 1
+    ].split("?")[0];
+    return this.route.path === lastPartWithoutParams;
   }
 }
