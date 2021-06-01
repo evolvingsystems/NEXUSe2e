@@ -23,7 +23,7 @@ export class FilterPanelComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const filtersFromRoute = this.extractFiltersFromRouteParams();
     this.activeFilters = Object.keys(filtersFromRoute).length
       ? filtersFromRoute
@@ -35,16 +35,20 @@ export class FilterPanelComponent implements OnInit {
   }
 
   extractFiltersFromRouteParams(): ActiveFilterList {
-    const params = Object.assign({}, this.route.snapshot.queryParams);
+    const params = { ...this.route.snapshot.queryParams };
     const startEndDateValue = this.route.snapshot.queryParamMap.get(
       "startEndDateRange"
     );
     if (startEndDateValue) {
       const startEndDateRange = JSON.parse(startEndDateValue);
-      startEndDateRange.startDate = new Date(startEndDateRange.startDate);
-      startEndDateRange.endDate = new Date(startEndDateRange.endDate);
+      if (startEndDateRange.startDate) {
+        startEndDateRange.startDate = new Date(startEndDateRange.startDate);
+      }
+      if (startEndDateRange.endDate) {
+        startEndDateRange.endDate = new Date(startEndDateRange.endDate);
+      }
       const convertedParams = {
-        startEndDateRange: startEndDateRange,
+        startEndDateRange,
       };
       Object.assign(params, convertedParams);
     }
