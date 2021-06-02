@@ -133,6 +133,7 @@ export interface ColumnConfig {
   additionalLinkText?: string;
   linkUrlRecipe?: string;
   additionalLinkUrlRecipe?: string;
+  additionalLinkQueryParamsRecipe?: { [s: string]: string };
   isHeader?: boolean;
   separator?: Separator;
   showCopyIcon?: boolean;

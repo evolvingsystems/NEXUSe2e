@@ -139,7 +139,8 @@
                 class="separator-padding">|</span>
           <span *ngIf="columnConfigItem.separator == separator().BRACKETS">(</span>
             <ng-container *ngIf="columnConfigItem.additionalLinkUrlRecipe">
-              <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)">
+              <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)"
+                 [queryParams]="getQueryParams(item, columnConfigItem.additionalLinkQueryParamsRecipe)">
                 {{ "" + columnConfigItem.additionalLinkText ? ("labels." + columnConfigItem.additionalLinkText | translate) : getProperty(item, columnConfigItem.additionalFieldName) + "" }}
               </a>
             </ng-container>

@@ -128,6 +128,34 @@ export class ListComponent implements OnInit {
     return url.toLowerCase();
   }
 
+  getQueryParams(
+    item: NexusData,
+    queryParamsRecipe: { [s: string]: string }
+  ): { [s: string]: string } {
+    for (const k in queryParamsRecipe) {
+      const segments = queryParamsRecipe[k].split("$");
+      let queryParam = segments[0];
+      for (let i = 1; i < segments.length; i++) {
+        if (i % 2 == 0) {
+          queryParam += segments[i];
+        } else {
+          switch (segments[i]) {
+            case "todayMinusTransactionActivityTimeframeInWeeks":
+              const paramDate = new Date();
+              const minusDate = paramDate.getDate() - 2 * 7;
+              paramDate.setDate(minusDate);
+              queryParam += "" + paramDate.toISOString() + "";
+              break;
+            default:
+              queryParam += this.getProperty(item, segments[i]);
+          }
+        }
+      }
+      queryParamsRecipe[k] = queryParam;
+    }
+    return queryParamsRecipe;
+  }
+
   toggleSelection(change: MatCheckboxChange, item: NexusData) {
     this.selectionService.updateSelection(change.checked, this.itemType, item);
   }
