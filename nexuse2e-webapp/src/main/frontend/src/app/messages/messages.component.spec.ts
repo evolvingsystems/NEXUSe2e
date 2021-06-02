@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MessageListComponent } from "./message-list.component";
+import { MessagesComponent } from "./messages.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { FilterPanelComponent } from "../filter-panel/filter-panel.component";
@@ -26,10 +26,11 @@ import { ActionButtonComponent } from "../action-button/action-button.component"
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
 
 describe("MessageListComponent", () => {
-  let component: MessageListComponent;
-  let fixture: ComponentFixture<MessageListComponent>;
+  let component: MessagesComponent;
+  let fixture: ComponentFixture<MessagesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -51,7 +52,7 @@ describe("MessageListComponent", () => {
         MatSnackBarModule,
       ],
       declarations: [
-        MessageListComponent,
+        MessagesComponent,
         FilterPanelComponent,
         PaginatedListComponent,
         SelectFilterComponent,
@@ -63,11 +64,26 @@ describe("MessageListComponent", () => {
         StringPipe,
         DateRangePipe,
       ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MessageListComponent);
+    fixture = TestBed.createComponent(MessagesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,47 +1,55 @@
-import { Action, ListConfig } from "../types";
+import { Action, ColumnConfig, ColumnType } from "../types";
 
-export const MESS_DETAIL__MESSAGE_CONFIG: ListConfig[] = [
+export const MESS_DETAIL__MESSAGE_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.TEXT,
     fieldName: "messageId",
   },
   {
+    columnType: ColumnType.LINK,
     fieldName: "conversationId",
     linkUrlRecipe: "../../conversation/$nxConversationId$",
   },
-  { fieldName: "choreographyId" },
-  { fieldName: "partnerId" },
-  { fieldName: "typeName", label: "messageType" },
-  { fieldName: "direction" },
-  { fieldName: "referencedMessageId" },
-  { fieldName: "actionId" },
-  { fieldName: "backendStatus" },
-  { fieldName: "createdDate" },
-  { fieldName: "modifiedDate" },
-  { fieldName: "endDate" },
-  { fieldName: "turnAroundTime" },
-  { fieldName: "expirationDate" },
-  { fieldName: "retries" },
-  { fieldName: "trp", label: "protocolVersion" },
-  { fieldName: "status" },
+  { columnType: ColumnType.TEXT, fieldName: "choreographyId" },
+  { columnType: ColumnType.TEXT, fieldName: "partnerId" },
+  { columnType: ColumnType.TEXT, fieldName: "typeName", label: "messageType" },
+  { columnType: ColumnType.TEXT, fieldName: "direction" },
+  { columnType: ColumnType.TEXT, fieldName: "referencedMessageId" },
+  { columnType: ColumnType.TEXT, fieldName: "actionId" },
+  { columnType: ColumnType.TEXT, fieldName: "backendStatus", titleCase: true },
+  { columnType: ColumnType.TEXT, fieldName: "createdDate" },
+  { columnType: ColumnType.TEXT, fieldName: "modifiedDate" },
+  { columnType: ColumnType.TEXT, fieldName: "endDate" },
+  { columnType: ColumnType.TEXT, fieldName: "turnAroundTime" },
+  { columnType: ColumnType.TEXT, fieldName: "expirationDate" },
+  { columnType: ColumnType.TEXT, fieldName: "retries" },
+  { columnType: ColumnType.TEXT, fieldName: "trp", label: "protocolVersion" },
+  { columnType: ColumnType.TEXT, fieldName: "status", titleCase: true },
 ];
 
-export const MESS_DETAIL__LOG_CONFIG: ListConfig[] = [
+export const MESS_DETAIL__LOG_CONFIG: ColumnConfig[] = [
   {
+    columnType: ColumnType.TEXT,
     fieldName: "severity",
   },
   {
+    columnType: ColumnType.TEXT,
     fieldName: "createdDate",
   },
   {
+    columnType: ColumnType.LONG_TEXT,
     fieldName: "description",
   },
   {
+    columnType: ColumnType.TEXT,
     fieldName: "origin",
   },
   {
+    columnType: ColumnType.TEXT,
     fieldName: "className",
   },
   {
+    columnType: ColumnType.TEXT,
     fieldName: "methodName",
   },
 ];

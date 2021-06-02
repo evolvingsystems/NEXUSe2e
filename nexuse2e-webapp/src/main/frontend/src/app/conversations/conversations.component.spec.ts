@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ConversationListComponent } from "./conversation-list.component";
+import { ConversationsComponent } from "./conversations.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { FilterPanelComponent } from "../filter-panel/filter-panel.component";
@@ -26,10 +26,11 @@ import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
 
 describe("ConversationListComponent", () => {
-  let component: ConversationListComponent;
-  let fixture: ComponentFixture<ConversationListComponent>;
+  let component: ConversationsComponent;
+  let fixture: ComponentFixture<ConversationsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -51,7 +52,7 @@ describe("ConversationListComponent", () => {
         MatSnackBarModule,
       ],
       declarations: [
-        ConversationListComponent,
+        ConversationsComponent,
         FilterPanelComponent,
         PaginatedListComponent,
         SelectFilterComponent,
@@ -63,11 +64,26 @@ describe("ConversationListComponent", () => {
         DateRangePipe,
         ActionButtonComponent,
       ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ConversationListComponent);
+    fixture = TestBed.createComponent(ConversationsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

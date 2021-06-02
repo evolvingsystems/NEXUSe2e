@@ -19,6 +19,7 @@ import { ScreensizeService } from "../services/screensize.service";
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { FilterType } from "../types";
+import { ActivatedRoute } from "@angular/router";
 
 describe("FilterPanelComponent", () => {
   let component: FilterPanelComponent;
@@ -46,6 +47,21 @@ describe("FilterPanelComponent", () => {
         MatNativeDateModule,
         BrowserAnimationsModule,
         MatAutocompleteModule,
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
+            },
+          },
+        },
       ],
     }).compileComponents();
   });

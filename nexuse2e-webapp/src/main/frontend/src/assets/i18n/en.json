@@ -80,7 +80,8 @@
     "header": "Header",
     "view": "View",
     "payload": "Payload",
-    "noConversations": "No conversations"
+    "noConversations": "No conversations",
+    "requeue": "Requeue"
   },
   "status": {
     "FAILED": "Failed",

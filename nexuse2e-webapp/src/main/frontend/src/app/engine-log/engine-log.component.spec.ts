@@ -26,6 +26,7 @@ import { MatCardModule } from "@angular/material/card";
 import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
 
 describe("EngineLogComponent", () => {
   let component: EngineLogComponent;
@@ -62,6 +63,21 @@ describe("EngineLogComponent", () => {
         ListComponent,
         StringPipe,
         DateRangePipe,
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParams: {},
+              queryParamMap: {
+                get: () => {
+                  "startEndDateRange";
+                },
+              },
+            },
+          },
+        },
       ],
     }).compileComponents();
   });

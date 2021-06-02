@@ -1,5 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { ActiveFilterList, Conversation } from "../types";
+import {
+
+  ActiveFilterList,
+  Conversation
+} from "../types";
 import { DataService } from "../services/data.service";
 import { SessionService } from "../services/session.service";
 import {
@@ -11,14 +15,14 @@ import {
   CONV_LIST__FILTERS,
   CONV_LIST__MOBILE_CONFIG,
   participantFilter,
-} from "./conversation-list.config";
+} from "./conversations.config";
 
 @Component({
-  selector: "app-conversation-list",
-  templateUrl: "./conversation-list.component.html",
+  selector: "app-conversations",
+  templateUrl: "./conversations.component.html",
   styles: [],
 })
-export class ConversationListComponent implements OnInit {
+export class ConversationsComponent implements OnInit {
   totalConversationCount?: number;
   conversations: Conversation[] = [];
   loaded = false;
@@ -30,6 +34,7 @@ export class ConversationListComponent implements OnInit {
   actions = CONV_LIST__ACTIONS;
 
   constructor(
+
     private dataService: DataService,
     private sessionService: SessionService
   ) {}
