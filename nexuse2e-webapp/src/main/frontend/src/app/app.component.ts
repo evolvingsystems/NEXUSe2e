@@ -14,7 +14,11 @@ export class AppComponent implements OnInit {
   showHeaderNav = false;
   navExpanded = false;
 
-  constructor(translate: TranslateService, private permissionService: PermissionService, private dataService: DataService) {
+  constructor(
+    translate: TranslateService,
+    private permissionService: PermissionService,
+    private dataService: DataService
+  ) {
     translate.use("en");
   }
 

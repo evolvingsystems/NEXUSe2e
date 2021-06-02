@@ -63,6 +63,7 @@ import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user
 import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
 import { MessageDetailComponent } from "./message-detail/message-detail.component";
 import { SuccessfulMessagesComponent } from "./successful-messages/successful-messages.component";
+import { ConversationStatusCountsComponent } from "./conversation-status-counts/conversation-status-counts.component";
 import { CapsToTitleCasePipe } from "./pipes/caps-to-title-case.pipe";
 
 const routes: Routes = [
@@ -172,6 +173,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConversationDetailComponent,
     MessageDetailComponent,
     SuccessfulMessagesComponent,
+    ConversationStatusCountsComponent,
   ],
   imports: [
     BrowserModule,

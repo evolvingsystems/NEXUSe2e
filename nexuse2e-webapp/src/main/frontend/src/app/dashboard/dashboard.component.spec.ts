@@ -11,6 +11,9 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 import { MatCardModule } from "@angular/material/card";
 import { RouterTestingModule } from "@angular/router/testing";
+import { ConversationStatusCountsComponent } from "../conversation-status-counts/conversation-status-counts.component";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -20,6 +23,7 @@ describe("DashboardComponent", () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [
+          HttpClientTestingModule,
           TranslateModule.forRoot(),
           MatTabsModule,
           BrowserAnimationsModule,
@@ -33,6 +37,8 @@ describe("DashboardComponent", () => {
           SuccessfulMessagesComponent,
           ListComponent,
           CapsToTitleCasePipe,
+          ConversationStatusCountsComponent,
+          LoadingSpinnerComponent,
         ],
       }).compileComponents();
     })
