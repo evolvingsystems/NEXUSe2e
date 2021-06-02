@@ -23,6 +23,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { SimpleTableDialogComponent } from "../simple-table-dialog/simple-table-dialog.component";
 import { NotificationComponent } from "../notification/notification.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { SessionService } from "../services/session.service";
 
 @Component({
   selector: "app-list",
@@ -46,6 +47,7 @@ export class ListComponent implements OnInit {
 
   constructor(
     private selectionService: SelectionService,
+    private sessionService: SessionService,
     private _snackBar: MatSnackBar,
     public screenSizeService: ScreensizeService,
     public dialog: MatDialog
@@ -141,8 +143,12 @@ export class ListComponent implements OnInit {
         } else {
           switch (segments[i]) {
             case "todayMinusTransactionActivityTimeframeInWeeks":
+              const transactionActivityTimeframeInWeeks = this.sessionService.getEngineTimeVariables()
+                ?.transactionActivityTimeframeInWeeks;
               const paramDate = new Date();
-              const minusDate = paramDate.getDate() - 2 * 7;
+              const minusDate =
+                paramDate.getDate() -
+                (transactionActivityTimeframeInWeeks || 0) * 7;
               paramDate.setDate(minusDate);
               queryParam += "" + paramDate.toISOString() + "";
               break;

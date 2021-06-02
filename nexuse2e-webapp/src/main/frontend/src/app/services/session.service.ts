@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActiveFilterList } from "../types";
+import { ActiveFilterList, EngineTimeVariables } from "../types";
 
 @Injectable({
   providedIn: "root",
@@ -54,6 +54,23 @@ export class SessionService {
   setPermittedActions(actionKeys: string[]) {
     if (actionKeys) {
       sessionStorage.setItem("permitted-actions", JSON.stringify(actionKeys));
+    }
+  }
+
+  getEngineTimeVariables(): EngineTimeVariables | undefined {
+    const engineTimeVariables = sessionStorage.getItem("engine-time-variables");
+    if (engineTimeVariables) {
+      return JSON.parse(engineTimeVariables) as EngineTimeVariables;
+    }
+    return undefined;
+  }
+
+  setEngineTimeVariables(engineTimeVariables: EngineTimeVariables) {
+    if (engineTimeVariables) {
+      sessionStorage.setItem(
+        "engine-time-variables",
+        JSON.stringify(engineTimeVariables)
+      );
     }
   }
 

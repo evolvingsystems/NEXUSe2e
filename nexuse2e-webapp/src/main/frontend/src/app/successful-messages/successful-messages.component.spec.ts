@@ -10,6 +10,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 import { MatCardModule } from "@angular/material/card";
 import { RouterTestingModule } from "@angular/router/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("SuccessfulMessagesListComponent", () => {
   let component: SuccessfulMessagesComponent;
@@ -18,6 +19,7 @@ describe("SuccessfulMessagesListComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         TranslateModule.forRoot(),
         MatTabsModule,
         BrowserAnimationsModule,

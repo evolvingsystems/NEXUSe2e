@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Choreography, Partner } from "../types";
 import {
   SUCCESS_MESS__CHOREOGRAPHY_CONFIG,
@@ -11,6 +11,7 @@ import {
   styleUrls: ["./successful-messages.component.scss"],
 })
 export class SuccessfulMessagesComponent implements OnInit {
+  @Input() transactionActivityTimeframeInWeeks = 0;
   choreographies: Choreography[] | undefined;
   choreographyConfig = SUCCESS_MESS__CHOREOGRAPHY_CONFIG;
   partners: Partner[] | undefined;

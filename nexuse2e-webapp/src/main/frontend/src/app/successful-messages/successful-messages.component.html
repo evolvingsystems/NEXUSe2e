@@ -1,4 +1,9 @@
-<span class="subtitle padded">{{ "labels.successfulMessages" | translate }}</span>
+<div class="subtitle">
+  <span>{{ "labels.successfulMessages" | translate }}</span>
+  <span
+    *ngIf="transactionActivityTimeframeInWeeks"> {{ " (" + ("labels.last" | translate) + " " + transactionActivityTimeframeInWeeks
+  + " " + ("labels.weeks" | translate) + ")" }}</span>
+</div>
 <mat-tab-group animationDuration="0ms" color="accent" class="tab-group">
   <mat-tab label="{{ 'labels.choreographies' | translate }}">
     <ng-container *ngIf="choreographies">
