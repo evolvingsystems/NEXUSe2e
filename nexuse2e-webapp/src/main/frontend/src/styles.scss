@@ -20,6 +20,13 @@ $darkerTextGray: #888;
 $textOrange: #E56009;
 $textError: #cc570c;
 $white: #FFFFFF;
+$shade1Yellow: #FCF782;
+$shade2Yellow: #FEFCC6;
+$shade1Grey: #D6D6D6;
+$shade2Grey: #DEDEDE;
+$shade3Grey: #E3E3E3;
+$shade4Grey: #E8E8E8;
+$shade5Grey: #EDEDED;
 $desktopBreakpoint: 980px;
 $desktopBreakpointForMaxWidth: 979px;
 $tabletBreakpoint: 750px;
@@ -261,6 +268,7 @@ a {
 }
 
 /* Status Colors */
+// General
 .statusLeftBorderColor {
   &.error, &.failed, &.fatal {
     border-left-color: $error !important;
@@ -272,6 +280,54 @@ a {
 
   &.completed, &.sent {
     border-left-color: $success !important;
+  }
+}
+
+// Detailed
+.statusDetailedColor {
+  &.error {
+    background: $error;
+    color: $gray6;
+  }
+
+  &.awaiting_ack {
+    background: $shade5Grey;
+  }
+
+  &.unknown {
+    background: $shade2Yellow;
+  }
+
+  &.created {
+    background: $warning;
+  }
+
+  &.processing {
+    background: $info;
+  }
+
+  &.idle {
+    background: $shade1Yellow;
+  }
+
+  &.sending_ack {
+    background: $shade1Grey;
+  }
+
+  &.ack_sent_awaiting_backend {
+    background: $shade4Grey;
+  }
+
+  &.awaiting_backend {
+    background: $shade2Grey;
+  }
+
+  &.backend_sent_sending_ack {
+    background: $shade3Grey;
+  }
+
+  &.completed {
+    background: $success;
   }
 }
 

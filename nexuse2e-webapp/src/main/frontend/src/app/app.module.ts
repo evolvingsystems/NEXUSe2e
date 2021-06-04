@@ -62,6 +62,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { UserConfirmationDialogComponent } from "./user-confirmation-dialog/user-confirmation-dialog.component";
 import { ConversationDetailComponent } from "./conversation-detail/conversation-detail.component";
 import { MessageDetailComponent } from "./message-detail/message-detail.component";
+import { ConversationStatusCountsComponent } from "./conversation-status-counts/conversation-status-counts.component";
 import { CapsToTitleCasePipe } from "./pipes/caps-to-title-case.pipe";
 
 const routes: Routes = [
@@ -170,6 +171,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     UserConfirmationDialogComponent,
     ConversationDetailComponent,
     MessageDetailComponent,
+    ConversationStatusCountsComponent,
   ],
   imports: [
     BrowserModule,

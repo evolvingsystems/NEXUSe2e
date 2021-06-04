@@ -1,21 +1,21 @@
-/**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+/*
+   NEXUSe2e Business Messaging Open Source
+   Copyright 2000-2021, direkt gruppe GmbH
+
+   This is free software; you can redistribute it and/or modify it
+   under the terms of the GNU Lesser General Public License as
+   published by the Free Software Foundation version 3 of
+   the License.
+
+   This software is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with this software; if not, write to the Free
+   Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+   02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e;
 
@@ -122,23 +122,24 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     private Map<String, MimeMapping>         fileExt2MimeMappings           = new HashMap<String, MimeMapping>();
     private long engineStartTime = 0;
     private long serviceStartTime = 0;
-    private String                           timestampPattern               = null;
-    private String							 defaultCharEncoding			= null;
+    private String timestampPattern = null;
+    private String defaultCharEncoding = null;
 
-    private MimetypesFileTypeMap             mimetypesFileTypeMap           = null;
-    private boolean                          advancedRetryLogging           = false;
-    private String                           retryLoggingTemplate;
+    private MimetypesFileTypeMap mimetypesFileTypeMap = null;
+    private boolean advancedRetryLogging = false;
+    private String retryLoggingTemplate;
 
-    private int                              idleGracePeriodInMinutes       = 10;
-    private int                              transactionActivityTimeframeInWeeks = 2;
+    private int idleGracePeriodInMinutes = 10;
+    private int transactionActivityTimeframeInWeeks = 2;
+    private int dashboardTimeFrameInDays = 1;
 
     static {
         // Make sure we have the right JCE provider available...
         BouncyCastleProvider bcp = new BouncyCastleProvider();
-        Security.removeProvider( CertificateUtil.DEFAULT_JCE_PROVIDER );
-        if ( Security.getProvider( CertificateUtil.DEFAULT_JCE_PROVIDER ) == null ) {
-            LOG.debug( "Engine - static initializer - Registering BouncyCastleProvider..." );
-            Security.addProvider( bcp );
+        Security.removeProvider(CertificateUtil.DEFAULT_JCE_PROVIDER);
+        if (Security.getProvider(CertificateUtil.DEFAULT_JCE_PROVIDER) == null) {
+            LOG.debug("Engine - static initializer - Registering BouncyCastleProvider...");
+            Security.addProvider(bcp);
         }
     }
 
@@ -162,7 +163,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     }
 
     /**
-     * @return
+     * @return Engine instance
      */
     public static Engine getInstance() {
 
@@ -250,20 +251,20 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     }
 
-    public void instantiate() throws InstantiationException {
+    public void instantiate() {
 
-        LOG.info( "*** NEXUSe2e Server Version: " + Version.getVersion() );
+        LOG.info("*** NEXUSe2e Server Version: " + Version.getVersion());
 
-        LOG.info( "*** JRE version is: " + System.getProperty( "java.version" ) );
-        LOG.info( "*** Java class path: " + System.getProperty( "java.class.path" ) );
-        LOG.info( "*** Java home: " + System.getProperty( "java.home" ) );
+        LOG.info("*** JRE version is: " + System.getProperty("java.version"));
+        LOG.info("*** Java class path: " + System.getProperty("java.class.path"));
+        LOG.info("*** Java home: " + System.getProperty("java.home"));
 
-        LOG.info( "*** This software is licensed under the GNU Lesser General Public License (LGPL), Version 2.1" );
+        LOG.info("*** This software is licensed under the GNU Lesser General Public License (LGPL), Version 2.1");
 
         // Dump system properties
         Properties properties = System.getProperties();
-        for ( Object property : properties.keySet() ) {
-            LOG.debug( property + " - " + properties.get( property ) );
+        for (Object property : properties.keySet()) {
+            LOG.debug(property + " - " + properties.get(property));
         }
 
         try {
@@ -392,8 +393,8 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     /**
      * Initialze the mime mappings/setup.  This setup is based on the MimeConfig.xml document found in config/mim.
-     * @param home Home directory.
-     * @throws InitializationException
+     *
+     * @throws NexusException
      */
 
     private void initializeMime() throws NexusException {
@@ -414,7 +415,8 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     /**
      * Parse the Mime configuration file to initialize the Mime handlers.
-     * @param mimeConfig Document object for the mime configuration file.
+     *
+     * @param mimeConfigDoc Document object for the mime configuration file.
      */
     private void parseMimeHandlers( Document mimeConfigDoc ) {
 
@@ -526,13 +528,21 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         this.transactionActivityTimeframeInWeeks = transactionActivityTimeframeInWeeks;
     }
 
+    public int getDashboardTimeFrameInDays() {
+        return dashboardTimeFrameInDays;
+    }
+
+    public void setDashboardTimeFrameInDays(int dashboardTimeFrameInDays) {
+        this.dashboardTimeFrameInDays = dashboardTimeFrameInDays;
+    }
+
     /**
      * Inner class to wrap MIME type to handler mappings
      */
     class MimeMapping {
 
-        String mimeType      = null;
-        String dataHandler   = null;
+        String mimeType = null;
+        String dataHandler = null;
         String fileExtension = null;
     }
 
@@ -554,7 +564,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     /**
      * Retrieve the MIME type based on the file extension.
-     * @param mimeType
+     * @param fileName
      * @return String Extension
      */
     public String getMimeFromFileName( String fileName ) {
@@ -568,7 +578,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     /**
      * Retrieve the MIME type based on the file extension.
-     * @param mimeType
+     * @param fileExtension
      * @return String Extension
      */
     public String getMimeFromFileExtension( String fileExtension ) {
@@ -584,8 +594,8 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     /**
      * Add a mime mapping and it's associated extension.
-     * @param mimeType
-     * @param extension
+     * @param newMimeType
+     * @param newExtension
      */
     private void addMimeMapping( String newMimeType, String newExtension ) {
 
@@ -647,7 +657,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
      * Retrieve the Nexus Configuration and create document.
      * @param home Location of the Nexus home passed in at startup time.
      * @param rootDir Location directory relative to the home directory.
-     * @param co
+     * @param configFile
      * @return Document object of configuration.
      */
     private Document retreiveNexusConfig( String home, String rootDir, String configFile ) throws NexusException {
@@ -1215,7 +1225,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     }
     /**
      * Detaches all configurations.
-     * @param key The key.
      */
     public void invalidateConfigurations() {
 
@@ -1385,7 +1394,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     /**
      * Sets the hibernate database dialect class name.
-     * @param The hibernate db dialect class name to set.
+     * @param databaseDialect The hibernate db dialect class name to set.
      */
     public void setDatabaseDialect( String databaseDialect ) {
 

@@ -6,6 +6,7 @@ import {
   Conversation,
   ConversationDetail,
   EngineLog,
+  EngineTimeVariables,
   Message,
   MessageDetail,
   PayloadParams,
@@ -162,6 +163,12 @@ export class DataService {
     return this.get<ConversationDetail>("/conversation", false, httpParams);
   }
 
+  getConversationStatusCounts(): Promise<{ [status: string]: number }> {
+    return this.get<{ [status: string]: number }>(
+      "/conversation-status-counts"
+    );
+  }
+
   deleteConversations(conversationIds: string[]): Promise<void> {
     return this.post("/conversations/delete", conversationIds);
   }
@@ -209,6 +216,10 @@ export class DataService {
       item.messageId +
       (item.payloadId !== undefined ? "&no=" + item.payloadId : "")
     );
+  }
+
+  getEngineTimeVariables(): Promise<EngineTimeVariables> {
+    return this.get<EngineTimeVariables>("/engine-time-variables");
   }
 
   private post(path: string, body: unknown): Promise<void> {

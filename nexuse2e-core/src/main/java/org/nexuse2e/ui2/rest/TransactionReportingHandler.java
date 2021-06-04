@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
@@ -13,6 +15,7 @@ import org.nexuse2e.dao.LogDAO;
 import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.messaging.Constants;
 import org.nexuse2e.pojo.*;
+import org.nexuse2e.reporting.Statistics;
 import org.nexuse2e.reporting.StatisticsConversation;
 import org.nexuse2e.reporting.StatisticsEngineLog;
 import org.nexuse2e.reporting.StatisticsMessage;
@@ -23,12 +26,10 @@ import org.nexuse2e.util.DateWithTimezoneSerializer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class TransactionReportingHandler implements Handler {
     @Override
@@ -42,7 +43,9 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/engine-logs".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/message".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/message".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path));
     }
 
     @Override
@@ -79,6 +82,12 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/message":
                     this.returnMessageByNxId(request, response);
+                    break;
+                case "/conversation-status-counts":
+                    this.returnConversationStatusCounts(response);
+                    break;
+                case "/engine-time-variables":
+                    this.returnEngineTimeVariables(response);
                     break;
             }
         }
@@ -431,5 +440,43 @@ public class TransactionReportingHandler implements Handler {
                 0, false);
         String message = new Gson().toJson(engineLogsCount);
         response.getOutputStream().print(message);
+    }
+
+    private void returnConversationStatusCounts(HttpServletResponse response) throws NexusException, IOException {
+        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
+        Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null, idleGracePeriodInMinutes);
+
+        List<ConversationPojo> conversations = statistics.getConversations();
+        LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
+        org.nexuse2e.integration.info.wsdl.ConversationStatus[] statuses = org.nexuse2e.integration.info.wsdl.ConversationStatus.values();
+
+        for (int i = statuses.length - 1; i >= 0; i--) {
+            statusCounts.put(statuses[i].name().toLowerCase(), 0);
+        }
+        for (ConversationPojo conversation : conversations) {
+            String status = conversation.getStatusName().toLowerCase();
+            statusCounts.put(status, statusCounts.get(status) + 1);
+        }
+
+        String statusCountsJson = new Gson().toJson(statusCounts);
+        response.getOutputStream().print(statusCountsJson);
+    }
+
+    private void returnEngineTimeVariables(HttpServletResponse response) throws JSONException, IOException {
+        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
+        int transactionActivityTimeframeInWeeks = Engine.getInstance().getTransactionActivityTimeframeInWeeks();
+        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
+
+        JSONObject variables = new JSONObject();
+        variables.put("dashboardTimeFrameInDays", dashboardTimeFrameInDays);
+        variables.put("transactionActivityTimeframeInWeeks", transactionActivityTimeframeInWeeks);
+        variables.put("idleGracePeriodInMinutes", idleGracePeriodInMinutes);
+
+        response.getOutputStream().print(String.valueOf(variables));
     }
 }

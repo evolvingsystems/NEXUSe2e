@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
 import { DashboardComponent } from "./dashboard.component";
+import { ConversationStatusCountsComponent } from "../conversation-status-counts/conversation-status-counts.component";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TranslateModule } from "@ngx-translate/core";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -9,7 +13,12 @@ describe("DashboardComponent", () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [DashboardComponent],
+        imports: [HttpClientTestingModule, TranslateModule.forRoot()],
+        declarations: [
+          DashboardComponent,
+          ConversationStatusCountsComponent,
+          LoadingSpinnerComponent,
+        ],
       }).compileComponents();
     })
   );
