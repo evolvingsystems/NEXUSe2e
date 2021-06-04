@@ -15,6 +15,8 @@ import {
   NotificationItem,
   Separator,
   Partner,
+  Certificate,
+  isCertificate,
 } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
@@ -96,6 +98,9 @@ export class ListComponent implements OnInit {
     }
     if (isPartner(item)) {
       return item[propertyName as keyof Partner];
+    }
+    if (isCertificate(item)) {
+      return item[propertyName as keyof Certificate];
     }
   }
 

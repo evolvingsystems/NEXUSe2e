@@ -94,7 +94,12 @@
     "noConversations": "No conversations",
     "last": "last",
     "hours": "hours",
-    "weeks": "weeks"
+    "weeks": "weeks",
+    "certificates": "Certificates",
+    "noUsedCertificates": "no certificates in use",
+    "configuredFor": "Configured For",
+    "certificateName": "Certificate Name",
+    "timeRemaining": "Time Remaining"
   },
   "status": {
     "FAILED": "Failed",

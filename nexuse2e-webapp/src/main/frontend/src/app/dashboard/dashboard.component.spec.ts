@@ -14,6 +14,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ConversationStatusCountsComponent } from "../conversation-status-counts/conversation-status-counts.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
+import { CertificatesComponent } from "../certificates/certificates.component";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -39,6 +40,7 @@ describe("DashboardComponent", () => {
           CapsToTitleCasePipe,
           ConversationStatusCountsComponent,
           LoadingSpinnerComponent,
+          CertificatesComponent,
         ],
       }).compileComponents();
     })
