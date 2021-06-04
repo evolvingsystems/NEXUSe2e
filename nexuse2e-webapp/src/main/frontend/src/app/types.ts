@@ -177,7 +177,7 @@ export interface EngineTimeVariables {
 }
 
 export function isMessage(item: NexusData): item is Message {
-  return (item as Message).typeName !== undefined;
+  return (item as Message).actionId !== undefined;
 }
 
 export function isMessageDetail(item: NexusData): item is MessageDetail {

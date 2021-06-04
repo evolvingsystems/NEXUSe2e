@@ -50,7 +50,8 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/choreographies".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/partners".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/messages-failed".equalsIgnoreCase(path));
     }
 
     @Override
@@ -99,6 +100,9 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/engine-time-variables":
                     this.returnEngineTimeVariables(response);
+                    break;
+                case "/messages-failed":
+                    this.returnFailedMessages(response);
                     break;
             }
         }
@@ -547,5 +551,20 @@ public class TransactionReportingHandler implements Handler {
 
         String partnersJson = new Gson().toJson(partners);
         response.getOutputStream().print(partnersJson);
+    }
+
+    private void returnFailedMessages(HttpServletResponse response) throws NexusException, IOException {
+        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
+        Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null, idleGracePeriodInMinutes);
+
+        List<StatisticsMessage> messages = statistics.getMessages();
+
+        String messagesJson = new Gson().toJson(messages);
+        response.getOutputStream().print(messagesJson);
     }
 }

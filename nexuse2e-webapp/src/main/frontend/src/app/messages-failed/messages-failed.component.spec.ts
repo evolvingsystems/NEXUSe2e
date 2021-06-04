@@ -12,6 +12,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { ListComponent } from "../list/list.component";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 describe("MessagesFailedComponent", () => {
   let component: MessagesFailedComponent;
@@ -34,6 +35,7 @@ describe("MessagesFailedComponent", () => {
         ListComponent,
         ActionButtonComponent,
         CapsToTitleCasePipe,
+        LoadingSpinnerComponent,
       ],
     }).compileComponents();
   });
