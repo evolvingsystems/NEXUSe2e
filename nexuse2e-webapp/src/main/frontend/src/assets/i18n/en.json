@@ -91,10 +91,13 @@
     "noSuccessfullySentMessages": "no successfully sent messages",
     "requeue": "Requeue",
     "showConversations": "show conversations",
-    "noConversations": "No conversations",
+    "noConversations": "no conversations",
     "last": "last",
     "hours": "hours",
-    "weeks": "weeks"
+    "weeks": "weeks",
+    "failedMessages": "Failed Messages",
+    "noFailedMessages": "no failed messages",
+    "showMessages": "show messages"
   },
   "status": {
     "FAILED": "Failed",

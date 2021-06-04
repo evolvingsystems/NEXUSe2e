@@ -1,0 +1,18 @@
+<div class="subtitle">
+  <span>{{ "labels.failedMessages" | translate }}</span>
+  <span
+    *ngIf="dashboardTimeFrameInDays"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
+  + " " + ("labels.hours" | translate) + ")" }}</span>
+</div>
+<ng-container *ngIf="!loaded">
+  <app-loading-spinner></app-loading-spinner>
+</ng-container>
+
+<ng-container *ngIf="failedMessages?.length">
+  <app-list [desktopConfig]="failedMessagesConfig" [mobileConfig]="failedMessagesConfig" [items]="failedMessages"
+            itemType="message"
+            [isSelectable]="false" [showWithoutBorder]="true"></app-list>
+</ng-container>
+<ng-container *ngIf="!failedMessages?.length">
+  <div class="no-results">{{ "labels.noFailedMessages" | translate }}</div>
+</ng-container>
