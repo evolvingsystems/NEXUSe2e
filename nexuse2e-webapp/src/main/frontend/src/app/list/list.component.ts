@@ -15,6 +15,8 @@ import {
   NotificationItem,
   Separator,
   Partner,
+  isConversationMinimum,
+  ConversationMinimum,
 } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
@@ -88,6 +90,9 @@ export class ListComponent implements OnInit {
     if (isConversation(item)) {
       return item[propertyName as keyof Conversation];
     }
+    if (isConversationMinimum(item)) {
+      return item[propertyName as keyof ConversationMinimum];
+    }
     if (isEngineLog(item)) {
       return item[propertyName as keyof EngineLog];
     }
@@ -141,14 +146,22 @@ export class ListComponent implements OnInit {
         if (i % 2 == 0) {
           queryParam += segments[i];
         } else {
+          const paramDate = new Date();
+          let minusDate;
           switch (segments[i]) {
             case "todayMinusTransactionActivityTimeframeInWeeks":
               const transactionActivityTimeframeInWeeks = this.sessionService.getEngineTimeVariables()
                 ?.transactionActivityTimeframeInWeeks;
-              const paramDate = new Date();
-              const minusDate =
+              minusDate =
                 paramDate.getDate() -
                 (transactionActivityTimeframeInWeeks || 0) * 7;
+              paramDate.setDate(minusDate);
+              queryParam += "" + paramDate.toISOString() + "";
+              break;
+            case "todayMinusDashboardTimeFrameInDays":
+              const dashboardTimeFrameInDays = this.sessionService.getEngineTimeVariables()
+                ?.dashboardTimeFrameInDays;
+              minusDate = paramDate.getDate() - (dashboardTimeFrameInDays || 0);
               paramDate.setDate(minusDate);
               queryParam += "" + paramDate.toISOString() + "";
               break;
