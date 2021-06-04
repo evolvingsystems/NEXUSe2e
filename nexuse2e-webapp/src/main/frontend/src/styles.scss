@@ -346,3 +346,35 @@ a {
     padding: 0 10px 10px 10px !important;
   }
 }
+
+/* Tabs */
+::ng-deep .mat-tab-links {
+  background: $gray5;
+  border-bottom: 1px solid $gray4;
+
+  a {
+    color: $gray2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 1 !important;
+  }
+
+  @media (max-width: $mobileBreakpoint) {
+    .mat-tab-link {
+      width: 50%;
+    }
+  }
+}
+
+@media (min-width: $desktopBreakpoint) {
+  ::ng-deep .mat-tab-links {
+    background: white;
+  }
+}
+
+::ng-deep .mat-tab-list {
+  .mat-tab-label {
+    color: $gray2;
+    opacity: 1 !important;
+  }
+}

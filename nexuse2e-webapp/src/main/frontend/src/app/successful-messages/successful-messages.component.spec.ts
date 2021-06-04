@@ -11,6 +11,7 @@ import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 import { MatCardModule } from "@angular/material/card";
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 describe("SuccessfulMessagesListComponent", () => {
   let component: SuccessfulMessagesComponent;
@@ -32,6 +33,7 @@ describe("SuccessfulMessagesListComponent", () => {
         SuccessfulMessagesComponent,
         ListComponent,
         CapsToTitleCasePipe,
+        LoadingSpinnerComponent,
       ],
     }).compileComponents();
   });

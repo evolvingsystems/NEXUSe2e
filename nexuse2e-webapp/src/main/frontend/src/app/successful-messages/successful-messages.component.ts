@@ -4,6 +4,7 @@ import {
   SUCCESS_MESS__CHOREOGRAPHY_CONFIG,
   SUCCESS_MESS__PARTNER_CONFIG,
 } from "./successful-messages.config";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-successful-messages-list",
@@ -16,8 +17,13 @@ export class SuccessfulMessagesComponent implements OnInit {
   choreographyConfig = SUCCESS_MESS__CHOREOGRAPHY_CONFIG;
   partners: Partner[] | undefined;
   partnerConfig = SUCCESS_MESS__PARTNER_CONFIG;
+  loaded = false;
 
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
-  ngOnInit(): void {}
+  async ngOnInit() {
+    this.partners = await this.dataService.getStatisticsPartners();
+    this.choreographies = await this.dataService.getStatisticsChoreographies();
+    this.loaded = true;
+  }
 }
