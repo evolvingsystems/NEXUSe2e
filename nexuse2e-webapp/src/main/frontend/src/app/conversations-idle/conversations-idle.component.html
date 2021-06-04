@@ -1,0 +1,22 @@
+<div class="subtitle">
+  <span>{{ ("labels.idle" | translate) | titlecase }}</span>
+  <span
+    *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
+  + " " + ("labels.hours" | translate) + " " + ("labels.and" | translate) + " > " + idleGracePeriodInMinutes + " " + ("labels.minutes" | translate)
+  + " " + ("labels.idle" | translate) + ")" }}</span>
+</div>
+<ng-container *ngIf="!loaded">
+  <app-loading-spinner></app-loading-spinner>
+</ng-container>
+
+<div [hidden]="!loaded">
+  <ng-container *ngIf="idleConversations?.length">
+    <app-list [desktopConfig]="idleConversationsConfig" [mobileConfig]="idleConversationsConfig"
+              [items]="idleConversations"
+              itemType="conversation"
+              [isSelectable]="false" [showWithoutBorder]="true"></app-list>
+  </ng-container>
+  <ng-container *ngIf="!idleConversations?.length">
+    <div class="no-results">{{ "labels.noIdleConversations" | translate }}</div>
+  </ng-container>
+</div>

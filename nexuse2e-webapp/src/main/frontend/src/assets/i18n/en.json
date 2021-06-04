@@ -94,7 +94,11 @@
     "noConversations": "No conversations",
     "last": "last",
     "hours": "hours",
-    "weeks": "weeks"
+    "weeks": "weeks",
+    "and": "and",
+    "minutes": "minutes",
+    "idle": "idle",
+    "noIdleConversations": "no idle conversations"
   },
   "status": {
     "FAILED": "Failed",
