@@ -18,10 +18,10 @@ export class ConversationStatusCountsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.conversationStatusCounts = await this.dataService.getConversationStatusCounts();
     this.getConversationStatusTotalCount();
+    this.loaded = true;
   }
 
   getConversationStatusTotalCount() {
-    this.loaded = false;
     if (Object.keys(this.conversationStatusCounts).length > 0) {
       for (const conversationStatusCountsKey in this.conversationStatusCounts) {
         this.totalCount =
@@ -29,6 +29,5 @@ export class ConversationStatusCountsComponent implements OnInit {
           this.conversationStatusCounts[conversationStatusCountsKey];
       }
     }
-    this.loaded = true;
   }
 }
