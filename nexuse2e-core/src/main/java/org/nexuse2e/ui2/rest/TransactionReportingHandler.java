@@ -130,21 +130,21 @@ public class TransactionReportingHandler implements Handler {
         if (statusName == null) {
             return null;
         }
-        return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
+        return String.valueOf(MessageStatus.valueOf(statusName.toUpperCase()).getOrdinal());
     }
 
     private String getConversationStatusNumberFromName(String statusName) {
         if (statusName == null) {
             return null;
         }
-        return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
+        return String.valueOf(ConversationStatus.valueOf(statusName.toUpperCase()).getOrdinal());
     }
 
     private Integer getMessageTypeFromName(String typeName) {
         if (typeName == null) {
             return null;
         }
-        switch (typeName) {
+        switch (typeName.toUpperCase()) {
             case "ACKNOWLEDGEMENT":
                 return Constants.INT_MESSAGE_TYPE_ACK;
             case "NORMAL":
