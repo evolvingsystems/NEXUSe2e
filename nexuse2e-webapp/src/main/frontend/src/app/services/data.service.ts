@@ -3,12 +3,14 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import {
   ActiveFilterList,
+  Choreography,
   Conversation,
   ConversationDetail,
   EngineLog,
   EngineTimeVariables,
   Message,
   MessageDetail,
+  Partner,
   PayloadParams,
 } from "../types";
 
@@ -202,6 +204,14 @@ export class DataService {
 
   getVersion(): Promise<string[]> {
     return this.get<string[]>("/version");
+  }
+
+  getStatisticsChoreographies(): Promise<Choreography[]> {
+    return this.get<Choreography[]>("/choreographies");
+  }
+
+  getStatisticsPartners(): Promise<Partner[]> {
+    return this.get<Partner[]>("/partners");
   }
 
   getDownloadPayloadLink(item: PayloadParams) {

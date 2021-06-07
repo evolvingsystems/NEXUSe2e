@@ -16,11 +16,10 @@ import org.nexuse2e.dao.TransactionDAO;
 import org.nexuse2e.messaging.Constants;
 import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.Statistics;
-import org.nexuse2e.reporting.StatisticsConversation;
-import org.nexuse2e.reporting.StatisticsEngineLog;
-import org.nexuse2e.reporting.StatisticsMessage;
+import org.nexuse2e.reporting.*;
 import org.nexuse2e.ui2.model.TransactionReportingConversation;
 import org.nexuse2e.ui2.model.TransactionReportingMessage;
+import org.nexuse2e.util.DateUtil;
 import org.nexuse2e.util.DateWithTimezoneSerializer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +30,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.nexuse2e.util.DateUtil.getCurrentDateMinusWeeks;
+
 public class TransactionReportingHandler implements Handler {
+    private int transactionActivityTimeframeInWeeks = 2;
+
     @Override
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/messages".equalsIgnoreCase(path)) ||
@@ -44,6 +47,8 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/message".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/choreographies".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/partners".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path));
     }
@@ -82,6 +87,12 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/message":
                     this.returnMessageByNxId(request, response);
+                    break;
+                case "/choreographies":
+                    this.returnStatisticsChoreographies(response);
+                    break;
+                case "/partners":
+                    this.returnStatisticsPartners(response);
                     break;
                 case "/conversation-status-counts":
                     this.returnConversationStatusCounts(response);
@@ -478,5 +489,63 @@ public class TransactionReportingHandler implements Handler {
         variables.put("idleGracePeriodInMinutes", idleGracePeriodInMinutes);
 
         response.getOutputStream().print(String.valueOf(variables));
+    }
+
+    private boolean neverOrTooLongAgo(Date date) {
+        return date == null || date.before(getCurrentDateMinusWeeks(transactionActivityTimeframeInWeeks));
+    }
+
+    private String formatTimeDifference(Date date) {
+        if (neverOrTooLongAgo(date)) {
+            return "no messages in " + transactionActivityTimeframeInWeeks + " weeks";
+        }
+        return DateUtil.getDiffTimeRounded(date, new Date()) + " ago";
+    }
+
+    private void returnStatisticsChoreographies(HttpServletResponse response) throws IOException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+
+        List<StatisticsChoreography> choreographies = new LinkedList<>();
+        for (ChoreographyPojo choreographyPojo : choreographyPojos) {
+            StatisticsChoreography choreography = new StatisticsChoreography(choreographyPojo);
+            MessagePojo lastMessageInbound = transactionDAO.getLastSuccessfulMessageByChoreographyAndDirection(choreographyPojo, false);
+            MessagePojo lastMessageOutbound = transactionDAO.getLastSuccessfulMessageByChoreographyAndDirection(choreographyPojo, true);
+            Date lastInboundMessageTime = lastMessageInbound != null ? lastMessageInbound.getCreatedDate() : null;
+            Date lastOutboundMessageTime = lastMessageOutbound != null ? lastMessageOutbound.getCreatedDate() : null;
+            if (!neverOrTooLongAgo(lastInboundMessageTime) || !neverOrTooLongAgo(lastOutboundMessageTime)) {
+                choreography.setLastInboundTime(formatTimeDifference(lastInboundMessageTime));
+                choreography.setLastOutboundTime(formatTimeDifference(lastOutboundMessageTime));
+                choreographies.add(choreography);
+            }
+        }
+
+        String choreographiesJson = new Gson().toJson(choreographies);
+        response.getOutputStream().print(choreographiesJson);
+    }
+
+    private void returnStatisticsPartners(HttpServletResponse response) throws IOException, NexusException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<PartnerPojo> partnerPojos = engineConfiguration.getPartners(
+                org.nexuse2e.configuration.Constants.PARTNER_TYPE_PARTNER, org.nexuse2e.configuration.Constants.PARTNERCOMPARATOR);
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+
+        List<StatisticsPartner> partners = new LinkedList<>();
+        for (PartnerPojo partnerPojo : partnerPojos) {
+            StatisticsPartner partner = new StatisticsPartner(partnerPojo);
+            MessagePojo lastMessageInbound = transactionDAO.getLastSuccessfulMessageByPartnerAndDirection(partnerPojo, false);
+            MessagePojo lastMessageOutbound = transactionDAO.getLastSuccessfulMessageByPartnerAndDirection(partnerPojo, true);
+            Date lastInboundMessageTime = lastMessageInbound != null ? lastMessageInbound.getCreatedDate() : null;
+            Date lastOutboundMessageTime = lastMessageOutbound != null ? lastMessageOutbound.getCreatedDate() : null;
+            if (!neverOrTooLongAgo(lastInboundMessageTime) || !neverOrTooLongAgo(lastOutboundMessageTime)) {
+                partner.setLastInboundTime(formatTimeDifference(lastInboundMessageTime));
+                partner.setLastOutboundTime(formatTimeDifference(lastOutboundMessageTime));
+                partners.add(partner);
+            }
+        }
+
+        String partnersJson = new Gson().toJson(partners);
+        response.getOutputStream().print(partnersJson);
     }
 }

@@ -109,6 +109,8 @@ a {
 
 .subtitle {
   font-size: 18px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 @media(min-width: $desktopBreakpoint) {
@@ -122,10 +124,6 @@ a {
   margin-bottom: 15px;
   padding: 8px;
   color: $gray2;
-
-  &:not(.withoutBorder) {
-    border-left: 5px $gray4 solid;
-  }
 
   .card-header {
     padding-bottom: 4px;
@@ -233,7 +231,6 @@ a {
 
   .mat-cell {
     &[class*="-column-select"] {
-      border-left: 8px solid $gray4;
       padding-left: 16px;
     }
   }
@@ -269,17 +266,21 @@ a {
 
 /* Status Colors */
 // General
-.statusLeftBorderColor {
-  &.error, &.failed, &.fatal {
-    border-left-color: $error !important;
-  }
+.statusLeftBorder {
+  border-left: 5px $gray4 solid;
 
-  &.unknown, &.created, &.idle, &.stopped, &.retrying, &.warn {
-    border-left-color: $warning !important;
-  }
+  &.statusLeftBorderColor {
+    &.error, &.failed, &.fatal {
+      border-left-color: $error !important;
+    }
 
-  &.completed, &.sent {
-    border-left-color: $success !important;
+    &.unknown, &.created, &.idle, &.stopped, &.retrying, &.warn {
+      border-left-color: $warning !important;
+    }
+
+    &.completed, &.sent {
+      border-left-color: $success !important;
+    }
   }
 }
 
@@ -343,5 +344,37 @@ a {
 
   .padded {
     padding: 0 10px 10px 10px !important;
+  }
+}
+
+/* Tabs */
+::ng-deep .mat-tab-links {
+  background: $gray5;
+  border-bottom: 1px solid $gray4;
+
+  a {
+    color: $gray2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 1 !important;
+  }
+
+  @media (max-width: $mobileBreakpoint) {
+    .mat-tab-link {
+      width: 50%;
+    }
+  }
+}
+
+@media (min-width: $desktopBreakpoint) {
+  ::ng-deep .mat-tab-links {
+    background: white;
+  }
+}
+
+::ng-deep .mat-tab-list {
+  .mat-tab-label {
+    color: $gray2;
+    opacity: 1 !important;
   }
 }

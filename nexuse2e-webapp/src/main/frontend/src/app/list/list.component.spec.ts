@@ -11,6 +11,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ColumnType } from "../types";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("ListComponent", () => {
   let component: ListComponent;
@@ -19,6 +20,7 @@ describe("ListComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         MatTableModule,
         MatCheckboxModule,
         MatCardModule,

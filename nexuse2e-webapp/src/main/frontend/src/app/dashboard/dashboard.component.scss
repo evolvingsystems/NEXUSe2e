@@ -1,1 +1,12 @@
 @import '../../styles.scss';
+
+.section {
+  margin-top: 20px;
+}
+
+@media(max-width: $desktopBreakpointForMaxWidth) {
+  .section {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}

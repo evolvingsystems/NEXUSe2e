@@ -1,5 +1,9 @@
-<h1>Dashboard</h1>
+<h1 class="title">{{ "labels.dashboard" | translate }}</h1>
 <div class="section">
   <app-conversation-status-counts
     [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-conversation-status-counts>
+</div>
+<div class="section">
+  <app-successful-messages-list
+    [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
 </div>

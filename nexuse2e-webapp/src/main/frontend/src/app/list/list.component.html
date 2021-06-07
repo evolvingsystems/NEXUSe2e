@@ -12,6 +12,7 @@
             </th>
             <td mat-cell *matCellDef="let element" [class]="(element.status || element.severity) | lowercase"
                 [class.thin]="!isSelectable"
+                [class.statusLeftBorder]="!showWithoutBorder"
                 class="statusLeftBorderColor">
               <mat-checkbox *ngIf="isSelectable" (change)="toggleSelection($event, element)"
                             [checked]="isSelected(element)"></mat-checkbox>
@@ -50,7 +51,8 @@
       >
       </app-master-select>
       <div *ngFor="let item of items" class="item-card-wrapper">
-        <mat-card *ngIf="item" [class]="(item.status || item.severity) | lowercase" class="statusLeftBorderColor">
+        <mat-card *ngIf="item" [class]="(item.status || item.severity) | lowercase"
+                  [class.statusLeftBorder]="!showWithoutBorder" class="statusLeftBorderColor">
           <div *ngIf="headerElement && headerElement.linkUrlRecipe" class="card-header">
             <mat-checkbox *ngIf="isSelectable" (change)="toggleSelection($event, item)"
                           [checked]="isSelected(item)"></mat-checkbox>
@@ -137,7 +139,8 @@
                 class="separator-padding">|</span>
           <span *ngIf="columnConfigItem.separator == separator().BRACKETS">(</span>
             <ng-container *ngIf="columnConfigItem.additionalLinkUrlRecipe">
-              <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)">
+              <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)"
+                 [queryParams]="getQueryParams(item, columnConfigItem.additionalLinkQueryParamsRecipe)">
                 {{ "" + columnConfigItem.additionalLinkText ? ("labels." + columnConfigItem.additionalLinkText | translate) : getProperty(item, columnConfigItem.additionalFieldName) + "" }}
               </a>
             </ng-container>

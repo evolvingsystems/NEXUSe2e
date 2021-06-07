@@ -58,6 +58,21 @@ export interface EngineLog extends NexusData {
   methodName: string;
 }
 
+export interface Choreography extends NexusData {
+  nxChoreographyId: number;
+  name: string;
+  lastInboundTime: string;
+  lastOutboundTime: string;
+}
+
+export interface Partner extends NexusData {
+  partnerId: string;
+  nxPartnerId: number;
+  name: string;
+  lastInboundTime: string;
+  lastOutboundTime: string;
+}
+
 export interface DateRange {
   startDate: Date | undefined;
   endDate: Date | undefined;
@@ -118,6 +133,7 @@ export interface ColumnConfig {
   additionalLinkText?: string;
   linkUrlRecipe?: string;
   additionalLinkUrlRecipe?: string;
+  additionalLinkQueryParamsRecipe?: { [s: string]: string };
   isHeader?: boolean;
   separator?: Separator;
   showCopyIcon?: boolean;
@@ -178,4 +194,12 @@ export function isEngineLog(item: NexusData): item is EngineLog {
 
 export function isDateRange(item: unknown): item is DateRange {
   return (item as DateRange).startDate !== undefined;
+}
+
+export function isChoreography(item: NexusData): item is Choreography {
+  return (item as Choreography).nxChoreographyId !== undefined;
+}
+
+export function isPartner(item: NexusData): item is Partner {
+  return (item as Partner).nxPartnerId !== undefined;
 }
