@@ -580,7 +580,6 @@ public class TransactionReportingHandler implements Handler {
         cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
-        return transactionDAO.getStatistics(timestamp, null, idleGracePeriodInMinutes);
+        return transactionDAO.getStatistics(timestamp, null);
     }
 }
