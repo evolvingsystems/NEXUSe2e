@@ -73,7 +73,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         ReportingPropertiesForm form = (ReportingPropertiesForm) actionForm;
         fillForm(engineConfiguration, reportingSettings, form);
 
-        List<StatisticsMessage> statisticMessages = statistics.getMessages();
+        List<StatisticsMessage> statisticMessages = statistics.getFailedMessages();
 
         List<PartnerPojo> partnerPojos = engineConfiguration.getPartners(
                 Constants.PARTNER_TYPE_PARTNER, Constants.PARTNERCOMPARATOR);

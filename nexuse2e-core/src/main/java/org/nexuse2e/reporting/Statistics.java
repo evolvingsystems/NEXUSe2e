@@ -29,7 +29,7 @@ public class Statistics {
 
     private Date startDate;
     private Date endDate;
-    private List<StatisticsMessage> messages = new ArrayList<>();
+    private List<StatisticsMessage> failedMessages = new ArrayList<>();
     private List<StatisticsConversation> idleConversations = new ArrayList<>();
     private List<ConversationPojo> conversations = new ArrayList<>();
 
@@ -50,12 +50,12 @@ public class Statistics {
         this.endDate = endDate;
     }
 
-    public List<StatisticsMessage> getMessages() {
-        return messages;
+    public List<StatisticsMessage> getFailedMessages() {
+        return failedMessages;
     }
 
-    public void setMessages(List<StatisticsMessage> messages) {
-        this.messages = messages;
+    public void setFailedMessages(List<StatisticsMessage> failedMessages) {
+        this.failedMessages = failedMessages;
     }
 
     public List<StatisticsConversation> getIdleConversations() {

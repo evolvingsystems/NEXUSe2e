@@ -458,13 +458,7 @@ public class TransactionReportingHandler implements Handler {
     }
 
     private void returnConversationStatusCounts(HttpServletResponse response) throws NexusException, IOException {
-        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
-        Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
-        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
-        Statistics statistics = transactionDAO.getStatistics(timestamp, null, idleGracePeriodInMinutes);
+        Statistics statistics = getStatistics();
 
         List<ConversationPojo> conversations = statistics.getConversations();
         LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
@@ -554,17 +548,21 @@ public class TransactionReportingHandler implements Handler {
     }
 
     private void returnFailedMessages(HttpServletResponse response) throws NexusException, IOException {
+        Statistics statistics = getStatistics();
+
+        List<StatisticsMessage> messages = statistics.getFailedMessages();
+
+        String messagesJson = new Gson().toJson(messages);
+        response.getOutputStream().print(messagesJson);
+    }
+
+    private Statistics getStatistics() throws NexusException {
         int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
         int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
-        Statistics statistics = transactionDAO.getStatistics(timestamp, null, idleGracePeriodInMinutes);
-
-        List<StatisticsMessage> messages = statistics.getMessages();
-
-        String messagesJson = new Gson().toJson(messages);
-        response.getOutputStream().print(messagesJson);
+        return transactionDAO.getStatistics(timestamp, null, idleGracePeriodInMinutes);
     }
 }
