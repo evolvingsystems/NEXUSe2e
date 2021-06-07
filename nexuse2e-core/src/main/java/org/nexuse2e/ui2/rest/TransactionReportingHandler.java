@@ -552,7 +552,8 @@ public class TransactionReportingHandler implements Handler {
 
         List<StatisticsMessage> messages = statistics.getFailedMessages();
 
-        String messagesJson = new Gson().toJson(messages);
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+        String messagesJson = gson.toJson(messages);
         response.getOutputStream().print(messagesJson);
     }
 
