@@ -9,6 +9,7 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatCardModule } from "@angular/material/card";
 import { RouterTestingModule } from "@angular/router/testing";
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 describe("CertificatesComponent", () => {
   let component: CertificatesComponent;
@@ -26,7 +27,7 @@ describe("CertificatesComponent", () => {
         MatCardModule,
         RouterTestingModule,
       ],
-      declarations: [CertificatesComponent],
+      declarations: [CertificatesComponent, LoadingSpinnerComponent],
     }).compileComponents();
   });
 

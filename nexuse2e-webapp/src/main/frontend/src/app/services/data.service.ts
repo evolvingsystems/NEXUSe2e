@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import {
   ActiveFilterList,
+  Certificate,
   Choreography,
   Conversation,
   ConversationDetail,
@@ -212,6 +213,10 @@ export class DataService {
 
   getStatisticsPartners(): Promise<Partner[]> {
     return this.get<Partner[]>("/partners");
+  }
+
+  getCertificatesForReport(): Promise<Certificate[]> {
+    return this.get<Certificate[]>("/certificates-for-report");
   }
 
   getDownloadPayloadLink(item: PayloadParams) {

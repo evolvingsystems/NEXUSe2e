@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Certificate } from "../types";
 import { CERTIFICATES_CONFIG } from "./certificates.config";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-certificates",
@@ -12,9 +13,10 @@ export class CertificatesComponent implements OnInit {
   certificatesConfig = CERTIFICATES_CONFIG;
   loaded = false;
 
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.certificates = await this.dataService.getCertificatesForReport();
     this.loaded = true;
   }
 }
