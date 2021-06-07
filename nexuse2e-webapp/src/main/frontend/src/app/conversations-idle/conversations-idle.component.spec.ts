@@ -9,6 +9,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 import { MatCardModule } from "@angular/material/card";
 import { RouterTestingModule } from "@angular/router/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("ConversationsIdleComponent", () => {
   let component: ConversationsIdleComponent;
@@ -17,6 +18,7 @@ describe("ConversationsIdleComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         TranslateModule.forRoot(),
         MatSnackBarModule,
         MatDialogModule,

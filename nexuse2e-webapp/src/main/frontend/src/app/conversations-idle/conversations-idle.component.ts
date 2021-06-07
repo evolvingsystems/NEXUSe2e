@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { IDLE_CONV_CONFIG } from "./conversations-idle.config";
-import { ConversationMinimum } from "../types";
+import { Conversation } from "../types";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-conversations-idle",
@@ -10,13 +11,14 @@ import { ConversationMinimum } from "../types";
 export class ConversationsIdleComponent implements OnInit {
   @Input() dashboardTimeFrameInDays = 0;
   @Input() idleGracePeriodInMinutes = 0;
-  idleConversations: ConversationMinimum[] | undefined;
+  idleConversations: Conversation[] | undefined;
   idleConversationsConfig = IDLE_CONV_CONFIG;
   loaded = false;
 
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.idleConversations = await this.dataService.getIdleConversations();
     this.loaded = true;
   }
 }

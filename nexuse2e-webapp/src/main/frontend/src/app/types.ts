@@ -41,22 +41,13 @@ export interface Conversation extends NexusData {
   status: string;
   currentAction: string;
   turnAroundTime: string;
+  modifiedDate: string;
 }
 
 export interface ConversationDetail extends Conversation {
-  modifiedDate: string;
   endDate: string;
   messages: Message[];
   engineLogs: EngineLog[];
-}
-
-// TODO
-export interface ConversationMinimum extends NexusData {
-  conversationId: string;
-  nxConversationId: number;
-  modifiedDate: string;
-  partnerId: string;
-  choreographyId: string;
 }
 
 export interface EngineLog extends NexusData {
@@ -195,12 +186,6 @@ export function isMessageDetail(item: NexusData): item is MessageDetail {
 
 export function isConversation(item: NexusData): item is Conversation {
   return (item as Conversation).currentAction !== undefined;
-}
-
-export function isConversationMinimum(
-  item: NexusData
-): item is ConversationMinimum {
-  return (item as ConversationMinimum).modifiedDate !== undefined; // TODO this field is not only for conversation minimum
 }
 
 export function isEngineLog(item: NexusData): item is EngineLog {

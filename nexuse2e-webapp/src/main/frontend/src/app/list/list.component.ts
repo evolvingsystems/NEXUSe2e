@@ -15,8 +15,6 @@ import {
   NotificationItem,
   Separator,
   Partner,
-  isConversationMinimum,
-  ConversationMinimum,
 } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
@@ -89,9 +87,6 @@ export class ListComponent implements OnInit {
     }
     if (isConversation(item)) {
       return item[propertyName as keyof Conversation];
-    }
-    if (isConversationMinimum(item)) {
-      return item[propertyName as keyof ConversationMinimum];
     }
     if (isEngineLog(item)) {
       return item[propertyName as keyof EngineLog];

@@ -560,7 +560,8 @@ public class TransactionReportingHandler implements Handler {
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
         List<StatisticsConversation> idleConversations = transactionDAO.getIdleConversations(startDate, null);
 
-        String idleConversationsJson = new Gson().toJson(idleConversations);
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+        String idleConversationsJson = gson.toJson(idleConversations);
         response.getOutputStream().print(idleConversationsJson);
     }
 }
