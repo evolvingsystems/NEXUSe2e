@@ -67,7 +67,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
         transactionActivityTimeframeInWeeks = Engine.getInstance().getTransactionActivityTimeframeInWeeks();
 
-        Statistics statistics = transactionDAO.getStatistics(timestamp, null,idleGracePeriodInMinutes);
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null);
 
         ReportingSettingsForm reportingSettings = new ReportingSettingsForm();
         ReportingPropertiesForm form = (ReportingPropertiesForm) actionForm;

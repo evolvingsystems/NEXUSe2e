@@ -4,7 +4,7 @@
   <app-loading-spinner></app-loading-spinner>
 </ng-container>
 
-<div class="action-button-panel" [hidden]="!loaded">
+<div *ngIf="conversation.length" class="action-button-panel" [hidden]="!loaded">
   <button mat-icon-button aria-label="Back" (click)="back()">
     <mat-icon>arrow_back</mat-icon>
   </button>
