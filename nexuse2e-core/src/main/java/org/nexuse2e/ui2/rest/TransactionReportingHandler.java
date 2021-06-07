@@ -50,7 +50,8 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/choreographies".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/partners".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/certificates-for-report".equalsIgnoreCase(path));
     }
 
     @Override
@@ -99,6 +100,9 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/engine-time-variables":
                     this.returnEngineTimeVariables(response);
+                    break;
+                case "/certificates-for-report":
+                    this.returnCertificatesForReport(response);
                     break;
             }
         }
@@ -547,5 +551,16 @@ public class TransactionReportingHandler implements Handler {
 
         String partnersJson = new Gson().toJson(partners);
         response.getOutputStream().print(partnersJson);
+    }
+
+    private void returnCertificatesForReport(HttpServletResponse response) throws IOException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+
+        Set<StatisticsCertificate> certificates = transactionDAO.getStatisticsCertificates(choreographyPojos);
+
+        String certificatesJson = new Gson().toJson(certificates);
+        response.getOutputStream().print(certificatesJson);
     }
 }

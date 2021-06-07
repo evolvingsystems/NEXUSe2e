@@ -37,6 +37,7 @@ import org.nexuse2e.dao.UpdateTransactionOperation.UpdateScope;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.Statistics;
+import org.nexuse2e.reporting.StatisticsCertificate;
 import org.nexuse2e.reporting.StatisticsConversation;
 import org.nexuse2e.reporting.StatisticsMessage;
 import org.springframework.stereotype.Repository;
@@ -1863,6 +1864,25 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
     private Dialect getDatabaseDialect() {
         return ((SessionFactoryImpl) Engine.getInstance()
                 .getBeanFactory().getBean("hibernateSessionFactory")).getDialect();
+    }
+
+    public Set<StatisticsCertificate> getStatisticsCertificates(List<ChoreographyPojo> choreographyPojos) {
+        Set<StatisticsCertificate> certificates = new TreeSet<>();
+        for (ChoreographyPojo choreographyPojo : choreographyPojos) {
+            List<ParticipantPojo> participants = choreographyPojo.getParticipants();
+            for (ParticipantPojo participantPojo : participants) {
+                ConnectionPojo connection = participantPojo.getConnection();
+                CertificatePojo partnerCertificate = connection.getCertificate();
+                CertificatePojo localCertificate = participantPojo.getLocalCertificate();
+                if (localCertificate != null) {
+                    certificates.add(new StatisticsCertificate(localCertificate, true));
+                }
+                if (partnerCertificate != null) {
+                    certificates.add(new StatisticsCertificate(partnerCertificate, false));
+                }
+            }
+        }
+        return certificates;
     }
 
 }
