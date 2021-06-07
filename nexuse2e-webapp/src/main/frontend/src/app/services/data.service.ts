@@ -175,6 +175,10 @@ export class DataService {
     );
   }
 
+  getIdleConversations(): Promise<Conversation[]> {
+    return this.get<Conversation[]>("/conversations-idle");
+  }
+
   deleteConversations(conversationIds: string[]): Promise<void> {
     return this.post("/conversations/delete", conversationIds);
   }

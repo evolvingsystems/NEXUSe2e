@@ -97,7 +97,12 @@
     "weeks": "weeks",
     "failedMessages": "Failed Messages",
     "noFailedMessages": "no failed messages",
-    "showMessages": "show messages"
+    "showMessages": "show messages",
+    "and": "and",
+    "minutes": "minutes",
+    "idle": "idle",
+    "noIdleConversations": "no idle conversations",
+    "idleSince": "Idle since"
   },
   "status": {
     "FAILED": "Failed",

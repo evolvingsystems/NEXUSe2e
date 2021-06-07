@@ -236,7 +236,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
                 conversationId, messageId, type, startDate, endDate, 0, false));
     }
 
-    public Statistics getStatistics(Date startDate, Date endDate, int idleGracePeriodInMinutes) throws NexusException {
+    public Statistics getStatistics(Date startDate, Date endDate) throws NexusException {
 
         Statistics result = new Statistics();
         result.setStartDate(startDate);
@@ -254,8 +254,20 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
             StatisticsMessage line = new StatisticsMessage(record);
             result.getFailedMessages().add(line);
         }
+
+        result.setIdleConversations(getIdleConversations(startDate, endDate));
+
+        List<ConversationPojo> conversations = getConversationsForStatisticsPlain(startDate, endDate);
+        result.setConversations(conversations);
+
+        return result;
+    }
+
+    public List<StatisticsConversation> getIdleConversations(Date startDate, Date endDate) {
+        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
+
         Date modifiedEndDate = endDate;
-        if(modifiedEndDate == null) {
+        if (modifiedEndDate == null) {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.MINUTE, idleGracePeriodInMinutes * -1);
             modifiedEndDate = new Timestamp(cal.getTimeInMillis());
@@ -267,15 +279,12 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         idleConversationQuery.setMaxResults(11);
         List<Object[]> idleConversationResultSet = idleConversationQuery.list();
 
+        List<StatisticsConversation> idleConversations = new LinkedList<>();
         for (Object[] record : idleConversationResultSet) {
             StatisticsConversation conversation = new StatisticsConversation(record);
-            result.getIdleConversations().add(conversation);
+            idleConversations.add(conversation);
         }
-
-        List<ConversationPojo> conversations = getConversationsForStatisticsPlain(startDate, endDate);
-        result.setConversations(conversations);
-
-        return result;
+        return idleConversations;
     }
 
 

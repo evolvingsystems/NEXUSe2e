@@ -4,7 +4,7 @@
   <app-loading-spinner></app-loading-spinner>
 </ng-container>
 
-<div class="action-button-panel" [hidden]="!loaded">
+<div *ngIf="message.length" class="action-button-panel" [hidden]="!loaded">
   <button mat-icon-button aria-label="Back" (click)="back()">
     <mat-icon>arrow_back</mat-icon>
   </button>
@@ -12,11 +12,11 @@
     <app-action-button
       [action]="action"
       (triggerReload)="update()"
-      [affectedItems]="messages">
+      [affectedItems]="message">
     </app-action-button>
   </ng-container>
 </div>
-<app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="messages"
+<app-list [desktopConfig]="messageConfig" [mobileConfig]="messageConfig" [items]="message"
           itemType="message"
           [isSelectable]="false" showAlwaysAsCard="true"></app-list>
 
