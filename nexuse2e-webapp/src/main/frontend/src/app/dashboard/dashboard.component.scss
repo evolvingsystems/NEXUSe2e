@@ -4,6 +4,20 @@
   margin-top: 20px;
 }
 
+.mobileView {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 15px;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  .section {
+    margin: 0;
+    height: 100%;
+  }
+}
+
 @media(max-width: $desktopBreakpointForMaxWidth) {
   .section {
     margin-left: 10px;

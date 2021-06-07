@@ -3,7 +3,10 @@
   <app-conversation-status-counts
     [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-conversation-status-counts>
 </div>
-<div class="section">
-  <app-successful-messages-list
-    [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
+<div [class.mobileView]="screenSizeService.isMobile()">
+  <div class="section">
+    <app-successful-messages-list
+      [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
+  </div>
 </div>
+

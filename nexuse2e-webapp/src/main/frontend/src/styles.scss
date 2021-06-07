@@ -378,3 +378,26 @@ a {
     opacity: 1 !important;
   }
 }
+
+/* Mobile Dashboard Card */
+.dashboardMobileCard {
+  padding: 20px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  .title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .info {
+    font-size: 30px;
+    font-weight: bold;
+    color: $orangeDark;
+    text-align: center;
+    margin-top: 20px;
+  }
+}

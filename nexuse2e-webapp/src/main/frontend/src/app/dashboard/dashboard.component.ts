@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { EngineTimeVariables } from "../types";
 import { DataService } from "../services/data.service";
 import { SessionService } from "../services/session.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 @Component({
   selector: "app-dashboard",
@@ -17,7 +18,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    public screenSizeService: ScreensizeService
   ) {}
 
   async ngOnInit() {

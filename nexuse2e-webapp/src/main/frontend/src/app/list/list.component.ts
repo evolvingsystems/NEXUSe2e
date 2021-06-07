@@ -2,19 +2,9 @@ import { Component, Input, OnInit } from "@angular/core";
 import {
   ColumnConfig,
   ColumnType,
-  Choreography,
-  Conversation,
-  EngineLog,
-  isChoreography,
-  isConversation,
-  isEngineLog,
-  isMessage,
-  isPartner,
-  Message,
   NexusData,
   NotificationItem,
   Separator,
-  Partner,
 } from "../types";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { SelectionService } from "../services/selection.service";
@@ -24,6 +14,7 @@ import { SimpleTableDialogComponent } from "../simple-table-dialog/simple-table-
 import { NotificationComponent } from "../notification/notification.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SessionService } from "../services/session.service";
+import { UrlBuilderService } from "../services/url-builder.service";
 
 @Component({
   selector: "app-list",
@@ -49,6 +40,7 @@ export class ListComponent implements OnInit {
     private selectionService: SelectionService,
     private sessionService: SessionService,
     private _snackBar: MatSnackBar,
+    public urlBuilderService: UrlBuilderService,
     public screenSizeService: ScreensizeService,
     public dialog: MatDialog
   ) {}
@@ -78,29 +70,8 @@ export class ListComponent implements OnInit {
     return this.mobileConfig.find((e) => e.isHeader);
   }
 
-  getProperty(
-    item: NexusData,
-    propertyName: string
-  ): string | number | undefined {
-    if (isMessage(item)) {
-      return item[propertyName as keyof Message];
-    }
-    if (isConversation(item)) {
-      return item[propertyName as keyof Conversation];
-    }
-    if (isEngineLog(item)) {
-      return item[propertyName as keyof EngineLog];
-    }
-    if (isChoreography(item)) {
-      return item[propertyName as keyof Choreography];
-    }
-    if (isPartner(item)) {
-      return item[propertyName as keyof Partner];
-    }
-  }
-
   getTrimmedProperty(item: NexusData, fieldName: string) {
-    const property = this.getProperty(item, fieldName);
+    const property = this.urlBuilderService.getProperty(item, fieldName);
 
     if (typeof property === "string") {
       return this.isLongText(property)
@@ -115,51 +86,6 @@ export class ListComponent implements OnInit {
     return (
       typeof property === "string" && property.length > this.longTextThreshold
     );
-  }
-
-  getUrl(item: NexusData, linkUrlRecipe: string): string {
-    const segments = linkUrlRecipe.split("$");
-    let url = segments[0];
-    for (let i = 1; i < segments.length; i++) {
-      if (i % 2 == 0) {
-        url += segments[i];
-      } else {
-        url += this.getProperty(item, segments[i]);
-      }
-    }
-    return url.toLowerCase();
-  }
-
-  getQueryParams(
-    item: NexusData,
-    queryParamsRecipe: { [s: string]: string }
-  ): { [s: string]: string } {
-    for (const k in queryParamsRecipe) {
-      const segments = queryParamsRecipe[k].split("$");
-      let queryParam = segments[0];
-      for (let i = 1; i < segments.length; i++) {
-        if (i % 2 == 0) {
-          queryParam += segments[i];
-        } else {
-          switch (segments[i]) {
-            case "todayMinusTransactionActivityTimeframeInWeeks":
-              const transactionActivityTimeframeInWeeks = this.sessionService.getEngineTimeVariables()
-                ?.transactionActivityTimeframeInWeeks;
-              const paramDate = new Date();
-              const minusDate =
-                paramDate.getDate() -
-                (transactionActivityTimeframeInWeeks || 0) * 7;
-              paramDate.setDate(minusDate);
-              queryParam += "" + paramDate.toISOString() + "";
-              break;
-            default:
-              queryParam += this.getProperty(item, segments[i]);
-          }
-        }
-      }
-      queryParamsRecipe[k] = queryParam;
-    }
-    return queryParamsRecipe;
   }
 
   toggleSelection(change: MatCheckboxChange, item: NexusData) {

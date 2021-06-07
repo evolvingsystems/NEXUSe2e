@@ -38,4 +38,13 @@ export const SUCCESS_MESS__PARTNER_CONFIG: ColumnConfig[] = [
   { columnType: ColumnType.TEXT, fieldName: "lastInboundTime" },
   { columnType: ColumnType.TEXT, fieldName: "lastOutboundTime" },
 ];
+
+export const CARD_LINK_CONFIG = {
+  linkUrl: "../reporting/transaction-reporting/conversations",
+  linkParamsRecipe: {
+    startEndDateRange:
+      '{"startDate":"$todayMinusTransactionActivityTimeframeInWeeks$"}',
+    status: "Completed",
+  },
+};
 // END DISPLAY CONFIG
