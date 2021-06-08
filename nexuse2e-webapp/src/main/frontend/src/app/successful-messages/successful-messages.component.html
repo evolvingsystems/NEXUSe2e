@@ -34,7 +34,7 @@
 
 <ng-container *ngIf="screenSizeService.isMobile()">
   <a [routerLink]="mobileCardLinkUrl"
-     [queryParams]="urlBuilderService.getQueryParams(mobileCardLinkQueryParams)">
+     [queryParams]="requestHelper.getQueryParams(mobileCardLinkQueryParams)">
     <mat-card class="dashboardMobileCard">
       <div class="title">
         <div>{{ "labels.successfulMessages" | translate }}</div>

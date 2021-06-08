@@ -7,7 +7,7 @@ import {
 } from "./successful-messages.config";
 import { DataService } from "../services/data.service";
 import { ScreensizeService } from "../services/screensize.service";
-import { UrlBuilderService } from "../services/url-builder.service";
+import { RequestHelper } from "../services/request-helper";
 
 @Component({
   selector: "app-successful-messages-list",
@@ -27,7 +27,7 @@ export class SuccessfulMessagesComponent implements OnInit {
   constructor(
     private dataService: DataService,
     public screenSizeService: ScreensizeService,
-    public urlBuilderService: UrlBuilderService
+    public requestHelper: RequestHelper
   ) {}
 
   async ngOnInit() {

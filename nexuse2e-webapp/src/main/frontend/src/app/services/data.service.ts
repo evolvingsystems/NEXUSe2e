@@ -8,8 +8,14 @@ import {
   ConversationDetail,
   EngineLog,
   EngineTimeVariables,
+  isChoreography,
+  isConversation,
+  isEngineLog,
+  isMessage,
+  isPartner,
   Message,
   MessageDetail,
+  NexusData,
   Partner,
   PayloadParams,
 } from "../types";
@@ -234,6 +240,27 @@ export class DataService {
 
   getEngineTimeVariables(): Promise<EngineTimeVariables> {
     return this.get<EngineTimeVariables>("/engine-time-variables");
+  }
+
+  getProperty(
+    item: NexusData,
+    propertyName: string
+  ): string | number | undefined {
+    if (isMessage(item)) {
+      return item[propertyName as keyof Message];
+    }
+    if (isConversation(item)) {
+      return item[propertyName as keyof Conversation];
+    }
+    if (isEngineLog(item)) {
+      return item[propertyName as keyof EngineLog];
+    }
+    if (isChoreography(item)) {
+      return item[propertyName as keyof Choreography];
+    }
+    if (isPartner(item)) {
+      return item[propertyName as keyof Partner];
+    }
   }
 
   private post(path: string, body: unknown): Promise<void> {

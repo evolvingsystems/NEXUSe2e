@@ -1,22 +1,41 @@
-<div class="subtitle">
-  <span>{{ ("labels.idle" | translate) | titlecase }}</span>
-  <span
-    *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
-  + " " + ("labels.hours" | translate) + " " + ("labels.and" | translate) + " > " + idleGracePeriodInMinutes + " " + ("labels.minutes" | translate)
-  + " " + ("labels.idle" | translate) + ")" }}</span>
-</div>
-<ng-container *ngIf="!loaded">
-  <app-loading-spinner></app-loading-spinner>
+<ng-container *ngIf="!screenSizeService.isMobile()">
+  <div class="subtitle">
+    <span>{{ ("labels.idle" | translate) | titlecase }}</span>
+    <span
+      *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
+    + " " + ("labels.hours" | translate) + " " + ("labels.and" | translate) + " > " + idleGracePeriodInMinutes + " " + ("labels.minutes" | translate)
+    + " " + ("labels.idle" | translate) + ")" }}</span>
+  </div>
+  <ng-container *ngIf="!loaded">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
+
+  <div [hidden]="!loaded">
+    <ng-container *ngIf="idleConversations?.length">
+      <app-list [desktopConfig]="idleConversationsConfig" [mobileConfig]="idleConversationsConfig"
+                [items]="idleConversations"
+                itemType="conversationMinimum"
+                [isSelectable]="false" [showWithoutBorder]="true"></app-list>
+    </ng-container>
+    <ng-container *ngIf="!idleConversations?.length">
+      <div class="no-results">{{ "labels.noIdleConversations" | translate }}</div>
+    </ng-container>
+  </div>
 </ng-container>
 
-<div [hidden]="!loaded">
-  <ng-container *ngIf="idleConversations?.length">
-    <app-list [desktopConfig]="idleConversationsConfig" [mobileConfig]="idleConversationsConfig"
-              [items]="idleConversations"
-              itemType="conversationMinimum"
-              [isSelectable]="false" [showWithoutBorder]="true"></app-list>
-  </ng-container>
-  <ng-container *ngIf="!idleConversations?.length">
-    <div class="no-results">{{ "labels.noIdleConversations" | translate }}</div>
-  </ng-container>
-</div>
+<ng-container *ngIf="screenSizeService.isMobile()">
+  <a [routerLink]="mobileCardLinkUrl"
+     [queryParams]="requestHelper.getQueryParams(mobileCardLinkQueryParams)"
+     [hidden]="!loaded">
+    <mat-card class="dashboardMobileCard">
+      <div class="title">
+        <div>{{ ("labels.idle" | translate) | titlecase }}</div>
+        <div
+          *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
+        + " " + ("labels.hours" | translate) + " " + ("labels.and" | translate) + " > " + idleGracePeriodInMinutes + " " + ("labels.minutes" | translate)
+        + " " + ("labels.idle" | translate) + ")" }}</div>
+      </div>
+      <div class="info">{{ idleConversationsCount }}</div>
+    </mat-card>
+  </a>
+</ng-container>

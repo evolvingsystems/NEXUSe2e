@@ -14,7 +14,8 @@ import { SimpleTableDialogComponent } from "../simple-table-dialog/simple-table-
 import { NotificationComponent } from "../notification/notification.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SessionService } from "../services/session.service";
-import { UrlBuilderService } from "../services/url-builder.service";
+import { RequestHelper } from "../services/request-helper";
+import { DataService } from "../services/data.service";
 
 @Component({
   selector: "app-list",
@@ -40,8 +41,9 @@ export class ListComponent implements OnInit {
     private selectionService: SelectionService,
     private sessionService: SessionService,
     private _snackBar: MatSnackBar,
-    public urlBuilderService: UrlBuilderService,
+    public requestHelper: RequestHelper,
     public screenSizeService: ScreensizeService,
+    public dataService: DataService,
     public dialog: MatDialog
   ) {}
 
@@ -71,7 +73,7 @@ export class ListComponent implements OnInit {
   }
 
   getTrimmedProperty(item: NexusData, fieldName: string) {
-    const property = this.urlBuilderService.getProperty(item, fieldName);
+    const property = this.dataService.getProperty(item, fieldName);
 
     if (typeof property === "string") {
       return this.isLongText(property)
