@@ -252,7 +252,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
         for (Object[] record : messageResultSet) {
             StatisticsMessage line = new StatisticsMessage(record);
-            result.getMessages().add(line);
+            result.getFailedMessages().add(line);
         }
 
         result.setIdleConversations(getIdleConversations(startDate, endDate));
