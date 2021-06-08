@@ -5,6 +5,10 @@
 </div>
 <div [class.mobileView]="screenSizeService.isMobile()">
   <div class="section">
+    <app-messages-failed
+      [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-messages-failed>
+  </div>
+  <div class="section">
     <app-conversations-idle
       [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"
       [idleGracePeriodInMinutes]="engineTimeVariables.idleGracePeriodInMinutes"></app-conversations-idle>
@@ -14,4 +18,3 @@
       [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
   </div>
 </div>
-
