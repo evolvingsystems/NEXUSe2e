@@ -51,6 +51,7 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/partners".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/conversations-idle".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/certificates-for-report".equalsIgnoreCase(path));
     }
 
@@ -100,6 +101,9 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/engine-time-variables":
                     this.returnEngineTimeVariables(response);
+                    break;
+                case "/conversations-idle":
+                    this.returnIdleConversations(response);
                     break;
                 case "/certificates-for-report":
                     this.returnCertificatesForReport(response);
@@ -463,8 +467,7 @@ public class TransactionReportingHandler implements Handler {
         cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        int idleGracePeriodInMinutes = Engine.getInstance().getIdleGracePeriodInMinutes();
-        Statistics statistics = transactionDAO.getStatistics(timestamp, null, idleGracePeriodInMinutes);
+        Statistics statistics = transactionDAO.getStatistics(timestamp, null);
 
         List<ConversationPojo> conversations = statistics.getConversations();
         LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
@@ -551,6 +554,19 @@ public class TransactionReportingHandler implements Handler {
 
         String partnersJson = new Gson().toJson(partners);
         response.getOutputStream().print(partnersJson);
+    }
+
+    private void returnIdleConversations(HttpServletResponse response) throws IOException {
+        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
+        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        List<StatisticsConversation> idleConversations = transactionDAO.getIdleConversations(startDate, null);
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+        String idleConversationsJson = gson.toJson(idleConversations);
+        response.getOutputStream().print(idleConversationsJson);
     }
 
     private void returnCertificatesForReport(HttpServletResponse response) throws IOException {

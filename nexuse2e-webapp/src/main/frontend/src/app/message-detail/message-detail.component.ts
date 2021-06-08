@@ -23,7 +23,7 @@ import {
   styleUrls: ["./message-detail.component.scss"],
 })
 export class MessageDetailComponent implements OnInit {
-  messages: MessageDetail[] = [];
+  message: MessageDetail[] = [];
   engineLogs: EngineLog[] = [];
   messagePayloads: Payload[] = [];
   messageLabels?: ReadonlyMap<string, string>;
@@ -51,7 +51,7 @@ export class MessageDetailComponent implements OnInit {
     this.loaded = false;
     try {
       const item = await this.dataService.getMessageByNxId(nxMessageId);
-      this.messages.push(item);
+      this.message.push(item);
       this.engineLogs = item.engineLogs || [];
       this.messagePayloads = item.messagePayloads || [];
       this.messageLabels = item.messageLabels || {};
@@ -69,12 +69,12 @@ export class MessageDetailComponent implements OnInit {
 
   update() {
     // message needs to be resetted otherwise it pushes message as new item in loadMessage
-    this.messages = [];
+    this.message = [];
     this.loadMessage(String(this.route.snapshot.paramMap.get("id")));
   }
 
   buildDownloadPayloadLink(payloadId?: number): string {
-    const message = this.messages[0];
+    const message = this.message[0];
     if (isMessageDetail(message)) {
       const affectedPayload = {
         choreographyId: message.choreographyId,

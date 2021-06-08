@@ -25,6 +25,7 @@ import org.nexuse2e.NexusException;
 import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.Statistics;
+import org.nexuse2e.reporting.StatisticsConversation;
 import org.nexuse2e.reporting.StatisticsCertificate;
 
 import java.math.BigDecimal;
@@ -79,7 +80,7 @@ public interface TransactionDAO {
                                          String messageId, Date startDate, Date endDate) throws NexusException;
 
 
-    public abstract Statistics getStatistics(Date startDate, Date endDate, int idleGracePeriodInMinutes) throws NexusException;
+    public abstract Statistics getStatistics(Date startDate, Date endDate) throws NexusException;
 
 
         /**
@@ -388,6 +389,13 @@ public interface TransactionDAO {
      * @param session The session to be released.
      */
     public void releaseDBSession(Session session);
+
+    /**
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public List<StatisticsConversation> getIdleConversations(Date startDate, Date endDate);
 
     /**
      * @param choreographyPojos

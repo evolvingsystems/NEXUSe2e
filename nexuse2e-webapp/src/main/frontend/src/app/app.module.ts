@@ -65,6 +65,7 @@ import { MessageDetailComponent } from "./message-detail/message-detail.componen
 import { SuccessfulMessagesComponent } from "./successful-messages/successful-messages.component";
 import { ConversationStatusCountsComponent } from "./conversation-status-counts/conversation-status-counts.component";
 import { CapsToTitleCasePipe } from "./pipes/caps-to-title-case.pipe";
+import { ConversationsIdleComponent } from "./conversations-idle/conversations-idle.component";
 import { CertificatesComponent } from "./certificates/certificates.component";
 
 const routes: Routes = [
@@ -175,6 +176,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MessageDetailComponent,
     SuccessfulMessagesComponent,
     ConversationStatusCountsComponent,
+    ConversationsIdleComponent,
     CertificatesComponent,
   ],
   imports: [

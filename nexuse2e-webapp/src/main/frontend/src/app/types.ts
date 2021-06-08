@@ -41,10 +41,10 @@ export interface Conversation extends NexusData {
   status: string;
   currentAction: string;
   turnAroundTime: string;
+  modifiedDate: string;
 }
 
 export interface ConversationDetail extends Conversation {
-  modifiedDate: string;
   endDate: string;
   messages: Message[];
   engineLogs: EngineLog[];
