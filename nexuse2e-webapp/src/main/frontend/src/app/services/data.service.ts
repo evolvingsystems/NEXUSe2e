@@ -130,6 +130,10 @@ export class DataService {
     );
   }
 
+  getFailedMessages(): Promise<Message[]> {
+    return this.get<Message[]>("/messages-failed");
+  }
+
   requeueMessages(messageIds: string[]): Promise<void> {
     return this.post("/messages/requeue", messageIds);
   }

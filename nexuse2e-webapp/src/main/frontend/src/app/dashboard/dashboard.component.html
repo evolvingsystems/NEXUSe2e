@@ -4,13 +4,17 @@
     [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-conversation-status-counts>
 </div>
 <div class="section">
-  <app-successful-messages-list
-    [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
+  <app-messages-failed
+    [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-messages-failed>
 </div>
 <div class="section">
   <app-conversations-idle
     [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"
     [idleGracePeriodInMinutes]="engineTimeVariables.idleGracePeriodInMinutes"></app-conversations-idle>
+</div>
+<div class="section">
+  <app-successful-messages-list
+    [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
 </div>
 <div class="section">
   <app-certificates></app-certificates>

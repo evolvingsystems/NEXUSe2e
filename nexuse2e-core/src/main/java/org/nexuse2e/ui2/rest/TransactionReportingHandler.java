@@ -51,6 +51,7 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/partners".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/messages-failed".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversations-idle".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/certificates-for-report".equalsIgnoreCase(path));
     }
@@ -105,6 +106,9 @@ public class TransactionReportingHandler implements Handler {
                 case "/conversations-idle":
                     this.returnIdleConversations(response);
                     break;
+                case "/messages-failed":
+                    this.returnFailedMessages(response);
+                    break;
                 case "/certificates-for-report":
                     this.returnCertificatesForReport(response);
                     break;
@@ -134,21 +138,21 @@ public class TransactionReportingHandler implements Handler {
         if (statusName == null) {
             return null;
         }
-        return String.valueOf(MessageStatus.valueOf(statusName).getOrdinal());
+        return String.valueOf(MessageStatus.valueOf(statusName.toUpperCase()).getOrdinal());
     }
 
     private String getConversationStatusNumberFromName(String statusName) {
         if (statusName == null) {
             return null;
         }
-        return String.valueOf(ConversationStatus.valueOf(statusName).getOrdinal());
+        return String.valueOf(ConversationStatus.valueOf(statusName.toUpperCase()).getOrdinal());
     }
 
     private Integer getMessageTypeFromName(String typeName) {
         if (typeName == null) {
             return null;
         }
-        switch (typeName) {
+        switch (typeName.toUpperCase()) {
             case "ACKNOWLEDGEMENT":
                 return Constants.INT_MESSAGE_TYPE_ACK;
             case "NORMAL":
@@ -462,12 +466,7 @@ public class TransactionReportingHandler implements Handler {
     }
 
     private void returnConversationStatusCounts(HttpServletResponse response) throws NexusException, IOException {
-        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
-        Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
-        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
-        Statistics statistics = transactionDAO.getStatistics(timestamp, null);
+        Statistics statistics = getStatistics();
 
         List<ConversationPojo> conversations = statistics.getConversations();
         LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
@@ -567,6 +566,25 @@ public class TransactionReportingHandler implements Handler {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
         String idleConversationsJson = gson.toJson(idleConversations);
         response.getOutputStream().print(idleConversationsJson);
+    }
+
+    private void returnFailedMessages(HttpServletResponse response) throws NexusException, IOException {
+        Statistics statistics = getStatistics();
+
+        List<StatisticsMessage> messages = statistics.getFailedMessages();
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateWithTimezoneSerializer()).create();
+        String messagesJson = gson.toJson(messages);
+        response.getOutputStream().print(messagesJson);
+    }
+
+    private Statistics getStatistics() throws NexusException {
+        int dashboardTimeFrameInDays = Engine.getInstance().getDashboardTimeFrameInDays();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -dashboardTimeFrameInDays);
+        Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+        return transactionDAO.getStatistics(timestamp, null);
     }
 
     private void returnCertificatesForReport(HttpServletResponse response) throws IOException {
