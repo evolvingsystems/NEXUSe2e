@@ -36,4 +36,12 @@ export const FAILED_MESSAGES_CONFIG: ColumnConfig[] = [
     },
   },
 ];
+
+export const CARD_LINK_CONFIG = {
+  linkUrl: "../reporting/transaction-reporting/messages",
+  linkParamsRecipe: {
+    startEndDateRange: '{"startDate":"$todayMinusDashboardTimeFrameInDays$"}',
+    status: "Failed",
+  },
+};
 // END DISPLAY CONFIG
