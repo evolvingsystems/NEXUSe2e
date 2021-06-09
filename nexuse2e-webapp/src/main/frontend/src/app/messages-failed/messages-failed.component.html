@@ -1,9 +1,9 @@
 <ng-container *ngIf="!screenSizeService.isMobile()">
   <div class="subtitle">
     <span>{{ "labels.failedMessages" | translate }}</span>
-    <span
-      *ngIf="dashboardTimeFrameInDays"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
-    + " " + ("labels.hours" | translate) + ")" }}</span>
+    <ng-container *ngIf="dashboardTimeFrameInDays">
+      <span *ngTemplateOutlet="titleTimeFrameContent;"></span>
+    </ng-container>
   </div>
   <ng-container *ngIf="!loaded">
     <app-loading-spinner></app-loading-spinner>
@@ -26,11 +26,16 @@
     <mat-card class="dashboardMobileCard">
       <div class="title">
         <div>{{ "labels.failedMessages" | translate }}</div>
-        <div
-          *ngIf="dashboardTimeFrameInDays"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
-        + " " + ("labels.hours" | translate) + ")" }}</div>
+        <ng-container *ngIf="dashboardTimeFrameInDays">
+          <div *ngTemplateOutlet="titleTimeFrameContent;"></div>
+        </ng-container>
       </div>
       <div class="info">{{ failedMessagesCount }}</div>
     </mat-card>
   </a>
 </ng-container>
+
+<ng-template #titleTimeFrameContent>
+  {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
++ " " + ("labels.hours" | translate) + ")" }}
+</ng-template>

@@ -1,10 +1,9 @@
 <ng-container *ngIf="!screenSizeService.isMobile()">
   <div class="subtitle">
     <span>{{ ("labels.idle" | translate) | titlecase }}</span>
-    <span
-      *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
-    + " " + ("labels.hours" | translate) + " " + ("labels.and" | translate) + " > " + idleGracePeriodInMinutes + " " + ("labels.minutes" | translate)
-    + " " + ("labels.idle" | translate) + ")" }}</span>
+    <ng-container *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes">
+      <span *ngTemplateOutlet="titleTimeFrameContent;"></span>
+    </ng-container>
   </div>
   <ng-container *ngIf="!loaded">
     <app-loading-spinner></app-loading-spinner>
@@ -30,12 +29,18 @@
     <mat-card class="dashboardMobileCard">
       <div class="title">
         <div>{{ ("labels.idle" | translate) | titlecase }}</div>
-        <div
-          *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
-        + " " + ("labels.hours" | translate) + " " + ("labels.and" | translate) + " > " + idleGracePeriodInMinutes + " " + ("labels.minutes" | translate)
-        + " " + ("labels.idle" | translate) + ")" }}</div>
+        <ng-container
+          *ngIf="dashboardTimeFrameInDays && idleGracePeriodInMinutes">
+          <div *ngTemplateOutlet="titleTimeFrameContent;"></div>
+        </ng-container>
       </div>
       <div class="info">{{ idleConversationsCount }}</div>
     </mat-card>
   </a>
 </ng-container>
+
+<ng-template #titleTimeFrameContent>
+  {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24
++ " " + ("labels.hours" | translate) + " " + ("labels.and" | translate) + " > " + idleGracePeriodInMinutes + " " + ("labels.minutes" | translate)
++ " " + ("labels.idle" | translate) + ")" }}
+</ng-template>
