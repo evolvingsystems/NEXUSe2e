@@ -68,6 +68,7 @@ import { CapsToTitleCasePipe } from "./pipes/caps-to-title-case.pipe";
 import { MessagesFailedComponent } from "./messages-failed/messages-failed.component";
 import { ConversationsIdleComponent } from "./conversations-idle/conversations-idle.component";
 import { CertificatesComponent } from "./certificates/certificates.component";
+import { MatChipsModule } from "@angular/material/chips";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -214,6 +215,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSnackBarModule,
     ClipboardModule,
     MatDialogModule,
+    MatChipsModule,
   ],
   providers: [
     {

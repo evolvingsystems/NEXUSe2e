@@ -18,6 +18,7 @@ import { MessagesFailedComponent } from "../messages-failed/messages-failed.comp
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { ConversationsIdleComponent } from "../conversations-idle/conversations-idle.component";
 import { CertificatesComponent } from "../certificates/certificates.component";
+import { MatChipsModule } from "@angular/material/chips";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -35,6 +36,7 @@ describe("DashboardComponent", () => {
           MatDialogModule,
           MatCardModule,
           RouterTestingModule,
+          MatChipsModule,
         ],
         declarations: [
           DashboardComponent,

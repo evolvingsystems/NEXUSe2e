@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { DataService } from "../services/data.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 @Component({
   selector: "app-conversation-status-counts",
@@ -13,7 +14,10 @@ export class ConversationStatusCountsComponent implements OnInit {
   objectKeys = Object.keys;
   loaded = false;
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    public screenSizeService: ScreensizeService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.conversationStatusCounts = await this.dataService.getConversationStatusCounts();
