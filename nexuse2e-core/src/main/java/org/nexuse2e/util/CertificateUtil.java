@@ -491,6 +491,19 @@ public class CertificateUtil {
     } // getRemainingValidity
 
     /**
+     * @param x509certificate
+     * @return int RemainingDayCount
+     */
+    public static int getRemainingDayCount(X509Certificate x509certificate) {
+        long nowMils = System.currentTimeMillis();
+        long expMils = x509certificate.getNotAfter().getTime();
+
+        long div = expMils - nowMils;
+        long day = 1000 * 60 * 60 * 24;
+        return (int) (div / day);
+    }
+
+    /**
      * @param x509Certificate
      * @return
      * @throws CertificateEncodingException
@@ -658,7 +671,7 @@ public class CertificateUtil {
     }
 
     /**
-     * @param requestData
+     * @param request
      * @return
      */
     public static String getPemData(PKCS10CertificationRequest request) throws CertificateEncodingException {
@@ -1023,7 +1036,7 @@ public class CertificateUtil {
     }
 
     /**
-     * @param certificate
+     * @param head
      * @param certificates
      * @return
      */

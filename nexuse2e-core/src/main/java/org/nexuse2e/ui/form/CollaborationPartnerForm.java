@@ -71,12 +71,13 @@ public class CollaborationPartnerForm extends ActionForm {
     public class Certificate {
 
         private String id;
-        private int    nxCertificateId;
+        private int nxCertificateId;
         private String commonName;
         private String organisation;
         private String validity;
         private String issuer;
         private String remaining;
+        private int remainingDayCount;
 
         public void setProperties(CertificatePojo cert) {
 
@@ -130,6 +131,7 @@ public class CollaborationPartnerForm extends ActionForm {
                     valid = "Certificate not valid yet";
                 }
                 setValidity(valid);
+                setRemainingDayCount(CertificateUtil.getRemainingDayCount(x509));
 
                 setRemaining(CertificateUtil.getRemainingValidity(x509));
 
@@ -209,6 +211,14 @@ public class CollaborationPartnerForm extends ActionForm {
         public void setRemaining(String remaining) {
 
             this.remaining = remaining;
+        }
+
+        public int getRemainingDayCount() {
+            return remainingDayCount;
+        }
+
+        public void setRemainingDayCount(int remainingDayCount) {
+            this.remainingDayCount = remainingDayCount;
         }
     }
 

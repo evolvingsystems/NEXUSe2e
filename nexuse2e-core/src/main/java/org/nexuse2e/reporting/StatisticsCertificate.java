@@ -29,6 +29,8 @@ public class StatisticsCertificate implements Comparable<StatisticsCertificate> 
     private final int nxCertificateId;
     private final String configuredFor;
     private int nxPartnerId;
+    private final String validity;
+    private int remainingDays;
 
     public StatisticsCertificate(CertificatePojo certificatePojo, boolean local) {
         CollaborationPartnerForm form = new CollaborationPartnerForm();
@@ -44,6 +46,8 @@ public class StatisticsCertificate implements Comparable<StatisticsCertificate> 
             this.configuredFor = partner.getName();
             this.nxPartnerId = partner.getNxPartnerId();
         }
+        this.validity = certificate.getValidity();
+        this.remainingDays = certificate.getRemainingDayCount();
     }
 
     public String getConfiguredFor() {
@@ -60,6 +64,18 @@ public class StatisticsCertificate implements Comparable<StatisticsCertificate> 
 
     public int getNxPartnerId() {
         return nxPartnerId;
+    }
+
+    public String getValidity() {
+        return validity;
+    }
+
+    public int getRemainingDays() {
+        return remainingDays;
+    }
+
+    public void setRemainingDays(int remainingDays) {
+        this.remainingDays = remainingDays;
     }
 
     public String getTimeUntilExpiry() {

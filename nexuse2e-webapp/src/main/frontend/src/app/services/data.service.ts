@@ -9,6 +9,7 @@ import {
   ConversationDetail,
   EngineLog,
   EngineTimeVariables,
+  isCertificate,
   isChoreography,
   isConversation,
   isEngineLog,
@@ -233,6 +234,11 @@ export class DataService {
     return this.get<Certificate[]>("/certificates-for-report");
   }
 
+  sortAndGetNextExpiringCertificate(certificates: Certificate[]): Certificate {
+    certificates.sort((a, b) => (a.remainingDays > b.remainingDays && 1) || -1);
+    return certificates[0];
+  }
+
   getDownloadPayloadLink(item: PayloadParams) {
     return (
       "/DataSaveAs.do?type=content&choreographyId=" +
@@ -269,6 +275,9 @@ export class DataService {
     }
     if (isPartner(item)) {
       return item[propertyName as keyof Partner];
+    }
+    if (isCertificate(item)) {
+      return item[propertyName as keyof Certificate];
     }
   }
 

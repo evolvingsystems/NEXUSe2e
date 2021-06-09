@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Certificate } from "../types";
 import { CERTIFICATES_CONFIG } from "./certificates.config";
 import { DataService } from "../services/data.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 @Component({
   selector: "app-certificates",
@@ -12,11 +13,19 @@ export class CertificatesComponent implements OnInit {
   certificates: Certificate[] | undefined;
   certificatesConfig = CERTIFICATES_CONFIG;
   loaded = false;
+  certificateNextExpiring: Certificate | undefined;
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    public screenSizeService: ScreensizeService
+  ) {}
 
   async ngOnInit() {
     this.certificates = await this.dataService.getCertificatesForReport();
+    this.certificateNextExpiring = this.dataService.sortAndGetNextExpiringCertificate(
+      this.certificates
+    );
+
     this.loaded = true;
   }
 }
