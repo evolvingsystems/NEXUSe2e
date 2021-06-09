@@ -381,11 +381,11 @@ a {
 
 /* Mobile Dashboard Card */
 .dashboardMobileCard {
-  padding: 20px;
+  padding: 20px !important;
   height: 100%;
   box-sizing: border-box;
-  display: flex;
-  justify-content: center;
+  display: flex !important;
+  justify-content: flex-end;
   flex-direction: column;
 
   .title {

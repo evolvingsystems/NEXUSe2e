@@ -31,9 +31,19 @@ export class ConversationsIdleComponent implements OnInit {
 
   async ngOnInit() {
     this.idleConversations = await this.dataService.getIdleConversations();
+    const linkParamsRecipe = {};
+    Object.assign(linkParamsRecipe, CARD_LINK_CONFIG.linkParamsRecipe);
+    const params = this.requestHelper.getQueryParams(linkParamsRecipe);
+    if (
+      params["startEndDateRange"] &&
+      typeof params["startEndDateRange"] == "string"
+    ) {
+      this.requestHelper.returnStartEndDateRangeAsJson(params);
+    }
     this.idleConversationsCount = await this.dataService.getConversationsCount(
-      this.requestHelper.getQueryParams(CARD_LINK_CONFIG.linkParamsRecipe)
+      params
     );
+
     this.loaded = true;
   }
 }

@@ -30,6 +30,17 @@ export class MessagesFailedComponent implements OnInit {
 
   async ngOnInit() {
     this.failedMessages = await this.dataService.getFailedMessages();
+    const linkParamsRecipe = {};
+    Object.assign(linkParamsRecipe, CARD_LINK_CONFIG.linkParamsRecipe);
+    const params = this.requestHelper.getQueryParams(linkParamsRecipe);
+    if (
+      params["startEndDateRange"] &&
+      typeof params["startEndDateRange"] == "string"
+    ) {
+      this.requestHelper.returnStartEndDateRangeAsJson(params);
+    }
+    this.failedMessagesCount = await this.dataService.getMessagesCount(params);
+
     this.loaded = true;
   }
 }

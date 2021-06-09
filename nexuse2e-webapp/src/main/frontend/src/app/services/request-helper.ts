@@ -66,4 +66,20 @@ export class RequestHelper {
     }
     return queryParamsRecipe;
   }
+
+  returnStartEndDateRangeAsJson(params: { [p: string]: string }) {
+    const startEndDateRange = JSON.parse(params["startEndDateRange"]);
+    if (startEndDateRange.startDate) {
+      startEndDateRange.startDate = new Date(startEndDateRange.startDate);
+    }
+    if (startEndDateRange.endDate) {
+      startEndDateRange.endDate = new Date(startEndDateRange.endDate);
+    }
+    const convertedParam = {
+      startEndDateRange,
+    };
+    Object.assign(params, convertedParam);
+
+    return params;
+  }
 }
