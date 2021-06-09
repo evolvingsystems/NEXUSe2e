@@ -52,7 +52,8 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/messages-failed".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/conversations-idle".equalsIgnoreCase(path));
+                ("GET".equalsIgnoreCase(method) && "/conversations-idle".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/certificates-for-report".equalsIgnoreCase(path));
     }
 
     @Override
@@ -107,6 +108,9 @@ public class TransactionReportingHandler implements Handler {
                     break;
                 case "/messages-failed":
                     this.returnFailedMessages(response);
+                    break;
+                case "/certificates-for-report":
+                    this.returnCertificatesForReport(response);
                     break;
             }
         }
@@ -581,5 +585,16 @@ public class TransactionReportingHandler implements Handler {
         Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
         TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
         return transactionDAO.getStatistics(timestamp, null);
+    }
+
+    private void returnCertificatesForReport(HttpServletResponse response) throws IOException {
+        EngineConfiguration engineConfiguration = Engine.getInstance().getCurrentConfiguration();
+        List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
+        TransactionDAO transactionDAO = Engine.getInstance().getTransactionService().getTransactionDao();
+
+        Set<StatisticsCertificate> certificates = transactionDAO.getStatisticsCertificates(choreographyPojos);
+
+        String certificatesJson = new Gson().toJson(certificates);
+        response.getOutputStream().print(certificatesJson);
     }
 }

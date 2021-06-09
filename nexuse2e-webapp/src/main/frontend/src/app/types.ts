@@ -73,6 +73,14 @@ export interface Partner extends NexusData {
   lastOutboundTime: string;
 }
 
+export interface Certificate extends NexusData {
+  name: string;
+  timeUntilExpiry: string;
+  nxCertificateId: number;
+  configuredFor: string;
+  nxPartnerId: number;
+}
+
 export interface DateRange {
   startDate: Date | undefined;
   endDate: Date | undefined;
@@ -201,5 +209,9 @@ export function isChoreography(item: NexusData): item is Choreography {
 }
 
 export function isPartner(item: NexusData): item is Partner {
-  return (item as Partner).nxPartnerId !== undefined;
+  return (item as Partner).lastInboundTime !== undefined;
+}
+
+export function isCertificate(item: NexusData): item is Certificate {
+  return (item as Certificate).nxCertificateId !== undefined;
 }

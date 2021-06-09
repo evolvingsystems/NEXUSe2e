@@ -17,6 +17,7 @@ import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.comp
 import { MessagesFailedComponent } from "../messages-failed/messages-failed.component";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { ConversationsIdleComponent } from "../conversations-idle/conversations-idle.component";
+import { CertificatesComponent } from "../certificates/certificates.component";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -45,6 +46,7 @@ describe("DashboardComponent", () => {
           ConversationsIdleComponent,
           MessagesFailedComponent,
           ActionButtonComponent,
+          CertificatesComponent,
         ],
       }).compileComponents();
     })

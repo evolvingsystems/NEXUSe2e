@@ -86,7 +86,7 @@ public class ReportingStatisticsAction extends ReportingAction {
         List<ChoreographyPojo> choreographyPojos = engineConfiguration.getChoreographies();
         List<StatisticsChoreography> choreographies = getStatisticsChoreographies(choreographyPojos);
 
-        Set<StatisticsCertificate> certificates = getStatisticsCertificates(choreographyPojos);
+        Set<StatisticsCertificate> certificates = transactionDAO.getStatisticsCertificates(choreographyPojos);
 
         request.setAttribute("choreographies", choreographies);
         request.setAttribute("conversationStatusCounts", conversationStatusCounts);
@@ -142,25 +142,6 @@ public class ReportingStatisticsAction extends ReportingAction {
 
     private boolean neverOrTooLongAgo(Date date) {
         return date == null || date.before(getCurrentDateMinusWeeks(transactionActivityTimeframeInWeeks));
-    }
-
-    private Set<StatisticsCertificate> getStatisticsCertificates(List<ChoreographyPojo> choreographyPojos) {
-        Set<StatisticsCertificate> certificates = new TreeSet<>();
-        for (ChoreographyPojo choreographyPojo : choreographyPojos) {
-            List<ParticipantPojo> participants = choreographyPojo.getParticipants();
-            for (ParticipantPojo participantPojo : participants) {
-                ConnectionPojo connection = participantPojo.getConnection();
-                CertificatePojo partnerCertificate = connection.getCertificate();
-                CertificatePojo localCertificate = participantPojo.getLocalCertificate();
-                if (localCertificate != null) {
-                    certificates.add(new StatisticsCertificate(localCertificate, true));
-                }
-                if (partnerCertificate != null) {
-                    certificates.add(new StatisticsCertificate(partnerCertificate, false));
-                }
-            }
-        }
-        return certificates;
     }
 
     private Map<String, Integer> getConversationCounts(List<ConversationPojo> conversations) {
