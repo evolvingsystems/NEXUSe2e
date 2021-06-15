@@ -81,7 +81,7 @@ export class MessageDetailComponent implements OnInit {
         partnerId: message.partnerId,
         conversationId: message.conversationId,
         messageId: message.messageId,
-        payloadId: payloadId ? payloadId.toString() : undefined,
+        payloadId: payloadId !== undefined ? payloadId.toString() : undefined,
       };
       return this.dataService.getDownloadPayloadLink(affectedPayload);
     }
