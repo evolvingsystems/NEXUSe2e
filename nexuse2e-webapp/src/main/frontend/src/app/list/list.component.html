@@ -117,7 +117,8 @@
   </span>
   <ng-container
     *ngIf="columnConfigItem.columnType == columnType().TEXT || columnConfigItem.columnType == columnType().TEXT_AND_MORE">
-    <span>{{ columnConfigItem.titleCase ? (dataService.getProperty(item, columnConfigItem.fieldName) | capsToTitleCase) : dataService.getProperty(item, columnConfigItem.fieldName) }}</span>
+    <span class="cellText"
+          [class]="getClassNameForValidityColor(item, columnConfigItem.fieldName)">{{ columnConfigItem.titleCase ? (dataService.getProperty(item, columnConfigItem.fieldName) | capsToTitleCase) : dataService.getProperty(item, columnConfigItem.fieldName) }}</span>
   </ng-container>
   <ng-container *ngIf="columnConfigItem.columnType == columnType().LONG_TEXT">
     <ng-container *ngIf="!doNotTrim">

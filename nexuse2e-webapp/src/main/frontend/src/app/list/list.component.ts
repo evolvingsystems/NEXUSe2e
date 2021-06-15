@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import {
   ColumnConfig,
   ColumnType,
+  isCertificate,
   NexusData,
   NotificationItem,
   Separator,
@@ -124,5 +125,19 @@ export class ListComponent implements OnInit {
     const affectedItems: NexusData[] = [];
     affectedItems.push(item);
     return affectedItems;
+  }
+
+  getClassNameForValidityColor(
+    item: NexusData,
+    columnFieldName: string
+  ): string {
+    if (isCertificate(item) && columnFieldName === "validity") {
+      if (item.validity.toLowerCase().includes("okay")) {
+        return "success";
+      } else {
+        return "error";
+      }
+    }
+    return "";
   }
 }
