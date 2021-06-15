@@ -107,7 +107,8 @@
     "noUsedCertificates": "no certificates in use",
     "configuredFor": "Configured For",
     "certificateName": "Certificate Name",
-    "timeRemaining": "Time Remaining"
+    "timeRemaining": "Time Remaining",
+    "dashboardCertificatesNote": "Certificates referenced in your participant configuration"
   },
   "status": {
     "FAILED": "Failed",

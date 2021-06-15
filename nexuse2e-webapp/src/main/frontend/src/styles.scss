@@ -111,6 +111,18 @@ a {
   font-size: 18px;
   padding-top: 10px;
   padding-bottom: 10px;
+
+  &.withIcon {
+    display: flex;
+    flex-direction: row;
+
+    .titleIcon {
+      font-size: 20px;
+      padding-left: 10px;
+      color: $gray3;
+      cursor: pointer;
+    }
+  }
 }
 
 @media(min-width: $desktopBreakpoint) {

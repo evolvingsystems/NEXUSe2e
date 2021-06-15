@@ -1,6 +1,7 @@
 <ng-container *ngIf="!screenSizeService.isMobile()">
-  <div class="subtitle">
+  <div class="subtitle withIcon">
     <span>{{ "labels.certificates" | translate }}</span>
+    <span class="material-icons titleIcon" title="{{ 'labels.dashboardCertificatesNote' | translate }}">help</span>
   </div>
   <ng-container *ngIf="!loaded">
     <app-loading-spinner></app-loading-spinner>
