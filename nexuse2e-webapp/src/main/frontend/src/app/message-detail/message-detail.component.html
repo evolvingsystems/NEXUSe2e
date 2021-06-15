@@ -61,7 +61,7 @@
   </div>
   <ng-container *ngIf="messageLabelsExpanded">
     <mat-card class="withoutBorder">
-      <table class="mat-table">
+      <table *ngIf="messageLabels?.size > 0" class="mat-table">
         <ng-container *ngFor="let messageLabel of messageLabels | keyvalue ">
           <tr>
             <td class="label">{{ messageLabel.key }}</td>
@@ -69,6 +69,9 @@
           </tr>
         </ng-container>
       </table>
+      <ng-container *ngIf="!messageLabels?.size">
+        {{ "labels.noMessageLabels" | translate }}
+      </ng-container>
     </mat-card>
   </ng-container>
 </div>
