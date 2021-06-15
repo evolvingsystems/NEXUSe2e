@@ -47,7 +47,7 @@ export const CONV_DETAIL__MESSAGE_CONFIG: ColumnConfig[] = [
     additionalFieldName: "actionId",
     label: "step",
   },
-  { columnType: ColumnType.TEXT, fieldName: "direction" },
+  { columnType: ColumnType.TEXT, fieldName: "direction", titleCase: true },
   { columnType: ColumnType.TEXT, fieldName: "createdDate" },
   { columnType: ColumnType.TEXT, fieldName: "endDate" },
   { columnType: ColumnType.TEXT, fieldName: "turnAroundTime" },

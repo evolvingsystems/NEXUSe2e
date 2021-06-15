@@ -13,7 +13,7 @@ export const MESS_DETAIL__MESSAGE_CONFIG: ColumnConfig[] = [
   { columnType: ColumnType.TEXT, fieldName: "choreographyId" },
   { columnType: ColumnType.TEXT, fieldName: "partnerId" },
   { columnType: ColumnType.TEXT, fieldName: "typeName", label: "messageType" },
-  { columnType: ColumnType.TEXT, fieldName: "direction" },
+  { columnType: ColumnType.TEXT, fieldName: "direction", titleCase: true },
   { columnType: ColumnType.TEXT, fieldName: "referencedMessageId" },
   { columnType: ColumnType.TEXT, fieldName: "actionId" },
   { columnType: ColumnType.TEXT, fieldName: "backendStatus", titleCase: true },
