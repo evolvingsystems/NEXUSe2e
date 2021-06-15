@@ -4,17 +4,17 @@ import {
   CARD_LINK_CONFIG,
   SUCCESS_MESS__CHOREOGRAPHY_CONFIG,
   SUCCESS_MESS__PARTNER_CONFIG,
-} from "./successful-messages.config";
+} from "./messages-successful.config";
 import { DataService } from "../services/data.service";
 import { ScreensizeService } from "../services/screensize.service";
 import { RequestHelper } from "../services/request-helper";
 
 @Component({
   selector: "app-successful-messages-list",
-  templateUrl: "./successful-messages.component.html",
-  styleUrls: ["./successful-messages.component.scss"],
+  templateUrl: "./messages-successful.component.html",
+  styleUrls: ["./messages-successful.component.scss"],
 })
-export class SuccessfulMessagesComponent implements OnInit {
+export class MessagesSuccessfulComponent implements OnInit {
   @Input() transactionActivityTimeframeInWeeks = 0;
   choreographies: Choreography[] | undefined;
   choreographyConfig = SUCCESS_MESS__CHOREOGRAPHY_CONFIG;

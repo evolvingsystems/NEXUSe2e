@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { DashboardComponent } from "./dashboard.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatTabsModule } from "@angular/material/tabs";
-import { SuccessfulMessagesComponent } from "../successful-messages/successful-messages.component";
+import { MessagesSuccessfulComponent } from "../messages-successful/messages-successful.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ListComponent } from "../list/list.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
@@ -40,7 +40,7 @@ describe("DashboardComponent", () => {
         ],
         declarations: [
           DashboardComponent,
-          SuccessfulMessagesComponent,
+          MessagesSuccessfulComponent,
           ListComponent,
           CapsToTitleCasePipe,
           ConversationStatusCountsComponent,
