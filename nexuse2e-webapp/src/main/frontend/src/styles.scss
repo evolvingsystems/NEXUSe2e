@@ -174,6 +174,7 @@ a {
 
       &[class="description"] {
         white-space: normal;
+        word-break: break-word;
 
         &:before {
           background: transparent;

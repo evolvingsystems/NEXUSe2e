@@ -66,6 +66,7 @@ export const CONV_DETAIL__LOG_CONFIG: ColumnConfig[] = [
   {
     columnType: ColumnType.LONG_TEXT,
     fieldName: "description",
+    showCopyIcon: true,
   },
   {
     columnType: ColumnType.TEXT,
