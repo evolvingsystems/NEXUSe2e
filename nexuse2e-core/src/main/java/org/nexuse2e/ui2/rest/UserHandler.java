@@ -69,6 +69,11 @@ public class UserHandler implements Handler {
         allowedEndpoints.add("/partners");
         allowedEndpoints.add("/choreographies");
         allowedEndpoints.add("/certificates-for-report");
+        allowedEndpoints.add("/engine-logs");
+        allowedEndpoints.add("/engine-logs/count");
+        allowedEndpoints.add("/message");
+        allowedEndpoints.add("/conversation");
+        allowedEndpoints.add("/messages-failed");
 
         // endpoints that are allowed based on role
         Set<String> allowedRequests = user.getRole().getAllowedRequests().keySet();
