@@ -150,6 +150,7 @@ export interface ColumnConfig {
   titleCase?: boolean;
   iconUrlRecipe?: string;
   actionButton?: Action;
+  columnHelpText?: string;
 }
 
 export enum ColumnType {

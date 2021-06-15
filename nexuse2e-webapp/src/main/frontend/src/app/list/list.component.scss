@@ -43,3 +43,15 @@
     height: 20px;
   }
 }
+
+.withIcon {
+  display: flex;
+  flex-direction: row;
+
+  .titleIcon {
+    padding-left: 10px;
+    font-size: 20px;
+    color: $gray3;
+    cursor: pointer;
+  }
+}

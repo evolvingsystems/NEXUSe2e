@@ -16,8 +16,16 @@ export const SUCCESS_MESS__CHOREOGRAPHY_CONFIG: ColumnConfig[] = [
     },
     separator: Separator.BRACKETS,
   },
-  { columnType: ColumnType.TEXT, fieldName: "lastInboundTime" },
-  { columnType: ColumnType.TEXT, fieldName: "lastOutboundTime" },
+  {
+    columnType: ColumnType.TEXT,
+    fieldName: "lastInboundTime",
+    columnHelpText: "inboundHelpText",
+  },
+  {
+    columnType: ColumnType.TEXT,
+    fieldName: "lastOutboundTime",
+    columnHelpText: "outboundHelpText",
+  },
 ];
 
 export const SUCCESS_MESS__PARTNER_CONFIG: ColumnConfig[] = [
