@@ -1,0 +1,15 @@
+<div class="subtitle">
+  <span>{{ "labels.certificates" | translate }}</span>
+</div>
+<ng-container *ngIf="!loaded">
+  <app-loading-spinner></app-loading-spinner>
+</ng-container>
+
+<ng-container *ngIf="certificates?.length">
+  <app-list [desktopConfig]="certificatesConfig" [mobileConfig]="certificatesConfig" [items]="certificates"
+            itemType="certificate"
+            [isSelectable]="false" [showWithoutBorder]="true"></app-list>
+</ng-container>
+<ng-container *ngIf="!certificates?.length">
+  <div class="no-results">{{ "labels.noUsedCertificates" | translate }}</div>
+</ng-container>

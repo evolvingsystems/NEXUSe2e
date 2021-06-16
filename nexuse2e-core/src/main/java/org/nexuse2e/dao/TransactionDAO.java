@@ -26,11 +26,13 @@ import org.nexuse2e.controller.StateTransitionException;
 import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.Statistics;
 import org.nexuse2e.reporting.StatisticsConversation;
+import org.nexuse2e.reporting.StatisticsCertificate;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface TransactionDAO {
 
@@ -394,4 +396,10 @@ public interface TransactionDAO {
      * @return
      */
     public List<StatisticsConversation> getIdleConversations(Date startDate, Date endDate);
+
+    /**
+     * @param choreographyPojos
+     * @return Set<StatisticsCertificate>
+     */
+    public Set<StatisticsCertificate> getStatisticsCertificates(List<ChoreographyPojo> choreographyPojos);
 }

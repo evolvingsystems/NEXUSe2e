@@ -63,7 +63,7 @@
     "origin": "Origin",
     "severity": "Severity",
     "messageText": "Message Text",
-    "modifiedDate": "Date modified",
+    "modifiedDate": "Date Modified",
     "conversationDetail": "Conversation Detail",
     "logs": "Logs",
     "direction": "Direction",
@@ -102,7 +102,12 @@
     "minutes": "minutes",
     "idle": "idle",
     "noIdleConversations": "no idle conversations",
-    "idleSince": "Idle since"
+    "idleSince": "Idle since",
+    "certificates": "Certificates",
+    "noUsedCertificates": "no certificates in use",
+    "configuredFor": "Configured For",
+    "certificateName": "Certificate Name",
+    "timeRemaining": "Time Remaining"
   },
   "status": {
     "FAILED": "Failed",
