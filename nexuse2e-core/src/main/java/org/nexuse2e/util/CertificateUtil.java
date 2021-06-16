@@ -498,9 +498,9 @@ public class CertificateUtil {
         long nowMils = System.currentTimeMillis();
         long expMils = x509certificate.getNotAfter().getTime();
 
-        long div = expMils - nowMils;
+        long divMils = expMils - nowMils;
         long day = 1000 * 60 * 60 * 24;
-        return (int) (div / day);
+        return (int) (divMils / day);
     }
 
     /**

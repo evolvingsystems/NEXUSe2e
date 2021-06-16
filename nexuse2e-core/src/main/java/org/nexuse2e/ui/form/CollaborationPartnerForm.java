@@ -217,7 +217,7 @@ public class CollaborationPartnerForm extends ActionForm {
             return remainingDayCount;
         }
 
-        public void setRemainingDayCount(int remainingDayCount) {
+        private void setRemainingDayCount(int remainingDayCount) {
             this.remainingDayCount = remainingDayCount;
         }
     }

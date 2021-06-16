@@ -46,14 +46,14 @@ export class RequestHelper {
                 paramDate.getDate() -
                 (transactionActivityTimeframeInWeeks || 0) * 7;
               paramDate.setDate(minusDate);
-              queryParam += "" + paramDate.toISOString() + "";
+              queryParam += paramDate.toISOString();
               break;
             case "todayMinusDashboardTimeFrameInDays":
               const dashboardTimeFrameInDays = this.sessionService.getEngineTimeVariables()
                 ?.dashboardTimeFrameInDays;
               minusDate = paramDate.getDate() - (dashboardTimeFrameInDays || 0);
               paramDate.setDate(minusDate);
-              queryParam += "" + paramDate.toISOString() + "";
+              queryParam += paramDate.toISOString();
               break;
             default:
               if (item) {
