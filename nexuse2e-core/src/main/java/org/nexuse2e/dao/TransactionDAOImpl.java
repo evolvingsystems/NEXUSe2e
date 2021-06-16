@@ -340,12 +340,14 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
 
     private String buildIdleConversationQuery(Date startDate, Date endDate) {
-        StringBuilder sqlQuery = new StringBuilder("SELECT nx_conversation.conversation_id, nx_conversation.created_date, nx_conversation.modified_date, nx_conversation.status, nx_conversation.nx_conversation_id, nx_choreography.name as choreography, nx_partner.partner_id\n" +
+        StringBuilder sqlQuery = new StringBuilder("SELECT nx_conversation.conversation_id, nx_conversation.created_date, nx_conversation.modified_date, nx_conversation.status, nx_conversation.nx_conversation_id, nx_choreography.name as choreography, nx_partner.partner_id, nx_action.name as currentAction\n" +
                 " FROM nx_conversation " +
                 " INNER JOIN nx_choreography " +
                 " ON nx_conversation.nx_choreography_id = nx_choreography.nx_choreography_id " +
                 " INNER JOIN nx_partner " +
                 " ON nx_conversation.nx_partner_id = nx_partner.nx_partner_id " +
+                " INNER JOIN nx_action " +
+                " ON nx_conversation.current_nx_action_id = nx_action.nx_action_id " +
                 " WHERE nx_conversation.status = 4 ");
 
         if (startDate != null || endDate != null) {

@@ -13,7 +13,7 @@
     <ng-container *ngIf="idleConversations?.length">
       <app-list [desktopConfig]="idleConversationsConfig" [mobileConfig]="idleConversationsConfig"
                 [items]="idleConversations"
-                itemType="conversationMinimum"
+                itemType="conversation"
                 [isSelectable]="false" [showWithoutBorder]="true"></app-list>
     </ng-container>
     <ng-container *ngIf="!idleConversations?.length">
