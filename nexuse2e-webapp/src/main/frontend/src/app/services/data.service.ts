@@ -235,7 +235,9 @@ export class DataService {
   }
 
   sortAndGetNextExpiringCertificate(certificates: Certificate[]): Certificate {
-    certificates.sort((a, b) => (a.remainingDays > b.remainingDays && 1) || -1);
+    certificates.sort(
+      (a, b) => (a.remainingDayCount > b.remainingDayCount && 1) || -1
+    );
     return certificates[0];
   }
 

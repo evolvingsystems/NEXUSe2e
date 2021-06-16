@@ -80,7 +80,7 @@ export interface Certificate extends NexusData {
   configuredFor: string;
   nxPartnerId: number;
   validity: string;
-  remainingDays: number;
+  remainingDayCount: number;
 }
 
 export interface DateRange {
