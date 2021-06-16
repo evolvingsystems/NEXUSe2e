@@ -11,9 +11,10 @@
            spellcheck="false"
     />
   </label>
-  <button mat-button *ngIf="currentValue" matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-    <mat-icon>close</mat-icon>
-  </button>
+  <mat-icon *ngIf="currentValue"
+            (click)="clear()"
+            class="icon-click in-field">clear
+  </mat-icon>
 
   <mat-autocomplete
     #auto="matAutocomplete"
