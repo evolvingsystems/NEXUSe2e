@@ -16,7 +16,7 @@
       <ng-container *ngTemplateOutlet="barWithLegendList;"></ng-container>
     </ng-container>
   </ng-container>
-  <div *ngIf="totalCount === 0" [hidden]="!loaded">
+  <div *ngIf="totalCount === 0" [hidden]="!loaded" class="paddedRightLeft">
     {{ "labels.noConversations" | translate }}
   </div>
 </ng-container>
