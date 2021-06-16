@@ -1,20 +1,72 @@
-<div class="subtitle">
-  <span>{{ ("labels.conversations" | translate) }}</span>
-  <span *ngIf="dashboardTimeFrameInDays"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24 +
-  " " + ("labels.hours" | translate) + ")" }}</span>
-</div>
-<ng-container *ngIf="!loaded">
-  <app-loading-spinner></app-loading-spinner>
+<ng-container *ngIf="!screenSizeService.isMobile()">
+  <div class="subtitle">
+    <span>{{ ("labels.conversations" | translate) }}</span>
+    <span
+      *ngIf="dashboardTimeFrameInDays"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24 +
+    " " + ("labels.hours" | translate) + ")" }}</span>
+  </div>
+  <ng-container *ngIf="!loaded">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
+  <ng-container *ngIf="totalCount > 0">
+    <ng-container *ngIf="statusCountOver0 <= 5">
+      <ng-container *ngTemplateOutlet="barWithCountsInside;"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="statusCountOver0 > 5">
+      <ng-container *ngTemplateOutlet="barWithLegendList;"></ng-container>
+    </ng-container>
+  </ng-container>
+  <div *ngIf="totalCount === 0" [hidden]="!loaded">
+    {{ "labels.noConversations" | translate }}
+  </div>
 </ng-container>
 
-<div *ngIf="totalCount > 0" class="status-count-bar" [hidden]="!loaded">
-  <ng-container *ngFor="let status of objectKeys(conversationStatusCounts)">
-    <div *ngIf="conversationStatusCounts[status] > 0" class="segment statusDetailedColor"
-         [style.width.%]="(conversationStatusCounts[status] / totalCount) * 100" [class]="status">
-      <span>{{ "status." + (status | uppercase) | translate }} ({{ "" + conversationStatusCounts[status] + "" }})</span>
+<ng-container *ngIf="screenSizeService.isMobile()">
+  <mat-card class="dashboardMobileCard conversationsMobileCard">
+    <div class="subtitle">
+      <span>{{ ("labels.conversations" | translate) }}</span>
+      <span
+        *ngIf="dashboardTimeFrameInDays"> {{ " (" + ("labels.last" | translate) + " " + dashboardTimeFrameInDays * 24 +
+      " " + ("labels.hours" | translate) + ")" }}</span>
     </div>
-  </ng-container>
-</div>
-<div *ngIf="totalCount === 0" [hidden]="!loaded">
-  {{ "labels.noConversations" | translate }}
-</div>
+    <ng-container *ngIf="totalCount > 0">
+      <ng-container *ngTemplateOutlet="barWithLegendList;"></ng-container>
+    </ng-container>
+    <div *ngIf="totalCount === 0" [hidden]="!loaded">
+      {{ "labels.noConversations" | translate }}
+    </div>
+  </mat-card>
+</ng-container>
+
+<ng-template #barWithLegendList>
+  <div class="status-count-bar" [hidden]="!loaded">
+    <ng-container *ngFor="let status of objectKeys(conversationStatusCounts)">
+      <div *ngIf="conversationStatusCounts[status] > 0" class="segment statusDetailedColor"
+           [style.width.%]="(conversationStatusCounts[status] / totalCount) * 100" [class]="status">
+      </div>
+    </ng-container>
+  </div>
+  <mat-chip-list class="legend">
+    <ng-container *ngFor="let status of objectKeys(conversationStatusCounts)">
+      <mat-chip *ngIf="conversationStatusCounts[status] > 0" class="label">
+        <span class="dot statusDetailedColor" [class]="status"></span>
+        <span>{{ "status." + (status | uppercase) | translate }} ({{ "" + conversationStatusCounts[status] + "" }}
+          )</span>
+      </mat-chip>
+    </ng-container>
+  </mat-chip-list>
+</ng-template>
+
+<ng-template #barWithCountsInside>
+  <div class="status-count-bar" [hidden]="!loaded">
+    <ng-container *ngFor="let status of objectKeys(conversationStatusCounts)">
+      <div *ngIf="conversationStatusCounts[status] > 0" class="segment statusDetailedColor"
+           [style.width.%]="(conversationStatusCounts[status] / totalCount) * 100" [class]="status"
+           title="{{ 'status.' + (status | uppercase) | translate }} ({{ '' + conversationStatusCounts[status] + '' }})">
+        <span
+          *ngIf="((conversationStatusCounts[status] / totalCount) * 100) >= 10">{{ "status." + (status | uppercase) | translate }}
+          ({{ "" + conversationStatusCounts[status] + "" }})</span>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

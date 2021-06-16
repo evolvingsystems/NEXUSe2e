@@ -16,8 +16,16 @@ export const SUCCESS_MESS__CHOREOGRAPHY_CONFIG: ColumnConfig[] = [
     },
     separator: Separator.BRACKETS,
   },
-  { columnType: ColumnType.TEXT, fieldName: "lastInboundTime" },
-  { columnType: ColumnType.TEXT, fieldName: "lastOutboundTime" },
+  {
+    columnType: ColumnType.TEXT,
+    fieldName: "lastInboundTime",
+    columnHelpText: "inboundHelpText",
+  },
+  {
+    columnType: ColumnType.TEXT,
+    fieldName: "lastOutboundTime",
+    columnHelpText: "outboundHelpText",
+  },
 ];
 
 export const SUCCESS_MESS__PARTNER_CONFIG: ColumnConfig[] = [
@@ -38,4 +46,13 @@ export const SUCCESS_MESS__PARTNER_CONFIG: ColumnConfig[] = [
   { columnType: ColumnType.TEXT, fieldName: "lastInboundTime" },
   { columnType: ColumnType.TEXT, fieldName: "lastOutboundTime" },
 ];
+
+export const CARD_LINK_CONFIG = {
+  linkUrl: "../reporting/transaction-reporting/conversations",
+  linkParamsRecipe: {
+    startEndDateRange:
+      '{"startDate":"$todayMinusTransactionActivityTimeframeInWeeks$"}',
+    status: "Completed",
+  },
+};
 // END DISPLAY CONFIG

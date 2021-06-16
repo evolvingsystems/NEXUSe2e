@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SuccessfulMessagesComponent } from "./successful-messages.component";
+import { MessagesSuccessfulComponent } from "./messages-successful.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatTabsModule } from "@angular/material/tabs";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -13,9 +13,9 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
-describe("SuccessfulMessagesListComponent", () => {
-  let component: SuccessfulMessagesComponent;
-  let fixture: ComponentFixture<SuccessfulMessagesComponent>;
+describe("MessagesSuccessfulComponent", () => {
+  let component: MessagesSuccessfulComponent;
+  let fixture: ComponentFixture<MessagesSuccessfulComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe("SuccessfulMessagesListComponent", () => {
         RouterTestingModule,
       ],
       declarations: [
-        SuccessfulMessagesComponent,
+        MessagesSuccessfulComponent,
         ListComponent,
         CapsToTitleCasePipe,
         LoadingSpinnerComponent,
@@ -39,7 +39,7 @@ describe("SuccessfulMessagesListComponent", () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SuccessfulMessagesComponent);
+    fixture = TestBed.createComponent(MessagesSuccessfulComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

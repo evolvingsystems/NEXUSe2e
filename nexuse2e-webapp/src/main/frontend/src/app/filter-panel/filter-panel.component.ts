@@ -15,7 +15,6 @@ export class FilterPanelComponent implements OnInit {
   @Output() filterChange: EventEmitter<ActiveFilterList> = new EventEmitter();
   expanded = false;
   activeFilters: ActiveFilterList = {};
-  innerWidth = window.innerWidth;
 
   constructor(
     public screenSizeService: ScreensizeService,

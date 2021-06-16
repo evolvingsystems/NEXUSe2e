@@ -31,4 +31,12 @@ export const IDLE_CONV_CONFIG: ColumnConfig[] = [
     label: "choreography",
   },
 ];
+
+export const CARD_LINK_CONFIG = {
+  linkUrl: "../reporting/transaction-reporting/conversations",
+  linkParamsRecipe: {
+    startEndDateRange: '{"startDate":"$todayMinusDashboardTimeFrameInDays$"}',
+    status: "Idle",
+  },
+};
 // END DISPLAY CONFIG

@@ -1,21 +1,25 @@
 <h1 class="title">{{ "labels.dashboard" | translate }}</h1>
-<div class="section">
-  <app-conversation-status-counts
-    [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-conversation-status-counts>
-</div>
-<div class="section">
-  <app-messages-failed
-    [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-messages-failed>
-</div>
-<div class="section">
-  <app-conversations-idle
-    [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"
-    [idleGracePeriodInMinutes]="engineTimeVariables.idleGracePeriodInMinutes"></app-conversations-idle>
-</div>
-<div class="section">
-  <app-successful-messages-list
-    [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
-</div>
-<div class="section">
-  <app-certificates></app-certificates>
+<div class="dashboardWrapper">
+  <div class="section">
+    <app-conversation-status-counts
+      [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-conversation-status-counts>
+  </div>
+  <div [class.mobileView]="screenSizeService.isMobile()">
+    <div class="section">
+      <app-messages-failed
+        [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"></app-messages-failed>
+    </div>
+    <div class="section">
+      <app-conversations-idle
+        [dashboardTimeFrameInDays]="engineTimeVariables.dashboardTimeFrameInDays"
+        [idleGracePeriodInMinutes]="engineTimeVariables.idleGracePeriodInMinutes"></app-conversations-idle>
+    </div>
+    <div class="section">
+      <app-successful-messages-list
+        [transactionActivityTimeframeInWeeks]="engineTimeVariables.transactionActivityTimeframeInWeeks"></app-successful-messages-list>
+    </div>
+    <div class="section">
+      <app-certificates></app-certificates>
+    </div>
+  </div>
 </div>

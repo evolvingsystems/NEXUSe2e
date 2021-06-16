@@ -1,0 +1,47 @@
+<ng-container *ngIf="!screenSizeService.isMobile()">
+  <div class="subtitle">
+    <span>{{ "labels.successfulMessages" | translate }}</span>
+    <span
+      *ngIf="transactionActivityTimeframeInWeeks"> {{ " (" + ("labels.last" | translate) + " " + transactionActivityTimeframeInWeeks
+    + " " + ("labels.weeks" | translate) + ")" }}</span>
+  </div>
+  <ng-container *ngIf="!loaded">
+    <app-loading-spinner></app-loading-spinner>
+  </ng-container>
+
+  <mat-tab-group animationDuration="0ms" color="accent" class="tab-group" [hidden]="!loaded">
+    <mat-tab label="{{ 'labels.choreographies' | translate }}">
+      <ng-container *ngIf="choreographies?.length">
+        <app-list [desktopConfig]="choreographyConfig" [mobileConfig]="choreographyConfig" [items]="choreographies"
+                  itemType="choreography"
+                  [isSelectable]="false" [showWithoutBorder]="true"></app-list>
+      </ng-container>
+      <ng-container *ngIf="!choreographies?.length">
+        <div class="no-results">{{ "labels.noSuccessfullySentMessages" | translate }}</div>
+      </ng-container>
+    </mat-tab>
+    <mat-tab label="{{ 'labels.partners' | translate }}">
+      <ng-container *ngIf="partners?.length">
+        <app-list [desktopConfig]="partnerConfig" [mobileConfig]="partnerConfig" [items]="partners" itemType="partner"
+                  [isSelectable]="false" [showWithoutBorder]="true"></app-list>
+      </ng-container>
+      <ng-container *ngIf="!partners?.length">
+        <div class="no-results">{{ "labels.noSuccessfullySentMessages" | translate }}</div>
+      </ng-container>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>
+
+<ng-container *ngIf="screenSizeService.isMobile()">
+  <a [routerLink]="mobileCardLinkUrl"
+     [queryParams]="requestHelper.getQueryParams(mobileCardLinkQueryParams)">
+    <mat-card class="dashboardMobileCard">
+      <div class="title">
+        <div>{{ "labels.successfulMessages" | translate }}</div>
+        <div
+          *ngIf="transactionActivityTimeframeInWeeks"> {{ " (" + ("labels.last" | translate) + " " + transactionActivityTimeframeInWeeks
+        + " " + ("labels.weeks" | translate) + ")" }}</div>
+      </div>
+    </mat-card>
+  </a>
+</ng-container>

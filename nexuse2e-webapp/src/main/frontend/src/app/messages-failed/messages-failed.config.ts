@@ -5,7 +5,7 @@ export const FAILED_MESSAGES_CONFIG: ColumnConfig[] = [
   {
     columnType: ColumnType.LINK_AND_MORE,
     fieldName: "messageId",
-    linkUrlRecipe: "../reporting/messages/$nxMessageId$",
+    linkUrlRecipe: "../reporting/message/$nxMessageId$",
     additionalLinkText: "showMessages",
     additionalLinkUrlRecipe: "../reporting/transaction-reporting/messages",
     additionalLinkQueryParamsRecipe: {
@@ -36,4 +36,12 @@ export const FAILED_MESSAGES_CONFIG: ColumnConfig[] = [
     },
   },
 ];
+
+export const CARD_LINK_CONFIG = {
+  linkUrl: "../reporting/transaction-reporting/messages",
+  linkParamsRecipe: {
+    startEndDateRange: '{"startDate":"$todayMinusDashboardTimeFrameInDays$"}',
+    status: "Failed",
+  },
+};
 // END DISPLAY CONFIG

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { DataService } from "../services/data.service";
+import { ScreensizeService } from "../services/screensize.service";
 
 @Component({
   selector: "app-conversation-status-counts",
@@ -9,15 +10,20 @@ import { DataService } from "../services/data.service";
 export class ConversationStatusCountsComponent implements OnInit {
   @Input() dashboardTimeFrameInDays = 0;
   conversationStatusCounts: { [status: string]: number } = {};
+  statusCountOver0 = 0;
   totalCount = 0;
   objectKeys = Object.keys;
   loaded = false;
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    public screenSizeService: ScreensizeService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.conversationStatusCounts = await this.dataService.getConversationStatusCounts();
     this.getConversationStatusTotalCount();
+    this.statusCountOver0 = this.countStatusCountsOver0();
     this.loaded = true;
   }
 
@@ -29,5 +35,17 @@ export class ConversationStatusCountsComponent implements OnInit {
           this.conversationStatusCounts[conversationStatusCountsKey];
       }
     }
+  }
+
+  countStatusCountsOver0(): number {
+    let statusCount = 0;
+    if (Object.keys(this.conversationStatusCounts).length > 0) {
+      for (const conversationStatusCountsKey in this.conversationStatusCounts) {
+        if (this.conversationStatusCounts[conversationStatusCountsKey] > 0) {
+          statusCount++;
+        }
+      }
+    }
+    return statusCount;
   }
 }

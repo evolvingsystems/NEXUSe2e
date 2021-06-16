@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { DashboardComponent } from "./dashboard.component";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatTabsModule } from "@angular/material/tabs";
-import { SuccessfulMessagesComponent } from "../successful-messages/successful-messages.component";
+import { MessagesSuccessfulComponent } from "../messages-successful/messages-successful.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ListComponent } from "../list/list.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
@@ -18,6 +18,7 @@ import { MessagesFailedComponent } from "../messages-failed/messages-failed.comp
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { ConversationsIdleComponent } from "../conversations-idle/conversations-idle.component";
 import { CertificatesComponent } from "../certificates/certificates.component";
+import { MatChipsModule } from "@angular/material/chips";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -35,10 +36,11 @@ describe("DashboardComponent", () => {
           MatDialogModule,
           MatCardModule,
           RouterTestingModule,
+          MatChipsModule,
         ],
         declarations: [
           DashboardComponent,
-          SuccessfulMessagesComponent,
+          MessagesSuccessfulComponent,
           ListComponent,
           CapsToTitleCasePipe,
           ConversationStatusCountsComponent,

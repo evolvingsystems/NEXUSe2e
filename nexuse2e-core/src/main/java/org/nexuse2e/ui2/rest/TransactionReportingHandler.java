@@ -168,7 +168,7 @@ public class TransactionReportingHandler implements Handler {
         if (severity == null) {
             return null;
         }
-        switch (severity) {
+        switch (severity.toUpperCase()) {
             case "TRACE":
                 return "5000";
             case "DEBUG":

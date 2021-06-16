@@ -42,6 +42,7 @@ public class StatisticsConversation {
         this.nxConversationId = ((Number) record[4]).intValue();
         this.partnerId = (String) record[6];
         this.modifiedDate = (Date) record[2];
+        this.currentAction = (String) record[7];
     }
 
     public StatisticsConversation(ConversationPojo conversation) {

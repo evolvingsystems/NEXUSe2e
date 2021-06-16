@@ -12,10 +12,14 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ColumnType } from "../types";
 import { CapsToTitleCasePipe } from "../pipes/caps-to-title-case.pipe";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { RequestHelper } from "../services/request-helper";
+import { DataService } from "../services/data.service";
 
 describe("ListComponent", () => {
   let component: ListComponent;
   let fixture: ComponentFixture<ListComponent>;
+  let requestHelper: RequestHelper;
+  let dataService: DataService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -76,6 +80,8 @@ describe("ListComponent", () => {
     component.items = messages;
     component.itemType = "message";
     component.showAsSimpleTable = false;
+    requestHelper = TestBed.inject(RequestHelper);
+    dataService = TestBed.inject(DataService);
     fixture.detectChanges();
   });
 
@@ -114,7 +120,7 @@ describe("ListComponent", () => {
       backendStatus: "QUEUED",
       turnAroundTime: "Not terminated",
     };
-    const propertyValue = component.getProperty(message, "nxConversationId");
+    const propertyValue = dataService.getProperty(message, "nxConversationId");
     expect(propertyValue).toEqual(message.nxConversationId);
   });
 
@@ -156,21 +162,21 @@ describe("ListComponent", () => {
   it("should build the item url if it consists of one variable", () => {
     const item = messages[0];
     const recipe = "$nxConversationId$";
-    const builtUrl = component.getUrl(item, recipe);
+    const builtUrl = requestHelper.getUrl(item, recipe);
     expect(builtUrl).toEqual("" + item.nxConversationId);
   });
 
   it("should build the item url if it contains no variables", () => {
     const item = messages[0];
     const recipe = "/base/test";
-    const builtUrl = component.getUrl(item, recipe);
+    const builtUrl = requestHelper.getUrl(item, recipe);
     expect(builtUrl).toEqual("/base/test");
   });
 
   it("should build the item url if it contains multiple variables in the middle", () => {
     const item = messages[0];
     const recipe = "/base/test/$nxConversationId$/test2/$nxConversationId$/";
-    const builtUrl = component.getUrl(item, recipe);
+    const builtUrl = requestHelper.getUrl(item, recipe);
     expect(builtUrl).toEqual(
       "/base/test/" +
         item.nxConversationId +
@@ -183,7 +189,7 @@ describe("ListComponent", () => {
   it("should build the item url if it contains multiple variables on the edges", () => {
     const item = messages[0];
     const recipe = "$nxConversationId$/test/test3/$nxConversationId$";
-    const builtUrl = component.getUrl(item, recipe);
+    const builtUrl = requestHelper.getUrl(item, recipe);
     expect(builtUrl).toEqual(
       item.nxConversationId + "/test/test3/" + item.nxConversationId
     );

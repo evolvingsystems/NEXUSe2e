@@ -43,3 +43,27 @@
     height: 20px;
   }
 }
+
+.withIcon {
+  display: flex;
+  flex-direction: row;
+
+  .titleIcon {
+    padding-left: 10px;
+    font-size: 20px;
+    color: $gray3;
+    cursor: pointer;
+  }
+}
+
+.cellText {
+  &.error {
+    color: $error;
+    font-weight: bold;
+  }
+
+  &.success {
+    color: $success;
+    font-weight: bold;
+  }
+}

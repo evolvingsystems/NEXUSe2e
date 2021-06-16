@@ -21,7 +21,13 @@
 
           <ng-container *ngFor="let columnConfigItem of desktopConfig" [matColumnDef]="columnConfigItem.fieldName">
             <th mat-header-cell
-                *matHeaderCellDef>{{ "labels." + (columnConfigItem.label || columnConfigItem.fieldName) | translate }}</th>
+                *matHeaderCellDef>
+              <span [class.withIcon]="columnConfigItem.columnHelpText">
+                <span>{{ "labels." + (columnConfigItem.label || columnConfigItem.fieldName) | translate }}</span>
+                <span *ngIf="columnConfigItem.columnHelpText" class="material-icons titleIcon"
+                      title="{{ 'labels.' + columnConfigItem.columnHelpText | translate }}">help</span>
+              </span>
+            </th>
             <td mat-cell *matCellDef="let item">
               <ng-container *ngIf="columnConfigItem.columnType != columnType().ACTION_BUTTON">
                 <ng-container
@@ -56,8 +62,8 @@
           <div *ngIf="headerElement && headerElement.linkUrlRecipe" class="card-header">
             <mat-checkbox *ngIf="isSelectable" (change)="toggleSelection($event, item)"
                           [checked]="isSelected(item)"></mat-checkbox>
-            <a [routerLink]="getUrl(item, headerElement.linkUrlRecipe)">
-              {{ getProperty(item, headerElement.fieldName) }}
+            <a [routerLink]="requestHelper.getUrl(item, headerElement.linkUrlRecipe)">
+              {{ dataService.getProperty(item, headerElement.fieldName) }}
             </a>
           </div>
           <table>
@@ -107,11 +113,12 @@
 
 <ng-template #cellContent let-columnConfigItem="columnConfigItem" let-item="item" let-doNotTrim="doNotTrim">
   <span class="icon-property" *ngIf="columnConfigItem.columnType == columnType().ICON">
-    <img [src]="getUrl(item, columnConfigItem.iconUrlRecipe)" alt="property_icon"/>
+    <img [src]="requestHelper.getUrl(item, columnConfigItem.iconUrlRecipe)" alt="property_icon"/>
   </span>
   <ng-container
     *ngIf="columnConfigItem.columnType == columnType().TEXT || columnConfigItem.columnType == columnType().TEXT_AND_MORE">
-    <span>{{ columnConfigItem.titleCase ? (getProperty(item, columnConfigItem.fieldName) | capsToTitleCase) : getProperty(item, columnConfigItem.fieldName) }}</span>
+    <span class="cellText"
+          [class]="getClassNameForValidityColor(item, columnConfigItem.fieldName)">{{ columnConfigItem.titleCase ? (dataService.getProperty(item, columnConfigItem.fieldName) | capsToTitleCase) : dataService.getProperty(item, columnConfigItem.fieldName) }}</span>
   </ng-container>
   <ng-container *ngIf="columnConfigItem.columnType == columnType().LONG_TEXT">
     <ng-container *ngIf="!doNotTrim">
@@ -122,13 +129,13 @@
       </div>
     </ng-container>
     <ng-container *ngIf="doNotTrim">
-      <span>{{ getProperty(item, columnConfigItem.fieldName) }}</span>
+      <span>{{ dataService.getProperty(item, columnConfigItem.fieldName) }}</span>
     </ng-container>
   </ng-container>
   <ng-container
     *ngIf="columnConfigItem.columnType == columnType().LINK || columnConfigItem.columnType == columnType().LINK_AND_MORE">
-    <a [routerLink]="getUrl(item, columnConfigItem.linkUrlRecipe)">
-      {{ getProperty(item, columnConfigItem.fieldName) }}
+    <a [routerLink]="requestHelper.getUrl(item, columnConfigItem.linkUrlRecipe)">
+      {{ dataService.getProperty(item, columnConfigItem.fieldName) }}
     </a>
   </ng-container>
   <ng-container
@@ -139,20 +146,20 @@
                 class="separator-padding">|</span>
           <span *ngIf="columnConfigItem.separator == separator().BRACKETS">(</span>
             <ng-container *ngIf="columnConfigItem.additionalLinkUrlRecipe">
-              <a [routerLink]="getUrl(item, columnConfigItem.additionalLinkUrlRecipe)"
-                 [queryParams]="getQueryParams(item, columnConfigItem.additionalLinkQueryParamsRecipe)">
-                {{ "" + columnConfigItem.additionalLinkText ? ("labels." + columnConfigItem.additionalLinkText | translate) : getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+              <a [routerLink]="requestHelper.getUrl(item, columnConfigItem.additionalLinkUrlRecipe)"
+                 [queryParams]="requestHelper.getQueryParams(columnConfigItem.additionalLinkQueryParamsRecipe, item)">
+                {{ "" + columnConfigItem.additionalLinkText ? ("labels." + columnConfigItem.additionalLinkText | translate) : dataService.getProperty(item, columnConfigItem.additionalFieldName) + "" }}
               </a>
             </ng-container>
             <ng-container *ngIf="!columnConfigItem.additionalLinkUrlRecipe">
-              {{ "" + getProperty(item, columnConfigItem.additionalFieldName) + "" }}
+              {{ "" + dataService.getProperty(item, columnConfigItem.additionalFieldName) + "" }}
             </ng-container>
           <span *ngIf="columnConfigItem.separator == separator().BRACKETS">)</span>
         </span>
     </ng-container>
   </ng-container>
   <mat-icon *ngIf="columnConfigItem.showCopyIcon && showAsSimpleTable" class="copyToClipboard"
-            [cdkCopyToClipboard]="getProperty(item, columnConfigItem.fieldName)"
+            [cdkCopyToClipboard]="dataService.getProperty(item, columnConfigItem.fieldName)"
             (click)="showCopiedNotification()">content_copy
   </mat-icon>
 </ng-template>

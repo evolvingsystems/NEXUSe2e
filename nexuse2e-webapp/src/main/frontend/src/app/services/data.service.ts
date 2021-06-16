@@ -9,8 +9,15 @@ import {
   ConversationDetail,
   EngineLog,
   EngineTimeVariables,
+  isCertificate,
+  isChoreography,
+  isConversation,
+  isEngineLog,
+  isMessage,
+  isPartner,
   Message,
   MessageDetail,
+  NexusData,
   Partner,
   PayloadParams,
 } from "../types";
@@ -227,6 +234,13 @@ export class DataService {
     return this.get<Certificate[]>("/certificates-for-report");
   }
 
+  sortAndGetNextExpiringCertificate(certificates: Certificate[]): Certificate {
+    certificates.sort(
+      (a, b) => (a.remainingDayCount > b.remainingDayCount && 1) || -1
+    );
+    return certificates[0];
+  }
+
   getDownloadPayloadLink(item: PayloadParams) {
     return (
       "/DataSaveAs.do?type=content&choreographyId=" +
@@ -243,6 +257,30 @@ export class DataService {
 
   getEngineTimeVariables(): Promise<EngineTimeVariables> {
     return this.get<EngineTimeVariables>("/engine-time-variables");
+  }
+
+  getProperty(
+    item: NexusData,
+    propertyName: string
+  ): string | number | undefined {
+    if (isMessage(item)) {
+      return item[propertyName as keyof Message];
+    }
+    if (isConversation(item)) {
+      return item[propertyName as keyof Conversation];
+    }
+    if (isEngineLog(item)) {
+      return item[propertyName as keyof EngineLog];
+    }
+    if (isChoreography(item)) {
+      return item[propertyName as keyof Choreography];
+    }
+    if (isPartner(item)) {
+      return item[propertyName as keyof Partner];
+    }
+    if (isCertificate(item)) {
+      return item[propertyName as keyof Certificate];
+    }
   }
 
   private post(path: string, body: unknown): Promise<void> {

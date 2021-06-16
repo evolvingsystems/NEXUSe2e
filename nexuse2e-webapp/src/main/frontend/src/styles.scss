@@ -82,6 +82,10 @@ a {
   padding: 10px;
 }
 
+.paddedRightLeft {
+  padding: 0 10px;
+}
+
 .centered {
   max-width: 400px;
   margin: 0 auto;
@@ -111,6 +115,18 @@ a {
   font-size: 18px;
   padding-top: 10px;
   padding-bottom: 10px;
+
+  &.withIcon {
+    display: flex;
+    flex-direction: row;
+
+    .titleIcon {
+      font-size: 20px;
+      padding-left: 10px;
+      color: $gray3;
+      cursor: pointer;
+    }
+  }
 }
 
 @media(min-width: $desktopBreakpoint) {
@@ -158,6 +174,7 @@ a {
 
       &[class="description"] {
         white-space: normal;
+        word-break: break-word;
 
         &:before {
           background: transparent;
@@ -376,5 +393,35 @@ a {
   .mat-tab-label {
     color: $gray2;
     opacity: 1 !important;
+  }
+}
+
+/* Mobile Dashboard Card */
+.dashboardMobileCard {
+  padding: 20px !important;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex !important;
+  justify-content: center;
+  flex-direction: column;
+
+  .title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .info {
+    font-size: 30px;
+    font-weight: bold;
+    color: $orangeDark;
+    text-align: center;
+    margin-top: 20px;
+    word-break: break-word;
+
+    div {
+      font-size: 20px;
+      color: $darkerTextGray;
+      line-height: 1.2;
+    }
   }
 }

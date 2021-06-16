@@ -79,6 +79,8 @@ export interface Certificate extends NexusData {
   nxCertificateId: number;
   configuredFor: string;
   nxPartnerId: number;
+  validity: string;
+  remainingDayCount: number;
 }
 
 export interface DateRange {
@@ -148,6 +150,7 @@ export interface ColumnConfig {
   titleCase?: boolean;
   iconUrlRecipe?: string;
   actionButton?: Action;
+  columnHelpText?: string;
 }
 
 export enum ColumnType {

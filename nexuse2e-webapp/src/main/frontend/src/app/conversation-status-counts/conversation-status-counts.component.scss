@@ -1,3 +1,11 @@
+@import '../../styles.scss';
+
+.conversationsMobileCard {
+  .subtitle {
+    padding-top: 0;
+  }
+}
+
 .status-count-bar {
   height: 50px;
 
@@ -7,7 +15,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
     font-size: 10px;
     line-height: 14px;
+  }
+}
+
+.legend {
+  margin-top: 10px;
+
+  ::ng-deep .mat-chip {
+    background-color: $white;
+    border: 1px solid $textGrey;
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    .dot {
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      margin-right: 10px;
+      display: inline-block;
+    }
   }
 }

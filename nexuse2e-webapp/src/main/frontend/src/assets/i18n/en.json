@@ -107,7 +107,11 @@
     "noUsedCertificates": "no certificates in use",
     "configuredFor": "Configured For",
     "certificateName": "Certificate Name",
-    "timeRemaining": "Time Remaining"
+    "timeRemaining": "Time Remaining",
+    "dashboardCertificatesNote": "Certificates referenced in your participant configuration",
+    "inboundHelpText": "Last successfully received message (excluding acknowledgements)",
+    "outboundHelpText": "Last successfully sent message (excluding acknowledgements)",
+    "noMessageLabels": "no message labels"
   },
   "status": {
     "FAILED": "Failed",
