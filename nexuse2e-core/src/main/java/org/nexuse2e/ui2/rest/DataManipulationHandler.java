@@ -61,7 +61,7 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occurred when trying to delete " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
+                    "An error occurred when trying to requeue " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
         }
     }
 
@@ -83,7 +83,7 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occurred when trying to delete " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
+                    "An error occurred when trying to stop " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
         }
     }
 
