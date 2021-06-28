@@ -1,3 +1,8 @@
+/*
+    You can find the API documentation in apiSpec.yaml file in
+    \nexuse2e-core\src\main\javadoc\doc-files
+ */
+
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;

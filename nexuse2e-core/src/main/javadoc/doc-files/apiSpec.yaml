@@ -1,0 +1,839 @@
+swagger: '2.0'
+info:
+  description: >-
+    This is the API for connecting the new NEXUSe2e frontend with the existing NEXUSe2e backend functionalities.
+  version: 1.0.0
+  title: New NEXUSe2e API
+host: yourhost
+basePath: /api
+tags:
+  - name: configurations
+  - name: login/logout
+  - name: user
+  - name: messages
+  - name: conversations
+  - name: engine-logs
+  - name: choreographies
+  - name: partners/participants
+  - name: certificates
+paths:
+  /engine-time-variables:
+    get:
+      tags:
+        - configurations
+      summary: General - Get all engine time variables (like idleGracePeriodInMinutes)
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/EngineTimeVariables'
+  /machine-name:
+    get:
+      tags:
+        - configurations
+      summary: General - Get the machine name
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+            example: NEXUSe2e Dev
+        '404':
+          description: Machine Name not configured
+  /version:
+    get:
+      tags:
+        - configurations
+      summary: General - Get the version number
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: string
+              example: '5.9.6'
+  /login:
+    post:
+      tags:
+        - login/logout
+      summary: Login
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: user and password
+          required: true
+          schema:
+            type: object
+            example: { user: admin, password: '' }
+      responses:
+        '200':
+          description: successful operation
+        '401':
+          description: Unauthorized
+  /logout:
+    post:
+      tags:
+        - login/logout
+      summary: Logout
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+  /logged-in:
+    get:
+      tags:
+        - login/logout
+      summary: Check if user is still logged in
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Unauthorized
+  /full-username:
+    get:
+      tags:
+        - user
+      summary: Get full user name
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: string
+            example: Administrator User
+  /allowed-endpoints:
+    get:
+      tags:
+        - user
+      summary: Get all allowed endpoints for the current logged-in user
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            example: '["/full-username","/conversation-status-counts","/conversations/idle","*"]'
+            items:
+              type: string
+  /messages:
+    get:
+      tags:
+        - messages
+      summary: Transaction Reporting - All Messages
+      produces:
+        - application/json
+      parameters:
+        - name: pageIndex
+          in: query
+          description: Page index for pagination
+          required: true
+          type: string
+        - name: itemsPerPage
+          in: query
+          description: Configured items per page in frontend
+          required: true
+          type: string
+        - name: conversationId
+          in: query
+          description: Conversation Id Filter, allows also fragment of ID
+          required: false
+          type: string
+        - name: messageId
+          in: query
+          description: Message Id Filter, allows also fragment of ID
+          required: false
+          type: string
+        - name: status
+          in: query
+          description: Status Filter
+          required: false
+          type: string
+        - name: type
+          in: query
+          description: Message Type Filter
+          required: false
+          type: string
+        - name: participantId
+          in: query
+          description: Participant Id Filter
+          required: false
+          type: string
+        - name: choreographyId
+          in: query
+          description: Choreography Id Filter
+          required: false
+          type: string
+        - name: startDate
+          in: query
+          description: Start Date Filter
+          required: false
+          type: string
+        - name: endDate
+          in: query
+          description: End Date Filter
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Message'
+        '400':
+          description: 'Required parameters: pageIndex and itemsPerPage'
+  /messages/count:
+    get:
+      tags:
+        - messages
+      summary: Transaction Reporting - Messages Count
+      produces:
+        - application/json
+      parameters:
+        - name: pageIndex
+          in: query
+          description: Page index for pagination
+          required: true
+          type: string
+        - name: itemsPerPage
+          in: query
+          description: Configured items per page in frontend
+          required: true
+          type: string
+        - name: conversationId
+          in: query
+          description: Conversation Id Filter, allows also fragment of ID
+          required: false
+          type: string
+        - name: messageId
+          in: query
+          description: Message Id Filter, allows also fragment of ID
+          required: false
+          type: string
+        - name: status
+          in: query
+          description: Status Filter
+          required: false
+          type: string
+        - name: type
+          in: query
+          description: Message Type Filter
+          required: false
+          type: string
+        - name: participantId
+          in: query
+          description: Participant Id Filter
+          required: false
+          type: string
+        - name: choreographyId
+          in: query
+          description: Choreography Id Filter
+          required: false
+          type: string
+        - name: startDate
+          in: query
+          description: Start Date Filter
+          required: false
+          type: string
+        - name: endDate
+          in: query
+          description: End Date Filter
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: integer
+  /messages/failed:
+    get:
+      tags:
+        - messages
+      summary: Dashboard - Failed Messages
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Message'
+  /message:
+    get:
+      tags:
+        - messages
+      summary: Transaction Reporting - Message Detail Page
+      produces:
+        - application/json
+      parameters:
+        - name: nxMessageId
+          in: query
+          description: nxMessageId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Message'
+        '400':
+          description: 'Error while getting message by nxMessageId, nxMessageId is not numeric'
+  /messages/requeue:
+    post:
+      tags:
+        - messages
+      summary: Message Requeue
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: messageIds
+          description: selected message ids for requeue
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              example: 'e9843e8b-974a-42a4-a8fc-30057a7c7655'
+      responses:
+        '200':
+          description: successful operation
+        '500':
+          description: 'An error occurred when trying to requeue 1/10 messages: e9843e8b-974a-42a4-a8fc-30057a7c7655'
+  /messages/stop:
+    post:
+      tags:
+        - messages
+      summary: Message Stop
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: messageIds
+          description: selected message ids for stop
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              example: 'e9843e8b-974a-42a4-a8fc-30057a7c7655'
+      responses:
+        '200':
+          description: successful operation
+        '500':
+          description: 'An error occurred when trying to stop 1/10 messages: e9843e8b-974a-42a4-a8fc-30057a7c7655'
+  /conversations:
+    get:
+      tags:
+        - conversations
+      summary: Transaction Reporting - All Conversations
+      produces:
+        - application/json
+      parameters:
+        - name: pageIndex
+          in: query
+          description: Page index for pagination
+          required: true
+          type: string
+        - name: itemsPerPage
+          in: query
+          description: Configured items per page in frontend
+          required: true
+          type: string
+        - name: conversationId
+          in: query
+          description: Conversation Id Filter, allows also fragment of ID
+          required: false
+          type: string
+        - name: status
+          in: query
+          description: Status Filter
+          required: false
+          type: string
+        - name: participantId
+          in: query
+          description: Participant Id Filter
+          required: false
+          type: string
+        - name: choreographyId
+          in: query
+          description: Choreography Id Filter
+          required: false
+          type: string
+        - name: startDate
+          in: query
+          description: Start Date Filter
+          required: false
+          type: string
+        - name: endDate
+          in: query
+          description: End Date Filter
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Conversation'
+        '400':
+          description: 'Required parameters: pageIndex and itemsPerPage'
+  /conversations/count:
+    get:
+      tags:
+        - conversations
+      summary: Transaction Reporting - Conversations Count
+      produces:
+        - application/json
+      parameters:
+        - name: pageIndex
+          in: query
+          description: Page index for pagination
+          required: true
+          type: string
+        - name: itemsPerPage
+          in: query
+          description: Configured items per page in frontend
+          required: true
+          type: string
+        - name: conversationId
+          in: query
+          description: Conversation Id Filter, allows also fragment of ID
+          required: false
+          type: string
+        - name: status
+          in: query
+          description: Status Filter
+          required: false
+          type: string
+        - name: participantId
+          in: query
+          description: Participant Id Filter
+          required: false
+          type: string
+        - name: choreographyId
+          in: query
+          description: Choreography Id Filter
+          required: false
+          type: string
+        - name: startDate
+          in: query
+          description: Start Date Filter
+          required: false
+          type: string
+        - name: endDate
+          in: query
+          description: End Date Filter
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: integer
+  /conversations/idle:
+    get:
+      tags:
+        - conversations
+      summary: 'Dashboard - Idle Conversations (max. 10)'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Conversation'
+  /conversation:
+    get:
+      tags:
+        - conversations
+      summary: Transaction Reporting - Conversation Detail Page
+      produces:
+        - application/json
+      parameters:
+        - name: nxConversationId
+          in: query
+          description: nxConversationId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Conversation'
+        '400':
+          description: 'Error while getting conversation by nxConversationId, nxConversationId is not numeric'
+  /conversation-status-counts:
+    get:
+      tags:
+        - conversations
+      summary: Dashboard - Conversation Status Counts
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            additionalProperties:
+              type: integer
+            example:
+              completed: 10
+              idle: 2
+  /conversations/delete:
+    post:
+      tags:
+        - conversations
+      summary: Conversation Delete
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: conversationIds
+          description: selected conversation ids for delete
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              example: 'CEBC3B83-3648-41C6-F033-E8B8A4A48AF8'
+      responses:
+        '200':
+          description: successful operation
+        '500':
+          description: 'An error occurred when trying to delete 1/10 conversations: CEBC3B83-3648-41C6-F033-E8B8A4A48AF8'
+  /engine-logs:
+    get:
+      tags:
+        - engine-logs
+      summary: Engine Log - All Logs
+      produces:
+        - application/json
+      parameters:
+        - name: pageIndex
+          in: query
+          description: Page index for pagination
+          required: true
+          type: string
+        - name: itemsPerPage
+          in: query
+          description: Configured items per page in frontend
+          required: true
+          type: string
+        - name: messageText
+          in: query
+          description: Message Text Filter, allows also fragment of text
+          required: false
+          type: string
+        - name: severity
+          in: query
+          description: Severity Filter
+          required: false
+          type: string
+        - name: startDate
+          in: query
+          description: Start Date Filter
+          required: false
+          type: string
+        - name: endDate
+          in: query
+          description: End Date Filter
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EngineLog'
+        '400':
+          description: 'Required parameters: pageIndex and itemsPerPage'
+  /engine-logs/count:
+    get:
+      tags:
+        - engine-logs
+      summary: Engine Log - Log Count
+      produces:
+        - application/json
+      parameters:
+        - name: pageIndex
+          in: query
+          description: Page index for pagination
+          required: true
+          type: string
+        - name: itemsPerPage
+          in: query
+          description: Configured items per page in frontend
+          required: true
+          type: string
+        - name: messageText
+          in: query
+          description: Message Text Filter, allows also fragment of text
+          required: false
+          type: string
+        - name: severity
+          in: query
+          description: Severity Filter
+          required: false
+          type: string
+        - name: startDate
+          in: query
+          description: Start Date Filter
+          required: false
+          type: string
+        - name: endDate
+          in: query
+          description: End Date Filter
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: integer
+  /choreographies/ids:
+    get:
+      tags:
+        - choreographies
+      summary: Transaction Reporting - Getting choreography names
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: string
+              example: GenericFile
+  /choreographies-for-report:
+    get:
+      tags:
+        - choreographies
+      summary: Dashboard - Get last successful messages by choreography and direction
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Choreography'
+  /participants/ids:
+    get:
+      tags:
+        - partners/participants
+      summary: Transaction Reporting - Getting participant names
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              type: string
+              example: Xioma
+  /partners-for-report:
+    get:
+      tags:
+        - partners/participants
+      summary: Dashboard - Get last successful messages by partner and direction
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Partner'
+  /certificates-for-report:
+    get:
+      tags:
+        - certificates
+      summary: Dashboard - Get certificates
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Certificate'
+definitions:
+  Message:
+    type: object
+    properties:
+      messageId:
+        type: string
+        example: 'e9843e8b-974a-42a4-a8fc-30057a7c7655'
+      actionId:
+        type: string
+        example: SendFile
+      choreographyId:
+        type: string
+        example: GenericFile
+      createdDate:
+        type: string
+        example: '01-12-2022 15:21:03 GMT'
+      typeName:
+        type: string
+        example: Normal
+      status:
+        type: string
+        example: Failed
+      conversationId:
+        type: string
+        example: 'CEBC3B83-3648-41C6-F033-E8B8A4A48AF8'
+      nxMessageId:
+        type: integer
+        example: 1
+      nxConversationId:
+        type: integer
+        example: 1
+      partnerId:
+        type: string
+        example: Xioma
+      backendStatus:
+        type: string
+        example: QUEUED
+      turnAroundTime:
+        type: string
+        example: Not terminated
+  Conversation:
+    type: object
+    properties:
+      choreographyId:
+        type: string
+        example: GenericFile
+      conversationId:
+        type: string
+        example: 'CEBC3B83-3648-41C6-F033-E8B8A4A48AF8'
+      nxConversationId:
+        type: integer
+        example: 12
+      partnerId:
+        type: string
+        example: Xioma
+      createdDate:
+        type: string
+        example: '01-12-2022 15:21:03 GMT'
+      modifiedDate:
+        type: string
+        example: '01-12-2022 15:21:03 GMT'
+      status:
+        type: string
+        example: Idle
+      currentAction:
+        type: string
+        example: SendFile
+      turnAroundTime:
+        type: string
+        example: Not terminated
+  EngineLog:
+    type: object
+    properties:
+      description:
+        type: string
+        example: '(Templating failed) - Maximum number of retries reached without receiving acknowledgment - choreography: GenericFile, partner: Xioma'
+      createdDate:
+        type: string
+        example: '01-12-2022 15:21:03 GMT'
+      severity:
+        type: string
+        example: Error
+      className:
+        type: string
+        example: org.nexuse2e.messaging.FrontendOutboundDispatcher
+      methodName:
+        type: string
+        example: handleErrorState
+  Choreography:
+    type: object
+    properties:
+      nxChoreographyId:
+        type: integer
+        example: 12
+      name:
+        type: string
+        example: GenericFile
+      lastInboundTime:
+        type: string
+        example: 'no messages in 2 weeks'
+      lastOutboundTime:
+        type: string
+        example: '~ 31 minutes ago'
+  Partner:
+    type: object
+    properties:
+      partnerId:
+        type: string
+        example: 'CEBC3B83-3648-41C6-F033-E8B8A4A48AF8'
+      nxPartnerId:
+        type: integer
+        example: 12
+      name:
+        type: string
+        example: 'Xioma'
+      lastInboundTime:
+        type: string
+        example: '~ 31 minutes ago'
+      lastOutboundTime:
+        type: string
+        example: 'no messages in 2 weeks'
+  Certificate:
+    type: object
+    properties:
+      name:
+        type: string
+        example: dev1.local
+      timeUntilExpiry:
+        type: string
+        example: '~ 6 years remaining'
+      nxCertificateId:
+        type: number
+        example: 10
+      configuredFor:
+        type: string
+        example: Local
+      nxPartnerId:
+        type: number
+        example: 12
+      validity:
+        type: string
+        example: Okay
+      remainingDayCount:
+        type: number
+        example: 130
+  EngineTimeVariables:
+    type: object
+    properties:
+      dashboardTimeFrameInDays:
+        type: number
+        example: 1
+      transactionActivityTimeframeInWeeks:
+        type: number
+        example: 2
+      idleGracePeriodInMinutes:
+        type: number
+        example: 10
