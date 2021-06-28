@@ -27,6 +27,7 @@ import { DateRangePipe } from "../pipes/date-range.pipe";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ActivatedRoute } from "@angular/router";
+import { MatDialogModule } from "@angular/material/dialog";
 
 describe("ConversationListComponent", () => {
   let component: ConversationsComponent;
@@ -50,6 +51,7 @@ describe("ConversationListComponent", () => {
         MatTableModule,
         MatCheckboxModule,
         MatSnackBarModule,
+        MatDialogModule,
       ],
       declarations: [
         ConversationsComponent,

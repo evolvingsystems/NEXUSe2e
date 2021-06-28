@@ -27,6 +27,7 @@ import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ActivatedRoute } from "@angular/router";
+import { MatDialogModule } from "@angular/material/dialog";
 
 describe("EngineLogComponent", () => {
   let component: EngineLogComponent;
@@ -51,6 +52,7 @@ describe("EngineLogComponent", () => {
         MatCheckboxModule,
         MatCardModule,
         MatSnackBarModule,
+        MatDialogModule,
       ],
       declarations: [
         EngineLogComponent,

@@ -27,6 +27,7 @@ import { StringPipe } from "../pipes/string.pipe";
 import { DateRangePipe } from "../pipes/date-range.pipe";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ActivatedRoute } from "@angular/router";
+import { MatDialogModule } from "@angular/material/dialog";
 
 describe("MessageListComponent", () => {
   let component: MessagesComponent;
@@ -50,6 +51,7 @@ describe("MessageListComponent", () => {
         MatTableModule,
         MatCheckboxModule,
         MatSnackBarModule,
+        MatDialogModule,
       ],
       declarations: [
         MessagesComponent,
