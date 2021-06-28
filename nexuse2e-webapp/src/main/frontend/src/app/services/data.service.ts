@@ -138,7 +138,7 @@ export class DataService {
   }
 
   getFailedMessages(): Promise<Message[]> {
-    return this.get<Message[]>("/messages-failed");
+    return this.get<Message[]>("/messages/failed");
   }
 
   requeueMessages(messageIds: string[]): Promise<void> {
@@ -184,7 +184,7 @@ export class DataService {
   }
 
   getIdleConversations(): Promise<Conversation[]> {
-    return this.get<Conversation[]>("/conversations-idle");
+    return this.get<Conversation[]>("/conversations/idle");
   }
 
   deleteConversations(conversationIds: string[]): Promise<void> {
@@ -223,11 +223,11 @@ export class DataService {
   }
 
   getStatisticsChoreographies(): Promise<Choreography[]> {
-    return this.get<Choreography[]>("/choreographies");
+    return this.get<Choreography[]>("/choreographies-for-report");
   }
 
   getStatisticsPartners(): Promise<Partner[]> {
-    return this.get<Partner[]>("/partners");
+    return this.get<Partner[]>("/partners-for-report");
   }
 
   getCertificatesForReport(): Promise<Certificate[]> {

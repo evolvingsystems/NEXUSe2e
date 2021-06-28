@@ -47,12 +47,12 @@ public class TransactionReportingHandler implements Handler {
                 ("GET".equalsIgnoreCase(method) && "/engine-logs/count".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/message".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/choreographies".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/partners".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/choreographies-for-report".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/partners-for-report".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/conversation-status-counts".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/engine-time-variables".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/messages-failed".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/conversations-idle".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/messages/failed".equalsIgnoreCase(path)) ||
+                ("GET".equalsIgnoreCase(method) && "/conversations/idle".equalsIgnoreCase(path)) ||
                 ("GET".equalsIgnoreCase(method) && "/certificates-for-report".equalsIgnoreCase(path));
     }
 
@@ -91,10 +91,10 @@ public class TransactionReportingHandler implements Handler {
                 case "/message":
                     this.returnMessageByNxId(request, response);
                     break;
-                case "/choreographies":
+                case "/choreographies-for-report":
                     this.returnStatisticsChoreographies(response);
                     break;
-                case "/partners":
+                case "/partners-for-report":
                     this.returnStatisticsPartners(response);
                     break;
                 case "/conversation-status-counts":
@@ -103,10 +103,10 @@ public class TransactionReportingHandler implements Handler {
                 case "/engine-time-variables":
                     this.returnEngineTimeVariables(response);
                     break;
-                case "/conversations-idle":
+                case "/conversations/idle":
                     this.returnIdleConversations(response);
                     break;
-                case "/messages-failed":
+                case "/messages/failed":
                     this.returnFailedMessages(response);
                     break;
                 case "/certificates-for-report":
