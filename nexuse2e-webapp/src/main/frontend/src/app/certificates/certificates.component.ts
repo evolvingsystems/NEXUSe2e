@@ -3,6 +3,7 @@ import { Certificate } from "../types";
 import { CERTIFICATES_CONFIG } from "./certificates.config";
 import { DataService } from "../services/data.service";
 import { ScreensizeService } from "../services/screensize.service";
+import { StyleService } from "../services/style.service";
 
 @Component({
   selector: "app-certificates",
@@ -17,7 +18,8 @@ export class CertificatesComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
-    public screenSizeService: ScreensizeService
+    public screenSizeService: ScreensizeService,
+    public styleService: StyleService
   ) {}
 
   async ngOnInit() {

@@ -40,7 +40,11 @@ export const ENGINE_LOG__DEFAULT_PAGE_SIZE = 50;
 
 export const ENGINE_LOG__MOBILE_CONFIG: ColumnConfig[] = [
   { columnType: ColumnType.TEXT, fieldName: "createdDate" },
-  { columnType: ColumnType.TEXT, fieldName: "description" },
+  {
+    columnType: ColumnType.LONG_TEXT,
+    fieldName: "description",
+    showCopyIcon: true,
+  },
 ];
 
 export const ENGINE_LOG__DESKTOP_CONFIG: ColumnConfig[] = [

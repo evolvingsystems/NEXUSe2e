@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from "@angular/core";
 import {
   ColumnConfig,
   ColumnType,
-  isCertificate,
   NexusData,
   NotificationItem,
   Separator,
@@ -17,6 +16,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { SessionService } from "../services/session.service";
 import { RequestHelper } from "../services/request-helper";
 import { DataService } from "../services/data.service";
+import { StyleService } from "../services/style.service";
 
 @Component({
   selector: "app-list",
@@ -45,7 +45,8 @@ export class ListComponent implements OnInit {
     public requestHelper: RequestHelper,
     public screenSizeService: ScreensizeService,
     public dataService: DataService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public styleService: StyleService
   ) {}
 
   ngOnInit(): void {
@@ -125,19 +126,5 @@ export class ListComponent implements OnInit {
     const affectedItems: NexusData[] = [];
     affectedItems.push(item);
     return affectedItems;
-  }
-
-  getClassNameForValidityColor(
-    item: NexusData,
-    columnFieldName: string
-  ): string {
-    if (isCertificate(item) && columnFieldName === "validity") {
-      if (item.validity.toLowerCase().includes("okay")) {
-        return "success";
-      } else {
-        return "error";
-      }
-    }
-    return "";
   }
 }

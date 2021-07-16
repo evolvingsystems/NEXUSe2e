@@ -1,4 +1,7 @@
-<h1>{{ "labels.conversationDetail" | translate }}</h1>
+<div class="titleWrapper">
+  <h1>{{ "labels.conversationDetail" | translate }}</h1>
+  <app-refresh-button></app-refresh-button>
+</div>
 
 <ng-container *ngIf="!loaded">
   <app-loading-spinner></app-loading-spinner>

@@ -19,6 +19,8 @@ import { ActionButtonComponent } from "../action-button/action-button.component"
 import { ConversationsIdleComponent } from "../conversations-idle/conversations-idle.component";
 import { CertificatesComponent } from "../certificates/certificates.component";
 import { MatChipsModule } from "@angular/material/chips";
+import { RefreshButtonComponent } from "../refresh-button/refresh-button.component";
+import { MatIconModule } from "@angular/material/icon";
 
 describe("DashboardComponent", () => {
   let component: DashboardComponent;
@@ -37,6 +39,7 @@ describe("DashboardComponent", () => {
           MatCardModule,
           RouterTestingModule,
           MatChipsModule,
+          MatIconModule,
         ],
         declarations: [
           DashboardComponent,
@@ -49,6 +52,7 @@ describe("DashboardComponent", () => {
           MessagesFailedComponent,
           ActionButtonComponent,
           CertificatesComponent,
+          RefreshButtonComponent,
         ],
       }).compileComponents();
     })

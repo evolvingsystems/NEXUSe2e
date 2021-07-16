@@ -113,12 +113,13 @@
 
 <ng-template #cellContent let-columnConfigItem="columnConfigItem" let-item="item" let-doNotTrim="doNotTrim">
   <span class="icon-property" *ngIf="columnConfigItem.columnType == columnType().ICON">
-    <img [src]="requestHelper.getUrl(item, columnConfigItem.iconUrlRecipe)" alt="property_icon"/>
+    <img [src]="requestHelper.getUrl(item, columnConfigItem.iconUrlRecipe)" alt="property_icon"
+         [title]="dataService.getProperty(item, columnConfigItem.fieldName)"/>
   </span>
   <ng-container
     *ngIf="columnConfigItem.columnType == columnType().TEXT || columnConfigItem.columnType == columnType().TEXT_AND_MORE">
     <span class="cellText"
-          [class]="getClassNameForValidityColor(item, columnConfigItem.fieldName)">{{ columnConfigItem.titleCase ? (dataService.getProperty(item, columnConfigItem.fieldName) | capsToTitleCase) : dataService.getProperty(item, columnConfigItem.fieldName) }}</span>
+          [class]="styleService.getClassNameForValidityColor(item, columnConfigItem.fieldName)">{{ columnConfigItem.titleCase ? (dataService.getProperty(item, columnConfigItem.fieldName) | capsToTitleCase) : dataService.getProperty(item, columnConfigItem.fieldName) }}</span>
   </ng-container>
   <ng-container *ngIf="columnConfigItem.columnType == columnType().LONG_TEXT">
     <ng-container *ngIf="!doNotTrim">

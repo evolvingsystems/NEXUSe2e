@@ -55,15 +55,3 @@
     cursor: pointer;
   }
 }
-
-.cellText {
-  &.error {
-    color: $error;
-    font-weight: bold;
-  }
-
-  &.success {
-    color: $success;
-    font-weight: bold;
-  }
-}
