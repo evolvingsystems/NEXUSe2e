@@ -28,8 +28,16 @@
     background-color: $white;
     border: 1px solid $textGrey;
 
+    &:after {
+      background-color: transparent;
+    }
+
     &:hover {
       background-color: transparent;
+    }
+
+    &:active {
+      box-shadow: none;
     }
 
     .dot {

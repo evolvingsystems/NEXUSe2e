@@ -28,6 +28,7 @@ import { DateRangePipe } from "../pipes/date-range.pipe";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { ActivatedRoute } from "@angular/router";
 import { MatDialogModule } from "@angular/material/dialog";
+import { RefreshButtonComponent } from "../refresh-button/refresh-button.component";
 
 describe("EngineLogComponent", () => {
   let component: EngineLogComponent;
@@ -65,6 +66,7 @@ describe("EngineLogComponent", () => {
         ListComponent,
         StringPipe,
         DateRangePipe,
+        RefreshButtonComponent,
       ],
       providers: [
         {

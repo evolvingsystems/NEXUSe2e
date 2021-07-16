@@ -5,6 +5,8 @@ import { By } from "@angular/platform-browser";
 import { TranslateModule } from "@ngx-translate/core";
 import { RouterTestingModule } from "@angular/router/testing";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatIconModule } from "@angular/material/icon";
+import { RefreshButtonComponent } from "../refresh-button/refresh-button.component";
 
 describe("TransactionReportingComponent", () => {
   let component: TransactionReportingComponent;
@@ -12,8 +14,13 @@ describe("TransactionReportingComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), RouterTestingModule, MatTabsModule],
-      declarations: [TransactionReportingComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule,
+        MatTabsModule,
+        MatIconModule,
+      ],
+      declarations: [TransactionReportingComponent, RefreshButtonComponent],
     }).compileComponents();
   });
 

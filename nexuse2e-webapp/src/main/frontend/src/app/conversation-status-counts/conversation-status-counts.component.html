@@ -48,7 +48,7 @@
   </div>
   <mat-chip-list class="legend">
     <ng-container *ngFor="let status of objectKeys(conversationStatusCounts)">
-      <mat-chip *ngIf="conversationStatusCounts[status] > 0" class="label">
+      <mat-chip disableRipple *ngIf="conversationStatusCounts[status] > 0" class="label">
         <span class="dot statusDetailedColor" [class]="status"></span>
         <span>{{ "status." + (status | uppercase) | translate }} ({{ "" + conversationStatusCounts[status] + "" }}
           )</span>

@@ -69,6 +69,7 @@ import { MessagesFailedComponent } from "./messages-failed/messages-failed.compo
 import { ConversationsIdleComponent } from "./conversations-idle/conversations-idle.component";
 import { CertificatesComponent } from "./certificates/certificates.component";
 import { MatChipsModule } from "@angular/material/chips";
+import { RefreshButtonComponent } from "./refresh-button/refresh-button.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -181,6 +182,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConversationsIdleComponent,
     MessagesFailedComponent,
     CertificatesComponent,
+    RefreshButtonComponent,
   ],
   imports: [
     BrowserModule,

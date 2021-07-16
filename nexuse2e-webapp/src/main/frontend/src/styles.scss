@@ -402,7 +402,7 @@ a {
   height: 100%;
   box-sizing: border-box;
   display: flex !important;
-  justify-content: center;
+  justify-content: space-between;
   flex-direction: column;
 
   .title {
@@ -413,15 +413,59 @@ a {
   .info {
     font-size: 30px;
     font-weight: bold;
-    color: $orangeDark;
+    color: $darkerTextGray;
     text-align: center;
-    margin-top: 20px;
     word-break: break-word;
 
     div {
       font-size: 20px;
       color: $darkerTextGray;
       line-height: 1.2;
+    }
+  }
+}
+
+/* Validity Colors */
+.validity-error {
+  color: $error !important;
+  font-weight: bold;
+}
+
+.validity-success {
+  color: $success !important;
+  font-weight: bold;
+}
+
+/* Button */
+button {
+  vertical-align: middle;
+  margin-right: 5px;
+
+  .btnIcon {
+    vertical-align: middle;
+    font-size: 17px;
+    height: 18px;
+    width: 17px;
+    margin-right: 5px;
+  }
+}
+
+/* Title Wrapper */
+.titleWrapper {
+  position: relative;
+
+  .refreshButton {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+@media(max-width: $desktopBreakpointForMaxWidth) {
+  .titleWrapper {
+    .refreshButton {
+      line-height: 24px;
     }
   }
 }

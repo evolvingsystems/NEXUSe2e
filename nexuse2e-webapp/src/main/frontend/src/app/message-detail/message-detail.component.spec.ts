@@ -12,6 +12,7 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { ActionButtonComponent } from "../action-button/action-button.component";
 import { MatCardModule } from "@angular/material/card";
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
+import { RefreshButtonComponent } from "../refresh-button/refresh-button.component";
 
 describe("MessageDetailComponent", () => {
   let component: MessageDetailComponent;
@@ -33,6 +34,7 @@ describe("MessageDetailComponent", () => {
         ListComponent,
         ActionButtonComponent,
         LoadingSpinnerComponent,
+        RefreshButtonComponent,
       ],
       providers: [
         {

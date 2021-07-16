@@ -1,4 +1,8 @@
-<h1 class="title">{{ "labels.dashboard" | translate }}</h1>
+<div class="titleWrapper">
+  <h1 class="title">{{ "labels.dashboard" | translate }}</h1>
+  <app-refresh-button></app-refresh-button>
+</div>
+
 <div class="dashboardWrapper">
   <div class="section">
     <app-conversation-status-counts

@@ -24,7 +24,8 @@
     </div>
     <div class="info">
       <ng-container *ngIf="certificates?.length">
-        <div>{{ certificateNextExpiring?.validity }}</div>
+        <div
+          [class]="styleService.getClassNameForValidityColorFromCertificate(certificateNextExpiring)">{{ certificateNextExpiring?.validity }}</div>
         <div>{{ certificateNextExpiring?.timeUntilExpiry }}</div>
       </ng-container>
       <ng-container *ngIf="!certificates?.length">
