@@ -40,8 +40,8 @@ export class ActionButtonComponent implements OnInit {
         await this.actionService.requeueMessages();
         break;
       case "/message/requeue":
-        await this.actionService.requeueMessages(this.affectedItems);
         this.disabled = true;
+        await this.actionService.requeueMessages(this.affectedItems);
         break;
       case "/conversations/delete":
         await this.actionService.deleteConversations();
