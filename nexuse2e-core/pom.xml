@@ -491,7 +491,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>6.2.1.jre7</version>
+            <version>9.4.0.jre8</version>
         </dependency>
         <dependency>
             <groupId>com.jcraft</groupId>
