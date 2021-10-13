@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { DataService } from "../services/data.service";
 import { ScreensizeService } from "../services/screensize.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: "app-conversation-status-counts",
@@ -18,13 +19,12 @@ export class ConversationStatusCountsComponent implements OnInit {
   constructor(
     private dataService: DataService,
     public screenSizeService: ScreensizeService
-  ) {}
+  ) {
+    // this.route.params.subscribe( data => {void this.updateView()});
+  }
 
-  async ngOnInit(): Promise<void> {
-    this.conversationStatusCounts = await this.dataService.getConversationStatusCounts();
-    this.getConversationStatusTotalCount();
-    this.statusCountOver0 = this.countStatusCountsOver0();
-    this.loaded = true;
+  ngOnInit(): void {
+    void this.updateView();
   }
 
   getConversationStatusTotalCount() {
@@ -35,6 +35,14 @@ export class ConversationStatusCountsComponent implements OnInit {
           this.conversationStatusCounts[conversationStatusCountsKey];
       }
     }
+  }
+
+  async updateView() {
+    this.loaded = false;
+    this.conversationStatusCounts = await this.dataService.getConversationStatusCounts();
+    this.getConversationStatusTotalCount();
+    this.statusCountOver0 = this.countStatusCountsOver0();
+    this.loaded = true;
   }
 
   countStatusCountsOver0(): number {
