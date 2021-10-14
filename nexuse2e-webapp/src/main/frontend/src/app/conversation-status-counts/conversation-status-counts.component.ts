@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { DataService } from "../services/data.service";
 import { ScreensizeService } from "../services/screensize.service";
-import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: "app-conversation-status-counts",
@@ -19,9 +18,7 @@ export class ConversationStatusCountsComponent implements OnInit {
   constructor(
     private dataService: DataService,
     public screenSizeService: ScreensizeService
-  ) {
-    // this.route.params.subscribe( data => {void this.updateView()});
-  }
+  ) {}
 
   ngOnInit(): void {
     void this.updateView();
