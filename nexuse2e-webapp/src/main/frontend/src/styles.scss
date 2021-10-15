@@ -196,7 +196,7 @@ a {
       text-align: left;
     }
 
-    @media (max-width: $mobileBreakpoint) {
+    @media (max-width: $mobileBreakpointForMaxWidth) {
       .label {
         width: 160px;
       }
