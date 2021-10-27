@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
   title = 'example';
   targetElement: HTMLElement | null = null;
 
-  myRefreshEvent(event: Subject<any>, message: string) {
+  pullToRefresh(event: Subject<any>, message: string) {
     setTimeout(() => {
       window.location.reload();
       event.next();
