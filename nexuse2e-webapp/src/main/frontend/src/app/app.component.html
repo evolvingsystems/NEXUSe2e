@@ -1,16 +1,16 @@
 <ngx-pull-to-refresh
-  spinnerColor="#e6610b"
+  spinnerColor="#c4c4c4"
   spinnerSize="25"
-  distanceForRefresh="40"
+  distanceForRefresh="60"
   [isEnable]="true"
   [targetElement]="targetElement"
   (refresh)="myRefreshEvent($event, 'refresh')"
   (loadMore)="alert('loadmore')"
-  style="display:block;height:100%;">
+  style="display:block;height:100%; background-color: #333333;">
   <div>
     <app-header *ngIf="showHeaderNav"></app-header>
     <app-navigation *ngIf="showHeaderNav"></app-navigation>
-    <div [ngClass]="{ 'content-container': showHeaderNav }" class="padded-desktop">
+    <div [ngClass]="{ 'content-container': showHeaderNav }" class="padded-desktop" style="background-color: white; height: 100%;">
       <router-outlet (activate)='determineVisibility($event)'></router-outlet>
     </div>
   </div>
