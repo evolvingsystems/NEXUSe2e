@@ -475,3 +475,12 @@ button {
     }
   }
 }
+
+.ngx-ptr-content-container > div {
+  height: 100%;
+}
+
+.ngx-ptr-content-container {
+  z-index: 9999;
+  box-shadow: black 0px -4px 10px;
+}
