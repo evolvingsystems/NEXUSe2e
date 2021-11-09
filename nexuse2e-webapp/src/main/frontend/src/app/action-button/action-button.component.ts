@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { Action, NexusData } from "../types";
 import { PermissionService } from "../services/permission.service";
 import { ActionService } from "../services/action.service";
+import { SelectionService } from "../services/selection.service";
 
 @Component({
   selector: "app-action-button",
@@ -18,13 +19,25 @@ export class ActionButtonComponent implements OnInit {
 
   constructor(
     private permissionService: PermissionService,
-    private actionService: ActionService
+    private actionService: ActionService,
+    public selectionService: SelectionService
   ) {}
 
   async ngOnInit() {
-    this.isPermitted = await this.permissionService.isUserPermitted(
+    this.isPermitted = this.permissionService.isUserPermitted(
       this.action.actionKey
     );
+  }
+
+  isActionImpossible() {
+    switch (this.action.actionKey) {
+      case "/messages/requeue":
+      case "/messages/stop":
+        return this.selectionService.isEmpty("message");
+      case "/conversations/delete":
+        return this.selectionService.isEmpty("conversation");
+      default: return false;
+    }
   }
 
   async performAction(): Promise<void> {
