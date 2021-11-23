@@ -4,13 +4,12 @@
   distanceForRefresh="60"
   [isEnable]="true"
   [targetElement]="targetElement"
-  (refresh)="pullToRefresh($event, 'refresh')"
-  (loadMore)="alert('loadmore')"
+  (refresh)="pullToRefresh($event)"
   class="pull-to-refresh">
   <div>
     <app-header *ngIf="showHeaderNav"></app-header>
     <app-navigation *ngIf="showHeaderNav"></app-navigation>
-    <div [ngClass]="{ 'content-container': showHeaderNav }" class="padded-desktop" style="background-color: white; height: 100%;">
+    <div [ngClass]="{ 'content-container': showHeaderNav }" class="padded-desktop content-box">
       <router-outlet (activate)='determineVisibility($event)'></router-outlet>
     </div>
   </div>
