@@ -26,3 +26,7 @@
   background-color: white;
   height: 100%;
 }
+
+::ng-deep .ngx-ptr-content-container {
+  z-index: 999;
+}
