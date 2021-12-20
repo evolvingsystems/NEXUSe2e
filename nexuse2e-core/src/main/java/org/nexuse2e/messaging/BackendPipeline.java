@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.messaging;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.ActionSpecific;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.MessageBackendStatus;
@@ -34,7 +35,7 @@ import org.nexuse2e.logging.LogMessage;
  */
 public class BackendPipeline extends AbstractPipeline implements ActionSpecific {
 
-    private static Logger     LOG = Logger.getLogger( BackendPipeline.class );
+    private static Logger     LOG = LogManager.getLogger( BackendPipeline.class );
 
     /**
      * The key identifying this pipeline

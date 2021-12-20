@@ -26,7 +26,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.nexuse2e.Configurable;
@@ -53,7 +54,7 @@ public class PipelineForm extends ActionForm {
      */
     private static final long       serialVersionUID   = -2860731115832301190L;
 
-    private static Logger           LOG                = Logger.getLogger( PipelineForm.class );
+    private static Logger           LOG                = LogManager.getLogger( PipelineForm.class );
 
     private int                     nxPipelineId       = 0;
     private int                     nxTrpId            = 0;

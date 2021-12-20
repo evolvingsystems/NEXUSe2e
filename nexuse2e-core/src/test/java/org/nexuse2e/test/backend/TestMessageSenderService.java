@@ -22,7 +22,8 @@ package org.nexuse2e.test.backend;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -38,7 +39,7 @@ import org.nexuse2e.service.Service;
 
 public class TestMessageSenderService extends AbstractService implements SchedulerClient {
 
-    private static Logger       LOG               = Logger.getLogger( TestMessageSenderService.class );
+    private static Logger       LOG               = LogManager.getLogger( TestMessageSenderService.class );
 
     public final static String  SCHEDULINGSERVICE = "schedulingname";
     public final static String  CHOREOGRAPHY      = "choreography";

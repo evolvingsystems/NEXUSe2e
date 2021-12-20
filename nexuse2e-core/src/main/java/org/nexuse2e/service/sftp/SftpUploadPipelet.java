@@ -21,7 +21,8 @@ package org.nexuse2e.service.sftp;
 
 import com.jcraft.jsch.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -39,7 +40,7 @@ import java.net.URL;
 
 public class SftpUploadPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(SftpUploadPipelet.class);
+    private static Logger LOG = LogManager.getLogger(SftpUploadPipelet.class);
 
     private static final String URL_PARAM_NAME = "url";
     private static final String FILE_NAME_PATTERN_PARAM_NAME = "fileNamePattern";

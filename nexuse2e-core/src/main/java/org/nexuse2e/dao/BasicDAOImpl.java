@@ -62,7 +62,7 @@ public class BasicDAOImpl implements BasicDAO {
         UNKNOWN
     }
 
-    //private static Logger         LOG                 = Logger.getLogger( BasicDAOImpl.class );
+    //private static Logger         LOG                 = LogManager.getLogger( BasicDAOImpl.class );
 
     protected static final String SELECT_COUNT_PREFIX = "select count(*) ";
     protected static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";

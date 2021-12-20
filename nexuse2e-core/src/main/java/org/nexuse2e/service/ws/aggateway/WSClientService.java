@@ -53,7 +53,8 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
@@ -99,7 +100,7 @@ import org.xml.sax.SAXException;
  */
 public class WSClientService extends AbstractService implements SenderAware {
 
-    private static Logger   LOG = Logger.getLogger( WSClientService.class );
+    private static Logger   LOG = LogManager.getLogger( WSClientService.class );
 
     private static final String AUTH_TYPE_PARAM_NAME = "authType";
     private static final String SEND_RESPONSE_TO_FRONTEND_PARAM_NAME = "sendResponseToFrontend";

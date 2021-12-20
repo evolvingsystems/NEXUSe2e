@@ -22,7 +22,8 @@ package org.nexuse2e.backend.pipelets;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
@@ -38,7 +39,7 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
  */
 public class DebugBackendPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( DebugBackendPipelet.class );
+    private static Logger LOG = LogManager.getLogger( DebugBackendPipelet.class );
     
     public static final String TEXT_PARAM_NAME = "text";
     public static final String PRINT_PAYLOAD_PARAM_NAME = "printPayload";

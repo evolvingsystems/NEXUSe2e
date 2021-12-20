@@ -21,12 +21,13 @@ package org.nexuse2e.configuration;
 
 import java.net.UnknownHostException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 
 public class Nexus3xUUIDGenerator implements IdGenerator {
 
-    private static Logger LOG = Logger.getLogger( Nexus3xUUIDGenerator.class );
+    private static Logger LOG = LogManager.getLogger( Nexus3xUUIDGenerator.class );
 
     public String getId() throws NexusException {
 

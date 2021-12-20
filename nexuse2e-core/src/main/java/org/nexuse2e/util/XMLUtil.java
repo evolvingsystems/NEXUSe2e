@@ -31,7 +31,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
@@ -54,7 +55,7 @@ import org.xml.sax.XMLReader;
  */
 public class XMLUtil {
 
-    private static Logger LOG = Logger.getLogger( Engine.class );
+    private static Logger LOG = LogManager.getLogger( Engine.class );
 
     /** ************************************************************************************************************************
      * Parse an XML file and return the DOM tree

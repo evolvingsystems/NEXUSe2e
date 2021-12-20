@@ -30,7 +30,8 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
@@ -52,7 +53,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class BackendDeliveryWSClientPipelet extends AbstractPipelet {
 
-    private static Logger      LOG                   = Logger.getLogger( BackendDeliveryWSClientPipelet.class );
+    private static Logger      LOG                   = LogManager.getLogger( BackendDeliveryWSClientPipelet.class );
 
     public static final String URL_PARAM_NAME        = "url";
     public static final String BASIC_AUTH_PARAM_NAME = "basicAuth";

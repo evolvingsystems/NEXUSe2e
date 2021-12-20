@@ -30,7 +30,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.codehaus.jettison.json.JSONException;
 import org.nexuse2e.ui.ajax.dojo.TreeProvider;
 
@@ -45,7 +46,7 @@ public class AjaxServlet extends HttpServlet {
      */
     private static final long   serialVersionUID = -6583444281593200091L;
 
-    private static final Logger LOG              = Logger.getLogger( AjaxServlet.class );
+    private static final Logger LOG              = LogManager.getLogger( AjaxServlet.class );
 
     private static final String PATH_MENU        = "/menu";
 

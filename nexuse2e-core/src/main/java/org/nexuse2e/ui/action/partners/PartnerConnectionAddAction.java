@@ -22,7 +22,8 @@ package org.nexuse2e.ui.action.partners;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -37,7 +38,7 @@ import org.nexuse2e.ui.form.PartnerConnectionForm;
  */
 public class PartnerConnectionAddAction extends NexusE2EAction {
 
-    private static Logger LOG = Logger.getLogger( PartnerConnectionAddAction.class );
+    private static Logger LOG = LogManager.getLogger( PartnerConnectionAddAction.class );
 
     /* (non-Javadoc)
      * @see com.tamgroup.nexus.e2e.ui.action.NexusE2EAction#executeNexusE2EAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.apache.struts.action.ActionMessages)

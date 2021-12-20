@@ -27,7 +27,8 @@ import java.util.Map;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.DynamicWSDispatcherServlet;
 import org.nexuse2e.Engine;
@@ -52,7 +53,7 @@ import org.nexuse2e.transport.TransportReceiver;
  */
 public class WSDispatcherService extends AbstractService implements ReceiverAware {
 
-    private static Logger       LOG                     = Logger.getLogger( WSDispatcherService.class );
+    private static Logger       LOG                     = LogManager.getLogger( WSDispatcherService.class );
 
     private static final String URL_PARAM_NAME          = "url";
     private static final String SERVICE_TYPE_PARAM_NAME = "serviceType";

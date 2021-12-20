@@ -42,7 +42,8 @@ import javax.mail.Part;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.RecipientId;
 import org.bouncycastle.cms.RecipientInformation;
@@ -71,7 +72,7 @@ import org.nexuse2e.util.CertificateUtil;
  */
 public class MimeMessageUnpackager extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(MimeMessageUnpackager.class);
+    private static Logger LOG = LogManager.getLogger(MimeMessageUnpackager.class);
 
     /**
      * Default constructor.

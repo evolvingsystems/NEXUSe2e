@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.ui.action.reporting;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.*;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -37,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ModifyMessageAction extends NexusE2EAction {
 
-    private static Logger LOG = Logger.getLogger( ModifyMessageAction.class );
+    private static Logger LOG = LogManager.getLogger( ModifyMessageAction.class );
     private static final String ORIGIN_DASHBOARD = "dashboard";
 
     /* (non-Javadoc)

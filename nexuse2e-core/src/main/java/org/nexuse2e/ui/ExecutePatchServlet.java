@@ -28,7 +28,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.patch.Patch;
 import org.nexuse2e.patch.PatchException;
 import org.nexuse2e.patch.PatchReporter;
@@ -45,7 +46,7 @@ public class ExecutePatchServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger LOG = Logger.getLogger( ExecutePatchServlet.class );
+    private static Logger LOG = LogManager.getLogger( ExecutePatchServlet.class );
 
     
     

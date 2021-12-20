@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.backend.pipelets;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -51,7 +52,7 @@ import java.util.*;
  */
 public class XpathConversationIdGeneratorPipelet extends AbstractPipelet {
 
-    private static Logger           LOG                     = Logger.getLogger( XpathConversationIdGeneratorPipelet.class );
+    private static Logger           LOG                     = LogManager.getLogger( XpathConversationIdGeneratorPipelet.class );
     public static final String      DEFAULT_XPATH_SEPARATOR = "|";
 
     public static final String      XPATH_LIST              = "xPathList";

@@ -30,7 +30,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.pipelets.helper.RequestResponseData;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -50,7 +51,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XML2ParameterMapPipelet extends AbstractPipelet {
 
-    private static Logger      LOG            = Logger.getLogger( XML2ParameterMapPipelet.class );
+    private static Logger      LOG            = LogManager.getLogger( XML2ParameterMapPipelet.class );
 
     public static final String USE_DATA_FIELD = "useDataField";
 

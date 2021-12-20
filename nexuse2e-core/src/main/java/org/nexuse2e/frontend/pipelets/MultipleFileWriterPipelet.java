@@ -36,7 +36,8 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -86,7 +87,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class MultipleFileWriterPipelet extends AbstractPipelet {
 
-    private static final Logger LOG = Logger.getLogger( MultipleFileWriterPipelet.class );
+    private static final Logger LOG = LogManager.getLogger( MultipleFileWriterPipelet.class );
     
     public static final String CONFIG_FILE = "config_file";
     

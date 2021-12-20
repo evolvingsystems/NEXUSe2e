@@ -33,7 +33,8 @@ import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.pipelets.helper.RequestResponseData;
 import org.nexuse2e.logging.LogMessage;
@@ -48,7 +49,7 @@ import org.nexuse2e.pojo.MessagePojo;
  */
 public class HTTPContentSensitiveIntegrationPipelet extends HTTPIntegrationPipelet {
 
-    private static Logger LOG = Logger.getLogger( HTTPContentSensitiveIntegrationPipelet.class );
+    private static Logger LOG = LogManager.getLogger( HTTPContentSensitiveIntegrationPipelet.class );
 
     /**
      * Content sensitive processing of payloads. In comparison to the super

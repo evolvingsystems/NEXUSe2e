@@ -32,14 +32,15 @@ import java.util.Enumeration;
 
 import javax.net.ssl.X509KeyManager;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * @author guido.esch
  */
 public class NexusKeyManager implements X509KeyManager {
 
-    private static Logger LOG      = Logger.getLogger( NexusKeyManager.class );
+    private static Logger LOG      = LogManager.getLogger( NexusKeyManager.class );
     private String        password = null;
     private KeyStore      keystore = null;
 

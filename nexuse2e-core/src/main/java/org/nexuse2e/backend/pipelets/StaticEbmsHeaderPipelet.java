@@ -24,7 +24,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
@@ -36,7 +37,7 @@ import org.nexuse2e.pojo.MessagePojo;
 
 public class StaticEbmsHeaderPipelet extends AbstractPipelet {
 
-	private static Logger LOG = Logger.getLogger(StaticEbmsHeaderPipelet.class);
+	private static Logger LOG = LogManager.getLogger(StaticEbmsHeaderPipelet.class);
 	
 	public static final String ROLE_ELEMENT_VALUE_FROM = "roleFrom";
 	public static final String ROLE_ELEMENT_VALUE_TO = "roleTo";

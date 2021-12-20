@@ -35,7 +35,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Layer;
 import org.nexuse2e.configuration.ListParameter;
@@ -54,7 +55,7 @@ import org.nexuse2e.util.CertificatePojoSocketFactory;
  */
 public class Pop3Receiver extends AbstractService implements ReceiverAware, Runnable {
 
-    private static Logger      LOG                      = Logger.getLogger( Pop3Receiver.class );
+    private static Logger      LOG                      = LogManager.getLogger( Pop3Receiver.class );
 
     public static final String HOST_PARAM_NAME          = "host";
     public static final String PORT_PARAM_NAME          = "port";

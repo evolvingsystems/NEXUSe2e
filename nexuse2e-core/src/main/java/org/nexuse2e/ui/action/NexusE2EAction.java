@@ -20,7 +20,8 @@
 package org.nexuse2e.ui.action;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -48,7 +49,7 @@ import java.net.URL;
  */
 public abstract class NexusE2EAction extends Action {
 
-    protected static Logger LOG = Logger.getLogger(NexusE2EAction.class);
+    protected static Logger LOG = LogManager.getLogger(NexusE2EAction.class);
 
     // Action forwards
     public final static String ACTION_FORWARD_SUCCESS       = "success";

@@ -22,7 +22,8 @@
  */
 package org.nexuse2e.messaging;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.NexusException;
@@ -38,7 +39,7 @@ import org.nexuse2e.logging.LogMessage;
  */
 public class MessageHandlingCenter implements MessageProcessor {
 
-    private static final Logger LOG = Logger.getLogger( MessageHandlingCenter.class );
+    private static final Logger LOG = LogManager.getLogger( MessageHandlingCenter.class );
 
     private static MessageHandlingCenter instance;
 

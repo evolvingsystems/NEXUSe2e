@@ -30,7 +30,8 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
 import org.nexuse2e.MessageStatus;
@@ -64,7 +65,7 @@ import java.util.Map;
  */
 public class HttpSenderService extends AbstractService implements SenderAware {
 
-    private static Logger LOG = Logger.getLogger(HttpSenderService.class);
+    private static Logger LOG = LogManager.getLogger(HttpSenderService.class);
 
     /** PARAMETERS **/
     public static final String PREEMPTIVE_AUTH_PARAM_NAME = "preemptiveAuth";

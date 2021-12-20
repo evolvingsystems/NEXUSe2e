@@ -25,7 +25,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -45,7 +46,7 @@ import org.nexuse2e.util.DateUtil;
  */
 public class DBIntegrationPipelet extends AbstractPipelet {
 
-    private static Logger   LOG             = Logger.getLogger( DBIntegrationPipelet.class );
+    private static Logger   LOG             = LogManager.getLogger( DBIntegrationPipelet.class );
 
     public static String    DATABASESERVICE = "databasename";
     public static String    TABLENAME       = "tablename";

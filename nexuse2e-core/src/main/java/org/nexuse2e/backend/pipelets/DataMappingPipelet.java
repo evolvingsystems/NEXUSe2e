@@ -44,7 +44,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -79,7 +80,7 @@ public class DataMappingPipelet extends AbstractPipelet {
 	 * ---------------------
 	 */
 	
-    private static Logger      LOG                = Logger.getLogger( XMLDataMappingPipelet.class );
+    private static Logger      LOG                = LogManager.getLogger( XMLDataMappingPipelet.class );
 
     public static final String CONFIG_FILE     	  = "config_file";
 

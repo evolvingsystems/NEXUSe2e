@@ -38,7 +38,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -48,7 +49,7 @@ import org.w3c.dom.Document;
 
 public class DataConversionService extends AbstractService {
 
-    private static Logger      LOG                     = Logger.getLogger( DataConversionService.class );
+    private static Logger      LOG                     = LogManager.getLogger( DataConversionService.class );
 
     public final static String MAPPINGTABLE_LEFT2RIGHT = "left";
     public final static String MAPPINGTABLE_RIGHT2LEFT = "right";

@@ -19,10 +19,10 @@
  */
 package org.nexuse2e.logging;
 
-import org.apache.log4j.helpers.FormattingInfo;
-import org.apache.log4j.helpers.PatternConverter;
-import org.apache.log4j.helpers.PatternParser;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.helpers.FormattingInfo;
+import org.apache.logging.log4j.helpers.PatternConverter;
+import org.apache.logging.log4j.helpers.PatternParser;
+import org.apache.logging.log4j.spi.LoggingEvent;
 
 public class ExtPatternParser extends PatternParser {
 

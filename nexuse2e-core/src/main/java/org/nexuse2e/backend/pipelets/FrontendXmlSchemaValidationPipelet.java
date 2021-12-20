@@ -26,7 +26,7 @@ package org.nexuse2e.backend.pipelets;
  */
 public class FrontendXmlSchemaValidationPipelet extends XmlSchemaValidationPipelet {
 
-    //private static Logger LOG = Logger.getLogger( FrontendXmlSchemaValidationPipelet.class );
+    //private static Logger LOG = LogManager.getLogger( FrontendXmlSchemaValidationPipelet.class );
 
     public FrontendXmlSchemaValidationPipelet() {
 

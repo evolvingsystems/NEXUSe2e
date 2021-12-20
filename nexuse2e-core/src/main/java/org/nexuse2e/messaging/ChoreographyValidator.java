@@ -23,7 +23,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.logging.LogMessage;
@@ -40,7 +41,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public abstract class ChoreographyValidator {
 
-    private static Logger LOG = Logger.getLogger( ChoreographyValidator.class );
+    private static Logger LOG = LogManager.getLogger( ChoreographyValidator.class );
 
     private ChoreographyPojo getMatchingChoreography( List<ChoreographyPojo> choreographies, MessagePojo messagePojo )
             throws NexusException {

@@ -25,7 +25,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -39,7 +40,7 @@ import org.nexuse2e.ui.form.DatabasePurgeForm;
 
 public class DatabasePurgeAction extends NexusE2EAction {
 
-    private static Logger LOG = Logger.getLogger( DatabasePurgeAction.class );
+    private static Logger LOG = LogManager.getLogger( DatabasePurgeAction.class );
 
     @Override
     public ActionForward executeNexusE2EAction( ActionMapping actionMapping, ActionForm actionForm,

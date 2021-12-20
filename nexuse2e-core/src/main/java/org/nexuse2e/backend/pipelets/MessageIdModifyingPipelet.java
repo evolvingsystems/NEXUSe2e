@@ -20,7 +20,8 @@
 package org.nexuse2e.backend.pipelets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -42,7 +43,7 @@ import java.util.List;
  */
 public class MessageIdModifyingPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(MessageIdModifyingPipelet.class);
+    private static Logger LOG = LogManager.getLogger(MessageIdModifyingPipelet.class);
 
     public static final String DEFINITION_LIST = "definitionList";
 

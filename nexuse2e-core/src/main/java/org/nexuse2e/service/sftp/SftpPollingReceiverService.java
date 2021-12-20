@@ -23,7 +23,8 @@ import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -54,7 +55,7 @@ import java.util.regex.Pattern;
  */
 public class SftpPollingReceiverService extends AbstractService implements ReceiverAware {
 
-    private static Logger      LOG                         = Logger.getLogger( SftpPollingReceiverService.class );
+    private static Logger      LOG                         = LogManager.getLogger( SftpPollingReceiverService.class );
 
     public static final String PARTNER_PARAM_NAME          = "partnerId";
     public static final String DOWNLOAD_DIR_PARAM_NAME     = "downloadDir";

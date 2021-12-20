@@ -38,7 +38,7 @@ import org.nexuse2e.ui.form.ProvisioningSubmissionForm;
  */
 public class ProvisioningSubmissionAction extends NexusE2EAction {
 
-    // private static Logger LOG = Logger.getLogger( ProvisioningSubmissionAction.class );
+    // private static Logger LOG = LogManager.getLogger( ProvisioningSubmissionAction.class );
 
     /* (non-Javadoc)
      * @see org.nexuse2e.ui.action.NexusE2EAction#executeNexusE2EAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.apache.struts.action.ActionMessages, org.apache.struts.action.ActionMessages)

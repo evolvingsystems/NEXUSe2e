@@ -21,7 +21,8 @@ package org.nexuse2e.test.webservice;
 
 import javax.jws.WebService;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.integration.BackendDeliveryInterface;
 
 /**
@@ -31,7 +32,7 @@ import org.nexuse2e.integration.BackendDeliveryInterface;
 @WebService(endpointInterface="org.nexuse2e.integration.BackendDeliveryInterface")
 public class BackendDeliveryWS implements BackendDeliveryInterface {
     
-    private static Logger LOG = Logger.getLogger( BackendDeliveryWS.class );
+    private static Logger LOG = LogManager.getLogger( BackendDeliveryWS.class );
 
     /* (non-Javadoc)
      * @see org.nexuse2e.integration.BackendDeliveryInterface#processInboundMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])

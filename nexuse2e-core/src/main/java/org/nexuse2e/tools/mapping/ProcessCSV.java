@@ -43,7 +43,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.nexuse2e.NexusException;
@@ -68,7 +69,7 @@ import org.w3c.dom.NodeList;
  */
 public class ProcessCSV {
 
-    private static Logger        LOG = Logger.getLogger( ProcessCSV.class );
+    private static Logger        LOG = LogManager.getLogger( ProcessCSV.class );
 
     /**
      * Comment for <code>reader</code>

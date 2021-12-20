@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.backend.pipelets;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
@@ -38,7 +39,7 @@ import org.nexuse2e.messaging.MessageContext;
  */
 public class RandomDelayPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( RandomDelayPipelet.class );
+    private static Logger LOG = LogManager.getLogger( RandomDelayPipelet.class );
     
     
     public static final String MIN_TIME_PARAM_NAME = "minDelay";

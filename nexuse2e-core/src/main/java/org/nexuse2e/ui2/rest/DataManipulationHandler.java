@@ -7,7 +7,8 @@ package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.pojo.ConversationPojo;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import static org.nexuse2e.util.FileUtil.readAll;
 
 public class DataManipulationHandler implements Handler {
-    private static final Logger LOG = Logger.getLogger(DataManipulationHandler.class);
+    private static final Logger LOG = LogManager.getLogger(DataManipulationHandler.class);
 
     @Override
     public boolean canHandle(String path, String method) {

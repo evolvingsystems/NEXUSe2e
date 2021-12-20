@@ -24,7 +24,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -36,7 +37,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class NEXUSe2eRMIServer implements InitializingBean {
 
-    private static Logger         LOG                   = Logger.getLogger( NEXUSe2eRMIServer.class );
+    private static Logger         LOG                   = LogManager.getLogger( NEXUSe2eRMIServer.class );
 
     private String                hostName              = null;
     private String                interfaceName         = null;

@@ -36,7 +36,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.pipelets.helper.RequestResponseData;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -54,7 +55,7 @@ import org.nexuse2e.pojo.MessagePojo;
  */
 public class HTTPIntegrationPipelet extends AbstractPipelet {
 
-    private static Logger      LOG            = Logger.getLogger( HTTPIntegrationPipelet.class );
+    private static Logger      LOG            = LogManager.getLogger( HTTPIntegrationPipelet.class );
 
     public static final String URL            = "URL";
     public static final String SEND_AS_PARAM  = "SendAsParameters";

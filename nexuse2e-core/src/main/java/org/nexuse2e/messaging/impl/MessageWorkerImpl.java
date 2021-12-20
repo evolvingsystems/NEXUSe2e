@@ -24,7 +24,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.NexusException;
@@ -48,7 +49,7 @@ import org.nexuse2e.pojo.ParticipantPojo;
  */
 public class MessageWorkerImpl implements MessageWorker {
 
-    private static final Logger LOG = Logger.getLogger(MessageWorkerImpl.class);
+    private static final Logger LOG = LogManager.getLogger(MessageWorkerImpl.class);
 
     /**
      * Default thread pool size.

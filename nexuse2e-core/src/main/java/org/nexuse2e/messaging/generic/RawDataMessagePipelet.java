@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Constants;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -43,7 +44,7 @@ import org.nexuse2e.pojo.MessagePojo;
  */
 public class RawDataMessagePipelet extends AbstractPipelet {
 
-    private static Logger       LOG                  = Logger.getLogger( RawDataMessagePipelet.class );
+    private static Logger       LOG                  = LogManager.getLogger( RawDataMessagePipelet.class );
 
     private static final String MIME_TYPE_PARAM_NAME = "mimeType";
     private static final String SET_CONTENT_ID       = "setContentId";

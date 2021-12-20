@@ -34,7 +34,8 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -52,7 +53,7 @@ import org.xml.sax.InputSource;
  */
 public class XmlSchemaValidationPipelet extends AbstractPipelet {
 
-    private static Logger         LOG                = Logger.getLogger( XmlSchemaValidationPipelet.class );
+    private static Logger         LOG                = LogManager.getLogger( XmlSchemaValidationPipelet.class );
 
     protected static final String SCHEMA_FILE_PATH   = "schemaFilePath";
     protected static final String VALIDATION_ENABLED = "validationEnabled";

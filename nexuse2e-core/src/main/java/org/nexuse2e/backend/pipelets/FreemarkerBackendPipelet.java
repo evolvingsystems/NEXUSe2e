@@ -32,7 +32,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ListParameter;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -66,7 +67,7 @@ import freemarker.template.TemplateException;
  * @author Jonas Reese
  */
 public class FreemarkerBackendPipelet extends AbstractPipelet {
-    private static Logger LOG = Logger.getLogger(FreemarkerBackendPipelet.class);
+    private static Logger LOG = LogManager.getLogger(FreemarkerBackendPipelet.class);
 
     public static final String USE_EXTERNAL_TEMPLATE_PARAM_NAME = "externalTemplate";
     public static final String TEMPLATE_PARAM_NAME = "template";

@@ -24,7 +24,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.GenericComparator;
 import org.nexuse2e.pojo.ChoreographyPojo;
@@ -39,7 +40,7 @@ import org.nexuse2e.ui.structure.TargetProvider;
  */
 public class ParticipantTargetProvider implements TargetProvider {
 
-    private static Logger LOG = Logger.getLogger( ParticipantTargetProvider.class );
+    private static Logger LOG = LogManager.getLogger( ParticipantTargetProvider.class );
 
     
     public List<StructureNode> getStructure(

@@ -27,7 +27,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -47,7 +48,7 @@ import org.nexuse2e.util.EncryptionUtil;
  */
 public class CACertFinishExportAction extends NexusE2EAction {
 
-    private static Logger LOG = Logger.getLogger(CACertFinishExportAction.class);
+    private static Logger LOG = LogManager.getLogger(CACertFinishExportAction.class);
 
     /*
      * (non-Javadoc)

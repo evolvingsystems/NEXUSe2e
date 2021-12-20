@@ -35,7 +35,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.tools.mapping.csv.RecordContainer;
 
@@ -54,7 +55,7 @@ import org.nexuse2e.tools.mapping.csv.RecordContainer;
  */
 public class FlatFileParser {
 
-    private static Logger   LOG             = Logger.getLogger( FlatFileParser.class );
+    private static Logger   LOG             = LogManager.getLogger( FlatFileParser.class );
 
     private RecordContainer recordContainer = null;
 

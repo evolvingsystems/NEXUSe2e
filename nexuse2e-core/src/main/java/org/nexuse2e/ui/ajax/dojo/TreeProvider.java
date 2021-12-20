@@ -21,7 +21,8 @@ package org.nexuse2e.ui.ajax.dojo;
 
 
 import edu.emory.mathcs.backport.java.util.Collections;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -51,7 +52,7 @@ import java.util.Map;
  */
 public class TreeProvider implements AjaxRequestHandler {
 
-    private static final Logger LOG = Logger.getLogger(TreeProvider.class);
+    private static final Logger LOG = LogManager.getLogger(TreeProvider.class);
 
     private static final String BEAN_STRUCTURE_SERVICE = "structureService";
 

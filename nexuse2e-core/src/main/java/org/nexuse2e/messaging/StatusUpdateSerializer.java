@@ -24,7 +24,8 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;

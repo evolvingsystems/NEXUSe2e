@@ -29,7 +29,8 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
@@ -65,7 +66,7 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
 
     private BeanStatus status = BeanStatus.UNDEFINED;
     Map<ActionSpecificKey, BackendPipeline> pipelines = null;
-    private static Logger LOG = Logger.getLogger(BackendPipelineDispatcher.class);
+    private static Logger LOG = LogManager.getLogger(BackendPipelineDispatcher.class);
 
     /**
      * @param conversationId

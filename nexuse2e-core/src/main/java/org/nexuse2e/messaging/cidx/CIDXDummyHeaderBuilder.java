@@ -29,7 +29,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.AbstractPipelet;
@@ -39,7 +40,7 @@ import org.nexuse2e.pojo.MessagePojo;
 
 public class CIDXDummyHeaderBuilder extends AbstractPipelet {
 
-    private static Logger       LOG = Logger.getLogger( CIDXDummyHeaderBuilder.class );
+    private static Logger       LOG = LogManager.getLogger( CIDXDummyHeaderBuilder.class );
 
     
     /**

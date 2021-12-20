@@ -62,7 +62,7 @@ public class BirtReportServlet extends HttpServlet {
     
     private static BirtReportServlet instance;
     
-    protected static Logger logger = Logger.getLogger( "org.eclipse.birt" );
+    protected static Logger logger = LogManager.getLogger( "org.eclipse.birt" );
     
     public BirtReportServlet() {
         instance = this;

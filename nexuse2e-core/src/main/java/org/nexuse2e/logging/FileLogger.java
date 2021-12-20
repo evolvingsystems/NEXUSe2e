@@ -26,11 +26,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.FileAppender;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.PatternLayout;
+import org.apache.logging.log4j.spi.LoggingEvent;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Layer;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -43,7 +44,7 @@ import org.nexuse2e.configuration.ParameterType;
  */
 public class FileLogger extends FileAppender implements LogAppender {
 
-    private static Logger                    LOG       = Logger.getLogger( FileLogger.class );
+    private static Logger                    LOG       = LogManager.getLogger( FileLogger.class );
     public final static String               DIRECTORY = "directory";
     public final static String               PREFIX    = "prefix";
     public final static String               APPEND    = "append";
@@ -185,7 +186,7 @@ public class FileLogger extends FileAppender implements LogAppender {
     }
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.WriterAppender#append(org.apache.log4j.spi.LoggingEvent)
+     * @see org.apache.logging.log4j.WriterAppender#append(org.apache.logging.log4j.spi.LoggingEvent)
      */
     @Override
     public void append( LoggingEvent loggingevent ) {

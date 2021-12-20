@@ -21,7 +21,8 @@ package org.nexuse2e.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -67,7 +68,7 @@ import java.util.*;
  */
 public class CertificateUtil {
 
-    private static Logger      LOG                                 = Logger.getLogger(CertificateUtil.class);
+    private static Logger      LOG                                 = LogManager.getLogger(CertificateUtil.class);
 
     public static final int    DEFAULT_RSA_KEY_LENGTH              = 2048;
     public static final String DEFAULT_DIGITAL_SIGNATURE_ALGORITHM = "SHA1withRSA";

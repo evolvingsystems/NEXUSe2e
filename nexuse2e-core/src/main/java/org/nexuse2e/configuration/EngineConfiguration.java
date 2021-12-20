@@ -43,8 +43,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.StandardLevel;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
@@ -96,7 +98,7 @@ import org.springframework.context.support.ApplicationObjectSupport;
 @XmlAccessorType(XmlAccessType.NONE)
 public class EngineConfiguration implements ConfigurationAccessService {
 
-    private static Logger                           LOG                       = Logger.getLogger(EngineConfiguration.class);
+    private static Logger                           LOG                       = LogManager.getLogger(EngineConfiguration.class);
 
     private Map<ActionSpecificKey, BackendPipeline> backendInboundPipelines   = new HashMap<ActionSpecificKey, BackendPipeline>();
     private Map<ActionSpecificKey, BackendPipeline> backendOutboundPipelines  = new HashMap<ActionSpecificKey, BackendPipeline>();
@@ -407,9 +409,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
                             if (packageNames != null) {
                                 for (String packageName : packageNames) {
                                     if (packageName != null) {
-                                        Logger targetlogger = Logger.getLogger(packageName);
+                                        Logger targetlogger = LogManager.getLogger(packageName);
                                         logAppender.registerLogger(targetlogger);
-                                        targetlogger.addAppender(logAppender);
+                                        ((org.apache.logging.log4j.core.Logger) targetlogger).addAppender(logAppender);
                                     }
                                 }
                             }
@@ -418,12 +420,12 @@ public class EngineConfiguration implements ConfigurationAccessService {
                                 continue;
                             }
                             LOG.debug("adding logger: " + token);
-                            Logger targetlogger = Logger.getLogger(token);
+                            Logger targetlogger = LogManager.getLogger(token);
                             logAppender.registerLogger(targetlogger);
-                            if (targetlogger.getLevel() == null || targetlogger.getLevel().toInt() > logger.getThreshold()) {
-                                targetlogger.setLevel(Level.toLevel(logger.getThreshold()));
+                            if (targetlogger.getLevel() == null || targetlogger.getLevel().intLevel() > logger.getThreshold()) {
+                                ((org.apache.logging.log4j.core.Logger) targetlogger).setLevel(Level.toLevel(StandardLevel.getStandardLevel(logger.getThreshold()).name()));
                             }
-                            targetlogger.addAppender(logAppender);
+                            ((org.apache.logging.log4j.core.Logger) targetlogger).addAppender(logAppender);
                         }
                     }
 

@@ -37,7 +37,8 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.StatusSummary.Status;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
@@ -49,7 +50,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  */
 public class EngineMonitor extends WebApplicationObjectSupport {
 
-    private static Logger               LOG                        = Logger.getLogger( EngineMonitor.class );
+    private static Logger               LOG                        = LogManager.getLogger( EngineMonitor.class );
 
     private List<EngineMonitorListener> listeners;
     private Timer                       timer;

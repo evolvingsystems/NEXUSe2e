@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.messaging.generic;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
@@ -33,7 +34,7 @@ import org.nexuse2e.messaging.MessageContext;
  */
 public class DebugFrontendPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( AbstractPipelet.class );
+    private static Logger LOG = LogManager.getLogger( AbstractPipelet.class );
     
     public static final String TEXT_PARAM_NAME = "text";
     

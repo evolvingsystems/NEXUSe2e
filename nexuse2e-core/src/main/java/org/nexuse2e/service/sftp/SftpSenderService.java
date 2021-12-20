@@ -26,7 +26,8 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Layer;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -64,7 +65,7 @@ import com.jcraft.jsch.SftpException;
  */
 public class SftpSenderService extends AbstractService implements SenderAware {
 
-    private static Logger      LOG                       = Logger.getLogger( SftpSenderService.class );
+    private static Logger      LOG                       = LogManager.getLogger( SftpSenderService.class );
 
     public static final String PRIVATE_KEY 			     = "privateKey";
     public static final String BASE_FILE_NAME_PARAM_NAME = "baseFileName";

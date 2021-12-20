@@ -23,7 +23,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
@@ -39,7 +40,7 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
 public class ContentTypeChangerPipelet extends AbstractOutboundBackendPipelet {
 
     @SuppressWarnings("unused")
-    private static Logger       LOG                     = Logger.getLogger(ContentTypeChangerPipelet.class);
+    private static Logger       LOG                     = LogManager.getLogger(ContentTypeChangerPipelet.class);
 
     private static final String CONTENT_TYPE_PARAM_NAME = "contentType";
 

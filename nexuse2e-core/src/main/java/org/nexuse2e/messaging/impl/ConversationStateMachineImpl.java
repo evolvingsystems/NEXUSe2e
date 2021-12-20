@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Constants;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageBackendStatus;
@@ -50,7 +51,7 @@ import org.nexuse2e.pojo.MessagePojo;
  */
 public class ConversationStateMachineImpl implements ConversationStateMachine {
 
-    private static Logger    LOG = Logger.getLogger( ConversationStateMachineImpl.class );
+    private static Logger    LOG = LogManager.getLogger( ConversationStateMachineImpl.class );
 
     private ConversationPojo conversation;
     private MessagePojo      message;

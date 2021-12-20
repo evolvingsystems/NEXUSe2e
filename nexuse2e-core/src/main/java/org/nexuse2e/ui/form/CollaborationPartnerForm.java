@@ -47,7 +47,7 @@ public class CollaborationPartnerForm extends ActionForm {
     /**
      * 
      */
-    // private static final Logger LOG = Logger.getLogger( CollaborationPartnerForm.class );
+    // private static final Logger LOG = LogManager.getLogger( CollaborationPartnerForm.class );
     private static final long                 serialVersionUID = 6867989805361808373L;
     private String                            name;
     private String                            company;

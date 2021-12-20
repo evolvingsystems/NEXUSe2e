@@ -21,7 +21,8 @@ package org.nexuse2e;
 
 import java.net.UnknownHostException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.messaging.MessageContext;
 import org.nexuse2e.messaging.Pipelet;
 import org.nexuse2e.service.Service;
@@ -33,7 +34,7 @@ import org.nexuse2e.transport.TransportReceiver;
  */
 public class DefaultEngineControllerStub implements EngineControllerStub {
 
-    private static Logger LOG = Logger.getLogger( DefaultEngineControllerStub.class );
+    private static Logger LOG = LogManager.getLogger( DefaultEngineControllerStub.class );
 
     /**
      * 

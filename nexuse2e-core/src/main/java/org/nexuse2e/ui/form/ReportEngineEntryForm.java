@@ -21,8 +21,8 @@ package org.nexuse2e.ui.form;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Priority;
 import org.apache.struts.action.ActionForm;
 import org.nexuse2e.pojo.LogPojo;
 

@@ -43,7 +43,7 @@ public class LoggerForm extends ActionForm {
 
     private static final long              serialVersionUID         = 1L;
 
-    private static org.apache.log4j.Logger LOG                      = org.apache.log4j.Logger
+    private static org.apache.logging.log4j.Logger LOG                      = org.apache.logging.log4j.Logger
                                                                             .getLogger( LoggerForm.class );
 
     private int                            nxLoggerId               = 0;

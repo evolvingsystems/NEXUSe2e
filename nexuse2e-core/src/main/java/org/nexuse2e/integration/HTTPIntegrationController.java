@@ -27,7 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.logging.LogMessage;
@@ -36,7 +37,7 @@ import org.springframework.web.servlet.mvc.Controller;
 
 public class HTTPIntegrationController implements Controller {
 
-    private static Logger LOG = Logger.getLogger( HTTPIntegrationController.class );
+    private static Logger LOG = LogManager.getLogger( HTTPIntegrationController.class );
 
     public ModelAndView handleRequest( HttpServletRequest request, HttpServletResponse response ) throws Exception {
 

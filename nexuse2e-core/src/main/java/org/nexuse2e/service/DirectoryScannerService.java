@@ -36,7 +36,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -53,7 +54,7 @@ import org.w3c.dom.Document;
  */
 public class DirectoryScannerService extends AbstractService implements SchedulerClient {
 
-    private static Logger             LOG                         = Logger.getLogger( DirectoryScannerService.class );
+    private static Logger             LOG                         = LogManager.getLogger( DirectoryScannerService.class );
 
     // Time to wait after retrieving the list of files to send
     // This is to avoid timing problems when files are still being written

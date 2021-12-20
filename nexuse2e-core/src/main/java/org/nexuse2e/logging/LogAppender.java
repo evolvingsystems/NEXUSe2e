@@ -19,7 +19,7 @@
  */
 package org.nexuse2e.logging;
 
-import org.apache.log4j.Appender;
+import org.apache.logging.log4j.core.Appender;
 import org.nexuse2e.Configurable;
 import org.nexuse2e.Manageable;
 
@@ -28,7 +28,7 @@ import org.nexuse2e.Manageable;
  */
 public interface LogAppender extends Appender, Configurable, Manageable {
 
-    public void registerLogger( org.apache.log4j.Logger logger );
+    public void registerLogger( org.apache.logging.log4j.Logger logger );
 
     public void deregisterLoggers();
 

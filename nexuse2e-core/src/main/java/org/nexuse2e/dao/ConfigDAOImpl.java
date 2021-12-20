@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -60,7 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
 
 	
-    private static Logger LOG = Logger.getLogger( ConfigDAOImpl.class );
+    private static Logger LOG = LogManager.getLogger( ConfigDAOImpl.class );
 
    
     

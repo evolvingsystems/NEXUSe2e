@@ -23,7 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -43,7 +44,7 @@ import org.nexuse2e.tools.mapping.ProcessXML;
  */
 public class FlatFileMappingPipelet extends AbstractPipelet {
 
-    private static Logger      LOG             = Logger.getLogger( FlatFileMappingPipelet.class );
+    private static Logger      LOG             = LogManager.getLogger( FlatFileMappingPipelet.class );
 
     public static final String XML_BLOCK_FILE  = "xmlBlockFile";
     public static final String FLAT_BLOCK_FILE = "flatBlockFile";

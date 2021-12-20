@@ -36,7 +36,8 @@ import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.logging.LogMessage;
@@ -58,7 +59,7 @@ public class HTTPMessageUnpackager extends AbstractPipelet {
     // optional setting for future use. Could be used to interpret the content.
     private static final String CHARTSET = "charset";
 
-    private static Logger       LOG = Logger.getLogger( HTTPMessageUnpackager.class );
+    private static Logger       LOG = LogManager.getLogger( HTTPMessageUnpackager.class );
 
     private static String		CRLF = "\r\n";
     

@@ -30,7 +30,8 @@ import java.util.Map;
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -46,7 +47,7 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
  */
 public class FilePayloadReplacementPipelet extends AbstractPipelet {
 
-    private static Logger      LOG       = Logger.getLogger( FilePayloadReplacementPipelet.class );
+    private static Logger      LOG       = LogManager.getLogger( FilePayloadReplacementPipelet.class );
 
     public static final String FILE_NAME = "filename";
     public static final String PASSWORD  = "password";

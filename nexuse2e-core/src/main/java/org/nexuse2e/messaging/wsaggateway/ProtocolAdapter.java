@@ -24,7 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
@@ -51,7 +52,7 @@ import org.nexuse2e.pojo.MessagePojo;
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
 public class ProtocolAdapter implements org.nexuse2e.messaging.ProtocolAdapter {
-    private static Logger       LOG = Logger.getLogger( ProtocolAdapter.class );
+    private static Logger       LOG = LogManager.getLogger( ProtocolAdapter.class );
 
     
     private ProtocolSpecificKey key;

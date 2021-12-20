@@ -34,7 +34,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONTokener;
 import org.nexuse2e.Layer;
@@ -59,7 +60,7 @@ public class IGreenMappingService extends AbstractService implements DataMapper 
 	 * ---------------------
 	 */
 	
-	private static Logger	LOG                     = Logger.getLogger( IGreenMappingService.class );
+	private static Logger	LOG                     = LogManager.getLogger( IGreenMappingService.class );
 	
 	private static final String BACKEND_ACCESS_URL  = "backend access url";
 	private static final String BACKEND_ACCESS_USERNAME = "backend username";

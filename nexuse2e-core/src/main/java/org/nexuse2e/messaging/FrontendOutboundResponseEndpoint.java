@@ -35,7 +35,7 @@ import org.nexuse2e.configuration.EngineConfiguration;
  */
 public class FrontendOutboundResponseEndpoint implements MessageProcessor, Manageable {
 
-    //private static final Logger LOG = Logger.getLogger(FrontendOutboundResponseEndpoint.class);
+    //private static final Logger LOG = LogManager.getLogger(FrontendOutboundResponseEndpoint.class);
     
     private BeanStatus status = BeanStatus.INSTANTIATED;
 

@@ -27,7 +27,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.messaging.AbstractPipelet;
 import org.nexuse2e.messaging.MessageContext;
@@ -42,7 +43,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class UnGzipPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( UnGzipPipelet.class );
+    private static Logger LOG = LogManager.getLogger( UnGzipPipelet.class );
 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipelet#processMessage(org.nexuse2e.messaging.MessageContext)

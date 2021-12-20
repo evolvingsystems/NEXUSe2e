@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -57,7 +58,7 @@ public class XMLSmtpSenderBackendPipelet extends AbstractPipelet {
 	 * ------------------
 	 */
 
-    private static Logger LOG = Logger.getLogger( XMLSmtpSenderBackendPipelet.class );
+    private static Logger LOG = LogManager.getLogger( XMLSmtpSenderBackendPipelet.class );
     
     public static final String SENDER_SERVICE = "sender_service";
     public static final String RECEIVER_PARAM_NAME = "receiver";

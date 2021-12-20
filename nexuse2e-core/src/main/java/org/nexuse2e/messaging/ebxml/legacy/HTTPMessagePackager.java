@@ -26,7 +26,8 @@ import java.util.Map;
 import javax.mail.internet.ParseException;
 import javax.xml.soap.SOAPException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.AbstractPipelet;
@@ -40,7 +41,7 @@ import org.nexuse2e.pojo.MessagePojo;
  */
 public class HTTPMessagePackager extends AbstractPipelet {
 
-    private static Logger       LOG = Logger.getLogger( HTTPMessagePackager.class );
+    private static Logger       LOG = LogManager.getLogger( HTTPMessagePackager.class );
 
     private Map<String, Object> parameters;
 

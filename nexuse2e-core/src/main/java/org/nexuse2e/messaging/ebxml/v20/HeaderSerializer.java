@@ -37,7 +37,8 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Constants.Severity;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -56,7 +57,7 @@ import org.nexuse2e.pojo.MessagePojo;
 
 public class HeaderSerializer extends AbstractPipelet {
 
-	private static Logger LOG = Logger.getLogger(HeaderSerializer.class);
+	private static Logger LOG = LogManager.getLogger(HeaderSerializer.class);
 
 	protected CPAIdScheme cpaIdScheme = Constants.DEFAULT_CPAID_SCHEME;
 

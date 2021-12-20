@@ -29,7 +29,8 @@ import javax.xml.soap.SOAPException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.ListParameter;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -47,7 +48,7 @@ import org.nexuse2e.pojo.MessagePojo;
  * @author gesch, sschulze
  */
 public class HTTPMessagePackager extends AbstractPipelet {
-    private static Logger LOG = Logger.getLogger(HTTPMessagePackager.class);
+    private static Logger LOG = LogManager.getLogger(HTTPMessagePackager.class);
 
     private static final String         ENCODING_PARAMETER_NAME = "binary_encoding";
     private static       String         CRLF                    = "\r\n";

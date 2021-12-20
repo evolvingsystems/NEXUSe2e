@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.ProtocolSpecificKey;
@@ -42,7 +43,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class DefaultProtocolAdapter implements org.nexuse2e.messaging.ProtocolAdapter {
 
-    private static Logger       LOG = Logger.getLogger( DefaultProtocolAdapter.class );
+    private static Logger       LOG = LogManager.getLogger( DefaultProtocolAdapter.class );
 
     private ProtocolSpecificKey key = null;
 

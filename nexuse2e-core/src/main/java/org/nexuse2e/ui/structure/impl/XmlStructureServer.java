@@ -30,7 +30,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.ui.structure.ParentalStructureNode;
 import org.nexuse2e.ui.structure.StructureException;
@@ -52,7 +53,7 @@ import org.w3c.dom.NodeList;
  */
 public class XmlStructureServer implements StructureService {
 
-    private static Logger           LOG                             = Logger.getLogger( XmlStructureServer.class );
+    private static Logger           LOG                             = LogManager.getLogger( XmlStructureServer.class );
 
     private static String           XPATH_MENU                      = "/structure/menu";
 

@@ -21,7 +21,8 @@ package org.nexuse2e.messaging.httpplain;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.messaging.AbstractPipelet;
 import org.nexuse2e.messaging.MessageContext;
@@ -30,7 +31,7 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
 
 public class HTTPPlainMessageUnpacker extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( HTTPPlainMessageUnpacker.class );
+    private static Logger LOG = LogManager.getLogger( HTTPPlainMessageUnpacker.class );
 
     /**
      * Default constructor.

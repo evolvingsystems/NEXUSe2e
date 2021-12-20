@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.messaging.AbstractPipelet;
@@ -46,7 +47,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class UnZipPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( UnZipPipelet.class );
+    private static Logger LOG = LogManager.getLogger( UnZipPipelet.class );
 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipelet#processMessage(org.nexuse2e.messaging.MessageContext)

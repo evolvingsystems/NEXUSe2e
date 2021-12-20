@@ -20,8 +20,9 @@
 package org.nexuse2e.dao;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.hibernate.dialect.Dialect;
@@ -57,7 +58,7 @@ import static org.nexuse2e.messaging.Constants.*;
 @Repository
 public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
-    protected static Logger LOG = Logger.getLogger(TransactionDAOImpl.class);
+    protected static Logger LOG = LogManager.getLogger(TransactionDAOImpl.class);
 
     private static final Map<Integer, int[]> followUpConversationStates;
     private static final Map<Integer, int[]> followUpMessageStates;

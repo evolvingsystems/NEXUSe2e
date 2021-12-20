@@ -24,7 +24,8 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
@@ -41,7 +42,7 @@ import org.nexuse2e.dao.TransactionDAO;
  */
 public class DBCleanupService extends AbstractService implements SchedulerClient {
 
-    private static Logger     LOG               = Logger.getLogger( DBCleanupService.class );
+    private static Logger     LOG               = LogManager.getLogger( DBCleanupService.class );
 
 //    public static String      DATABASESERVICE   = "databasename";
     public static String      SCHEDULINGSERVICE = "schedulingname";

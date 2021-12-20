@@ -23,7 +23,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 import org.apache.cxf.transport.servlet.CXFServlet;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.logging.LogMessage;
 
 /**
@@ -35,7 +36,7 @@ import org.nexuse2e.logging.LogMessage;
  * @version $LastChangedRevision:  $ - $LastChangedDate:  $ by $LastChangedBy:  $
  */
 public class DynamicWSDispatcherServlet extends CXFServlet {
-    private static Logger      LOG                         = Logger.getLogger( DynamicWSDispatcherServlet.class );
+    private static Logger      LOG                         = LogManager.getLogger( DynamicWSDispatcherServlet.class );
     
     
     private static final long serialVersionUID = 1L;

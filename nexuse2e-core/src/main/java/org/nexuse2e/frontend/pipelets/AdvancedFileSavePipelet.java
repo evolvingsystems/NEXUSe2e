@@ -21,7 +21,8 @@ package org.nexuse2e.frontend.pipelets;
 
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EnumerationParameter;
@@ -62,7 +63,7 @@ import java.util.Map;
  */
 public class AdvancedFileSavePipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(AdvancedFileSavePipelet.class);
+    private static Logger LOG = LogManager.getLogger(AdvancedFileSavePipelet.class);
 
     public static final String DIRECTORY_PARAM_NAME         = "directory";
     public static final String FILE_NAME_PATTERN_PARAM_NAME = "fileNamePattern";

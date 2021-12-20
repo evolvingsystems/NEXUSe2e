@@ -32,7 +32,7 @@ import org.nexuse2e.pojo.ChoreographyPojo;
 
 public class ProtocolAdapter implements org.nexuse2e.messaging.ProtocolAdapter {
 
-//    private static Logger       LOG                    = Logger.getLogger( ProtocolAdapter.class );
+//    private static Logger       LOG                    = LogManager.getLogger( ProtocolAdapter.class );
 //    private static String       receiptAcknowledgement = "    <ReceiptAcknowledgement>\n"
 //                                                               + "      <fromRole>\n"
 //                                                               + "        <PartnerRoleDescription>\n"

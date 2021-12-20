@@ -36,7 +36,8 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.soap.Text;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.logging.LogMessage;
@@ -51,7 +52,7 @@ import org.nexuse2e.pojo.MessagePojo;
  */
 public class HeaderDeserializer extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( HeaderDeserializer.class );
+    private static Logger LOG = LogManager.getLogger( HeaderDeserializer.class );
 
     /**
      * Default constructor.

@@ -1,6 +1,7 @@
 package org.nexuse2e.ui2.model;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -16,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TransactionReportingConversation {
-    private static final Logger LOG = Logger.getLogger(TransactionReportingConversation.class);
+    private static final Logger LOG = LogManager.getLogger(TransactionReportingConversation.class);
     private String choreographyId;
     private String conversationId;
     private int nxConversationId;

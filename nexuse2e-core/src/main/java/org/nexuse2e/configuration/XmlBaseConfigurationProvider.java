@@ -34,7 +34,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.pojo.ActionPojo;
 import org.nexuse2e.pojo.CertificatePojo;
@@ -66,7 +67,7 @@ import org.w3c.dom.Node;
  */
 public class XmlBaseConfigurationProvider implements BaseConfigurationProvider {
 
-    private static Logger LOG = Logger.getLogger( XmlBaseConfigurationProvider.class );
+    private static Logger LOG = LogManager.getLogger( XmlBaseConfigurationProvider.class );
 
     private Unmarshaller  unmarshaller;
     private Object        source;

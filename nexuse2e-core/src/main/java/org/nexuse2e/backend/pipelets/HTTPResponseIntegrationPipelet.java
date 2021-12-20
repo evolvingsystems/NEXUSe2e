@@ -23,7 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.pipelets.helper.RequestResponseData;
 import org.nexuse2e.backend.pipelets.helper.ResponseSender;
@@ -40,7 +41,7 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
  */
 public class HTTPResponseIntegrationPipelet extends HTTPIntegrationPipelet {
 
-    private static Logger      LOG                             = Logger.getLogger( HTTPIntegrationPipelet.class );
+    private static Logger      LOG                             = LogManager.getLogger( HTTPIntegrationPipelet.class );
 
     public static final String ACTION_PARAM_NAME               = "action";
     public static final String DELAY_PARAM_NAME                = "delay";

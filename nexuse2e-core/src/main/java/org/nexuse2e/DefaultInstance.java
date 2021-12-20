@@ -22,7 +22,8 @@ package org.nexuse2e;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * @author GEsch
@@ -31,7 +32,7 @@ import org.apache.log4j.Logger;
  */
 public class DefaultInstance implements InstanceInterface {
 
-	private static Logger        LOG        = Logger.getLogger( DefaultInstance.class );
+	private static Logger        LOG        = LogManager.getLogger( DefaultInstance.class );
     
 	@Override
 	public List<InstanceCommand> getCommands() {

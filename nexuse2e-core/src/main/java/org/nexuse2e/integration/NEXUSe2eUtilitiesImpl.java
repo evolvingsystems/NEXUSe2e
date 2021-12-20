@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.integration;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.pojo.ChoreographyPojo;
@@ -33,7 +34,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class NEXUSe2eUtilitiesImpl implements NEXUSe2eUtilities {
 
-    private static Logger LOG = Logger.getLogger( NEXUSe2eUtilitiesImpl.class );
+    private static Logger LOG = LogManager.getLogger( NEXUSe2eUtilitiesImpl.class );
 
     public boolean containsPartner( String partnerId, String choreographyName ) {
 

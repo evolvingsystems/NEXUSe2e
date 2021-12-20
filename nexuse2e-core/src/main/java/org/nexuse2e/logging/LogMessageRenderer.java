@@ -29,7 +29,7 @@ import org.apache.log4j.or.ObjectRenderer;
 public class LogMessageRenderer implements ObjectRenderer {
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.or.ObjectRenderer#doRender(java.lang.Object)
+     * @see org.apache.logging.log4j.or.ObjectRenderer#doRender(java.lang.Object)
      */
     public String doRender( Object message ) {
 

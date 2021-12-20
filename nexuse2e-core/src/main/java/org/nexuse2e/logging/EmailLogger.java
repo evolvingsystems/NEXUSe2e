@@ -20,8 +20,8 @@
 package org.nexuse2e.logging;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.spi.LoggingEvent;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -186,7 +186,7 @@ public class EmailLogger extends AbstractLogger {
     }
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.AppenderSkeleton#append(org.apache.log4j.spi.LoggingEvent)
+     * @see org.apache.logging.log4j.AppenderSkeleton#append(org.apache.logging.log4j.spi.LoggingEvent)
      */
     @Override
     protected void append(LoggingEvent loggingEvent) {
@@ -263,7 +263,7 @@ public class EmailLogger extends AbstractLogger {
     }
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.AppenderSkeleton#close()
+     * @see org.apache.logging.log4j.AppenderSkeleton#close()
      */
     @Override
     public void close() {

@@ -40,7 +40,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.hibernate.cfg.Configuration;
 import org.nexuse2e.configuration.BaseConfigurationProvider;
@@ -81,7 +82,7 @@ import org.w3c.dom.NodeList;
  */
 public class Engine extends WebApplicationObjectSupport implements BeanNameAware, ApplicationContextAware, InitializingBean {
 
-    private static Logger                    LOG                            = Logger.getLogger( Engine.class );
+    private static Logger                    LOG                            = LogManager.getLogger( Engine.class );
 
     private static Engine                    instance                       = null;
     private EngineController                 engineController               = null;

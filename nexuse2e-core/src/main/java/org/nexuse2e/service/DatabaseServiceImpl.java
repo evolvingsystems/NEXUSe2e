@@ -27,7 +27,8 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Layer;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ListParameter;
@@ -36,7 +37,7 @@ import org.nexuse2e.configuration.ParameterType;
 
 public class DatabaseServiceImpl extends AbstractService implements DatabaseService {
 
-    private static Logger      LOG                = Logger.getLogger( DatabaseServiceImpl.class );
+    private static Logger      LOG                = LogManager.getLogger( DatabaseServiceImpl.class );
 
     public static final String EXTERNALDATASOURCE = "externaldatasource";
     public static final String DATASOURCEID       = "datasourceid";

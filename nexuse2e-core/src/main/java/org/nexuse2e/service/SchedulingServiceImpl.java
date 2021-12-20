@@ -36,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Layer;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.quartz.CronExpression;

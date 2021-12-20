@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.nexuse2e.pojo.ActionPojo;
 import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.pojo.ChoreographyPojo;

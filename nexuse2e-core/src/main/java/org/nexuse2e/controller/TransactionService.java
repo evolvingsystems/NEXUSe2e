@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.nexuse2e.Manageable;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.dao.TransactionDAO;

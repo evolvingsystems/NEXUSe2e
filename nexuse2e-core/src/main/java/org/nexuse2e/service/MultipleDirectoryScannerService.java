@@ -51,7 +51,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Constants;
 import org.nexuse2e.Engine;
@@ -128,7 +129,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class MultipleDirectoryScannerService extends AbstractService implements ReceiverAware {
 
 
-	private static final Logger        LOG                        = Logger.getLogger( MultipleDirectoryScannerService.class );
+	private static final Logger        LOG                        = LogManager.getLogger( MultipleDirectoryScannerService.class );
     
     public static final String        CONFIG_FILE                 = "config_file";
     public final static String        SCHEDULING_SERVICE          = "scheduling_service";

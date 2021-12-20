@@ -38,7 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -70,7 +71,7 @@ import org.nexuse2e.util.EncryptionUtil;
  */
 public class DataSaveAsAction extends NexusE2EAction {
 
-    private static Logger LOG = Logger.getLogger(DataSaveAsAction.class);
+    private static Logger LOG = LogManager.getLogger(DataSaveAsAction.class);
 
     /*
      * (non-Javadoc)

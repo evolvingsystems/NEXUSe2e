@@ -26,9 +26,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.AppenderSkeleton;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.LoggingEvent;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Layer;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -47,19 +48,19 @@ public abstract class AbstractLogger extends AppenderSkeleton implements LogAppe
     protected int                              logThreshold = 0;
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.AppenderSkeleton#append(org.apache.log4j.spi.LoggingEvent)
+     * @see org.apache.logging.log4j.AppenderSkeleton#append(org.apache.logging.log4j.spi.LoggingEvent)
      */
     @Override
     abstract protected void append( LoggingEvent arg0 );
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.AppenderSkeleton#close()
+     * @see org.apache.logging.log4j.AppenderSkeleton#close()
      */
     @Override
     abstract public void close();
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.AppenderSkeleton#requiresLayout()
+     * @see org.apache.logging.log4j.AppenderSkeleton#requiresLayout()
      */
     @Override
     public boolean requiresLayout() {

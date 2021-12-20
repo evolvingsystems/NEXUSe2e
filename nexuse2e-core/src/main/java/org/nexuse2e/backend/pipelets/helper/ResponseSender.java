@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.backend.pipelets.helper;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.BackendPipelineDispatcher;
@@ -30,7 +31,7 @@ import org.nexuse2e.backend.BackendPipelineDispatcher;
  */
 public class ResponseSender implements Runnable {
 
-    private static Logger       LOG                 = Logger.getLogger( ResponseSender.class );
+    private static Logger       LOG                 = LogManager.getLogger( ResponseSender.class );
 
     private String              choreography        = null;
     private String              partner             = null;

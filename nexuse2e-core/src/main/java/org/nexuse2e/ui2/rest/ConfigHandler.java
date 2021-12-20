@@ -7,7 +7,8 @@ package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Version;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 public class ConfigHandler implements Handler {
-    private static final Logger LOG = Logger.getLogger(ConfigHandler.class);
+    private static final Logger LOG = LogManager.getLogger(ConfigHandler.class);
     private static final String CONFIG_BASE = "/WEB-INF/config/";
 
     @Override

@@ -26,7 +26,8 @@ import java.io.InputStreamReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -37,7 +38,7 @@ import org.springframework.web.servlet.mvc.Controller;
  */
 public class DebugController implements Controller {
 
-    private static Logger LOG = Logger.getLogger( DebugController.class );
+    private static Logger LOG = LogManager.getLogger( DebugController.class );
 
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

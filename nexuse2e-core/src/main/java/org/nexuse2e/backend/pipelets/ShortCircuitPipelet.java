@@ -20,7 +20,8 @@
 package org.nexuse2e.backend.pipelets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.BackendPipelineDispatcher;
@@ -38,7 +39,7 @@ import org.nexuse2e.messaging.MessageContext;
  */
 public class ShortCircuitPipelet extends AbstractPipelet {
 
-    private static Logger         LOG          = Logger.getLogger( ShortCircuitPipelet.class );
+    private static Logger         LOG          = LogManager.getLogger( ShortCircuitPipelet.class );
 
     protected static final String PARAM_ACTION = "action";
     protected static final String PARAM_SYNCHRONOUS = "synchonous";

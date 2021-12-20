@@ -22,7 +22,8 @@ package org.nexuse2e.integration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.Engine;
 import org.nexuse2e.EngineMonitor;
 import org.nexuse2e.EngineStatusSummary;
@@ -36,7 +37,7 @@ import org.springframework.web.servlet.mvc.Controller;
  */
 public class EngineHTTPStatusController implements Controller {
 
-    private static Logger LOG = Logger.getLogger( EngineHTTPStatusController.class );
+    private static Logger LOG = LogManager.getLogger( EngineHTTPStatusController.class );
 
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

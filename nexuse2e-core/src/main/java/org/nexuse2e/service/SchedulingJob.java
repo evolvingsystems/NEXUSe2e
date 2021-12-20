@@ -19,7 +19,8 @@
  */
 package org.nexuse2e.service;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -31,7 +32,7 @@ import org.quartz.JobExecutionException;
  */
 public class SchedulingJob implements Job {
     
-    private static Logger LOG = Logger.getLogger( SchedulingJob.class );
+    private static Logger LOG = LogManager.getLogger( SchedulingJob.class );
 
     /* (non-Javadoc)
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)

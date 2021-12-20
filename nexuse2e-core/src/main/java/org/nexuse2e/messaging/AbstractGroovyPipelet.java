@@ -23,7 +23,8 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -38,7 +39,7 @@ public class AbstractGroovyPipelet extends AbstractPipelet {
 
 	public static final String GROOVY_CODE = "groovyCode";
 	
-	private static final Logger LOG = Logger.getLogger( AbstractGroovyPipelet.class );
+	private static final Logger LOG = LogManager.getLogger( AbstractGroovyPipelet.class );
 	
 	protected String groovyCode;
 	

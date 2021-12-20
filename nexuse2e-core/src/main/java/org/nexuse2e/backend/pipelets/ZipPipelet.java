@@ -31,7 +31,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -49,7 +50,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class ZipPipelet extends AbstractPipelet {
 
-    private static Logger      LOG               = Logger.getLogger( ZipPipelet.class );
+    private static Logger      LOG               = LogManager.getLogger( ZipPipelet.class );
 
     public final static String FILE_NAME_PATTERN = "fileNamePattern";
     public final static String TIMESTAMP_PATTERN = "timestampPattern";

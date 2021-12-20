@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -52,7 +53,7 @@ import org.nexuse2e.util.ServerPropertiesUtil.ServerProperty;
  */
 public class BackendPollingService extends AbstractService implements SchedulerClient {
 
-    private static Logger      LOG                      = Logger.getLogger( BackendPollingService.class );
+    private static Logger      LOG                      = LogManager.getLogger( BackendPollingService.class );
 
     public static final String POLL_INTERVAL_PARAM_NAME = "pollInterval";
     public static final String TRP_PROTOCOL_PARAM_NAME  = "trpProtocol";

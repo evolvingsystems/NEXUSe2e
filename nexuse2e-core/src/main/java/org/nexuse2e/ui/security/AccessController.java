@@ -29,7 +29,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.pojo.UserPojo;
 
 
@@ -40,7 +41,7 @@ import org.nexuse2e.pojo.UserPojo;
  */
 public class AccessController {
     
-    protected static final Logger LOG = Logger.getLogger( AccessController.class );
+    protected static final Logger LOG = LogManager.getLogger( AccessController.class );
     
     // actions that must be permitted for all users.
     protected static final String DEFAULT_FORWARD_ACTION = "NexusE2EAdmin.do";

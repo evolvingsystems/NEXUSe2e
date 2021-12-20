@@ -31,8 +31,9 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;

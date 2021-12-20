@@ -20,7 +20,8 @@
 package org.nexuse2e.backend.pipelets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -43,7 +44,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class MessageMappingPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger( MessageMappingPipelet.class );
+    private static Logger LOG = LogManager.getLogger( MessageMappingPipelet.class );
 
 
     public static final String ACTION_MAP_CATEGORY_PARAMETER_NAME = "actionMapCategory";

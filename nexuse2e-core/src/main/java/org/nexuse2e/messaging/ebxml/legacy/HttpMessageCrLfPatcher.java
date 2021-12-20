@@ -22,7 +22,8 @@ package org.nexuse2e.messaging.ebxml.legacy;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.messaging.AbstractPipelet;
 import org.nexuse2e.messaging.MessageContext;
@@ -35,7 +36,7 @@ import org.nexuse2e.messaging.MessageContext;
  */
 public class HttpMessageCrLfPatcher extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(HttpMessageCrLfPatcher.class);
+    private static Logger LOG = LogManager.getLogger(HttpMessageCrLfPatcher.class);
 
     private String CRLF = "\r\n";
 

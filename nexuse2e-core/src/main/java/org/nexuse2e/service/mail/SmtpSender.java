@@ -47,7 +47,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
@@ -85,7 +86,7 @@ import org.nexuse2e.util.CertificateUtil;
  */
 public class SmtpSender extends AbstractService implements SenderAware {
 
-    private static Logger      LOG                   = Logger.getLogger(SmtpSender.class);
+    private static Logger      LOG                   = LogManager.getLogger(SmtpSender.class);
 
     public static final String HOST_PARAM_NAME       = "host";
     public static final String PORT_PARAM_NAME       = "port";

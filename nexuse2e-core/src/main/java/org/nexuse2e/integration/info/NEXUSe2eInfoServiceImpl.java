@@ -35,8 +35,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Holder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Constants;
 import org.nexuse2e.Engine;
@@ -97,7 +98,7 @@ import org.nexuse2e.pojo.PartnerPojo;
  */
 public class NEXUSe2eInfoServiceImpl implements NEXUSe2EInfo {
     
-    private static Logger LOG = Logger.getLogger(NEXUSe2eInfoServiceImpl.class);
+    private static Logger LOG = LogManager.getLogger(NEXUSe2eInfoServiceImpl.class);
 
     private static final Comparator<String> STRING_COMPARATOR = new Comparator<String>(){
         public int compare(String s1, String s2) {

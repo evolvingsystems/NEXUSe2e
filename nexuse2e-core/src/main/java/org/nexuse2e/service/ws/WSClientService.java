@@ -32,7 +32,8 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -58,7 +59,7 @@ import org.nexuse2e.util.EncryptionUtil;
  */
 public class WSClientService extends AbstractService implements SenderAware {
 
-    private static Logger       LOG                     = Logger.getLogger( WSClientService.class );
+    private static Logger       LOG                     = LogManager.getLogger( WSClientService.class );
 
     private static final String SERVICE_TYPE_PARAM_NAME = "serviceType";
 

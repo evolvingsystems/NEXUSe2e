@@ -24,7 +24,8 @@ import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.ControllerThreadSocketFactory;
 import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.pojo.CertificatePojo;
 
 import javax.net.ssl.KeyManager;
@@ -50,7 +51,7 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
     /**
      * Log object for this class.
      */
-    private static final Logger LOG = Logger.getLogger(CertSSLProtocolSocketFactory.class);
+    private static final Logger LOG = LogManager.getLogger(CertSSLProtocolSocketFactory.class);
 
     private KeyStore keystore = null;
     private String keystorePassword = null;

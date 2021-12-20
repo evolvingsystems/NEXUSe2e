@@ -24,7 +24,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -40,7 +41,7 @@ import org.nexuse2e.ui.form.PipelineForm;
  */
 public class PipelineViewAction extends NexusE2EAction {
 
-    private static Logger LOG = Logger.getLogger( PipelineViewAction.class );
+    private static Logger LOG = LogManager.getLogger( PipelineViewAction.class );
 
     /* (non-Javadoc)
      * @see com.tamgroup.nexus.e2e.ui.action.NexusE2EAction#executeNexusE2EAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.apache.struts.action.ActionMessages)

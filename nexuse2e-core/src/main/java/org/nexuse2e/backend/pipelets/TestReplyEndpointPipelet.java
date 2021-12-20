@@ -32,7 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -49,7 +50,7 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
 
 public class TestReplyEndpointPipelet extends AbstractPipelet {
 
-    private static Logger      LOG                             = Logger.getLogger( TestReplyEndpointPipelet.class );
+    private static Logger      LOG                             = LogManager.getLogger( TestReplyEndpointPipelet.class );
 
     public static final String FILE_NAME_PARAM_NAME            = "fileName";
     public static final String DIRECTORY_PARAM_NAME            = "directory";

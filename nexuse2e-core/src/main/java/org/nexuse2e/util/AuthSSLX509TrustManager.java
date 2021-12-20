@@ -29,7 +29,8 @@ import java.util.Map;
 
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * <p>
@@ -53,7 +54,7 @@ public class AuthSSLX509TrustManager implements X509TrustManager {
     X509Certificate                         leafCertificate;
 
     /** Log object for this class. */
-    private static final Logger LOG                 = Logger.getLogger( AuthSSLX509TrustManager.class );
+    private static final Logger LOG                 = LogManager.getLogger( AuthSSLX509TrustManager.class );
 
     /**
      * Constructs a new <code>AuthSSLX509TrustManager</code>.

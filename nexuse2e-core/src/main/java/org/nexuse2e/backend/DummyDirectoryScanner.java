@@ -24,7 +24,8 @@ import java.io.FileInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * @author gesch
@@ -32,7 +33,7 @@ import org.apache.log4j.Logger;
  */
 public class DummyDirectoryScanner {
 
-    private static Logger             LOG              = Logger.getLogger( DummyDirectoryScanner.class );
+    private static Logger             LOG              = LogManager.getLogger( DummyDirectoryScanner.class );
 
     private BackendPipelineDispatcher backendPipelineDispatcher;
     private String                    directory;

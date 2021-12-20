@@ -21,7 +21,8 @@ package org.nexuse2e.service.sftp;
 
 import com.jcraft.jsch.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -48,7 +49,7 @@ import java.util.regex.Pattern;
  */
 public class SftpBackendPollingService extends AbstractService implements SchedulerClient {
 
-    private static Logger LOG = Logger.getLogger(SftpBackendPollingService.class);
+    private static Logger LOG = LogManager.getLogger(SftpBackendPollingService.class);
 
     private static final String CUSTOM_PARAMETER_FILE_NAME = "fileName";
     private static final String PARTNERID_PARAM_NAME = "partnerId";

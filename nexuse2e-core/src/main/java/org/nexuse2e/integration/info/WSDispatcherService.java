@@ -33,7 +33,8 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
@@ -56,7 +57,7 @@ import org.nexuse2e.util.PasswordUtil;
  */
 public class WSDispatcherService extends AbstractService {
 
-    private static Logger       LOG                     = Logger.getLogger( WSDispatcherService.class );
+    private static Logger       LOG                     = LogManager.getLogger( WSDispatcherService.class );
 
     private static final String URL_PARAM_NAME          = "url";
 

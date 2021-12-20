@@ -23,7 +23,8 @@ package org.nexuse2e.dao;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.exception.LockAcquisitionException;
 
 
@@ -34,7 +35,7 @@ import org.hibernate.exception.LockAcquisitionException;
  */
 public class LockAcquisitionInterceptor implements MethodInterceptor { //, ThrowsAdvice
 
-    Logger LOG = Logger.getLogger( LockAcquisitionInterceptor.class );
+    Logger LOG = LogManager.getLogger( LockAcquisitionInterceptor.class );
     private int timeout = 3000;
     private int retries = 3; 
     

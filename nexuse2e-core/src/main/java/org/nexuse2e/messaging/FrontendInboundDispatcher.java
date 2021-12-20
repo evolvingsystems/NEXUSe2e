@@ -20,7 +20,8 @@
 package org.nexuse2e.messaging;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -55,7 +56,7 @@ import java.util.Map;
  */
 public class FrontendInboundDispatcher extends ChoreographyValidator implements Dispatcher, Pipelet, InitializingBean {
 
-    private static Logger LOG = Logger.getLogger(FrontendInboundDispatcher.class);
+    private static Logger LOG = LogManager.getLogger(FrontendInboundDispatcher.class);
 
     private ProtocolAdapter[] protocolAdapters;
 

@@ -29,7 +29,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.messaging.AbstractPipelet;
 import org.nexuse2e.messaging.FrontendInboundDispatcher;
@@ -51,7 +52,7 @@ import org.xml.sax.SAXException;
  */
 public class GenericDocumentRequestProcessorPipelet extends AbstractPipelet {
 
-    private static Logger       LOG            = Logger.getLogger( GenericDocumentRequestProcessorPipelet.class );
+    private static Logger       LOG            = LogManager.getLogger( GenericDocumentRequestProcessorPipelet.class );
 
     /**
      * Default constructor.
