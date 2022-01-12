@@ -35,7 +35,7 @@ import org.nexuse2e.configuration.ComponentType;
 import org.nexuse2e.configuration.ConfigurationUtil;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.logging.LogAppender;
+//import org.nexuse2e.logging.LogAppender;
 import org.nexuse2e.pojo.ComponentPojo;
 import org.nexuse2e.pojo.LoggerParamPojo;
 import org.nexuse2e.pojo.LoggerPojo;
@@ -63,15 +63,15 @@ public class NotifierViewAction extends NexusE2EAction {
                 loggerForm.getNxLoggerId() );
 
         loggerForm.setProperties( loggerPojo );
-        LogAppender logger = engineConfiguration
-                .getLogger( loggerPojo.getName() );
-        for ( LoggerParamPojo loggerParam : loggerPojo.getLoggerParams() ) {
-            loggerParam.setParameterDescriptor( logger.getParameterMap().get( loggerParam.getParamName() ) );
-        }
-        loggerForm.setParameters( ConfigurationUtil.getConfiguration( logger, loggerPojo ) );
-        loggerForm.createParameterMapFromPojos();
-        loggerForm.setLoggerInstance( logger );
-        loggerForm.setComponentName( loggerPojo.getComponent().getName() );
+//        LogAppender logger = engineConfiguration
+//                .getLogger( loggerPojo.getName() );
+//        for ( LoggerParamPojo loggerParam : loggerPojo.getLoggerParams() ) {
+//            loggerParam.setParameterDescriptor( logger.getParameterMap().get( loggerParam.getParamName() ) );
+//        }
+//        loggerForm.setParameters( ConfigurationUtil.getConfiguration( logger, loggerPojo ) );
+//        loggerForm.createParameterMapFromPojos();
+//        loggerForm.setLoggerInstance( logger );
+//        loggerForm.setComponentName( loggerPojo.getComponent().getName() );
 
         Map<String, List<String>> logCategories = engineConfiguration.getLogCategories();
 

@@ -1,52 +1,46 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.test.webservice;
 
-import javax.jws.WebService;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.integration.BackendDeliveryInterface;
+
+import javax.jws.WebService;
 
 /**
  * @author jonas.reese
  * @version $LastChangedRevision$ - $LastChangedDate$ by $LastChangedBy$
  */
-@WebService(endpointInterface="org.nexuse2e.integration.BackendDeliveryInterface")
+@WebService(endpointInterface = "org.nexuse2e.integration.BackendDeliveryInterface")
 public class BackendDeliveryWS implements BackendDeliveryInterface {
-    
-    private static Logger LOG = LogManager.getLogger( BackendDeliveryWS.class );
+
+    private static Logger LOG = LogManager.getLogger(BackendDeliveryWS.class);
 
     /* (non-Javadoc)
-     * @see org.nexuse2e.integration.BackendDeliveryInterface#processInboundMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
+     * @see org.nexuse2e.integration.BackendDeliveryInterface#processInboundMessage(java.lang.String, java.lang
+     * .String, java.lang.String, java.lang.String, java.lang.String, java.lang.String[])
      */
-    public void processInboundMessage(
-            String choreographyId,
-            String businessPartnerId,
-            String actionId,
-            String conversationId,
-            String messageId,
-            String payload) {
-        LOG.info( "choreographyId=" + choreographyId + " businessPartnerId="
-                + businessPartnerId + " actionId=" + actionId
-                + " conversationId=" + conversationId + " messageId=" + messageId + " payload=" + payload );
+    public void processInboundMessage(String choreographyId, String businessPartnerId, String actionId,
+                                      String conversationId, String messageId, String payload) {
+        LOG.info("choreographyId=" + choreographyId + " businessPartnerId=" + businessPartnerId + " actionId=" + actionId + " conversationId=" + conversationId + " messageId=" + messageId + " payload=" + payload);
         return;
     }
 

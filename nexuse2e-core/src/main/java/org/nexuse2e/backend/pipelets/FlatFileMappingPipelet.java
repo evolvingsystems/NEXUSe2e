@@ -1,30 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.List;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -38,139 +34,140 @@ import org.nexuse2e.tools.mapping.CSVMappingFileEntry;
 import org.nexuse2e.tools.mapping.ProcessCSV;
 import org.nexuse2e.tools.mapping.ProcessXML;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.List;
+
 /**
  * @author mbreilmann
- *
  */
 public class FlatFileMappingPipelet extends AbstractPipelet {
 
-    private static Logger      LOG             = LogManager.getLogger( FlatFileMappingPipelet.class );
-
-    public static final String XML_BLOCK_FILE  = "xmlBlockFile";
+    public static final String XML_BLOCK_FILE = "xmlBlockFile";
     public static final String FLAT_BLOCK_FILE = "flatBlockFile";
-    public static final String MAPPING_FILE    = "mappingFile";
-    public static final String XML_INPUT       = "xmlInput";
-
-    private String             xmlBlockFile    = null;
-    private String             flatBlockFile   = null;
-    private String             mappingFile     = null;
-    private boolean            isXMLInput      = true;
+    public static final String MAPPING_FILE = "mappingFile";
+    public static final String XML_INPUT = "xmlInput";
+    private static Logger LOG = LogManager.getLogger(FlatFileMappingPipelet.class);
+    private String xmlBlockFile = null;
+    private String flatBlockFile = null;
+    private String mappingFile = null;
+    private boolean isXMLInput = true;
 
     public FlatFileMappingPipelet() {
 
-        parameterMap.put( XML_BLOCK_FILE, new ParameterDescriptor( ParameterType.STRING, "XML Block Definition File",
-                "Path to XML block definition file.", "" ) );
-        parameterMap.put( FLAT_BLOCK_FILE, new ParameterDescriptor( ParameterType.STRING,
-                "Flat File Block Definition File", "Path to flat file block definition file.", "" ) );
-        parameterMap.put( MAPPING_FILE, new ParameterDescriptor( ParameterType.STRING, "Mapping File",
-                "Path to mapping file.", "" ) );
-        parameterMap.put( XML_INPUT, new ParameterDescriptor( ParameterType.BOOLEAN, "XML Input",
-                "Input is in XML format.", Boolean.TRUE ) );
+        parameterMap.put(XML_BLOCK_FILE, new ParameterDescriptor(ParameterType.STRING, "XML Block Definition File",
+                "Path to XML block definition file.", ""));
+        parameterMap.put(FLAT_BLOCK_FILE, new ParameterDescriptor(ParameterType.STRING,
+                "Flat File Block Definition " + "File", "Path to flat file block definition file.", ""));
+        parameterMap.put(MAPPING_FILE, new ParameterDescriptor(ParameterType.STRING, "Mapping File", "Path to " +
+                "mapping" + " file.", ""));
+        parameterMap.put(XML_INPUT, new ParameterDescriptor(ParameterType.BOOLEAN, "XML Input", "Input is in XML " +
+                "format.", Boolean.TRUE));
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.AbstractPipelet#initialize(org.nexuse2e.configuration.EngineConfiguration)
      */
     @Override
-    public void initialize( EngineConfiguration config ) throws InstantiationException {
+    public void initialize(EngineConfiguration config) throws InstantiationException {
 
         File testFile = null;
 
-        String xmlBlockFileValue = getParameter( XML_BLOCK_FILE );
-        if ( ( xmlBlockFileValue != null ) && ( xmlBlockFileValue.length() != 0 ) ) {
+        String xmlBlockFileValue = getParameter(XML_BLOCK_FILE);
+        if ((xmlBlockFileValue != null) && (xmlBlockFileValue.length() != 0)) {
             xmlBlockFile = xmlBlockFileValue;
-            testFile = new File( xmlBlockFile );
-            if ( !testFile.exists() ) {
+            testFile = new File(xmlBlockFile);
+            if (!testFile.exists()) {
                 status = BeanStatus.ERROR;
-                LOG.error( "XML block file does not exist!" );
+                LOG.error("XML block file does not exist!");
                 return;
             }
         } else {
             status = BeanStatus.ERROR;
-            LOG.error( "No value for setting 'xml block file' provided!" );
+            LOG.error("No value for setting 'xml block file' provided!");
             return;
         }
 
-        String flatBlockFileValue = getParameter( FLAT_BLOCK_FILE );
-        if ( ( flatBlockFileValue != null ) && ( flatBlockFileValue.length() != 0 ) ) {
+        String flatBlockFileValue = getParameter(FLAT_BLOCK_FILE);
+        if ((flatBlockFileValue != null) && (flatBlockFileValue.length() != 0)) {
             flatBlockFile = flatBlockFileValue;
-            testFile = new File( flatBlockFile );
-            if ( !testFile.exists() ) {
+            testFile = new File(flatBlockFile);
+            if (!testFile.exists()) {
                 status = BeanStatus.ERROR;
-                LOG.error( "Flat file block file does not exist!" );
+                LOG.error("Flat file block file does not exist!");
                 return;
             }
         } else {
             status = BeanStatus.ERROR;
-            LOG.error( "No value for setting 'flat file block file' provided!" );
+            LOG.error("No value for setting 'flat file block file' provided!");
             return;
         }
 
-        String mappingFileValue = getParameter( MAPPING_FILE );
-        if ( ( mappingFileValue != null ) && ( mappingFileValue.length() != 0 ) ) {
+        String mappingFileValue = getParameter(MAPPING_FILE);
+        if ((mappingFileValue != null) && (mappingFileValue.length() != 0)) {
             mappingFile = mappingFileValue;
-            testFile = new File( mappingFile );
-            if ( !testFile.exists() ) {
+            testFile = new File(mappingFile);
+            if (!testFile.exists()) {
                 status = BeanStatus.ERROR;
-                LOG.error( "Mapping file does not exist!" );
+                LOG.error("Mapping file does not exist!");
                 return;
             }
         } else {
             status = BeanStatus.ERROR;
-            LOG.error( "No value for setting 'mapping file' provided!" );
+            LOG.error("No value for setting 'mapping file' provided!");
             return;
         }
 
-        Boolean xmlInputValue = getParameter( XML_INPUT );
-        if ( xmlInputValue != null ) {
+        Boolean xmlInputValue = getParameter(XML_INPUT);
+        if (xmlInputValue != null) {
             isXMLInput = xmlInputValue.booleanValue();
         }
-        
-        LOG.trace( "xmlBlockFile : " + xmlBlockFile );
-        LOG.trace( "flatBlockFile: " + flatBlockFile );
-        LOG.trace( "mappingFile  : " + mappingFile );
 
-        super.initialize( config );
+        LOG.trace("xmlBlockFile : " + xmlBlockFile);
+        LOG.trace("flatBlockFile: " + flatBlockFile);
+        LOG.trace("mappingFile  : " + mappingFile);
+
+        super.initialize(config);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.AbstractPipelet#processMessage(org.nexuse2e.messaging.MessageContext)
      */
     @Override
-    public MessageContext processMessage( MessageContext messageContext ) throws IllegalArgumentException,
+    public MessageContext processMessage(MessageContext messageContext) throws IllegalArgumentException,
             IllegalStateException, NexusException {
 
         String result = null;
         CSVMappingFileEntry mfe = new CSVMappingFileEntry();
-        mfe.setCsvmappings( flatBlockFile );
-        mfe.setXmlblocks( xmlBlockFile );
-        mfe.setMapping( mappingFile );
-        mfe.setId( "test-mapping" );
+        mfe.setCsvmappings(flatBlockFile);
+        mfe.setXmlblocks(xmlBlockFile);
+        mfe.setMapping(mappingFile);
+        mfe.setId("test-mapping");
 
         try {
             List<MessagePayloadPojo> payloads = messageContext.getMessagePojo().getMessagePayloads();
             for (MessagePayloadPojo messagePayloadPojo : payloads) {
-                ByteArrayInputStream bias = new ByteArrayInputStream( messagePayloadPojo.getPayloadData() );
+                ByteArrayInputStream bias = new ByteArrayInputStream(messagePayloadPojo.getPayloadData());
 
-                if ( isXMLInput ) {
+                if (isXMLInput) {
                     ProcessXML processXML = new ProcessXML();
-                    result = processXML.process( mfe, bias );
+                    result = processXML.process(mfe, bias);
                 } else {
                     ProcessCSV processCSV = new ProcessCSV();
-                    result = processCSV.process( mfe, bias );
+                    result = processCSV.process(mfe, bias);
                 }
 
-                if ( LOG.isTraceEnabled() ) {
-                    LOG.trace( new LogMessage( "....................",messageContext ) );
-                    LOG.trace( new LogMessage( result, messageContext ) );
-                    LOG.trace( new LogMessage( "....................",messageContext ) );
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace(new LogMessage("....................", messageContext));
+                    LOG.trace(new LogMessage(result, messageContext));
+                    LOG.trace(new LogMessage("....................", messageContext));
                 }
 
-                messagePayloadPojo.setPayloadData( result.getBytes() );
+                messagePayloadPojo.setPayloadData(result.getBytes());
             }
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new NexusException( "Error mapping payload", e );
+            throw new NexusException("Error mapping payload", e);
         }
         return messageContext;
     }

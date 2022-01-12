@@ -1,31 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging.impl;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.NexusException;
@@ -39,23 +34,26 @@ import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.pojo.ParticipantPojo;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 /**
  * This class implements <code>Runnable</code> in order to asynchronously process inbound/outbound
  * messages.
  * <p>
  * For client code, only the method {@link #queue(MessageContext)} is relevant.
- * 
+ *
  * @author sschulze, jreese
  */
 public class MessageWorkerImpl implements MessageWorker {
-
-    private static final Logger LOG = LogManager.getLogger(MessageWorkerImpl.class);
 
     /**
      * Default thread pool size.
      */
     public static final int DEFAULT_THREAD_POOL_SIZE = 10;
-    
+    private static final Logger LOG = LogManager.getLogger(MessageWorkerImpl.class);
     private ScheduledExecutorService threadPool = null;
 
     /**
@@ -66,14 +64,14 @@ public class MessageWorkerImpl implements MessageWorker {
     public MessageWorkerImpl(int threadPoolSize) {
         threadPool = Executors.newScheduledThreadPool(threadPoolSize);
     }
-    
+
     /**
      * Constructs a new <code>ConversationWorkerImpl</code> with the default thread pool size.
      */
     public MessageWorkerImpl() {
         this(DEFAULT_THREAD_POOL_SIZE);
     }
-    
+
     /**
      * Adds a message to the message scheduler.
      * @param messageContext The message context to be queued. Must not be <code>null</code>.
@@ -81,7 +79,7 @@ public class MessageWorkerImpl implements MessageWorker {
     public void queue(MessageContext messageContext) {
         queue(messageContext, 0, false);
     }
-    
+
     private void queue(MessageContext messageContext, int initialDelay, boolean updateMessageContext) {
         if (LOG.isDebugEnabled()) {
             LOG.debug(new LogMessage("Created new conversation worker", messageContext));
@@ -98,9 +96,9 @@ public class MessageWorkerImpl implements MessageWorker {
         worker.retries = 0;
         worker.interval = org.nexuse2e.messaging.Constants.DEFAULT_MESSAGE_INTERVAL;
         worker.reliable = messageContext.getParticipant().getConnection().isReliable();
-        
+
         // none ack messages must be requeued if properly configured.
-        if (!messageContext.getMessagePojo().isAck() ) { // && worker.reliable
+        if (!messageContext.getMessagePojo().isAck()) { // && worker.reliable
             ParticipantPojo participantPojo = messageContext.getMessagePojo().getParticipant();
             if (participantPojo != null) {
                 worker.retries = participantPojo.getConnection().getRetries();
@@ -110,7 +108,8 @@ public class MessageWorkerImpl implements MessageWorker {
 
         if (messageContext.getMessagePojo().isOutbound() && !messageContext.getMessagePojo().isAck() && worker.retries >= 0) {
             worker.handle = threadPool.scheduleWithFixedDelay(worker, initialDelay, worker.interval, TimeUnit.SECONDS);
-            Engine.getInstance().getTransactionService().registerProcessingMessage(messageContext.getMessagePojo(), worker.handle);
+            Engine.getInstance().getTransactionService().registerProcessingMessage(messageContext.getMessagePojo(),
+                    worker.handle);
         } else {
             worker.handle = threadPool.schedule(worker, initialDelay, TimeUnit.SECONDS);
         }
@@ -128,21 +127,24 @@ public class MessageWorkerImpl implements MessageWorker {
         ConversationWorkerRunnable(MessageContext messageContext) {
             this.messageContext = messageContext;
         }
-        
+
         public void run() {
             if (updateMessageContext) {
                 try {
                     boolean firstTimeInQueue = messageContext.isFirstTimeInQueue();
                     ActionPojo currentAction = messageContext.getConversation().getCurrentAction();
-                    messageContext = Engine.getInstance().getTransactionService().getMessageContext(messageContext.getMessagePojo().getMessageId());
-                    messageContext.setFirstTimeInQueue(firstTimeInQueue); // restore previous firstTimeInQueue flag, since this is in-memory only
-                    messageContext.getConversation().setCurrentAction(currentAction); // restore current action, since this was updated in the old MessageContext
+                    messageContext =
+                            Engine.getInstance().getTransactionService().getMessageContext(messageContext.getMessagePojo().getMessageId());
+                    messageContext.setFirstTimeInQueue(firstTimeInQueue); // restore previous firstTimeInQueue flag,
+                    // since this is in-memory only
+                    messageContext.getConversation().setCurrentAction(currentAction); // restore current action,
+                    // since this was updated in the old MessageContext
                 } catch (NexusException e) {
                     LOG.warn("Error creating new MessageContext on re-processing, recycling old MessageContext", e);
                 }
             }
             updateMessageContext = true;
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(new LogMessage("Starting message processing... ", messageContext));
             }
@@ -155,18 +157,18 @@ public class MessageWorkerImpl implements MessageWorker {
                 processInbound(messageContext);
             }
         }
-    
+
         protected void processInbound(MessageContext messageContext) {
-    
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(new LogMessage("Processing inbound message..." + messageContext.getStateMachine().toString(), messageContext));
             }
-    
+
             // Initiate the backend process
             try {
                 Engine.getInstance().getCurrentConfiguration().getStaticBeanContainer().getBackendInboundDispatcher().processMessage(messageContext);
                 messageContext.getStateMachine().processedBackend();
-    
+
             } catch (NexusException nex) {
                 LOG.error(new LogMessage("Error processing backend", messageContext, nex), nex);
                 try {
@@ -182,17 +184,15 @@ public class MessageWorkerImpl implements MessageWorker {
             }
 
             if (messageContext.getParticipant().getConnection().isSynchronous()) {
-                Engine.getInstance().getCurrentConfiguration().getStaticBeanContainer().getFrontendInboundDispatcher()
-                        .processSynchronousReplyMessage(messageContext);
-                Engine.getInstance().getTransactionService()
-                        .removeSynchronousRequest(messageContext.getMessagePojo().getMessageId());
+                Engine.getInstance().getCurrentConfiguration().getStaticBeanContainer().getFrontendInboundDispatcher().processSynchronousReplyMessage(messageContext);
+                Engine.getInstance().getTransactionService().removeSynchronousRequest(messageContext.getMessagePojo().getMessageId());
             }
         }
-    
+
         protected void processOutbound(MessageContext messageContext) {
-            
+
             TransactionService transactionService = Engine.getInstance().getTransactionService();
-            
+
             // check if ack message for previous step is pending, so this message needs to be sent later
             if (reliable && !messageContext.getMessagePojo().isAck()) {
                 ConversationPojo conv = messageContext.getConversation();
@@ -201,16 +201,14 @@ public class MessageWorkerImpl implements MessageWorker {
                         if (m.isAck() && m.isOutbound() && m.getStatus() == MessageStatus.QUEUED.getOrdinal()) {
                             if (initialDelay < 25) {
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.info(new LogMessage(
-                                            "Not sending " + messageContext.getMessagePojo().getTypeName() +
-                                            " message now, outbound ack for previous choreography action still in QUEUED. " +
-                                            "Requeueing this message in " + (initialDelay + 1) + " s.", messageContext));
+                                    LOG.info(new LogMessage("Not sending " + messageContext.getMessagePojo().getTypeName() + " message now, outbound ack for previous choreography action still in QUEUED. " + "Requeueing this message in " + (initialDelay + 1) + " s.", messageContext));
                                 }
                                 transactionService.deregisterProcessingMessage(messageContext.getMessagePojo().getMessageId());
                                 queue(messageContext, initialDelay + 1, true);
                                 return;
                             } else {
-                                LOG.error(new LogMessage("Message from previous choroegraphy step still in QUEUED, but re-queueing attempts exhausted", messageContext));
+                                LOG.error(new LogMessage("Message from previous choroegraphy step still in QUEUED, " +
+                                        "but re-queueing attempts exhausted", messageContext));
                                 transactionService.deregisterProcessingMessage(messageContext.getMessagePojo().getMessageId());
                                 return;
                             }
@@ -218,11 +216,11 @@ public class MessageWorkerImpl implements MessageWorker {
                     }
                 }
             }
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(new LogMessage("Processing outbound message...", messageContext));
             }
-    
+
             try {
                 if (transactionService.isSynchronousReply(messageContext.getMessagePojo().getMessageId())) {
                     Engine.getInstance().getCurrentConfiguration().getStaticBeanContainer().getFrontendInboundDispatcher().processSynchronousReplyMessage(messageContext);

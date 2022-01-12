@@ -1,26 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.ActionSpecific;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.MessageBackendStatus;
@@ -30,12 +30,12 @@ import org.nexuse2e.logging.LogMessage;
 /**
  * A <code>Pipeline</code> handling the processing of messages in the NEXUSe2e backend. 
  * It will trigger a set of <code>Pipelet</code> components for actually processing the messages.
- * 
+ *
  * @author mbreilmann
  */
 public class BackendPipeline extends AbstractPipeline implements ActionSpecific {
 
-    private static Logger     LOG = LogManager.getLogger( BackendPipeline.class );
+    private static Logger LOG = LogManager.getLogger(BackendPipeline.class);
 
     /**
      * The key identifying this pipeline
@@ -48,49 +48,49 @@ public class BackendPipeline extends AbstractPipeline implements ActionSpecific 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipeline#processMessage(org.nexuse2e.messaging.MessageContext)
      */
-    public MessageContext processMessage( MessageContext messageContext ) throws IllegalArgumentException,
+    public MessageContext processMessage(MessageContext messageContext) throws IllegalArgumentException,
             IllegalStateException, NexusException {
 
-        if ( messageContext == null ) {
-            throw new IllegalArgumentException( "No content found" );
+        if (messageContext == null) {
+            throw new IllegalArgumentException("No content found");
         }
 
-        LOG.debug( new LogMessage( "BackendPipeline.processMessage...",messageContext.getMessagePojo()) );
+        LOG.debug(new LogMessage("BackendPipeline.processMessage...", messageContext.getMessagePojo()));
 
-        if ( pipelineEndpoint == null ) {
-            throw new NexusException( "PipelineEndpoint must not be null!" );
+        if (pipelineEndpoint == null) {
+            throw new NexusException("PipelineEndpoint must not be null!");
         }
 
-        if ( messageContext.getMessagePojo() == null ) {
-            throw new IllegalStateException( "MessagePojo must not be null" );
+        if (messageContext.getMessagePojo() == null) {
+            throw new IllegalStateException("MessagePojo must not be null");
         }
 
         try {
-            if ( forwardPipelets != null ) {
+            if (forwardPipelets != null) {
 
-                LOG.debug( new LogMessage( "pipeletCount=" + forwardPipelets.length,messageContext.getMessagePojo()) );
-                for ( int i = 0; i < forwardPipelets.length; i++ ) {
-                    LOG.debug( new LogMessage( "processing pipelet[" + i + "]",messageContext.getMessagePojo()) );
+                LOG.debug(new LogMessage("pipeletCount=" + forwardPipelets.length, messageContext.getMessagePojo()));
+                for (int i = 0; i < forwardPipelets.length; i++) {
+                    LOG.debug(new LogMessage("processing pipelet[" + i + "]", messageContext.getMessagePojo()));
                     MessageProcessor backendPipelet = forwardPipelets[i];
 
-                    messageContext = backendPipelet.processMessage( messageContext );
-                    if ( messageContext == null ) {
-                        LOG.warn( new LogMessage( "Pipelet " + backendPipelet.getClass()
-                                + " did not return a MessageContext instance!" ) );
+                    messageContext = backendPipelet.processMessage(messageContext);
+                    if (messageContext == null) {
+                        LOG.warn(new LogMessage("Pipelet " + backendPipelet.getClass() + " did not return a " +
+                                "MessageContext instance!"));
                     }
                 }
             } else {
-                LOG.error( new LogMessage( "No pipelets found.", messageContext.getMessagePojo() ) );
+                LOG.error(new LogMessage("No pipelets found.", messageContext.getMessagePojo()));
             }
             if (messageContext.getMessagePojo().isOutbound()) {
                 messageContext.getMessagePojo().setBackendStatus(MessageBackendStatus.OUTBOUND.getOrdinal());
             } else {
                 messageContext.getMessagePojo().setBackendStatus(MessageBackendStatus.SENT.getOrdinal());
             }
-            messageContext = pipelineEndpoint.processMessage( messageContext );
+            messageContext = pipelineEndpoint.processMessage(messageContext);
 
-        } catch ( Exception e ) {
-            throw new NexusException( "Error processing backend pipeline: " + e.getMessage(), e );
+        } catch (Exception e) {
+            throw new NexusException("Error processing backend pipeline: " + e.getMessage(), e);
         }
 
         return messageContext;
@@ -107,7 +107,7 @@ public class BackendPipeline extends AbstractPipeline implements ActionSpecific 
     /* (non-Javadoc)
      * @see org.nexuse2e.ActionSpecific#setKey(org.nexuse2e.ActionSpecificKey)
      */
-    public void setKey( ActionSpecificKey key ) {
+    public void setKey(ActionSpecificKey key) {
 
         this.key = key;
     }
@@ -123,7 +123,7 @@ public class BackendPipeline extends AbstractPipeline implements ActionSpecific 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipeline#setPipelineEndpoint(org.nexuse2e.messaging.Pipelet)
      */
-    public void setPipelineEndpoint( MessageProcessor pipelineEndpoint ) {
+    public void setPipelineEndpoint(MessageProcessor pipelineEndpoint) {
 
         this.pipelineEndpoint = pipelineEndpoint;
     }

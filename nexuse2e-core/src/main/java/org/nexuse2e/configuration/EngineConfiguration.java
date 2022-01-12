@@ -1,52 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.configuration;
 
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.StandardLevel;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
@@ -89,66 +64,90 @@ import org.nexuse2e.util.CertificateUtil;
 import org.nexuse2e.util.EncryptionUtil;
 import org.springframework.context.support.ApplicationObjectSupport;
 
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * @author gesch, sschulze
- * 
  */
 @XmlRootElement(name = "NEXUSe2eConfiguration")
 @XmlType(name = "NEXUSe2eConfigurationType")
 @XmlAccessorType(XmlAccessType.NONE)
 public class EngineConfiguration implements ConfigurationAccessService {
 
-    private static Logger                           LOG                       = LogManager.getLogger(EngineConfiguration.class);
+    private static Logger LOG = LogManager.getLogger(EngineConfiguration.class);
 
-    private Map<ActionSpecificKey, BackendPipeline> backendInboundPipelines   = new HashMap<ActionSpecificKey, BackendPipeline>();
-    private Map<ActionSpecificKey, BackendPipeline> backendOutboundPipelines  = new HashMap<ActionSpecificKey, BackendPipeline>();
-    private Map<TRPPojo, FrontendPipeline>          frontendInboundPipelines  = new HashMap<TRPPojo, FrontendPipeline>();
-    private Map<TRPPojo, FrontendPipeline>          frontendOutboundPipelines = new HashMap<TRPPojo, FrontendPipeline>();
-    private Map<String, StatusUpdateSerializer>     statusUpdateSerializers   = new HashMap<String, StatusUpdateSerializer>();
-    private Map<ActionSpecificKey, BackendPipeline> statusUpdatePipelines     = new HashMap<ActionSpecificKey, BackendPipeline>();
-    private StaticBeanContainer                     staticBeanContainer       = null;
+    private Map<ActionSpecificKey, BackendPipeline> backendInboundPipelines = new HashMap<ActionSpecificKey,
+            BackendPipeline>();
+    private Map<ActionSpecificKey, BackendPipeline> backendOutboundPipelines = new HashMap<ActionSpecificKey,
+            BackendPipeline>();
+    private Map<TRPPojo, FrontendPipeline> frontendInboundPipelines = new HashMap<TRPPojo, FrontendPipeline>();
+    private Map<TRPPojo, FrontendPipeline> frontendOutboundPipelines = new HashMap<TRPPojo, FrontendPipeline>();
+    private Map<String, StatusUpdateSerializer> statusUpdateSerializers = new HashMap<String, StatusUpdateSerializer>();
+    private Map<ActionSpecificKey, BackendPipeline> statusUpdatePipelines = new HashMap<ActionSpecificKey,
+     BackendPipeline>();
+    private StaticBeanContainer staticBeanContainer = null;
 
-    private long                                    timestamp;
+    private long timestamp;
 
-    private int                                     recentNxId                = -1;
-    private List<NEXUSe2ePojo>                      updateList                = new ArrayList<NEXUSe2ePojo>();
-    private Map<NEXUSe2ePojo, List<NEXUSe2ePojo>>   implicitUpdateList        = new HashMap<NEXUSe2ePojo, List<NEXUSe2ePojo>>();
-    private List<NEXUSe2ePojo>                      deleteList                = new ArrayList<NEXUSe2ePojo>();
+    private int recentNxId = -1;
+    private List<NEXUSe2ePojo> updateList = new ArrayList<NEXUSe2ePojo>();
+    private Map<NEXUSe2ePojo, List<NEXUSe2ePojo>> implicitUpdateList = new HashMap<NEXUSe2ePojo, List<NEXUSe2ePojo>>();
+    private List<NEXUSe2ePojo> deleteList = new ArrayList<NEXUSe2ePojo>();
 
     /**
      * contains the ChoreographyPojos incl. ActionPojos
      */
     @XmlElementWrapper(name = "Choreographies")
     @XmlElement(name = "Choreography")
-    private List<ChoreographyPojo>                  choreographies            = null;
+    private List<ChoreographyPojo> choreographies = null;
 
     /**
      * contains all certicates and requests.
      */
     @XmlElementWrapper(name = "Certificates")
     @XmlElement(name = "Certificate")
-    private List<CertificatePojo>                   certificates              = null;
+    private List<CertificatePojo> certificates = null;
 
     /**
      * contains all PartnerPojos incl. partnerdependent Certificate(pojos)s, Connection(pojo)s and Contact(pojo)s
      */
     @XmlElementWrapper(name = "Partners")
     @XmlElement(name = "Partner")
-    private List<PartnerPojo>                       partners                  = null;
+    private List<PartnerPojo> partners = null;
 
     /**
      * List that contains all frontend <code>PipelinePojo<code> instances.
      */
     @XmlElementWrapper(name = "FrontendPipelines")
     @XmlElement(name = "Pipeline")
-    private List<PipelinePojo>                      frontendPipelineTemplates = null;
+    private List<PipelinePojo> frontendPipelineTemplates = null;
 
     /**
      * List that contains all backend <code>PipelinePojo<code> instances.
      */
     @XmlElementWrapper(name = "BackendPipeline")
     @XmlElement(name = "Pipeline")
-    private List<PipelinePojo>                      backendPipelineTemplates  = null;
+    private List<PipelinePojo> backendPipelineTemplates = null;
 
     /**
      * /**
@@ -156,38 +155,38 @@ public class EngineConfiguration implements ConfigurationAccessService {
      */
     @XmlElementWrapper(name = "TRPs")
     @XmlElement(name = "TRP")
-    private List<TRPPojo>                           trps                      = null;
+    private List<TRPPojo> trps = null;
 
     /**
      * List that contains all <code>ComponentPojo<code> instances.
      */
     @XmlElementWrapper(name = "Components")
     @XmlElement(name = "Component")
-    private List<ComponentPojo>                     components                = null;
+    private List<ComponentPojo> components = null;
 
     @XmlElementWrapper(name = "Loggers")
     @XmlElement(name = "Logger")
-    private List<LoggerPojo>                        loggers                   = null;
+    private List<LoggerPojo> loggers = null;
 
     @XmlElementWrapper(name = "Services")
     @XmlElement(name = "Service")
-    private List<ServicePojo>                       services                  = null;
+    private List<ServicePojo> services = null;
 
     @XmlElementWrapper(name = "Users")
     @XmlElement(name = "User")
-    private List<UserPojo>                          users                     = null;
+    private List<UserPojo> users = null;
 
     @XmlElementWrapper(name = "Roles")
     @XmlElement(name = "Role")
-    private List<RolePojo>                          roles                     = null;
+    private List<RolePojo> roles = null;
 
     @XmlElementWrapper(name = "Mappings")
     @XmlElement(name = "Mapping")
-    private List<MappingPojo>                       mappings                  = null;
+    private List<MappingPojo> mappings = null;
 
-    private Map<String, List<GenericParamPojo>>     genericParameters         = new HashMap<String, List<GenericParamPojo>>();
+    private Map<String, List<GenericParamPojo>> genericParameters = new HashMap<String, List<GenericParamPojo>>();
 
-    private Map<String, List<String>>               logCategories             = new HashMap<String, List<String>>();
+    private Map<String, List<String>> logCategories = new HashMap<String, List<String>>();
 
     /**
      * Creates a new, empty <code>EngineConfiguration</code>.
@@ -202,9 +201,8 @@ public class EngineConfiguration implements ConfigurationAccessService {
     /**
      * Creates an <code>EngineConfiguration</code> that is an exact copy of the
      * given existing <code>EngineConfiguration</code>.
-     * 
-     * @param config
-     *            The original configuration to create a copy of.
+     *
+     * @param config The original configuration to create a copy of.
      */
     public EngineConfiguration(EngineConfiguration config) {
 
@@ -221,8 +219,46 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
+     * encapsulates the required checks for NULL values.
+     *
+     * @param value
+     * @return
+     */
+    private static String toString(Object value) {
+
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+    /**
+     * Converts a <code>String</code> parameter value into an object
+     * of it's domain type.
+     *
+     * @param type  The parameter type.
+     * @param value The <code>String</code> representation to be converted.
+     * @return The domain type, except for types ENUMERATION and DROPDOWN
+     */
+    private static Object getParameterValue(ParameterType type, String value) {
+
+        switch (type) {
+            case UNKNOWN:
+            case STRING:
+            case TEXT:
+            case PASSWORD:
+            case SERVICE:
+                return value;
+            case BOOLEAN:
+                return Boolean.valueOf(value);
+            default:
+                return null;
+        }
+    }
+
+    /**
      * Determines if this configuration is changed.
-     * 
+     *
      * @return <code>true</code> if this configuration has been changed, <code>false</code> otherwise.
      */
     public boolean isChanged() {
@@ -232,7 +268,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /**
      * Gets the list of updated objects.
-     * 
+     *
      * @return The updated objects list, not <code>null</code>.
      */
     public List<NEXUSe2ePojo> getUpdateList() {
@@ -251,7 +287,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /**
      * Gets the list of deleted objects.
-     * 
+     *
      * @return The deleted objects list, not <code>null</code>.
      */
     public List<NEXUSe2ePojo> getDeleteList() {
@@ -262,13 +298,14 @@ public class EngineConfiguration implements ConfigurationAccessService {
     /**
      * Fills this <code>EngineConfiguration</code> with the base configuration provided by
      * the specified <code>BaseConfigurationProvider</code>.
-     * 
-     * @param baseConfigurationProvider
-     *            The <code>BaseConfigurationProvider</code> that provides
-     *            the base configuration. It must be available ({@link BaseConfigurationProvider#isConfigurationAvailable()} must return <code>true</code>).
-     * @throws NexusException
-     *             If the base configuration could not be created (e.g., {@link BaseConfigurationProvider#isConfigurationAvailable()} did not return
-     *             <code>true</code>).
+     *
+     * @param baseConfigurationProvider The <code>BaseConfigurationProvider</code> that provides
+     *                                  the base configuration. It must be available
+     *                                  ({@link BaseConfigurationProvider#isConfigurationAvailable()} must return
+     *                                  <code>true</code>).
+     * @throws NexusException If the base configuration could not be created (e.g.,
+     *                        {@link BaseConfigurationProvider#isConfigurationAvailable()} did not return
+     *                        <code>true</code>).
      */
     public void createBaseConfiguration(BaseConfigurationProvider baseConfigurationProvider) throws NexusException {
 
@@ -286,8 +323,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
         mappings = new ArrayList<MappingPojo>();
 
         try {
-            baseConfigurationProvider.createBaseConfiguration(components, choreographies, partners, backendPipelineTemplates, frontendPipelineTemplates,
-                    services, certificates, trps, users, roles, loggers, mappings);
+            baseConfigurationProvider.createBaseConfiguration(components, choreographies, partners,
+             backendPipelineTemplates, frontendPipelineTemplates, services, certificates, trps, users, roles, loggers
+             , mappings);
         } catch (InstantiationException iex) {
             throw new NexusException(iex);
         }
@@ -295,13 +333,91 @@ public class EngineConfiguration implements ConfigurationAccessService {
         init();
     } // createBaseConfiguration
 
+    //    private void initializeLogAppenders() throws NexusException {
+    //
+    //        LOG.trace("Initializing Appenders");
+    //        if (loggers != null) {
+    //            if (components != null) {
+    //                for (LoggerPojo logger : loggers) {
+    //                    LOG.trace("initializing Logger: " + logger.getName());
+    //                    if (logger.getComponent() == null) {
+    //                        throw new InstantiationError("No ComponentReference found for logger: " + logger
+    //                        .getName());
+    //                    }
+    //                    String classname = logger.getComponent().getClassName();
+    //                    if (StringUtils.isEmpty(classname)) {
+    //                        throw new InstantiationError("No Classname found for component(" + logger.getComponent
+    //                        ().getNxComponentId() + "): "
+    //                                + logger.getComponent().getName());
+    //                    }
+    //                    Object obj = null;
+    //                    try {
+    //                        obj = Class.forName(classname).newInstance();
+    //                    } catch (Exception e) {
+    //                        throw new NexusException("Error while creating instance for logger: " + logger.getName
+    //                        () + " - " + e.getMessage(), e);
+    //                    }
+    //                    if (!(obj instanceof org.nexuse2e.logging.LogAppender)) {
+    //                        throw new InstantiationError("class: " + classname + " is not instance of org.nexuse2e
+    //                        .logging.Logger");
+    //                    }
+    //                    org.nexuse2e.logging.LogAppender logAppender = (org.nexuse2e.logging.LogAppender) obj;
+    //                    ConfigurationUtil.configureLogger(logAppender, logger.getLoggerParams());
+    //
+    //                    logAppender.setLogThreshold(logger.getThreshold());
+    //
+    //                    StringTokenizer st = new StringTokenizer(logger.getFilter(), ",");
+    //                    LOG.debug("filter: " + logger.getFilter());
+    //                    while (st.hasMoreElements()) {
+    //                        String token = st.nextToken().trim();
+    //                        if (token.startsWith("group_")) {
+    //                            List<String> packageNames = logCategories.get(token.substring(6).trim());
+    //                            if (packageNames != null) {
+    //                                for (String packageName : packageNames) {
+    //                                    if (packageName != null) {
+    //                                        Logger targetlogger = LogManager.getLogger(packageName);
+    //                                        logAppender.registerLogger(targetlogger);
+    //                                        ((org.apache.logging.log4j.core.Logger) targetlogger).addAppender
+    //                                        (logAppender);
+    //                                    }
+    //                                }
+    //                            }
+    //                        } else {
+    //                            if (StringUtils.isEmpty(token)) {
+    //                                continue;
+    //                            }
+    //                            LOG.debug("adding logger: " + token);
+    //                            Logger targetlogger = LogManager.getLogger(token);
+    //                            logAppender.registerLogger(targetlogger);
+    //                            if (targetlogger.getLevel() == null || targetlogger.getLevel().intLevel() > logger
+    //                            .getThreshold()) {
+    //                                ((org.apache.logging.log4j.core.Logger) targetlogger).setLevel(Level.toLevel
+    //                                (StandardLevel.getStandardLevel(logger.getThreshold()).name()));
+    //                            }
+    //                            ((org.apache.logging.log4j.core.Logger) targetlogger).addAppender(logAppender);
+    //                        }
+    //                    }
+    //
+    //                    staticBeanContainer.getManagableBeans().put(logger.getName(), logAppender);
+    //                    try {
+    //                        logAppender.initialize(this);
+    //                        LOG.debug("activating logger: " + logAppender.getName());
+    //                        logAppender.activate();
+    //                    } catch (Exception ex) {
+    //                        throw new NexusException(ex);
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+
     /**
      * Initializes this <code>EngineConfiguration</code>.
      * This method shall be called after a configuration has been loaded from the DB. If
-     * a base configuration is created using the {@link #createBaseConfiguration(BaseConfigurationProvider)} method, it is not required to call this method.
-     * 
-     * @throws NexusException
-     *             If the initialization failed.
+     * a base configuration is created using the {@link #createBaseConfiguration(BaseConfigurationProvider)} method,
+     * it is not required to call this method.
+     *
+     * @throws NexusException If the initialization failed.
      */
     public void init() throws NexusException {
 
@@ -313,23 +429,25 @@ public class EngineConfiguration implements ConfigurationAccessService {
             String protocolAdapterClass = trpPojo.getAdapterClassName();
             try {
                 ProtocolAdapter protocolAdapter = (ProtocolAdapter) Class.forName(protocolAdapterClass).newInstance();
-                ProtocolSpecificKey protocolSpecificKey = new ProtocolSpecificKey(trpPojo.getProtocol(), trpPojo.getVersion(), trpPojo.getTransport());
+                ProtocolSpecificKey protocolSpecificKey = new ProtocolSpecificKey(trpPojo.getProtocol(),
+                 trpPojo.getVersion(), trpPojo.getTransport());
                 protocolAdapter.setKey(protocolSpecificKey);
                 protocolAdapters[index++] = protocolAdapter;
             } catch (Exception e) {
                 LOG.error("Could not instantiate protocol adapter class: " + protocolAdapterClass, e);
-                throw new NexusException("Could not instantiate protocol adapter class: " + protocolAdapterClass + " - " + e, e);
+                throw new NexusException("Could not instantiate protocol adapter class: " + protocolAdapterClass + " "
+                 + "- " + e, e);
             }
         }
-        FrontendInboundDispatcher frontendInboundDispatcher = (FrontendInboundDispatcher) staticBeanContainer.getManagableBeans().get(
-                org.nexuse2e.Constants.FRONTEND_INBOUND_DISPATCHER);
+        FrontendInboundDispatcher frontendInboundDispatcher =
+         (FrontendInboundDispatcher) staticBeanContainer.getManagableBeans().get(org.nexuse2e.Constants.FRONTEND_INBOUND_DISPATCHER);
         frontendInboundDispatcher.setProtocolAdapters(protocolAdapters);
 
-        BackendOutboundDispatcher backendOutboundDispatcher = (BackendOutboundDispatcher) staticBeanContainer.getManagableBeans().get(
-                org.nexuse2e.Constants.BACKEND_OUTBOUND_DISPATCHER);
+        BackendOutboundDispatcher backendOutboundDispatcher =
+         (BackendOutboundDispatcher) staticBeanContainer.getManagableBeans().get(org.nexuse2e.Constants.BACKEND_OUTBOUND_DISPATCHER);
         backendOutboundDispatcher.setProtocolAdapters(protocolAdapters);
 
-        initializeLogAppenders();
+        //        initializeLogAppenders();
 
         createConfiguration();
     }
@@ -371,80 +489,8 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     }
 
-    private void initializeLogAppenders() throws NexusException {
-
-        LOG.trace("Initializing Appenders");
-        if (loggers != null) {
-            if (components != null) {
-                for (LoggerPojo logger : loggers) {
-                    LOG.trace("initializing Logger: " + logger.getName());
-                    if (logger.getComponent() == null) {
-                        throw new InstantiationError("No ComponentReference found for logger: " + logger.getName());
-                    }
-                    String classname = logger.getComponent().getClassName();
-                    if (StringUtils.isEmpty(classname)) {
-                        throw new InstantiationError("No Classname found for component(" + logger.getComponent().getNxComponentId() + "): "
-                                + logger.getComponent().getName());
-                    }
-                    Object obj = null;
-                    try {
-                        obj = Class.forName(classname).newInstance();
-                    } catch (Exception e) {
-                        throw new NexusException("Error while creating instance for logger: " + logger.getName() + " - " + e.getMessage(), e);
-                    }
-                    if (!(obj instanceof org.nexuse2e.logging.LogAppender)) {
-                        throw new InstantiationError("class: " + classname + " is not instance of org.nexuse2e.logging.Logger");
-                    }
-                    org.nexuse2e.logging.LogAppender logAppender = (org.nexuse2e.logging.LogAppender) obj;
-                    ConfigurationUtil.configureLogger(logAppender, logger.getLoggerParams());
-
-                    logAppender.setLogThreshold(logger.getThreshold());
-
-                    StringTokenizer st = new StringTokenizer(logger.getFilter(), ",");
-                    LOG.debug("filter: " + logger.getFilter());
-                    while (st.hasMoreElements()) {
-                        String token = st.nextToken().trim();
-                        if (token.startsWith("group_")) {
-                            List<String> packageNames = logCategories.get(token.substring(6).trim());
-                            if (packageNames != null) {
-                                for (String packageName : packageNames) {
-                                    if (packageName != null) {
-                                        Logger targetlogger = LogManager.getLogger(packageName);
-                                        logAppender.registerLogger(targetlogger);
-                                        ((org.apache.logging.log4j.core.Logger) targetlogger).addAppender(logAppender);
-                                    }
-                                }
-                            }
-                        } else {
-                            if (StringUtils.isEmpty(token)) {
-                                continue;
-                            }
-                            LOG.debug("adding logger: " + token);
-                            Logger targetlogger = LogManager.getLogger(token);
-                            logAppender.registerLogger(targetlogger);
-                            if (targetlogger.getLevel() == null || targetlogger.getLevel().intLevel() > logger.getThreshold()) {
-                                ((org.apache.logging.log4j.core.Logger) targetlogger).setLevel(Level.toLevel(StandardLevel.getStandardLevel(logger.getThreshold()).name()));
-                            }
-                            ((org.apache.logging.log4j.core.Logger) targetlogger).addAppender(logAppender);
-                        }
-                    }
-
-                    staticBeanContainer.getManagableBeans().put(logger.getName(), logAppender);
-                    try {
-                        logAppender.initialize(this);
-                        LOG.debug("activating logger: " + logAppender.getName());
-                        logAppender.activate();
-                    } catch (Exception ex) {
-                        throw new NexusException(ex);
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * @throws InstantiationException
-     * 
      */
     public void initStaticBeanContainer() {
 
@@ -455,17 +501,24 @@ public class EngineConfiguration implements ConfigurationAccessService {
          */
         staticBeanContainer.getManagableBeans().clear();
 
-        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_INBOUND_DISPATCHER, new FrontendInboundDispatcher());
-        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_OUTBOUND_DISPATCHER, new FrontendOutboundDispatcher());
-        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.BACKEND_INBOUND_DISPATCHER, new BackendInboundDispatcher());
-        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.BACKEND_OUTBOUND_DISPATCHER, new BackendOutboundDispatcher());
-        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.BACKEND_PIPELINE_DISPATCHER, new BackendPipelineDispatcher());
-        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_INBOUND_RESPONSE_ENDPOINT, new FrontendInboundResponseEndpoint());
-        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_OUTBOUND_RESPONSE_ENDPOINT, new FrontendOutboundResponseEndpoint());
+        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_INBOUND_DISPATCHER,
+         new FrontendInboundDispatcher());
+        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_OUTBOUND_DISPATCHER,
+         new FrontendOutboundDispatcher());
+        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.BACKEND_INBOUND_DISPATCHER,
+         new BackendInboundDispatcher());
+        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.BACKEND_OUTBOUND_DISPATCHER,
+         new BackendOutboundDispatcher());
+        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.BACKEND_PIPELINE_DISPATCHER,
+         new BackendPipelineDispatcher());
+        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_INBOUND_RESPONSE_ENDPOINT,
+         new FrontendInboundResponseEndpoint());
+        staticBeanContainer.getManagableBeans().put(org.nexuse2e.Constants.FRONTEND_OUTBOUND_RESPONSE_ENDPOINT,
+         new FrontendOutboundResponseEndpoint());
     }
 
     /**
-     * 
+     *
      */
     public void createConfiguration() throws NexusException {
 
@@ -489,8 +542,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
             // StatusUpdateSerializer
             StatusUpdateSerializer statusUpdateSerializer = new StatusUpdateSerializer(choreography.getName());
-            staticBeanContainer.getManagableBeans().put(statusUpdateSerializer.getChoreographyId() + org.nexuse2e.Constants.POSTFIX_STATUS_UPDATE_SERIALIZER,
-                    statusUpdateSerializer);
+            staticBeanContainer.getManagableBeans().put(statusUpdateSerializer.getChoreographyId() + org.nexuse2e.Constants.POSTFIX_STATUS_UPDATE_SERIALIZER, statusUpdateSerializer);
             getStatusUpdateSerializers().put(statusUpdateSerializer.getChoreographyId(), statusUpdateSerializer);
 
             // Backend & Status Update pipelines
@@ -500,7 +552,8 @@ public class EngineConfiguration implements ConfigurationAccessService {
                 while (actionsI.hasNext()) {
                     ActionPojo action = actionsI.next();
 
-                    ActionSpecificKey actionSpecificKey = new ActionSpecificKey(action.getName(), action.getChoreography().getName());
+                    ActionSpecificKey actionSpecificKey = new ActionSpecificKey(action.getName(),
+                     action.getChoreography().getName());
 
                     backendPipeline = new BackendPipeline();
                     backendPipeline.setKey(actionSpecificKey);
@@ -547,9 +600,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
                     backendPipeline.setForwardPipelets(pipelets);
                     getBackendInboundPipelines().put(backendPipeline.getKey(), backendPipeline);
 
-                    // staticBeanContainer.getManagableBeans().put( inboundPipelinePojo.getName() + Constants.POSTFIX_BACKEND_PIPELINE, backendPipeline );
-                    staticBeanContainer.getManagableBeans().put(
-                            inboundPipelinePojo.getName() + "-" + backendPipeline.getKey() + "-" + Constants.POSTFIX_BACKEND_PIPELINE, backendPipeline);
+                    // staticBeanContainer.getManagableBeans().put( inboundPipelinePojo.getName() + Constants
+                    // .POSTFIX_BACKEND_PIPELINE, backendPipeline );
+                    staticBeanContainer.getManagableBeans().put(inboundPipelinePojo.getName() + "-" + backendPipeline.getKey() + "-" + Constants.POSTFIX_BACKEND_PIPELINE, backendPipeline);
 
                     backendPipeline = new BackendPipeline();
                     backendPipeline.setKey(actionSpecificKey);
@@ -564,8 +617,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
                     backendPipeline.setPipelineEndpoint(getStaticBeanContainer().getBackendOutboundDispatcher());
                     LOG.trace("PipelineKey: " + backendPipeline.getKey() + " - " + backendPipeline);
                     getBackendOutboundPipelines().put(backendPipeline.getKey(), backendPipeline);
-                    staticBeanContainer.getManagableBeans().put(
-                            outboundPipelinePojo.getName() + "-" + backendPipeline.getKey() + "-" + Constants.POSTFIX_BACKEND_PIPELINE, backendPipeline);
+                    staticBeanContainer.getManagableBeans().put(outboundPipelinePojo.getName() + "-" + backendPipeline.getKey() + "-" + Constants.POSTFIX_BACKEND_PIPELINE, backendPipeline);
 
                     // status update
                     pos = 0;
@@ -593,9 +645,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
                         statusUpdatePipeline.setForwardPipelets(pipelets);
                         getStatusUpdatePipelines().put(statusUpdatePipeline.getKey(), statusUpdatePipeline);
 
-                        staticBeanContainer.getManagableBeans().put(
-                                statusUpdatePipelinePojo.getName() + "-" + statusUpdatePipeline.getKey() + "-" + Constants.POSTFIX_STATUS_UPDATE_PIPELINE,
-                                statusUpdatePipeline);
+                        staticBeanContainer.getManagableBeans().put(statusUpdatePipelinePojo.getName() + "-" + statusUpdatePipeline.getKey() + "-" + Constants.POSTFIX_STATUS_UPDATE_PIPELINE, statusUpdatePipeline);
                     }
                 }
 
@@ -608,11 +658,11 @@ public class EngineConfiguration implements ConfigurationAccessService {
         for (PipelinePojo pipelinePojo : frontendPipelines) {
             FrontendPipeline frontendPipeline = new FrontendPipeline();
             TRPPojo trpPojo = pipelinePojo.getTrp();
-            frontendPipeline.setKey(new ProtocolSpecificKey(trpPojo.getProtocol(), trpPojo.getVersion(), trpPojo.getTransport()));
+            frontendPipeline.setKey(new ProtocolSpecificKey(trpPojo.getProtocol(), trpPojo.getVersion(),
+             trpPojo.getTransport()));
             frontendPipeline.setReturnPipelets(new Pipelet[0]);
             try {
-                staticBeanContainer.getManagableBeans().put(
-                        pipelinePojo.getName() + "-" + frontendPipeline.getKey() + "-" + Constants.POSTFIX_FRONTEND_PIPELINE, frontendPipeline);
+                staticBeanContainer.getManagableBeans().put(pipelinePojo.getName() + "-" + frontendPipeline.getKey() + "-" + Constants.POSTFIX_FRONTEND_PIPELINE, frontendPipeline);
                 if (pipelinePojo.isOutbound()) {
                     getFrontendOutboundPipelines().put(pipelinePojo.getTrp(), frontendPipeline);
 
@@ -667,14 +717,15 @@ public class EngineConfiguration implements ConfigurationAccessService {
                         } else {
                             String urlAppendix = "" + pipeletPojo.getNxPipeletId();
 
-                            TransportReceiver transportReceiver = (TransportReceiver) Engine.getInstance().getEngineController()
-                                    .getTransportReceiver(urlAppendix, pipeletPojo.getComponent().getClassName());
+                            TransportReceiver transportReceiver =
+                             (TransportReceiver) Engine.getInstance().getEngineController().getTransportReceiver(urlAppendix, pipeletPojo.getComponent().getClassName());
 
                             transportReceiver.setFrontendPipeline(frontendPipeline);
                             transportReceiver.setKey(frontendPipeline.getKey());
                             ConfigurationUtil.configurePipelet(transportReceiver, pipeletPojo.getPipeletParams());
                             // String beanKey = "TransportReceiver" + frontendPipeline.getKey().toString();
-                            String beanKey = "TransportReceiver_" + pipelinePojo.getName() + "_" + frontendPipeline.getKey().toString();
+                            String beanKey =
+                             "TransportReceiver_" + pipelinePojo.getName() + "_" + frontendPipeline.getKey().toString();
                             if (!staticBeanContainer.getManagableBeans().containsKey(beanKey)) {
                                 LOG.trace("Registering managable bean: " + beanKey + "(" + pipeletPojo.getName() + ")");
                                 staticBeanContainer.getManagableBeans().put(beanKey, transportReceiver);
@@ -744,8 +795,8 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
         // Register URLs
         if (Engine.getInstance().getBeanFactory().containsBean(org.nexuse2e.Constants.TRANSPORT_DISPATCHER_MAPPING)) {
-            updateableUrlHandlerMapping = (UpdateableUrlHandlerMapping) Engine.getInstance().getBeanFactory()
-                    .getBean(org.nexuse2e.Constants.TRANSPORT_DISPATCHER_MAPPING);
+            updateableUrlHandlerMapping =
+             (UpdateableUrlHandlerMapping) Engine.getInstance().getBeanFactory().getBean(org.nexuse2e.Constants.TRANSPORT_DISPATCHER_MAPPING);
             try {
                 updateableUrlHandlerMapping.setUrlMap(mappings);
                 updateableUrlHandlerMapping.initApplicationContext();
@@ -757,8 +808,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * Return the BackendPipelineDispatcher instance. Convenience method for <code>getSkeletonContainer().getBackendPipelineDispatcher()</code>
-     * 
+     * Return the BackendPipelineDispatcher instance. Convenience method for <code>getSkeletonContainer()
+     * .getBackendPipelineDispatcher()</code>
+     *
      * @return The BackendPipelineDispatcher instance
      */
     public BackendPipelineDispatcher getBackendPipelineDispatcher() {
@@ -795,12 +847,10 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /**
      * Creates a temporary <code>Service</code> instance from the given <code>ServicePojo</code>.
-     * 
-     * @param pojo
-     *            The service pojo.
+     *
+     * @param pojo The service pojo.
      * @return A <code>Service</code> object.
-     * @throws NexusException
-     *             If the service instance could not be created.
+     * @throws NexusException If the service instance could not be created.
      */
     public Service getServiceInstanceFromPojo(ServicePojo pojo) throws NexusException {
 
@@ -836,8 +886,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param caCertificates
-     *            the caCertificates to set
+     * @param caCertificates the caCertificates to set
      */
     public void setCertificates(List<CertificatePojo> certificates) {
 
@@ -853,8 +902,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param choreographies
-     *            the choreographies to set
+     * @param choreographies the choreographies to set
      */
     public void setChoreographies(List<ChoreographyPojo> choreographies) {
 
@@ -870,8 +918,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param partners
-     *            the partners to set
+     * @param partners the partners to set
      */
     public void setPartners(List<PartnerPojo> partners) {
 
@@ -887,8 +934,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param staticBeanContainer
-     *            the staticBeanContainer to set
+     * @param StaticBeanContainer the staticBeanContainer to set
      */
     public void setStaticBeanContainer(StaticBeanContainer skeletonContainer) {
 
@@ -904,8 +950,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param backendPipelines
-     *            the backendPipelines to set
+     * @param backendPipelines the backendPipelines to set
      */
     public void setBackendInboundPipelines(HashMap<ActionSpecificKey, BackendPipeline> backendPipelines) {
 
@@ -921,8 +966,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param backendOutboundPipelines
-     *            the backendOutboundPipelines to set
+     * @param backendOutboundPipelines the backendOutboundPipelines to set
      */
     public void setBackendOutboundPipelines(HashMap<ActionSpecificKey, BackendPipeline> backendOutboundPipelines) {
 
@@ -966,8 +1010,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param trps
-     *            the trps to set
+     * @param trps the trps to set
      */
     public void setTrps(List<TRPPojo> trps) {
 
@@ -983,8 +1026,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param components
-     *            the components to set
+     * @param components the components to set
      */
     public void setComponents(List<ComponentPojo> components) {
 
@@ -1000,8 +1042,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param backendPipelineTemplates
-     *            the backendPipelineTemplates to set
+     * @param backendPipelineTemplates the backendPipelineTemplates to set
      */
     public void setBackendPipelineTemplates(List<PipelinePojo> backendPipelineTemplates) {
 
@@ -1017,8 +1058,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param loggers
-     *            the loggers to set
+     * @param loggers the loggers to set
      */
     public void setLoggers(List<LoggerPojo> loggers) {
 
@@ -1034,8 +1074,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param services
-     *            the services to set
+     * @param services the services to set
      */
     public void setServices(List<ServicePojo> services) {
 
@@ -1051,8 +1090,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param users
-     *            the users to set
+     * @param users the users to set
      */
     public void setUsers(List<UserPojo> users) {
 
@@ -1068,8 +1106,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param roles
-     *            the roles to set
+     * @param roles the roles to set
      */
     public void setRoles(List<RolePojo> roles) {
 
@@ -1133,8 +1170,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param logCategories
-     *            the logCategories to set
+     * @param logCategories the logCategories to set
      */
     public void setLogCategories(Map<String, List<String>> logCategories) {
 
@@ -1150,13 +1186,14 @@ public class EngineConfiguration implements ConfigurationAccessService {
     }
 
     /**
-     * @param genericParameters
-     *            the genericParameters to set
+     * @param genericParameters the genericParameters to set
      */
     public void setGenericParameters(Map<String, List<GenericParamPojo>> genericParameters) {
 
         this.genericParameters = genericParameters;
     }
+
+    // asdf
 
     /**
      * @return
@@ -1174,11 +1211,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
         this.mappings = mappings;
     }
 
-    // asdf
-
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getPipelinePojoByNxPipelineId(int)
      */
     public PipelinePojo getPipelinePojoByNxPipelineId(int nxPipelineId) {
@@ -1207,7 +1242,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getPipelineByName(java.lang.String)
      */
     public PipelinePojo getPipelineByName(String name) {
@@ -1235,7 +1270,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getServicePojoByNxServiceId(int)
      */
     public ServicePojo getServicePojoByNxServiceId(int nxServiceId) {
@@ -1250,7 +1285,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getServicePojoName(java.lang.String)
      */
     public ServicePojo getServicePojoName(String name) {
@@ -1265,8 +1300,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getFrontendPipelinePojos(int, org.nexuse2e.configuration.GenericComparator)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getFrontendPipelinePojos(int, org.nexuse2e
+     * .configuration.GenericComparator)
      */
     public List<PipelinePojo> getFrontendPipelinePojos(int type, Comparator<PipelinePojo> comparator) {
 
@@ -1293,8 +1329,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getBackendPipelinePojos(int, org.nexuse2e.configuration.GenericComparator)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getBackendPipelinePojos(int, org.nexuse2e
+     * .configuration.GenericComparator)
      */
     public List<PipelinePojo> getBackendPipelinePojos(int type, Comparator<PipelinePojo> comparator) {
 
@@ -1321,7 +1358,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getTrpByNxTrpId(int)
      */
     public TRPPojo getTrpByNxTrpId(int nxTrpId) {
@@ -1341,15 +1378,15 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getTrpByProtocolVersionAndTransport(java.lang.String, java.lang.String, java.lang.String)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getTrpByProtocolVersionAndTransport(java.lang
+     * .String, java.lang.String, java.lang.String)
      */
     public TRPPojo getTrpByProtocolVersionAndTransport(String protocol, String version, String transport) {
 
         List<TRPPojo> trps = getTrps();
         for (TRPPojo trp : trps) {
-            if (StringUtils.equals(trp.getProtocol(), protocol) && StringUtils.equals(trp.getVersion(), version)
-                    && StringUtils.equals(trp.getTransport(), transport)) {
+            if (StringUtils.equals(trp.getProtocol(), protocol) && StringUtils.equals(trp.getVersion(), version) && StringUtils.equals(trp.getTransport(), transport)) {
                 return trp;
             }
         }
@@ -1359,7 +1396,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getPartnerByNxPartnerId(int)
      */
     public PartnerPojo getPartnerByNxPartnerId(int nxPartnerId) throws NexusException {
@@ -1379,7 +1416,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getComponentByNxComponentId(int)
      */
     public ComponentPojo getComponentByNxComponentId(int nxComponentId) throws NexusException {
@@ -1399,7 +1436,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getPartnerByPartnerId(java.lang.String)
      */
     public PartnerPojo getPartnerByPartnerId(String partnerId) throws NexusException {
@@ -1419,8 +1456,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getCertificateFromPartnerByNxCertificateId(org.nexuse2e.pojo.PartnerPojo, int)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getCertificateFromPartnerByNxCertificateId(org
+     * .nexuse2e.pojo.PartnerPojo, int)
      */
     public CertificatePojo getCertificateFromPartnerByNxCertificateId(PartnerPojo partner, int nxCertificateId) {
 
@@ -1445,8 +1483,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getConnectionFromPartnerByNxConnectionId(org.nexuse2e.pojo.PartnerPojo, int)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getConnectionFromPartnerByNxConnectionId(org
+     * .nexuse2e.pojo.PartnerPojo, int)
      */
     public ConnectionPojo getConnectionFromPartnerByNxConnectionId(PartnerPojo partner, int nxConnectionId) {
 
@@ -1471,8 +1510,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getComponents(org.nexuse2e.configuration.Constants.ComponentType, java.util.Comparator)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getComponents(org.nexuse2e.configuration.Constants
+     * .ComponentType, java.util.Comparator)
      */
     public List<ComponentPojo> getComponents(ComponentType type, Comparator<ComponentPojo> comparator) throws NexusException {
 
@@ -1495,7 +1535,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getPipelets(boolean)
      */
     public List<ComponentPojo> getPipelets(boolean frontend) throws NexusException {
@@ -1503,7 +1543,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
         Pipelet pipelet = null;
         List<ComponentPojo> components = getComponents(ComponentType.PIPELET, Constants.COMPONENTCOMPARATOR);
         List<ComponentPojo> filteredList = new ArrayList<ComponentPojo>();
-        for (Iterator<ComponentPojo> iter = components.iterator(); iter.hasNext();) {
+        for (Iterator<ComponentPojo> iter = components.iterator(); iter.hasNext(); ) {
             ComponentPojo componentPojo = (ComponentPojo) iter.next();
             try {
                 Object tempObject = Class.forName(componentPojo.getClassName()).newInstance();
@@ -1528,7 +1568,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getPartners(int, java.util.Comparator)
      */
     public List<PartnerPojo> getPartners(int type, Comparator<PartnerPojo> comparator) throws NexusException {
@@ -1555,7 +1595,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getCertificates(int, java.util.Comparator)
      */
     public List<CertificatePojo> getCertificates(int type, Comparator<CertificatePojo> comparator) throws NexusException {
@@ -1580,7 +1620,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getCertificateByName(int, java.lang.String)
      */
     public CertificatePojo getCertificateByName(int type, String name) throws NexusException {
@@ -1596,7 +1636,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getCertificateByNxCertificateId(int, int)
      */
     public CertificatePojo getCertificateByNxCertificateId(int type, int nxCertificateId) throws NexusException {
@@ -1612,7 +1652,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getFirstCertificateByType(int, boolean)
      */
     public CertificatePojo getFirstCertificateByType(int type, boolean isUnique) throws NexusException {
@@ -1629,7 +1669,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getChoreographyByChoreographyId(java.lang.String)
      */
     public ChoreographyPojo getChoreographyByChoreographyId(String choreographyId) throws NexusException {
@@ -1649,7 +1689,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getChoreographyByNxChoreographyId(int)
      */
     public ChoreographyPojo getChoreographyByNxChoreographyId(int nxChoreographyId) throws NexusException {
@@ -1669,8 +1709,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getParticipantFromChoreographyByNxPartnerId(org.nexuse2e.pojo.ChoreographyPojo, int)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getParticipantFromChoreographyByNxPartnerId(org
+     * .nexuse2e.pojo.ChoreographyPojo, int)
      */
     public ParticipantPojo getParticipantFromChoreographyByNxPartnerId(ChoreographyPojo choreography, int nxPartnerId) {
 
@@ -1688,8 +1729,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getActionFromChoreographyByNxActionId(org.nexuse2e.pojo.ChoreographyPojo, int)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getActionFromChoreographyByNxActionId(org.nexuse2e
+     * .pojo.ChoreographyPojo, int)
      */
     public ActionPojo getActionFromChoreographyByNxActionId(ChoreographyPojo choreography, int nxActionId) {
 
@@ -1708,8 +1750,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getActionFromChoreographyByActionId(org.nexuse2e.pojo.ChoreographyPojo, java.lang.String)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getActionFromChoreographyByActionId(org.nexuse2e
+     * .pojo.ChoreographyPojo, java.lang.String)
      */
     public ActionPojo getActionFromChoreographyByActionId(ChoreographyPojo choreography, String actionId) {
 
@@ -1728,8 +1771,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getParticipantFromChoreographyByPartner(org.nexuse2e.pojo.ChoreographyPojo,
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getParticipantFromChoreographyByPartner(org
+     * .nexuse2e.pojo.ChoreographyPojo,
      * org.nexuse2e.pojo.PartnerPojo)
      */
     public ParticipantPojo getParticipantFromChoreographyByPartner(ChoreographyPojo choreography, PartnerPojo partner) {
@@ -1750,7 +1794,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getEngineConfig()
      */
     public EngineConfiguration getEngineConfig() {
@@ -1782,9 +1826,8 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /**
      * Adds the given pojo to the delete list.
-     * 
-     * @param pojo
-     *            The pojo to be deleted.
+     *
+     * @param pojo The pojo to be deleted.
      */
     protected void addToDeleteList(NEXUSe2ePojo pojo) {
 
@@ -1798,11 +1841,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /**
      * Adds the given pojo list to the list of implicitly updated pojos.
-     * 
-     * @param parent
-     *            The parent pojo.
-     * @param list
-     *            The child pojos that will implicitly be updated.
+     *
+     * @param parent The parent pojo.
+     * @param list   The child pojos that will implicitly be updated.
      */
     protected <T extends NEXUSe2ePojo> void addToImplicitUpdateList(NEXUSe2ePojo parent, Collection<T> list) {
 
@@ -1846,7 +1887,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateChoreography(org.nexuse2e.pojo.ChoreographyPojo)
      */
     public void updateChoreography(ChoreographyPojo choreography) throws NexusException {
@@ -1863,13 +1904,15 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteChoreography(org.nexuse2e.pojo.ChoreographyPojo)
      */
-    public void deleteChoreography(ChoreographyPojo choreography) throws ReferencedChoreographyException, NexusException {
+    public void deleteChoreography(ChoreographyPojo choreography) throws ReferencedChoreographyException,
+     NexusException {
 
         ChoreographyPojo oldChoreography = getChoreographyByChoreographyId(choreography.getName());
-        List<ConversationPojo> conversations = Engine.getInstance().getTransactionService().getConversationsByChoreography(choreography);
+        List<ConversationPojo> conversations =
+         Engine.getInstance().getTransactionService().getConversationsByChoreography(choreography);
         if (conversations != null && !conversations.isEmpty()) {
             throw new ReferencedChoreographyException(conversations);
         }
@@ -1881,7 +1924,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deletePartner(org.nexuse2e.pojo.PartnerPojo)
      */
     public void deletePartner(PartnerPojo partner) throws ReferencedPartnerException, NexusException {
@@ -1906,7 +1949,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteConnection(org.nexuse2e.pojo.ConnectionPojo)
      */
     public void deleteConnection(ConnectionPojo connection) throws ReferencedConnectionException, NexusException {
@@ -1924,7 +1967,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateTrp(org.nexuse2e.pojo.TRPPojo)
      */
     public void updateTrp(TRPPojo trp) throws NexusException {
@@ -1939,7 +1982,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteTrp(org.nexuse2e.pojo.TRPPojo)
      */
     public void deleteTrp(TRPPojo trp) throws NexusException {
@@ -1951,7 +1994,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateComponent(org.nexuse2e.pojo.ComponentPojo)
      */
     public void updateComponent(ComponentPojo component) throws NexusException {
@@ -1966,7 +2009,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteComponent(org.nexuse2e.pojo.ComponentPojo)
      */
     public void deleteComponent(ComponentPojo component) throws NexusException {
@@ -1980,13 +2023,14 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updatePipeline(org.nexuse2e.pojo.PipelinePojo)
      */
     public void updatePipeline(PipelinePojo pipeline) throws NexusException {
 
         PipelinePojo oldPipeline = getPipelinePojoByNxPipelineId(pipeline.getNxPipelineId());
-        List<PipelinePojo> pt = (pipeline.isFrontend() ? getFrontendPipelineTemplates() : getBackendPipelineTemplates());
+        List<PipelinePojo> pt = (pipeline.isFrontend() ? getFrontendPipelineTemplates() :
+         getBackendPipelineTemplates());
         if (oldPipeline != null) {
             pt.remove(oldPipeline);
         }
@@ -1997,7 +2041,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deletePipeline(org.nexuse2e.pojo.PipelinePojo)
      */
     public void deletePipeline(PipelinePojo pipeline) throws ReferencedPipelineException, NexusException {
@@ -2008,9 +2052,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
             List<ActionPojo> referrers = new ArrayList<ActionPojo>();
             for (ChoreographyPojo choreography : getChoreographies()) {
                 for (ActionPojo action : choreography.getActions()) {
-                    if (action != null
-                            && ((action.getInboundPipeline() != null && action.getInboundPipeline().getNxPipelineId() == id) || (action.getOutboundPipeline() != null && action
-                                    .getOutboundPipeline().getNxPipelineId() == id))) {
+                    if (action != null && ((action.getInboundPipeline() != null && action.getInboundPipeline().getNxPipelineId() == id) || (action.getOutboundPipeline() != null && action.getOutboundPipeline().getNxPipelineId() == id))) {
                         referrers.add(action);
                     }
                 }
@@ -2022,7 +2064,8 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
         PipelinePojo oldPipeline = getPipelinePojoByNxPipelineId(pipeline.getNxPipelineId());
         if (oldPipeline != null) {
-            List<PipelinePojo> pt = (oldPipeline.isFrontend() ? getFrontendPipelineTemplates() : getBackendPipelineTemplates());
+            List<PipelinePojo> pt = (oldPipeline.isFrontend() ? getFrontendPipelineTemplates() :
+             getBackendPipelineTemplates());
             pt.remove(oldPipeline);
             addToDeleteList(oldPipeline);
         }
@@ -2030,7 +2073,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateService(java.lang.String)
      */
     public void updateService(String name) throws NexusException {
@@ -2049,7 +2092,53 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#updateLogger(org.nexuse2e.pojo.LoggerPojo)
+     */
+    //    public void updateLogger(LoggerPojo loggerPojo) throws NexusException {
+    //
+    //        if (loggerPojo.getName() == null || loggerPojo.getName().trim().length() == 0) {
+    //            throw new IllegalArgumentException("Logger name must not be empty");
+    //        }
+    //
+    //        try {
+    //            List<LoggerPojo> loggers = getLoggers();
+    //            LoggerPojo oldLoggerPojo = getLoggerByNxLoggerId(loggerPojo.getNxLoggerId());
+    //            org.nexuse2e.logging.LogAppender logger = null;
+    //            if (oldLoggerPojo != null) {
+    //                logger = getLogger(oldLoggerPojo.getName());
+    //                loggers.remove(oldLoggerPojo);
+    //                // service has been renamed
+    //                if (!oldLoggerPojo.getName().equals(loggerPojo.getName())) {
+    //                    renameLogger(oldLoggerPojo.getName(), loggerPojo.getName());
+    //                }
+    //                if (loggerPojo.getLoggerParams() != null) {
+    //                    ConfigurationUtil.configureLogger(logger, loggerPojo.getLoggerParams());
+    //                }
+    //            } else {
+    //                logger = (org.nexuse2e.logging.LogAppender) Class.forName(loggerPojo.getComponent()
+    //                .getClassName()).newInstance();
+    //                if (loggerPojo.getLoggerParams() != null) {
+    //                    ConfigurationUtil.configureLogger(logger, loggerPojo.getLoggerParams());
+    //                }
+    //                logger.initialize(this);
+    //                logger.activate();
+    //                getStaticBeanContainer().getManagableBeans().put(loggerPojo.getName(), logger);
+    //            }
+    //            loggers.add(loggerPojo);
+    //            addToUpdateList(loggerPojo);
+    //
+    //        } catch (Exception e) {
+    //            if (e instanceof NexusException) {
+    //                throw (NexusException) e;
+    //            }
+    //            throw new NexusException(e);
+    //        }
+    //    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateService(org.nexuse2e.pojo.ServicePojo)
      */
     public void updateService(ServicePojo servicePojo) throws NexusException {
@@ -2069,7 +2158,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteService(org.nexuse2e.pojo.ServicePojo)
      */
     public void deleteService(ServicePojo servicePojo) throws NexusException {
@@ -2104,52 +2193,27 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#updateLogger(org.nexuse2e.pojo.LoggerPojo)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getLogger(java.lang.String)
      */
-    public void updateLogger(LoggerPojo loggerPojo) throws NexusException {
-
-        if (loggerPojo.getName() == null || loggerPojo.getName().trim().length() == 0) {
-            throw new IllegalArgumentException("Logger name must not be empty");
-        }
-
-        try {
-            List<LoggerPojo> loggers = getLoggers();
-            LoggerPojo oldLoggerPojo = getLoggerByNxLoggerId(loggerPojo.getNxLoggerId());
-            org.nexuse2e.logging.LogAppender logger = null;
-            if (oldLoggerPojo != null) {
-                logger = getLogger(oldLoggerPojo.getName());
-                loggers.remove(oldLoggerPojo);
-                // service has been renamed
-                if (!oldLoggerPojo.getName().equals(loggerPojo.getName())) {
-                    renameLogger(oldLoggerPojo.getName(), loggerPojo.getName());
-                }
-                if (loggerPojo.getLoggerParams() != null) {
-                    ConfigurationUtil.configureLogger(logger, loggerPojo.getLoggerParams());
-                }
-            } else {
-                logger = (org.nexuse2e.logging.LogAppender) Class.forName(loggerPojo.getComponent().getClassName()).newInstance();
-                if (loggerPojo.getLoggerParams() != null) {
-                    ConfigurationUtil.configureLogger(logger, loggerPojo.getLoggerParams());
-                }
-                logger.initialize(this);
-                logger.activate();
-                getStaticBeanContainer().getManagableBeans().put(loggerPojo.getName(), logger);
-            }
-            loggers.add(loggerPojo);
-            addToUpdateList(loggerPojo);
-
-        } catch (Exception e) {
-            if (e instanceof NexusException) {
-                throw (NexusException) e;
-            }
-            throw new NexusException(e);
-        }
-    }
+    //    public org.nexuse2e.logging.LogAppender getLogger(String name) {
+    //
+    //        return getStaticBeanContainer().getLogger(name);
+    //    }
 
     /*
      * (non-Javadoc)
-     * 
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#renameLogger(java.lang.String, java.lang.String)
+     */
+    //    public org.nexuse2e.logging.LogAppender renameLogger(String oldName, String newName) throws NexusException {
+    //
+    //        return getStaticBeanContainer().renameLogger(oldName, newName);
+    //    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteLogger(org.nexuse2e.pojo.LoggerPojo)
      */
     public void deleteLogger(LoggerPojo logger) throws NexusException {
@@ -2163,7 +2227,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getLoggerByNxLoggerId(int)
      */
     public LoggerPojo getLoggerByNxLoggerId(int nxLoggerId) {
@@ -2178,27 +2242,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getLogger(java.lang.String)
-     */
-    public org.nexuse2e.logging.LogAppender getLogger(String name) {
-
-        return getStaticBeanContainer().getLogger(name);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#renameLogger(java.lang.String, java.lang.String)
-     */
-    public org.nexuse2e.logging.LogAppender renameLogger(String oldName, String newName) throws NexusException {
-
-        return getStaticBeanContainer().renameLogger(oldName, newName);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getService(java.lang.String)
      */
     public Service getService(String name) {
@@ -2208,7 +2252,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#renameService(java.lang.String, java.lang.String)
      */
     public Service renameService(String oldName, String newName) throws NexusException {
@@ -2218,7 +2262,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getServiceInstances()
      */
     public List<Service> getServiceInstances() {
@@ -2228,12 +2272,13 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteCertificate(org.nexuse2e.pojo.CertificatePojo)
      */
     public void deleteCertificate(CertificatePojo certificate) throws ReferencedCertificateException, NexusException {
 
-        CertificatePojo oldCertificate = getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), certificate.getNxCertificateId());
+        CertificatePojo oldCertificate = getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(),
+         certificate.getNxCertificateId());
 
         if (oldCertificate != null) {
             // check if certificate is referenced by any connection
@@ -2264,10 +2309,11 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteCertificates(java.util.Collection)
      */
-    public void deleteCertificates(Collection<CertificatePojo> certificates) throws NexusException, ReferencedCertificateException {
+    public void deleteCertificates(Collection<CertificatePojo> certificates) throws NexusException,
+     ReferencedCertificateException {
 
         for (CertificatePojo certificate : certificates) {
             deleteCertificate(certificate);
@@ -2276,13 +2322,14 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateCertificates(java.util.List)
      */
     public void updateCertificates(List<CertificatePojo> certs) throws NexusException {
 
         for (CertificatePojo certificate : certs) {
-            CertificatePojo oldCertificate = getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), certificate.getNxCertificateId());
+            CertificatePojo oldCertificate = getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(),
+             certificate.getNxCertificateId());
             if (oldCertificate != null) {
                 getCertificates(CertificateType.ALL.getOrdinal(), null);
             }
@@ -2296,12 +2343,13 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateCertificate(org.nexuse2e.pojo.CertificatePojo)
      */
     public void updateCertificate(CertificatePojo certificate) throws NexusException {
 
-        CertificatePojo oldCertificate = getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), certificate.getNxCertificateId());
+        CertificatePojo oldCertificate = getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(),
+         certificate.getNxCertificateId());
         if (oldCertificate != null) {
             getCertificates(CertificateType.ALL.getOrdinal(), null).remove(oldCertificate);
         }
@@ -2312,7 +2360,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getCacertsKeyStore()
      */
     public KeyStore getCacertsKeyStore() throws NexusException {
@@ -2321,16 +2369,17 @@ public class EngineConfiguration implements ConfigurationAccessService {
             CertificatePojo key = getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(), true);
             String cacertspwd = "changeit";
             if (key == null) {
-                synchronized (this) { // don't block normal read, but in this sync case the read needs to be excecuted a second time to be sure, its still null
-                	key = getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(), true);
-					if(key == null) {
-						key = new CertificatePojo();
-						key.setName("CaKeyStoreData");
-						key.setType(CertificateType.CACERT_METADATA.getOrdinal());
-						key.setBinaryData(new byte[0]);
-						key.setPassword(EncryptionUtil.encryptString(cacertspwd));
-						updateCertificate(key);	
-					}
+                synchronized (this) { // don't block normal read, but in this sync case the read needs to be
+                    // excecuted a second time to be sure, its still null
+                    key = getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(), true);
+                    if (key == null) {
+                        key = new CertificatePojo();
+                        key.setName("CaKeyStoreData");
+                        key.setType(CertificateType.CACERT_METADATA.getOrdinal());
+                        key.setBinaryData(new byte[0]);
+                        key.setPassword(EncryptionUtil.encryptString(cacertspwd));
+                        updateCertificate(key);
+                    }
                 }
             } else {
                 cacertspwd = EncryptionUtil.decryptString(key.getPassword());
@@ -2362,7 +2411,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getUsers(java.util.Comparator)
      */
     public List<UserPojo> getUsers(Comparator<UserPojo> comparator) {
@@ -2376,7 +2425,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getUserByLoginName(java.lang.String)
      */
     public UserPojo getUserByLoginName(String loginName) {
@@ -2393,7 +2442,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getUserByNxUserId(int)
      */
     public UserPojo getUserByNxUserId(int nxUserId) {
@@ -2408,7 +2457,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateUser(org.nexuse2e.pojo.UserPojo)
      */
     public void updateUser(UserPojo user) throws NexusException {
@@ -2423,7 +2472,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteUser(org.nexuse2e.pojo.UserPojo)
      */
     public void deleteUser(UserPojo user) throws NexusException {
@@ -2437,7 +2486,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getRoles(java.util.Comparator)
      */
     public List<RolePojo> getRoles(Comparator<RolePojo> comparator) {
@@ -2451,7 +2500,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getRoleByNxRoleId(int)
      */
     public RolePojo getRoleByNxRoleId(int nxRoleId) {
@@ -2466,7 +2515,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getRoleByName(java.lang.String)
      */
     public RolePojo getRoleByName(String name) {
@@ -2483,7 +2532,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateRole(org.nexuse2e.pojo.RolePojo)
      */
     public void updateRole(RolePojo role) throws NexusException {
@@ -2498,7 +2547,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteRole(org.nexuse2e.pojo.RolePojo)
      */
     public void deleteRole(RolePojo role) throws NexusException {
@@ -2512,7 +2561,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getMappings(java.util.Comparator)
      */
     public List<MappingPojo> getMappings(Comparator<MappingPojo> comparator) {
@@ -2526,7 +2575,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#getMappingByNxMappingId(int)
      */
     public MappingPojo getMappingByNxMappingId(int nxMappingId) {
@@ -2541,8 +2590,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getMappingByCategoryDirectionAndKey(java.lang.String, boolean, java.lang.String)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getMappingByCategoryDirectionAndKey(java.lang
+     * .String, boolean, java.lang.String)
      */
     public MappingPojo getMappingByCategoryDirectionAndKey(String category, boolean left, String key) {
 
@@ -2566,7 +2616,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateMapping(org.nexuse2e.pojo.MappingPojo)
      */
     public void updateMapping(MappingPojo mapping) throws NexusException {
@@ -2581,7 +2631,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#updateMappings(java.util.List, java.util.List)
      */
     public void updateMappings(List<MappingPojo> addMappings, List<MappingPojo> removeMappings) throws NexusException {
@@ -2609,7 +2659,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#deleteMapping(org.nexuse2e.pojo.MappingPojo)
      */
     public void deleteMapping(MappingPojo mapping) throws NexusException {
@@ -2623,10 +2673,12 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getGenericParameters(java.lang.String, java.lang.String, java.util.Map)
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getGenericParameters(java.lang.String, java.lang
+     * .String, java.util.Map)
      */
-    public Map<String, Object> getGenericParameters(String category, String tag, Map<String, ParameterDescriptor> descriptors) {
+    public Map<String, Object> getGenericParameters(String category, String tag,
+ Map<String, ParameterDescriptor> descriptors) {
 
         if (StringUtils.isEmpty(category)) {
             return null;
@@ -2645,9 +2697,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
             if (descriptor != null) {
                 isUpdated = false;
                 for (GenericParamPojo value : values) {
-                    if (((value.getTag() == null && tag == null) || (value.getTag() != null && value.getTag().equals(tag)))
-                            && value.getParamName().equals(name)) {
-                        resultMap.put(value.getParamName(), getParameterValue(descriptor.getParameterType(), value.getValue()));
+                    if (((value.getTag() == null && tag == null) || (value.getTag() != null && value.getTag().equals(tag))) && value.getParamName().equals(name)) {
+                        resultMap.put(value.getParamName(), getParameterValue(descriptor.getParameterType(),
+                         value.getValue()));
                         isUpdated = true;
                     }
                 }
@@ -2664,8 +2716,9 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.configuration.ConfigurationAccessService#getGenericParameter(java.lang.String, java.lang.String,
+     *
+     * @see org.nexuse2e.configuration.ConfigurationAccessService#getGenericParameter(java.lang.String, java.lang
+     * .String,
      * org.nexuse2e.configuration.Constants.ParameterType, java.lang.Object)
      */
     public Object getGenericParameter(String category, String tag, ParameterType type, Object defaultValue) {
@@ -2681,8 +2734,8 @@ public class EngineConfiguration implements ConfigurationAccessService {
         return defaultValue;
     }
 
-    public void setGenericParameters(String category, String tag, Map<String, Object> values, Map<String, ParameterDescriptor> descriptors)
-            throws NexusException {
+    public void setGenericParameters(String category, String tag, Map<String, Object> values, Map<String,
+ParameterDescriptor> descriptors) throws NexusException {
 
         if (StringUtils.isEmpty(category)) {
             return;
@@ -2744,7 +2797,7 @@ public class EngineConfiguration implements ConfigurationAccessService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.nexuse2e.configuration.ConfigurationAccessService#containsParameters(java.lang.String, java.lang.String)
      */
     public boolean containsParameters(String category, String tag) {
@@ -2758,46 +2811,6 @@ public class EngineConfiguration implements ConfigurationAccessService {
             }
         }
         return false;
-    }
-
-    /**
-     * encapsulates the required checks for NULL values.
-     * 
-     * @param value
-     * @return
-     */
-    private static String toString(Object value) {
-
-        if (value == null) {
-            return null;
-        }
-        return value.toString();
-    }
-
-    /**
-     * Converts a <code>String</code> parameter value into an object
-     * of it's domain type.
-     * 
-     * @param type
-     *            The parameter type.
-     * @param value
-     *            The <code>String</code> representation to be converted.
-     * @return The domain type, except for types ENUMERATION and DROPDOWN
-     */
-    private static Object getParameterValue(ParameterType type, String value) {
-
-        switch (type) {
-            case UNKNOWN:
-            case STRING:
-            case TEXT:
-            case PASSWORD:
-            case SERVICE:
-                return value;
-            case BOOLEAN:
-                return Boolean.valueOf(value);
-            default:
-                return null;
-        }
     }
 
 }

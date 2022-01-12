@@ -6,18 +6,20 @@
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
-import org.nexuse2e.pojo.ConversationPojo;
 import org.nexuse2e.messaging.MessageHandlingCenter;
+import org.nexuse2e.pojo.ConversationPojo;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.nexuse2e.util.FileUtil.readAll;
 
@@ -26,9 +28,7 @@ public class DataManipulationHandler implements Handler {
 
     @Override
     public boolean canHandle(String path, String method) {
-        return ("POST".equalsIgnoreCase(method) && "/messages/requeue".equalsIgnoreCase(path)) ||
-                ("POST".equalsIgnoreCase(method) && "/messages/stop".equalsIgnoreCase(path)) ||
-                ("POST".equalsIgnoreCase(method) && "/conversations/delete".equalsIgnoreCase(path));
+        return ("POST".equalsIgnoreCase(method) && "/messages/requeue".equalsIgnoreCase(path)) || ("POST".equalsIgnoreCase(method) && "/messages/stop".equalsIgnoreCase(path)) || ("POST".equalsIgnoreCase(method) && "/conversations/delete".equalsIgnoreCase(path));
     }
 
     @Override
@@ -66,8 +66,8 @@ public class DataManipulationHandler implements Handler {
         if (failedMessageIds.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occurred when trying to requeue " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred when trying to " +
+                    "requeue " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
         }
     }
 
@@ -89,7 +89,8 @@ public class DataManipulationHandler implements Handler {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occurred when trying to stop " + failedMessageIds.size() + " / " + messageIds.length + " messages: " + failedMessageIds);
+                    "An error occurred when trying to stop " + failedMessageIds.size() + " / " + messageIds.length +
+                            " messages: " + failedMessageIds);
         }
     }
 
@@ -100,7 +101,8 @@ public class DataManipulationHandler implements Handler {
 
         for (String conversationId : conversationIds) {
             try {
-                ConversationPojo conversation = Engine.getInstance().getTransactionService().getConversation(conversationId);
+                ConversationPojo conversation =
+                        Engine.getInstance().getTransactionService().getConversation(conversationId);
                 Engine.getInstance().getTransactionService().deleteConversation(conversation);
             } catch (NexusException e) {
                 failedConversationIds.add(conversationId);
@@ -111,8 +113,8 @@ public class DataManipulationHandler implements Handler {
         if (failedConversationIds.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "An error occurred when trying to delete " + failedConversationIds.size() + " / " + conversationIds.length + " conversations: " + failedConversationIds);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred when trying to delete" +
+                    " " + failedConversationIds.size() + " / " + conversationIds.length + " conversations: " + failedConversationIds);
         }
     }
 }

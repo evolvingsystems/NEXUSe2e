@@ -1,7 +1,7 @@
 package org.nexuse2e.ui2.model;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.NexusException;
@@ -13,7 +13,10 @@ import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.reporting.StatisticsEngineLog;
 import org.nexuse2e.util.DateUtil;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class TransactionReportingMessage {
     private static final Logger LOG = LogManager.getLogger(TransactionReportingMessage.class);
@@ -79,7 +82,8 @@ public class TransactionReportingMessage {
         List<TransactionReportingMessagePayload> messagePayloads = new LinkedList<>();
         for (int i = 0; i < messagePayloadPojos.size(); i++) {
             MessagePayloadPojo messagePayloadPojo = messagePayloadPojos.get(i);
-            messagePayloads.add(new TransactionReportingMessagePayload(messagePayloadPojo.getMimeType(), messagePayloadPojo.getContentId(), i));
+            messagePayloads.add(new TransactionReportingMessagePayload(messagePayloadPojo.getMimeType(),
+                    messagePayloadPojo.getContentId(), i));
         }
         return messagePayloads;
     }
@@ -96,7 +100,8 @@ public class TransactionReportingMessage {
         List<StatisticsEngineLog> logEntryList = new LinkedList<>();
 
         try {
-            List<LogPojo> logEntries = Engine.getInstance().getTransactionService().getLogEntriesForReport(null, conversationId, messageId, false);
+            List<LogPojo> logEntries = Engine.getInstance().getTransactionService().getLogEntriesForReport(null,
+                    conversationId, messageId, false);
 
             for (LogPojo logEntry : logEntries) {
                 logEntryList.add(new StatisticsEngineLog(logEntry));

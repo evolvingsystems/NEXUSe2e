@@ -1,48 +1,30 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service.ws.aggateway;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
@@ -70,6 +52,24 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.ws.Endpoint;
+
 /**
  * A service that dynamically registers a Ag Gateway compliant web service endpoint.
  *
@@ -78,30 +78,29 @@ import org.w3c.dom.Node;
  */
 public class WSDispatcherService extends AbstractService implements ReceiverAware {
 
-    private static Logger       LOG            = LogManager.getLogger( WSDispatcherService.class );
-
     private static final String URL_PARAM_NAME = "url";
     private static final String WS_AUTH_PARAM_NAME = "wsAuth";
     private static final String USERNAME_PARAM_NAME = "user";
     private static final String PASSWORD_PARAM_NAME = "password";
     private static final String CACHE_DOM_TREE_PARAM_NAME = "cacheDomTree";
-
-    private Endpoint            endpoint;
-    private TransportReceiver   transportReceiver;
+    private static Logger LOG = LogManager.getLogger(WSDispatcherService.class);
+    private Endpoint endpoint;
+    private TransportReceiver transportReceiver;
 
     @Override
-    public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
+    public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
 
-        parameterMap.put( URL_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Web service URL",
-                "The last part of the web service URL (e.g. /sendMessage)", "" ) );
-        parameterMap.put( WS_AUTH_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN,
-                "WS* authentication", "Enable WS* authentication (username/password)", Boolean.FALSE ) );
-        parameterMap.put( USERNAME_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "User name",
-                "The user name for WS* authentication", "" ) );
-        parameterMap.put( PASSWORD_PARAM_NAME, new ParameterDescriptor( ParameterType.PASSWORD, "Password",
-                "The password for WS* authentication", "" ) );
-        parameterMap.put( CACHE_DOM_TREE_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN, "Cache DOM tree",
-                "Enable to cache the payload document's DOM tree in the message context (faster, but greater memory consumption)", Boolean.TRUE ) );
+        parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Web service URL", "The last " +
+                "part of the web service URL (e.g. /sendMessage)", ""));
+        parameterMap.put(WS_AUTH_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "WS* authentication",
+                "Enable WS* authentication (username/password)", Boolean.FALSE));
+        parameterMap.put(USERNAME_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "User name", "The user " +
+                "name for WS* authentication", ""));
+        parameterMap.put(PASSWORD_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "The " +
+                "password for WS* authentication", ""));
+        parameterMap.put(CACHE_DOM_TREE_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Cache DOM tree",
+                "Enable to cache the payload document's DOM tree in the message context (faster, but greater memory " +
+                        "consumption)", Boolean.TRUE));
     }
 
     @Override
@@ -112,61 +111,62 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
 
     public void start() {
 
-        if ( getStatus() == BeanStatus.STARTED ) {
+        if (getStatus() == BeanStatus.STARTED) {
             return;
         }
-        
-        String url = (String) getParameter( URL_PARAM_NAME );
-        LOG.debug( "Web service URL extension: " + url );
 
-        Boolean cache = (Boolean) getParameter( CACHE_DOM_TREE_PARAM_NAME );
+        String url = (String) getParameter(URL_PARAM_NAME);
+        LOG.debug("Web service URL extension: " + url);
+
+        Boolean cache = (Boolean) getParameter(CACHE_DOM_TREE_PARAM_NAME);
 
         try {
             AgGatewayDocumentExchangeImpl implementor = new AgGatewayDocumentExchangeImpl();
             implementor.cache = (cache == null || cache.booleanValue());
-            implementor.setTransportReceiver( transportReceiver );
-            endpoint = Endpoint.publish( url, implementor );
+            implementor.setTransportReceiver(transportReceiver);
+            endpoint = Endpoint.publish(url, implementor);
 
-            Boolean b = getParameter( WS_AUTH_PARAM_NAME );
+            Boolean b = getParameter(WS_AUTH_PARAM_NAME);
             // configure WS security
             if (b != null && b.booleanValue()) {
                 org.apache.cxf.endpoint.Endpoint cxfEndpoint = ((EndpointImpl) endpoint).getServer().getEndpoint();
-                Map<String,Object> inProps= new HashMap<String,Object>();
-                inProps.put( WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN );
-                inProps.put( WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT );
-                inProps.put( WSHandlerConstants.USER, getParameter( USERNAME_PARAM_NAME ) );
-                final String password = (String) getParameter( PASSWORD_PARAM_NAME );
+                Map<String, Object> inProps = new HashMap<String, Object>();
+                inProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+                inProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+                inProps.put(WSHandlerConstants.USER, getParameter(USERNAME_PARAM_NAME));
+                final String password = (String) getParameter(PASSWORD_PARAM_NAME);
                 CallbackHandler callback = new CallbackHandler() {
-                    public void handle( Callback[] callbacks ) throws IOException, UnsupportedCallbackException {
+                    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
                         WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
                         // check password
-                        if  (password == null || !password.equals( pc.getPassword() )) {
-                            String m = "User " + pc.getIdentifier() + " tried to access AgGateway web service with an incorrect password";
-                            LOG.error( m );
-                            throw new SecurityException( m );
+                        if (password == null || !password.equals(pc.getPassword())) {
+                            String m = "User " + pc.getIdentifier() + " tried to access AgGateway web service with an" +
+                                    " incorrect password";
+                            LOG.error(m);
+                            throw new SecurityException(m);
                         }
-                        pc.setPassword( password );
+                        pc.setPassword(password);
                     }
                 };
-                inProps.put( WSHandlerConstants.PW_CALLBACK_REF, callback );
-                WSS4JInInterceptor wssIn = new WSS4JInInterceptor( inProps );
+                inProps.put(WSHandlerConstants.PW_CALLBACK_REF, callback);
+                WSS4JInInterceptor wssIn = new WSS4JInInterceptor(inProps);
                 if (LOG.isTraceEnabled()) {
-                    cxfEndpoint.getOutInterceptors().add( new LoggingOutInterceptor() );
-                    cxfEndpoint.getInInterceptors().add( new LoggingInInterceptor() );
+                    cxfEndpoint.getOutInterceptors().add(new LoggingOutInterceptor());
+                    cxfEndpoint.getInInterceptors().add(new LoggingInInterceptor());
                 }
-                cxfEndpoint.getInInterceptors().add( wssIn );
+                cxfEndpoint.getInInterceptors().add(wssIn);
             }
-            
+
             super.start();
-        } catch ( Exception ex ) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-            LOG.error( ex );
+            LOG.error(ex);
         }
     }
 
     public void stop() {
 
-        if ( endpoint != null ) {
+        if (endpoint != null) {
             endpoint.stop();
             endpoint = null;
             DynamicWSDispatcherServlet.getInstance().reinitialize();
@@ -179,20 +179,17 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
         return transportReceiver;
     }
 
-    public void setTransportReceiver( TransportReceiver transportReceiver ) {
+    public void setTransportReceiver(TransportReceiver transportReceiver) {
 
-        if ( endpoint != null && endpoint.getImplementor() != null ) {
-            ( (ReceiverAware) endpoint.getImplementor() ).setTransportReceiver( transportReceiver );
+        if (endpoint != null && endpoint.getImplementor() != null) {
+            ((ReceiverAware) endpoint.getImplementor()).setTransportReceiver(transportReceiver);
         }
         this.transportReceiver = transportReceiver;
     }
 
-    @javax.jws.WebService(
-            portName = "DocExchangePortType",
-            serviceName = "AgGatewayDocumentExchange",
-            targetNamespace = "urn:aggateway:names:ws:docexchange",
-            endpointInterface = "org.nexuse2e.service.ws.aggateway.wsdl.DocExchangePortType",
-            wsdlLocation = "classpath:org/nexuse2e/integration/AgGateway.wsdl")
+    @javax.jws.WebService(portName = "DocExchangePortType", serviceName = "AgGatewayDocumentExchange",
+            targetNamespace = "urn:aggateway:names:ws:docexchange", endpointInterface = "org.nexuse2e.service.ws" +
+            ".aggateway.wsdl.DocExchangePortType", wsdlLocation = "classpath:org/nexuse2e/integration/AgGateway.wsdl")
     public static class AgGatewayDocumentExchangeImpl implements DocExchangePortType, ReceiverAware {
 
         private TransportReceiver transportReceiver;
@@ -203,12 +200,12 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
             return transportReceiver;
         }
 
-        public void setTransportReceiver( TransportReceiver transportReceiver ) {
+        public void setTransportReceiver(TransportReceiver transportReceiver) {
 
             this.transportReceiver = transportReceiver;
         }
 
-        public OutboundData execute( InboundData parameters ) throws DocExchangeFault {
+        public OutboundData execute(InboundData parameters) throws DocExchangeFault {
 
             Object data = parameters.getXmlPayload().getAny();
             Node n = (Node) data;
@@ -217,102 +214,95 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
             try {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-                DOMSource xmlSource = new DOMSource( n );
+                DOMSource xmlSource = new DOMSource(n);
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
-                transformer.transform( xmlSource, new StreamResult( baos ) );
+                transformer.transform(xmlSource, new StreamResult(baos));
 
                 result = baos.toByteArray();
-            } catch ( Exception e ) {
-                if ( LOG.isTraceEnabled() ) {
+            } catch (Exception e) {
+                if (LOG.isTraceEnabled()) {
                     e.printStackTrace();
                 }
             }
 
-            MessageContext messageContext = process(
-                    n,
-                    parameters.getBusinessProcess(),
-                    parameters.getProcessStep(),
-                    parameters.getPartnerId(),
-                    parameters.getConversationId(),
-                    parameters.getMessageId(),
-                    new String( result ) );
+            MessageContext messageContext = process(n, parameters.getBusinessProcess(), parameters.getProcessStep(),
+                    parameters.getPartnerId(), parameters.getConversationId(), parameters.getMessageId(),
+                    new String(result));
 
-            
+
             try {
                 OutboundData od = new OutboundData();
-    
+
                 // send acknowledgment only
                 if (messageContext == null) {
-                    od.setMessageId( new NexusUUIDGenerator().getId() );
-                    od.setProcessStep( "TechnicalAck" );
+                    od.setMessageId(new NexusUUIDGenerator().getId());
+                    od.setProcessStep("TechnicalAck");
                 } else { // send 
-                    od.setMessageId( messageContext.getMessagePojo().getMessageId() );
-                    od.setProcessStep( messageContext.getConversation().getCurrentAction().getName() );
-                    
+                    od.setMessageId(messageContext.getMessagePojo().getMessageId());
+                    od.setProcessStep(messageContext.getConversation().getCurrentAction().getName());
+
                     DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-                    builderFactory.setNamespaceAware( true );
+                    builderFactory.setNamespaceAware(true);
                     for (MessagePayloadPojo payload : messageContext.getMessagePojo().getMessagePayloads()) {
-                        Document d = builderFactory.newDocumentBuilder().parse(
-                                new ByteArrayInputStream( payload.getPayloadData() ) );
+                        Document d =
+                                builderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(payload.getPayloadData()));
                         Element element = d.getDocumentElement();
                         XmlPayload xmlPayload = new XmlPayload();
-                        xmlPayload.setAny( element );
-                        od.getXmlPayload().add( xmlPayload );
+                        xmlPayload.setAny(element);
+                        od.getXmlPayload().add(xmlPayload);
                     }
                 }
-                
+
                 return od;
             } catch (Exception e) {
-                throw new DocExchangeFault( "Error while trying to set xmlPayload", e );
+                throw new DocExchangeFault("Error while trying to set xmlPayload", e);
             }
         }
-        
-        private MessageContext process( Node n, String choreography, String action,
-                String partner, String conversationId, String messageId, String document ) {
+
+        private MessageContext process(Node n, String choreography, String action, String partner,
+                                       String conversationId, String messageId, String document) {
 
             MessageContext messageContext = new MessageContext();
 
             if (cache) {
-                messageContext.setData( n );
+                messageContext.setData(n);
             }
-            
-            byte[] payload = ( document != null ? document.getBytes() : null );
 
-            if ( transportReceiver != null ) {
+            byte[] payload = (document != null ? document.getBytes() : null);
 
-                if ( LOG.isTraceEnabled() ) {
-                    LOG.trace( "Inbound message:\n" + document );
+            if (transportReceiver != null) {
+
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Inbound message:\n" + document);
                 }
 
                 MessagePojo messagePojo = new MessagePojo();
-                messagePojo.setType( Constants.INT_MESSAGE_TYPE_NORMAL );
+                messagePojo.setType(Constants.INT_MESSAGE_TYPE_NORMAL);
 
-                messageContext.setMessagePojo( messagePojo );
-                messageContext.setOriginalMessagePojo( messagePojo );
-                messageContext.getMessagePojo().setCustomParameters( new HashMap<String, String>() );
+                messageContext.setMessagePojo(messagePojo);
+                messageContext.setOriginalMessagePojo(messagePojo);
+                messageContext.getMessagePojo().setCustomParameters(new HashMap<String, String>());
 
                 try {
-                    if ( choreography != null && action != null && partner != null && conversationId != null
-                            && messageId != null ) {
-                        Engine.getInstance().getTransactionService().initializeMessage( messagePojo, messageId,
-                                conversationId, action, partner, choreography );
+                    if (choreography != null && action != null && partner != null && conversationId != null && messageId != null) {
+                        Engine.getInstance().getTransactionService().initializeMessage(messagePojo, messageId,
+                                conversationId, action, partner, choreography);
 
                         MessagePayloadPojo messagePayloadPojo = new MessagePayloadPojo();
-                        messagePayloadPojo.setMessage( messagePojo );
-                        messagePayloadPojo.setContentId( Engine.getInstance().getIdGenerator(
-                                Constants.ID_GENERATOR_MESSAGE_PAYLOAD ).getId() );
-                        messagePayloadPojo.setMimeType( "text/xml" );
-                        messagePayloadPojo.setPayloadData( payload );
-                        List<MessagePayloadPojo> messagePayloads = new ArrayList<MessagePayloadPojo>( 1 );
-                        messagePayloads.add( messagePayloadPojo );
-                        messagePojo.setMessagePayloads( messagePayloads );
-                        messagePojo.getConversation().getMessages().add( messagePojo );
+                        messagePayloadPojo.setMessage(messagePojo);
+                        messagePayloadPojo.setContentId(Engine.getInstance().getIdGenerator(Constants.ID_GENERATOR_MESSAGE_PAYLOAD).getId());
+                        messagePayloadPojo.setMimeType("text/xml");
+                        messagePayloadPojo.setPayloadData(payload);
+                        List<MessagePayloadPojo> messagePayloads = new ArrayList<MessagePayloadPojo>(1);
+                        messagePayloads.add(messagePayloadPojo);
+                        messagePojo.setMessagePayloads(messagePayloads);
+                        messagePojo.getConversation().getMessages().add(messagePojo);
                     }
-                    messageContext = transportReceiver.processMessage( messageContext );
-                } catch ( NexusException nex ) {
+                    messageContext = transportReceiver.processMessage(messageContext);
+                } catch (NexusException nex) {
                     nex.printStackTrace();
-                    LOG.error( nex );
+                    LOG.error(nex);
                 }
             }
             return messageContext;

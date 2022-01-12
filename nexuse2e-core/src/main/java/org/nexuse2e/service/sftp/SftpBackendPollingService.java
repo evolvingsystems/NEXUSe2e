@@ -1,28 +1,34 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service.sftp;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -49,8 +55,6 @@ import java.util.regex.Pattern;
  */
 public class SftpBackendPollingService extends AbstractService implements SchedulerClient {
 
-    private static Logger LOG = LogManager.getLogger(SftpBackendPollingService.class);
-
     private static final String CUSTOM_PARAMETER_FILE_NAME = "fileName";
     private static final String PARTNERID_PARAM_NAME = "partnerId";
     private static final String URL_PARAM_NAME = "url";
@@ -65,7 +69,7 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
     private static final String ACTION_PARAM_NAME = "action";
     private static final String SFTP_CONNECT_TIMEOUT_PARAM_NAME = "sftpConnectTimeout";
     private static final String SFTP_SESSION_KEEPALIVE_PARAM_NAME = "sftpSessionKeepAlive";
-
+    private static Logger LOG = LogManager.getLogger(SftpBackendPollingService.class);
     private SchedulingService schedulingService;
     private String interval = null;
     private String partnerId = null;
@@ -86,27 +90,33 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
     @Override
     public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
 
-        parameterMap.put(PARTNERID_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Partner", "The partner ID", ""));
-        parameterMap.put(CHOREOGRAPHY_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Choreography", "The choreography name", ""));
-        parameterMap.put(ACTION_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Action", "The action name", ""));
-        parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "URL", "Polling URL (use ftp://host.com:[port]/dir/subdir format)", ""));
-        parameterMap.put(FILE_PATTERN_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "File pattern",
-                "Java Regex Pattern ( )", "*"));
-        parameterMap.put(USER_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "User name", "The FTP user name", "anonymous"));
-        parameterMap.put(PASSWORD_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "The FTP password", ""));
-        parameterMap.put(INTERVAL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING,
-                "Interval (milliseconds, list of times, or cron pattern)",
-                "Run every n milliseconds, or every day at e.g. \"6:30,14:45,15:25,...\", or in the interval specified by a cron pattern",
-                "7200000"));
+        parameterMap.put(PARTNERID_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Partner", "The partner " +
+                "ID", ""));
+        parameterMap.put(CHOREOGRAPHY_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Choreography", "The " +
+                "choreography name", ""));
+        parameterMap.put(ACTION_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Action", "The action name"
+                , ""));
+        parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "URL", "Polling URL (use " +
+                "ftp://host.com:[port]/dir/subdir format)", ""));
+        parameterMap.put(FILE_PATTERN_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "File pattern", "Java" +
+                " Regex Pattern ( )", "*"));
+        parameterMap.put(USER_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "User name", "The FTP user " +
+                "name", "anonymous"));
+        parameterMap.put(PASSWORD_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "The FTP " +
+                "password", ""));
+        parameterMap.put(INTERVAL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Interval (milliseconds, " +
+                "list of times, or cron pattern)", "Run every n milliseconds, or every day at e.g. \"6:30,14:45," +
+                "15:25,...\", or in the interval specified by a cron pattern", "7200000"));
         parameterMap.put(RENAMING_PREFIX_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "File Prefix",
                 "Prefix is prepended to successfully transfered files, instead of file delete", "5"));
-        parameterMap.put(CHANGE_FILE_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Change/Delete File", "Rename/Delete file active", Boolean.TRUE));
-        parameterMap.put(SCHEDULING_SERVICE_PARAM_NAME, new ParameterDescriptor(ParameterType.SERVICE, "Scheduling Service",
-                "The name of the service that shall be used for time schedule", SchedulingService.class));
-        parameterMap.put(SFTP_SESSION_KEEPALIVE_PARAM_NAME, new ParameterDescriptor(
-                ParameterType.STRING, "Session Keep Alive", "The sftp session keep alive in milliseconds (0 = not configured)", "0"));
-        parameterMap.put(SFTP_CONNECT_TIMEOUT_PARAM_NAME, new ParameterDescriptor(
-                ParameterType.STRING, "Connect Timeout", "The sftp connect timeout in milliseconds (0 = not configured)", "0"));
+        parameterMap.put(CHANGE_FILE_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Change/Delete File",
+                "Rename/Delete file active", Boolean.TRUE));
+        parameterMap.put(SCHEDULING_SERVICE_PARAM_NAME, new ParameterDescriptor(ParameterType.SERVICE, "Scheduling " +
+                "Service", "The name of the service that shall be used for time schedule", SchedulingService.class));
+        parameterMap.put(SFTP_SESSION_KEEPALIVE_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Session " +
+                "Keep Alive", "The sftp session keep alive in milliseconds (0 = not configured)", "0"));
+        parameterMap.put(SFTP_CONNECT_TIMEOUT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Connect " +
+                "Timeout", "The sftp connect timeout in milliseconds (0 = not configured)", "0"));
 
     }
 
@@ -137,8 +147,8 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
             LOG.error(timeoutValue + " is not a valid number for property 'sftp connect timeout in seconds'");
         }
 
-        backendPipelineDispatcher = (BackendPipelineDispatcher) Engine.getInstance().getCurrentConfiguration()
-                .getStaticBeanContainer().getBackendPipelineDispatcher();
+        backendPipelineDispatcher =
+                (BackendPipelineDispatcher) Engine.getInstance().getCurrentConfiguration().getStaticBeanContainer().getBackendPipelineDispatcher();
 
         initializeScheduler();
         super.initialize(config);
@@ -148,7 +158,8 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
         interval = (String) getParameter(INTERVAL_PARAM_NAME);
         String schedulingServiceName = getParameter(SCHEDULING_SERVICE_PARAM_NAME);
         if (!StringUtils.isEmpty(schedulingServiceName)) {
-            Service service = Engine.getInstance().getActiveConfigurationAccessService().getService(schedulingServiceName);
+            Service service =
+                    Engine.getInstance().getActiveConfigurationAccessService().getService(schedulingServiceName);
             if (service == null) {
                 status = BeanStatus.ERROR;
                 throw new InstantiationException("Service not found in configuration: " + schedulingServiceName);
@@ -160,7 +171,8 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
             schedulingService = (SchedulingService) service;
         } else {
             status = BeanStatus.ERROR;
-            throw new InstantiationException("SchedulingService is not properly configured (schedulingServiceObj == null)!");
+            throw new InstantiationException("SchedulingService is not properly configured (schedulingServiceObj == " +
+                    "null)!");
         }
     }
 
@@ -233,10 +245,10 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
             jsch = new JSch();
 
             // set private key
-//                String pkey = getParameter(DSA_PRIVATE_KEY);
-//                if (pkey != null && pkey.length() > 0) {
-//                    jsch.addIdentity(pkey);
-//                }
+            //                String pkey = getParameter(DSA_PRIVATE_KEY);
+            //                if (pkey != null && pkey.length() > 0) {
+            //                    jsch.addIdentity(pkey);
+            //                }
 
             URL url = new URL((String) getParameter(URL_PARAM_NAME));
             int port = url.getPort() != -1 ? url.getPort() : 22;
@@ -257,8 +269,7 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
             try {
                 session.connect();
             } catch (JSchException jSchEx) {
-                throw new NexusException(
-                        "SFTP authentication failed: " + jSchEx.getMessage(), jSchEx);
+                throw new NexusException("SFTP authentication failed: " + jSchEx.getMessage(), jSchEx);
             }
             LOG.debug("Connected to " + url.getHost() + ".");
 
@@ -298,7 +309,8 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
                 // get remote file list
                 Vector<ChannelSftp.LsEntry> remoteFiles = channelSftp.ls(".");
                 // search for next article catalog/inventory snapshot file
-                LOG.trace("Number of files in remote directory: " + remoteFiles.size() + ", checking against patterns " /*+ fileNamePattern.toString()*/);
+                LOG.trace("Number of files in remote directory: " + remoteFiles.size() + ", checking against patterns" +
+                        " " /*+ fileNamePattern.toString()*/);
                 // collect all matching file names
                 fileNames = new ArrayList<String>();
                 for (ChannelSftp.LsEntry remoteFile : remoteFiles) {
@@ -327,13 +339,15 @@ public class SftpBackendPollingService extends AbstractService implements Schedu
                                 channelSftp.rm(fileName);
                             }
                         } catch (SftpException sftpEx) {
-                            throw new NexusException(String.format("Could not retrieve file %s from SFTP server: %s", fileName, sftpEx.getMessage()), sftpEx);
+                            throw new NexusException(String.format("Could not retrieve file %s from SFTP server: %s",
+                                    fileName, sftpEx.getMessage()), sftpEx);
                         }
                     }
                 }
             } while (fileNames.size() > 0);
         } catch (Exception e) {
-            LOG.error(String.format("Error polling SFTP account (%s): %s", getParameter(URL_PARAM_NAME), e.getMessage()), e);
+            LOG.error(String.format("Error polling SFTP account (%s): %s", getParameter(URL_PARAM_NAME),
+                    e.getMessage()), e);
         } finally {
             if ((channelSftp != null) && channelSftp.isConnected()) {
                 LOG.trace("Closing channel...");

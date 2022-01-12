@@ -1,23 +1,34 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.nexuse2e.BeanStatus;
+import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.configuration.ParameterDescriptor;
+import org.nexuse2e.configuration.ParameterType;
+import org.nexuse2e.messaging.AbstractPipelet;
+import org.nexuse2e.messaging.MessageContext;
+import org.nexuse2e.pojo.MessagePayloadPojo;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -30,66 +41,52 @@ import java.util.Map;
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.nexuse2e.BeanStatus;
-import org.nexuse2e.NexusException;
-import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.configuration.ParameterDescriptor;
-import org.nexuse2e.configuration.ParameterType;
-import org.nexuse2e.messaging.AbstractPipelet;
-import org.nexuse2e.messaging.MessageContext;
-import org.nexuse2e.pojo.MessagePayloadPojo;
-
 /**
  * @author gesch
- *
  */
 public class FilePayloadReplacementPipelet extends AbstractPipelet {
 
-    private static Logger      LOG       = LogManager.getLogger( FilePayloadReplacementPipelet.class );
-
     public static final String FILE_NAME = "filename";
-    public static final String PASSWORD  = "password";
-    public static final String USERNAME  = "username";
-
-    private String             fileName  = null;
+    public static final String PASSWORD = "password";
+    public static final String USERNAME = "username";
+    private static Logger LOG = LogManager.getLogger(FilePayloadReplacementPipelet.class);
+    private String fileName = null;
 
     /**
      * Default constructor.
      */
     public FilePayloadReplacementPipelet() {
 
-        parameterMap.put( FILE_NAME, new ParameterDescriptor( ParameterType.STRING, "File", "File to replace payload",
-                "" ) );
+        parameterMap.put(FILE_NAME, new ParameterDescriptor(ParameterType.STRING, "File", "File to replace payload",
+                ""));
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.AbstractPipelet#initialize(org.nexuse2e.configuration.EngineConfiguration)
      */
     @Override
-    public void initialize( EngineConfiguration config ) throws InstantiationException {
+    public void initialize(EngineConfiguration config) throws InstantiationException {
 
         File testFile = null;
 
-        String fileNameValue = getParameter( FILE_NAME );
-        if ( ( fileNameValue != null ) && ( fileNameValue.length() != 0 ) ) {
+        String fileNameValue = getParameter(FILE_NAME);
+        if ((fileNameValue != null) && (fileNameValue.length() != 0)) {
             fileName = fileNameValue;
-            testFile = new File( fileName );
-            if ( !testFile.exists() ) {
+            testFile = new File(fileName);
+            if (!testFile.exists()) {
                 status = BeanStatus.ERROR;
-                LOG.error( "File does not exist!" );
+                LOG.error("File does not exist!");
                 return;
             }
         } else {
             status = BeanStatus.ERROR;
-            LOG.error( "No value for setting 'xslt file' provided!" );
+            LOG.error("No value for setting 'xslt file' provided!");
             return;
         }
 
-        LOG.trace( "fileName  : " + fileName );
+        LOG.trace("fileName  : " + fileName);
 
-        super.initialize( config );
+        super.initialize(config);
     }
 
     /**
@@ -99,22 +96,22 @@ public class FilePayloadReplacementPipelet extends AbstractPipelet {
      * @throws IllegalStateException
      * @throws NexusException
      */
-    public MessageContext processMessage( MessageContext messageContext ) throws IllegalArgumentException,
+    public MessageContext processMessage(MessageContext messageContext) throws IllegalArgumentException,
             IllegalStateException, NexusException {
 
         byte[] documentBuffer = null; // The binary data buffer that will hold the document
 
-        if ( ( messageContext == null ) || ( messageContext.getMessagePojo() == null ) ) {
-            throw new NexusException( "MessageContext not properly initialized, missing MessagePojo!" );
+        if ((messageContext == null) || (messageContext.getMessagePojo() == null)) {
+            throw new NexusException("MessageContext not properly initialized, missing MessagePojo!");
         }
 
         List<MessagePayloadPojo> messagePayloads = messageContext.getMessagePojo().getMessagePayloads();
 
         for (MessagePayloadPojo messagePayloadPojo : messagePayloads) {
-            LOG.debug( "File to send: '" + fileName + "'" );
+            LOG.debug("File to send: '" + fileName + "'");
 
             // Only execute if a file name was specified
-            if ( ( fileName != null ) && ( fileName.length() != 0 ) ) {
+            if ((fileName != null) && (fileName.length() != 0)) {
                 // Execute within a try/catch block to handle any exceptions that might occur
                 try {
 
@@ -124,47 +121,48 @@ public class FilePayloadReplacementPipelet extends AbstractPipelet {
                     // Workaround: Some filesystem need two tries to successfully
                     // get a file, expecially remote (network) file shares.
                     try {
-                        fis = new FileInputStream( fileName );
-                    } catch ( Exception ex ) {
+                        fis = new FileInputStream(fileName);
+                    } catch (Exception ex) {
                     }
 
-                    if ( fis == null ) {
-                        fis = new FileInputStream( fileName );
+                    if (fis == null) {
+                        fis = new FileInputStream(fileName);
                     }
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream( fis );
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fis);
 
                     // Determine the size of the file
                     int fileSize = bufferedInputStream.available();
 
                     long memory = Runtime.getRuntime().freeMemory();
-                    if ( fileSize >= memory ) {
-                        String msg = "Not Enough memory to transfer data of " + fileSize / 1024
-                                + " Kbytes. Available memory is " + memory / 1024 + " Kbytes";
-                        throw new NexusException( msg );
+                    if (fileSize >= memory) {
+                        String msg = "Not Enough memory to transfer data of " + fileSize / 1024 + " Kbytes. " +
+                                "Available" + " memory is " + memory / 1024 + " Kbytes";
+                        throw new NexusException(msg);
                     }
 
                     documentBuffer = new byte[fileSize]; // Create a buffer that will hold the data from the file
 
-                    bufferedInputStream.read( documentBuffer, 0, fileSize ); // Read the file content into the buffer
+                    bufferedInputStream.read(documentBuffer, 0, fileSize); // Read the file content into the buffer
                     bufferedInputStream.close();
 
-                } catch ( IOException ioEx ) { // Handle exceptions related to the file I/O
+                } catch (IOException ioEx) { // Handle exceptions related to the file I/O
                     ioEx.printStackTrace();
-                    LOG.error( "IOException: " + ioEx );
-                    throw new NexusException( ioEx.getMessage() ); // Pass exception to NEXUSe2e engine using correct exception type
+                    LOG.error("IOException: " + ioEx);
+                    throw new NexusException(ioEx.getMessage()); // Pass exception to NEXUSe2e engine using correct
+                    // exception type
                 } // try/catch
 
             } else { // if
-                throw new NexusException( "FileConnector - No primary key specified." );
+                throw new NexusException("FileConnector - No primary key specified.");
             } // if
 
             // Determine the MIME type of the document
             MimetypesFileTypeMap mimetypesFileTypeMap = (MimetypesFileTypeMap) FileTypeMap.getDefaultFileTypeMap();
-            String mimeType = mimetypesFileTypeMap.getContentType( fileName );
+            String mimeType = mimetypesFileTypeMap.getContentType(fileName);
 
             // Replace the Payload and set the MIME content type
-            messagePayloadPojo.setPayloadData( documentBuffer );
-            messagePayloadPojo.setMimeType( mimeType );
+            messagePayloadPojo.setPayloadData(documentBuffer);
+            messagePayloadPojo.setMimeType(mimeType);
 
         } // for
 
@@ -176,7 +174,7 @@ public class FilePayloadReplacementPipelet extends AbstractPipelet {
      */
     public Map<String, ParameterDescriptor> getParameterMap() {
 
-        return Collections.unmodifiableMap( parameterMap );
+        return Collections.unmodifiableMap(parameterMap);
     }
 
 } // FilePayloadReplacementPipelet.

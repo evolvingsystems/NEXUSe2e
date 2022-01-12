@@ -1,27 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -43,16 +43,15 @@ import java.util.List;
  */
 public class MessageIdModifyingPipelet extends AbstractPipelet {
 
-    private static Logger LOG = LogManager.getLogger(MessageIdModifyingPipelet.class);
-
     public static final String DEFINITION_LIST = "definitionList";
-
+    private static Logger LOG = LogManager.getLogger(MessageIdModifyingPipelet.class);
     private List<String> segments = new ArrayList<>();
 
     public MessageIdModifyingPipelet() {
 
         parameterMap.put(DEFINITION_LIST, new ParameterDescriptor(ParameterType.TEXT, "Label List",
-                "List of labels and build-ins concatenated into the new message id. Be careful with special characters.  (supported: ${now}, ${action}, ${choreography} )", ""));
+                "List of labels " + "and build-ins concatenated into the new message id. Be careful with special " +
+                        "characters.  (supported:" + " ${now}, ${action}, ${choreography} )", ""));
 
     }
 

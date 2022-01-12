@@ -1,27 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -42,14 +42,14 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class FrontendOutboundDispatcher extends AbstractPipelet implements InitializingBean {
 
-    private static Logger      LOG    = LogManager.getLogger( FrontendOutboundDispatcher.class );
+    private static Logger LOG = LogManager.getLogger(FrontendOutboundDispatcher.class);
     private FrontendPipeline[] frontendOutboundPipelines;
-    private BeanStatus         status = BeanStatus.UNDEFINED;
+    private BeanStatus status = BeanStatus.UNDEFINED;
 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipelet#processMessage(org.nexuse2e.messaging.MessageContext)
      */
-    public MessageContext processMessage( MessageContext messageContext ) throws NexusException {
+    public MessageContext processMessage(MessageContext messageContext) throws NexusException {
 
         // Set some thread-local information so everyone in the pipeline can always access it
         NexusThreadStorage.set("conversationId", messageContext.getConversation().getConversationId());
@@ -59,10 +59,10 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
         if (messageContext.getParticipant().getConnection().isHold()) {
             return null;
         }
-        
-        FrontendPipeline pipeline = getProtocolSpecificPipeline( messageContext );
-        if ( pipeline == null ) {
-            throw new NexusException( "No valid pipeline found for " + messageContext.getProtocolSpecificKey() );
+
+        FrontendPipeline pipeline = getProtocolSpecificPipeline(messageContext);
+        if (pipeline == null) {
+            throw new NexusException("No valid pipeline found for " + messageContext.getProtocolSpecificKey());
         }
 
         int retries = messageContext.getParticipant().getConnection().getRetries();
@@ -70,17 +70,15 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
         ParticipantPojo participantPojo = messageContext.getMessagePojo().getParticipant();
 
         if (messageContext.isFirstTimeInQueue() || messageContext.getMessagePojo().getRetries() < retries) {
-            LOG.info( new LogMessage(
-                    "Sending " + messageContext.getMessagePojo().getTypeName()
-                            + " message (" + messageContext.getMessagePojo().getMessageId()
-                            + ") to " + participantPojo.getPartner().getPartnerId() + " for "
-                            + messageContext.getChoreography().getName() + "/"
-                            + messageContext.getMessagePojo().getAction().getName(), messageContext.getMessagePojo() ) );
+            LOG.info(new LogMessage("Sending " + messageContext.getMessagePojo().getTypeName() + " message (" + messageContext.getMessagePojo().getMessageId() + ") to " + participantPojo.getPartner().getPartnerId() + " for " + messageContext.getChoreography().getName() + "/" + messageContext.getMessagePojo().getAction().getName(), messageContext.getMessagePojo()));
         }
 
-        // Request an conversation lock in order to not disallow parallel i/o, and processing activity in this conversation.
-        // If everything goes alright, the lock will be released in the message sender thread after the message was sent,
-        // or the sending failed. In case of error while the current thread is processing, the lock will be released as well.
+        // Request an conversation lock in order to not disallow parallel i/o, and processing activity in this
+        // conversation.
+        // If everything goes alright, the lock will be released in the message sender thread after the message was
+        // sent,
+        // or the sending failed. In case of error while the current thread is processing, the lock will be released
+        // as well.
 
         // do it
         sendMessage(pipeline, messageContext, retries);
@@ -96,11 +94,11 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
      * @param messageContext
      * @return
      */
-    private FrontendPipeline getProtocolSpecificPipeline( MessageContext messageContext ) {
-       if (frontendOutboundPipelines != null) {
-            for ( int i = 0; i < frontendOutboundPipelines.length; i++ ) {
-                LOG.debug( new LogMessage ("comparing keys:" + messageContext.getProtocolSpecificKey() + " - " + frontendOutboundPipelines[i].getKey(), messageContext.getMessagePojo()) );
-                if ( frontendOutboundPipelines[i].getKey().equals( messageContext.getProtocolSpecificKey() ) ) {
+    private FrontendPipeline getProtocolSpecificPipeline(MessageContext messageContext) {
+        if (frontendOutboundPipelines != null) {
+            for (int i = 0; i < frontendOutboundPipelines.length; i++) {
+                LOG.debug(new LogMessage("comparing keys:" + messageContext.getProtocolSpecificKey() + " - " + frontendOutboundPipelines[i].getKey(), messageContext.getMessagePojo()));
+                if (frontendOutboundPipelines[i].getKey().equals(messageContext.getProtocolSpecificKey())) {
                     return frontendOutboundPipelines[i];
                 }
             }
@@ -113,7 +111,7 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
      */
     public void afterPropertiesSet() throws Exception {
 
-        if ( frontendOutboundPipelines == null || frontendOutboundPipelines.length == 0 ) {
+        if (frontendOutboundPipelines == null || frontendOutboundPipelines.length == 0) {
             status = BeanStatus.ERROR;
         }
         status = BeanStatus.INSTANTIATED;
@@ -130,7 +128,7 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
     /**
      * @param frontendOutboundPipelines
      */
-    public void setFrontendOutboundPipelines( FrontendPipeline[] frontendOutboundPipelines ) {
+    public void setFrontendOutboundPipelines(FrontendPipeline[] frontendOutboundPipelines) {
 
         this.frontendOutboundPipelines = frontendOutboundPipelines;
     }
@@ -148,7 +146,7 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
      */
     public void initialize() throws InstantiationException {
 
-        initialize( Engine.getInstance().getCurrentConfiguration() );
+        initialize(Engine.getInstance().getCurrentConfiguration());
 
     }
 
@@ -170,19 +168,19 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
     public void sendMessage(FrontendPipeline pipeline, MessageContext messageContext, int retries) {
 
-    	MessagePojo messagePojo = messageContext.getMessagePojo();
+        MessagePojo messagePojo = messageContext.getMessagePojo();
 
-        LOG.trace( new LogMessage("Message ( " + messagePojo.getMessageId() + " ) end timestamp: " + messagePojo.getEndDate(),messagePojo) );
+        LOG.trace(new LogMessage("Message ( " + messagePojo.getMessageId() + " ) end timestamp: " + messagePojo.getEndDate(), messagePojo));
 
-        if ( messageContext.isFirstTimeInQueue() || messageContext.getMessagePojo().getRetries() < retries ) {
-            LOG.debug( new LogMessage( "Sending message...", messagePojo ) );
+        if (messageContext.isFirstTimeInQueue() || messageContext.getMessagePojo().getRetries() < retries) {
+            LOG.debug(new LogMessage("Sending message...", messagePojo));
 
             MessageContext returnedMessageContext = null;
 
             try {
-                if ( messagePojo.isNormal() && messagePojo.getEndDate() != null ) {
+                if (messagePojo.isNormal() && messagePojo.getEndDate() != null) {
                     // If message has been ack'ed while we were waiting do nothing
-                    LOG.info( new LogMessage( "Cancelled sending message (ack was just received): " + messagePojo.getMessageId(),messagePojo) );
+                    LOG.info(new LogMessage("Cancelled sending message (ack was just received): " + messagePojo.getMessageId(), messagePojo));
                     cancelRetrying(messageContext, false);
                     return;
                 }
@@ -192,43 +190,44 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
                 messageContext.setFirstTimeInQueue(false);
 
                 messageContext.getStateMachine().sendingMessage();
-                returnedMessageContext = pipeline.processMessage( messageContext );
+                returnedMessageContext = pipeline.processMessage(messageContext);
                 messageContext.getStateMachine().sentMessage();
-                
-                // if this message is not reliable, requeueing must be stopped after processing the frontend pipeline successfully.
-                if(messageContext.getParticipant() != null && messageContext.getParticipant().getConnection() != null && !messageContext.getParticipant().getConnection().isReliable()) {
-                	cancelRetrying(messageContext, false);
-                }
-                
-                if (!messagePojo.isAck()) {
-                    Engine.getInstance().getTransactionService().updateRetryCount( messagePojo );
+
+                // if this message is not reliable, requeueing must be stopped after processing the frontend pipeline
+                // successfully.
+                if (messageContext.getParticipant() != null && messageContext.getParticipant().getConnection() != null && !messageContext.getParticipant().getConnection().isReliable()) {
+                    cancelRetrying(messageContext, false);
                 }
 
-                LOG.debug( new LogMessage( "Message sent.", messagePojo ) );
-            } catch ( Throwable e ) {
+                if (!messagePojo.isAck()) {
+                    Engine.getInstance().getTransactionService().updateRetryCount(messagePojo);
+                }
+
+                LOG.debug(new LogMessage("Message sent.", messagePojo));
+            } catch (Throwable e) {
                 LOG.error(new LogMessage("Error sending message", messagePojo, e), e);
 
                 try {
-                    if ( messagePojo.isAck()) {
-                        messageContext.getStateMachine().sentMessage(); // mark ack message as "sent" - normal message will be re-sent by partner
+                    if (messagePojo.isAck()) {
+                        messageContext.getStateMachine().sentMessage(); // mark ack message as "sent" - normal
+                        // message will be re-sent by partner
                     } else {
                         // Persist retry count changes
-                        Engine.getInstance().getTransactionService().updateRetryCount( messagePojo );
+                        Engine.getInstance().getTransactionService().updateRetryCount(messagePojo);
                         if (retries == 0 || messagePojo.getRetries() >= retries) {
                             handleErrorState(messageContext, messagePojo);
                         }
                     }
-                } catch ( Exception e1 ) {
+                } catch (Exception e1) {
                     LOG.error(new LogMessage("Error saving message", messagePojo, e1), e1);
                 }
             }
 
-            if ( ( returnedMessageContext != null ) && !returnedMessageContext.equals( messageContext ) ) {
+            if ((returnedMessageContext != null) && !returnedMessageContext.equals(messageContext)) {
                 try {
-                    Engine.getInstance().getCurrentConfiguration().getStaticBeanContainer()
-                            .getFrontendInboundDispatcher().processMessage( returnedMessageContext );
-                } catch ( NexusException e ) {
-                    LOG.error(new LogMessage("Error processing synchronous reply", messagePojo, e), e );
+                    Engine.getInstance().getCurrentConfiguration().getStaticBeanContainer().getFrontendInboundDispatcher().processMessage(returnedMessageContext);
+                } catch (NexusException e) {
+                    LOG.error(new LogMessage("Error processing synchronous reply", messagePojo, e), e);
                 }
             }
 
@@ -238,9 +237,9 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
     } // run
 
     private void handleErrorState(MessageContext messageContext, MessagePojo messagePojo) {
-        if ( messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL ) {
+        if (messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL) {
 
-            if(Engine.getInstance().getAdvancedRetryLogging() && StringUtils.isNotBlank(Engine.getInstance().getRetryLoggingTemplate())) {
+            if (Engine.getInstance().getAdvancedRetryLogging() && StringUtils.isNotBlank(Engine.getInstance().getRetryLoggingTemplate())) {
 
                 try {
                     String choreographyName = messagePojo.getConversation().getChoreography().getName();
@@ -249,12 +248,12 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
 
                     String message = Engine.getInstance().getRetryLoggingTemplate();
-                    message = message.replace("{filename}",fileName);
-                    message = message.replace("{partnerId}",partnerId);
-                    message = message.replace("{choreographyId}",choreographyName);
+                    message = message.replace("{filename}", fileName);
+                    message = message.replace("{partnerId}", partnerId);
+                    message = message.replace("{choreographyId}", choreographyName);
                     message = message.replace("{actionId}", messagePojo.getAction().getName());
                     message = message.replace("{connectionUrl}", messagePojo.getParticipant().getConnection().getUri());
-                    message = message.replace("{retries}",""+ messagePojo.getRetries());
+                    message = message.replace("{retries}", "" + messagePojo.getRetries());
                     message = message.replace("{messageStatus}", messagePojo.getStatusName());
                     message = message.replace("{messageId}", messagePojo.getMessageId());
                     message = message.replace("{conversationId}", messagePojo.getConversation().getConversationId());
@@ -263,18 +262,18 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
 
 
                 } catch (Exception e) {
-                    LOG.error(new LogMessage(
-                        "(Templating failed) - Maximum number of retries reached without receiving acknowledgment - choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
+                    LOG.error(new LogMessage("(Templating failed) - Maximum number of retries reached without " +
+                            "receiving acknowledgment - choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
 
                 }
 
             } else {
 
-                LOG.error(new LogMessage(
-                    "Maximum number of retries reached without receiving acknowledgment - choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
+                LOG.error(new LogMessage("Maximum number of retries reached without receiving acknowledgment - " +
+                        "choreography: " + messagePojo.getConversation().getChoreography().getName() + ", partner: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
             }
         } else {
-            LOG.debug( new LogMessage( "Max number of retries reached!", messagePojo) );
+            LOG.debug(new LogMessage("Max number of retries reached!", messagePojo));
         }
         cancelRetrying(messageContext);
     }
@@ -296,19 +295,18 @@ public class FrontendOutboundDispatcher extends AbstractPipelet implements Initi
     private void cancelRetrying(MessageContext messageContext, boolean updateStatus) {
 
         MessagePojo messagePojo = messageContext.getMessagePojo();
-        synchronized ( messagePojo.getConversation() ) {
+        synchronized (messagePojo.getConversation()) {
 
-            if ( updateStatus ) {
+            if (updateStatus) {
                 try {
                     messageContext.getStateMachine().processingFailed();
-                } catch ( StateTransitionException stex ) {
-                    LOG.warn( stex.getMessage() );
-                } catch ( NexusException e ) {
-                    LOG.error( new LogMessage( "Error while setting conversation status to ERROR",messagePojo), e );
+                } catch (StateTransitionException stex) {
+                    LOG.warn(stex.getMessage());
+                } catch (NexusException e) {
+                    LOG.error(new LogMessage("Error while setting conversation status to ERROR", messagePojo), e);
                 }
             }
-            Engine.getInstance().getTransactionService().deregisterProcessingMessage(
-                    messageContext.getMessagePojo().getMessageId() );
+            Engine.getInstance().getTransactionService().deregisterProcessingMessage(messageContext.getMessagePojo().getMessageId());
         } // synchronized
     }
 

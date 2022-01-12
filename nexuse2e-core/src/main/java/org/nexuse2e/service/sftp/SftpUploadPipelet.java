@@ -1,28 +1,34 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service.sftp;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -40,8 +46,6 @@ import java.net.URL;
 
 public class SftpUploadPipelet extends AbstractPipelet {
 
-    private static Logger LOG = LogManager.getLogger(SftpUploadPipelet.class);
-
     private static final String URL_PARAM_NAME = "url";
     private static final String FILE_NAME_PATTERN_PARAM_NAME = "fileNamePattern";
     private static final String USER_PARAM_NAME = "username";
@@ -49,8 +53,7 @@ public class SftpUploadPipelet extends AbstractPipelet {
     private static final String USE_CONTENT_ID_PARAM_NAME = "useContentId";
     private static final String SFTP_CONNECT_TIMEOUT_PARAM_NAME = "sftpConnectTimeout";
     private static final String SFTP_SESSION_KEEPALIVE_PARAM_NAME = "sftpSessionKeepAlive";
-
-
+    private static Logger LOG = LogManager.getLogger(SftpUploadPipelet.class);
     private String url = null;
     private String user = null;
     private String password = null;
@@ -66,18 +69,20 @@ public class SftpUploadPipelet extends AbstractPipelet {
      */
     public SftpUploadPipelet() {
 
-        parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "URL",
-                "Target URL (use ftp://host.com:[port]/dir/subdir format)", ""));
+        parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "URL", "Target URL (use " +
+                "ftp://host.com:[port]/dir/subdir format)", ""));
         parameterMap.put(FILE_NAME_PATTERN_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "File Name",
                 "Pattern supports placeholders like ${nexus.message.message}", "${nexus.message.message}"));
-        parameterMap.put(USER_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "User name", "The FTP user name", "anonymous"));
-        parameterMap.put(PASSWORD_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "The FTP password", ""));
+        parameterMap.put(USER_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "User name", "The FTP user " +
+                "name", "anonymous"));
+        parameterMap.put(PASSWORD_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "The FTP " +
+                "password", ""));
         parameterMap.put(USE_CONTENT_ID_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Use Content ID",
                 "Flag whether to use the content ID as the file name", Boolean.FALSE));
-        parameterMap.put(SFTP_SESSION_KEEPALIVE_PARAM_NAME, new ParameterDescriptor(
-                ParameterType.STRING, "Session Keep Alive", "The sftp session keep alive in milliseconds (0 = not configured)", "0"));
-        parameterMap.put(SFTP_CONNECT_TIMEOUT_PARAM_NAME, new ParameterDescriptor(
-                ParameterType.STRING, "Connect Timeout", "The sftp connect timeout in milliseconds (0 = not configured)", "0"));
+        parameterMap.put(SFTP_SESSION_KEEPALIVE_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Session " +
+                "Keep Alive", "The sftp session keep alive in milliseconds (0 = not configured)", "0"));
+        parameterMap.put(SFTP_CONNECT_TIMEOUT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Connect " +
+                "Timeout", "The sftp connect timeout in milliseconds (0 = not configured)", "0"));
 
     }
 
@@ -158,9 +163,9 @@ public class SftpUploadPipelet extends AbstractPipelet {
             jsch = new JSch();
 
             // set private key
-//                if ( StringUtils.isNotEmpty( (String) getParameter( DSA_PRIVATE_KEY ) ) ) {
-//                    jsch.addIdentity( (String) getParameter( DSA_PRIVATE_KEY ) );
-//                }
+            //                if ( StringUtils.isNotEmpty( (String) getParameter( DSA_PRIVATE_KEY ) ) ) {
+            //                    jsch.addIdentity( (String) getParameter( DSA_PRIVATE_KEY ) );
+            //                }
 
             URL url = new URL(targetUrl);
 
@@ -180,7 +185,8 @@ public class SftpUploadPipelet extends AbstractPipelet {
             try {
                 session.connect();
             } catch (JSchException jSchEx) {
-                throw new NexusException(new LogMessage(String.format("SFTP authentication failed: %s", jSchEx.getMessage()), message), jSchEx);
+                throw new NexusException(new LogMessage(String.format("SFTP authentication failed: %s",
+                        jSchEx.getMessage()), message), jSchEx);
             }
             LOG.debug("Connected to " + url.getHost() + ".");
 
@@ -200,12 +206,11 @@ public class SftpUploadPipelet extends AbstractPipelet {
                 try {
                     channelSftp.cd(directory);
                 } catch (SftpException sftpEx) {
-                    throw new NexusException(
-                            new LogMessage(String.format("SFTP server did not change directory: %s", sftpEx.getMessage()), message), sftpEx);
+                    throw new NexusException(new LogMessage(String.format("SFTP server did not change directory: %s",
+                            sftpEx.getMessage()), message), sftpEx);
                 }
             }
-            LOG.trace("Working Directory: "
-                    + channelSftp.pwd());
+            LOG.trace("Working Directory: " + channelSftp.pwd());
 
             // UPLOAD
             for (MessagePayloadPojo messagePayloadPojo : message.getMessagePayloads()) {
@@ -214,7 +219,8 @@ public class SftpUploadPipelet extends AbstractPipelet {
                     fileName = messagePayloadPojo.getContentId();
                 } else {
 
-                    String extension = Engine.getInstance().getFileExtensionFromMime(messagePayloadPojo.getMimeType().toLowerCase());
+                    String extension =
+                            Engine.getInstance().getFileExtensionFromMime(messagePayloadPojo.getMimeType().toLowerCase());
                     if (StringUtils.isEmpty(extension)) {
                         extension = "dat";
                     }
@@ -226,12 +232,13 @@ public class SftpUploadPipelet extends AbstractPipelet {
                     channelSftp.put(bais, fileName);
                     LOG.trace("Uploaded file: " + fileName);
                 } catch (SftpException sftpEx) {
-                    throw new NexusException(
-                            new LogMessage(String.format("Could not upload file %s to SFTP server %s: %s", fileName, getParameter(URL_PARAM_NAME), sftpEx.getMessage()), message), sftpEx);
+                    throw new NexusException(new LogMessage(String.format("Could not upload file %s to SFTP server " +
+                            "%s: %s", fileName, getParameter(URL_PARAM_NAME), sftpEx.getMessage()), message), sftpEx);
                 }
             }
         } catch (Exception e) {
-            throw new NexusException(new LogMessage(String.format("Unexpected error on SFTP upload: %s", e.getMessage()), message), e);
+            throw new NexusException(new LogMessage(String.format("Unexpected error on SFTP upload: %s",
+                    e.getMessage()), message), e);
 
 
         } finally {

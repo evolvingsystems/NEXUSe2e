@@ -1,7 +1,7 @@
 package org.nexuse2e.ui2.model;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.ConversationStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -62,7 +62,8 @@ public class TransactionReportingConversation {
         List<StatisticsEngineLog> logEntryList = new LinkedList<>();
 
         try {
-            List<LogPojo> logEntries = Engine.getInstance().getTransactionService().getLogEntriesForReport(null, conversationId, null, false);
+            List<LogPojo> logEntries = Engine.getInstance().getTransactionService().getLogEntriesForReport(null,
+                    conversationId, null, false);
 
             for (LogPojo logEntry : logEntries) {
                 logEntryList.add(new StatisticsEngineLog(logEntry));

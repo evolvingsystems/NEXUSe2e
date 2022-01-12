@@ -1,73 +1,72 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-
 /**
  * @author gesch
- *
  */
 public class DummyDirectoryScanner {
 
-    private static Logger             LOG              = LogManager.getLogger( DummyDirectoryScanner.class );
+    private static Logger LOG = LogManager.getLogger(DummyDirectoryScanner.class);
 
     private BackendPipelineDispatcher backendPipelineDispatcher;
-    private String                    directory;
-    private String                    interval;
-    private Timer                     timer            = null;
-    private DirectoryScanner          directoryScanner = new DirectoryScanner();
-    private String                    partnerId        = "torino8080";
-    private String                    choreographyId   = "GenericFile";
-    private String                    actionId         = "SendFile";
+    private String directory;
+    private String interval;
+    private Timer timer = null;
+    private DirectoryScanner directoryScanner = new DirectoryScanner();
+    private String partnerId = "torino8080";
+    private String choreographyId = "GenericFile";
+    private String actionId = "SendFile";
 
     /**
-     * 
+     *
      */
     public void stop() {
 
-        if ( timer != null ) {
+        if (timer != null) {
             timer.cancel();
         }
     } // stop
 
     /**
-     * 
+     *
      */
     public void start() {
 
-        LOG.debug( "directoryScanner.start" );
+        LOG.debug("directoryScanner.start");
 
-        File dir = new File( directory );
-        if ( !dir.exists() || dir.isFile() ) {
+        File dir = new File(directory);
+        if (!dir.exists() || dir.isFile()) {
             return;
         }
-        directoryScanner.setTargetDirectory( dir );
+        directoryScanner.setTargetDirectory(dir);
         timer = new Timer();
-        timer.schedule( directoryScanner, 0, 5000 );
+        timer.schedule(directoryScanner, 0, 5000);
 
     } // start
 
@@ -82,7 +81,7 @@ public class DummyDirectoryScanner {
     /**
      * @param backendPipelineDispatcher the backendPipelineDispatcher to set
      */
-    public void setBackendPipelineDispatcher( BackendPipelineDispatcher backendPipelineDispatcher ) {
+    public void setBackendPipelineDispatcher(BackendPipelineDispatcher backendPipelineDispatcher) {
 
         this.backendPipelineDispatcher = backendPipelineDispatcher;
     }
@@ -98,7 +97,7 @@ public class DummyDirectoryScanner {
     /**
      * @param directory the directory to set
      */
-    public void setDirectory( String directory ) {
+    public void setDirectory(String directory) {
 
         this.directory = directory;
     }
@@ -114,65 +113,9 @@ public class DummyDirectoryScanner {
     /**
      * @param interval the interval to set
      */
-    public void setInterval( String interval ) {
+    public void setInterval(String interval) {
 
         this.interval = interval;
-    }
-
-    /**
-     * @author gesch
-     *
-     */
-    private class DirectoryScanner extends TimerTask {
-
-        private File targetDirectory = null;
-
-        /* (non-Javadoc)
-         * @see java.util.TimerTask#run()
-         */
-        @Override
-        public void run() {
-
-            try {
-                // LOG.trace( "starting scanner" );
-                if ( !targetDirectory.exists() || targetDirectory.isFile() ) {
-                    return;
-                }
-                String[] entries = targetDirectory.list();
-                if ( entries != null && entries.length > 0 ) {
-                    for ( int i = 0; i < entries.length; i++ ) {
-                        if ( entries[i].toLowerCase().endsWith( ".xml" ) ) {
-
-                            File newfile = new File( targetDirectory, entries[i] );
-
-                            if ( newfile.exists() && newfile.isFile() ) {
-                                FileInputStream fis = new FileInputStream( newfile );
-                                byte[] data = new byte[(int) newfile.length()];
-                                fis.read( data );
-                                backendPipelineDispatcher.processMessage( partnerId, choreographyId, actionId, null,
-                                        null, null, data );
-                                newfile.renameTo( new File( newfile.getAbsoluteFile() + "_done" ) );
-                                fis.close();
-                            }
-                        }
-                    }
-                }
-
-            } catch ( Exception e ) {
-                e.printStackTrace();
-            } catch ( Error e ) {
-                e.printStackTrace();
-            }
-
-        }
-
-        /**
-         * @param targetDirectory the targetDirectory to set
-         */
-        public void setTargetDirectory( File targetDirectory ) {
-
-            this.targetDirectory = targetDirectory;
-        }
     }
 
     /**
@@ -186,7 +129,7 @@ public class DummyDirectoryScanner {
     /**
      * @param actionId the actionId to set
      */
-    public void setActionId( String actionId ) {
+    public void setActionId(String actionId) {
 
         this.actionId = actionId;
     }
@@ -202,7 +145,7 @@ public class DummyDirectoryScanner {
     /**
      * @param choreographyId the choreographyId to set
      */
-    public void setChoreographyId( String choreographyId ) {
+    public void setChoreographyId(String choreographyId) {
 
         this.choreographyId = choreographyId;
     }
@@ -218,8 +161,63 @@ public class DummyDirectoryScanner {
     /**
      * @param partnerId the partnerId to set
      */
-    public void setPartnerId( String partnerId ) {
+    public void setPartnerId(String partnerId) {
 
         this.partnerId = partnerId;
+    }
+
+    /**
+     * @author gesch
+     */
+    private class DirectoryScanner extends TimerTask {
+
+        private File targetDirectory = null;
+
+        /* (non-Javadoc)
+         * @see java.util.TimerTask#run()
+         */
+        @Override
+        public void run() {
+
+            try {
+                // LOG.trace( "starting scanner" );
+                if (!targetDirectory.exists() || targetDirectory.isFile()) {
+                    return;
+                }
+                String[] entries = targetDirectory.list();
+                if (entries != null && entries.length > 0) {
+                    for (int i = 0; i < entries.length; i++) {
+                        if (entries[i].toLowerCase().endsWith(".xml")) {
+
+                            File newfile = new File(targetDirectory, entries[i]);
+
+                            if (newfile.exists() && newfile.isFile()) {
+                                FileInputStream fis = new FileInputStream(newfile);
+                                byte[] data = new byte[(int) newfile.length()];
+                                fis.read(data);
+                                backendPipelineDispatcher.processMessage(partnerId, choreographyId, actionId, null,
+                                        null, null, data);
+                                newfile.renameTo(new File(newfile.getAbsoluteFile() + "_done"));
+                                fis.close();
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } catch (Error e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        /**
+         * @param targetDirectory the targetDirectory to set
+         */
+        public void setTargetDirectory(File targetDirectory) {
+
+            this.targetDirectory = targetDirectory;
+        }
     }
 }

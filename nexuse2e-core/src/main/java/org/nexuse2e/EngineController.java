@@ -19,10 +19,10 @@
  */
 package org.nexuse2e;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.nexuse2e.messaging.Pipelet;
 import org.nexuse2e.service.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mbreilmann
@@ -30,7 +30,7 @@ import org.nexuse2e.service.Service;
  */
 public class EngineController {
 
-    private static Logger        LOG                       = LogManager.getLogger( EngineController.class );
+    private static Logger LOG = LoggerFactory.getLogger( EngineController.class );
 
     private EngineControllerStub engineControllerStub      = null;
     private String               engineControllerStubClass = "org.nexuse2e.DefaultEngineControllerStub";

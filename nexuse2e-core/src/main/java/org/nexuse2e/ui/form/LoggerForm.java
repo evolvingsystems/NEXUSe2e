@@ -1,23 +1,31 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.ui.form;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
+import org.nexuse2e.pojo.ComponentPojo;
+import org.nexuse2e.pojo.LoggerParamPojo;
+import org.nexuse2e.pojo.LoggerPojo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,65 +34,55 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionMapping;
-import org.nexuse2e.configuration.ParameterDescriptor;
-import org.nexuse2e.configuration.ParameterType;
-import org.nexuse2e.logging.LogAppender;
-import org.nexuse2e.pojo.ComponentPojo;
-import org.nexuse2e.pojo.LoggerParamPojo;
-import org.nexuse2e.pojo.LoggerPojo;
-
 /**
  * @author gesch
- *
  */
 public class LoggerForm extends ActionForm {
 
-    private static final long              serialVersionUID         = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private static org.apache.logging.log4j.Logger LOG                      = org.apache.logging.log4j.Logger
-                                                                            .getLogger( LoggerForm.class );
+    private static Logger LOG = LogManager.getLogger(LoggerForm.class);
 
-    private int                            nxLoggerId               = 0;
-    private int                            nxComponentId            = 0;
-    private int                            nxChoreographyId         = 0;
-    private int                            paramsNxComponentId      = 0;
-    private String                         name                     = null;
-    private String                         choreographyId           = null;
-    private String                         componentId              = null;
-    private int                            threshold                = 0;
+    private int nxLoggerId = 0;
+    private int nxComponentId = 0;
+    private int nxChoreographyId = 0;
+    private int paramsNxComponentId = 0;
+    private String name = null;
+    private String choreographyId = null;
+    private String componentId = null;
+    private int threshold = 0;
 
-    private boolean                        autoStart                = false;
-    private boolean                        running                  = false;
+    private boolean autoStart = false;
+    private boolean running = false;
 
-    private String                         submitted                = "false";
-    private HashMap<String, String>        logFilterValues          = null;
-    private HashMap<String, String>        pipeletParamValues       = new HashMap<String, String>();
-    private List<LoggerParamPojo>          parameters               = new Vector<LoggerParamPojo>();
-    private List<String>                   groupNames               = new Vector<String>();
-    private List<ComponentPojo>            availableTemplates       = new ArrayList<ComponentPojo>();
+    private String submitted = "false";
+    private HashMap<String, String> logFilterValues = null;
+    private HashMap<String, String> pipeletParamValues = new HashMap<String, String>();
+    private List<LoggerParamPojo> parameters = new Vector<LoggerParamPojo>();
+    private List<String> groupNames = new Vector<String>();
+    private List<ComponentPojo> availableTemplates = new ArrayList<ComponentPojo>();
 
-    private String                         filterJavaPackagePattern = "";
-    private String                         componentName;
+    private String filterJavaPackagePattern = "";
+    private String componentName;
 
-    private LoggerPojo                     logger                   = null;
+    private LoggerPojo logger = null;
 
-    private LogAppender                    loggerInstance           = null;
+    //    private LogAppender loggerInstance = null;
 
     /* (non-Javadoc)
-     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http.HttpServletRequest)
+     * @see org.apache.struts.action.ActionForm#reset(org.apache.struts.action.ActionMapping, javax.servlet.http
+     * .HttpServletRequest)
      */
     @Override
-    public void reset( ActionMapping arg0, HttpServletRequest arg1 ) {
+    public void reset(ActionMapping arg0, HttpServletRequest arg1) {
 
         submitted = "false";
         componentId = null;
         nxLoggerId = 0;
-        if ( logFilterValues != null ) {
+        if (logFilterValues != null) {
             logFilterValues.clear();
         }
-        if ( pipeletParamValues != null ) {
+        if (pipeletParamValues != null) {
             pipeletParamValues.clear();
         }
         filterJavaPackagePattern = "";
@@ -92,27 +90,29 @@ public class LoggerForm extends ActionForm {
 
     /**
      * Set the properties of this form based on a POJO
+     *
      * @param notifier The POJO used to fill in the fields
      */
-    public void setProperties( LoggerPojo logger ) {
+    public void setProperties(LoggerPojo logger) {
 
         nxLoggerId = logger.getNxLoggerId();
         name = logger.getName();
         running = logger.isRunning();
         autoStart = logger.isAutostart();
-        
+
         filterJavaPackagePattern = logger.getFilter();
     }
 
     /**
      * Set the properties of this form based on a POJO
+     *
      * @return The updated POJO
      */
-    public LoggerPojo getProperties( LoggerPojo logger ) {
+    public LoggerPojo getProperties(LoggerPojo logger) {
 
-        logger.setName( name );
-        logger.setRunning( running );
-        logger.setAutostart( autoStart );
+        logger.setName(name);
+        logger.setRunning(running);
+        logger.setAutostart(autoStart);
 
         return logger;
     }
@@ -120,32 +120,32 @@ public class LoggerForm extends ActionForm {
     public void createParameterMapFromPojos() {
 
         pipeletParamValues = new HashMap<String, String>();
-        for ( LoggerParamPojo param : getParameters() ) {
-            pipeletParamValues.put( param.getParamName(), param.getValue() );
+        for (LoggerParamPojo param : getParameters()) {
+            pipeletParamValues.put(param.getParamName(), param.getValue());
         }
 
     }
 
     public void fillPojosFromParameterMap() {
 
-        if ( pipeletParamValues == null ) {
+        if (pipeletParamValues == null) {
             return;
         }
-        for ( LoggerParamPojo param : getParameters() ) {
-            ParameterDescriptor pd = loggerInstance.getParameterMap().get( param.getParamName() );
-            if ( pd != null ) {
-                String value = pipeletParamValues.get( param.getParamName() );
-                if ( pd.getParameterType() == ParameterType.BOOLEAN ) {
-                    if ( "on".equalsIgnoreCase( value ) ) {
-                        value = Boolean.TRUE.toString();
-                    }
-                }
-                if ( value == null ) {
-                    value = Boolean.FALSE.toString();
-                }
-                param.setValue( value );
-            }
-        }
+        //        for (LoggerParamPojo param : getParameters()) {
+        //            ParameterDescriptor pd = loggerInstance.getParameterMap().get(param.getParamName());
+        //            if (pd != null) {
+        //                String value = pipeletParamValues.get(param.getParamName());
+        //                if (pd.getParameterType() == ParameterType.BOOLEAN) {
+        //                    if ("on".equalsIgnoreCase(value)) {
+        //                        value = Boolean.TRUE.toString();
+        //                    }
+        //                }
+        //                if (value == null) {
+        //                    value = Boolean.FALSE.toString();
+        //                }
+        //                param.setValue(value);
+        //            }
+        //        }
     }
 
     /**
@@ -159,21 +159,21 @@ public class LoggerForm extends ActionForm {
     /**
      * @param pipeletParamValues the pipeletParamValues to set
      */
-    public void setPipeletParamValues( HashMap<String, String> pipeletParamValues ) {
+    public void setPipeletParamValues(HashMap<String, String> pipeletParamValues) {
 
         this.pipeletParamValues = pipeletParamValues;
     }
 
-    public Object getParamValue( String key ) {
+    public Object getParamValue(String key) {
 
-        return pipeletParamValues.get( key );
+        return pipeletParamValues.get(key);
     }
 
-    public void setParamValue( String key, Object value ) {
+    public void setParamValue(String key, Object value) {
 
-        LOG.trace( "key: " + key );
-        LOG.trace( "value: " + value.toString() );
-        pipeletParamValues.put( key, (String) value );
+        LOG.trace("key: " + key);
+        LOG.trace("value: " + value.toString());
+        pipeletParamValues.put(key, (String) value);
     }
 
     /**
@@ -185,19 +185,19 @@ public class LoggerForm extends ActionForm {
     }
 
     /**
+     * @param autoStart The autoStart to set.
+     */
+    public void setAutoStart(boolean autoStart) {
+
+        this.autoStart = autoStart;
+    }
+
+    /**
      * @return Returns the autoStart.
      */
     public String getAutoStartString() {
 
         return autoStart ? "Yes" : "No";
-    }
-
-    /**
-     * @param autoStart The autoStart to set.
-     */
-    public void setAutoStart( boolean autoStart ) {
-
-        this.autoStart = autoStart;
     }
 
     /**
@@ -219,7 +219,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param componentName the componentName to set
      */
-    public void setComponentId( String componentName ) {
+    public void setComponentId(String componentName) {
 
         this.componentId = componentName;
     }
@@ -235,7 +235,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param filterJavaPackagePattern the filterJavaPackagePattern to set
      */
-    public void setFilterJavaPackagePattern( String filterJavaPackagePattern ) {
+    public void setFilterJavaPackagePattern(String filterJavaPackagePattern) {
 
         this.filterJavaPackagePattern = filterJavaPackagePattern;
     }
@@ -251,7 +251,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param name the name to set
      */
-    public void setName( String name ) {
+    public void setName(String name) {
 
         this.name = name;
     }
@@ -267,7 +267,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param running the running to set
      */
-    public void setRunning( boolean running ) {
+    public void setRunning(boolean running) {
 
         this.running = running;
     }
@@ -283,7 +283,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param choreographyId the choreographyId to set
      */
-    public void setChoreographyId( String choreographyId ) {
+    public void setChoreographyId(String choreographyId) {
 
         this.choreographyId = choreographyId;
     }
@@ -299,7 +299,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param nxLoggerId the nxLoggerId to set
      */
-    public void setNxLoggerId( int nxLoggerId ) {
+    public void setNxLoggerId(int nxLoggerId) {
 
         this.nxLoggerId = nxLoggerId;
     }
@@ -320,7 +320,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param nxComponentId the nxComponentId to set
      */
-    public void setNxComponentId( int nxComponentId ) {
+    public void setNxComponentId(int nxComponentId) {
 
         this.nxComponentId = nxComponentId;
     }
@@ -336,7 +336,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param parameters the parameters to set
      */
-    public void setParameters( List<LoggerParamPojo> parameters ) {
+    public void setParameters(List<LoggerParamPojo> parameters) {
 
         this.parameters = parameters;
     }
@@ -352,7 +352,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param submitted the submitted to set
      */
-    public void setSubmitted( String submitted ) {
+    public void setSubmitted(String submitted) {
 
         this.submitted = submitted;
     }
@@ -362,7 +362,7 @@ public class LoggerForm extends ActionForm {
      */
     public HashMap<String, String> getLogFilterValues() {
 
-        if ( logFilterValues == null ) {
+        if (logFilterValues == null) {
             logFilterValues = new HashMap<String, String>();
         }
         return logFilterValues;
@@ -371,7 +371,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param logFilterValues the logFilterValues to set
      */
-    public void setLogFilterValues( HashMap<String, String> logFilterValues ) {
+    public void setLogFilterValues(HashMap<String, String> logFilterValues) {
 
         this.logFilterValues = logFilterValues;
     }
@@ -380,21 +380,21 @@ public class LoggerForm extends ActionForm {
      * @param key
      * @return
      */
-    public Object getLogFilterValue( String key ) {
+    public Object getLogFilterValue(String key) {
 
-        if ( logFilterValues == null ) {
+        if (logFilterValues == null) {
             logFilterValues = new HashMap<String, String>();
         }
-        return logFilterValues.get( key );
+        return logFilterValues.get(key);
     }
 
     /**
      * @param key
      * @param value
      */
-    public void setLogFilterValue( String key, Object value ) {
+    public void setLogFilterValue(String key, Object value) {
 
-        logFilterValues.put( key, (String) value );
+        logFilterValues.put(key, (String) value);
     }
 
     /**
@@ -402,7 +402,7 @@ public class LoggerForm extends ActionForm {
      */
     public List<String> getGroupNames() {
 
-        if ( groupNames == null ) {
+        if (groupNames == null) {
             groupNames = new Vector<String>();
         }
         return groupNames;
@@ -411,7 +411,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param groupNames the groupNames to set
      */
-    public void setGroupNames( List<String> groupNames ) {
+    public void setGroupNames(List<String> groupNames) {
 
         this.groupNames = groupNames;
     }
@@ -427,7 +427,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param threshold the threshold to set
      */
-    public void setThreshold( int threshold ) {
+    public void setThreshold(int threshold) {
 
         this.threshold = threshold;
     }
@@ -443,7 +443,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param logger the logger to set
      */
-    public void setLogger( LoggerPojo logger ) {
+    public void setLogger(LoggerPojo logger) {
 
         this.logger = logger;
     }
@@ -459,7 +459,7 @@ public class LoggerForm extends ActionForm {
     /**
      * @param paramsNxComponentId the paramsNxComponentId to set
      */
-    public void setParamsNxComponentId( int paramsNxComponentId ) {
+    public void setParamsNxComponentId(int paramsNxComponentId) {
 
         this.paramsNxComponentId = paramsNxComponentId;
     }
@@ -469,7 +469,7 @@ public class LoggerForm extends ActionForm {
         return nxChoreographyId;
     }
 
-    public void setNxChoreographyId( int nxChoreographyId ) {
+    public void setNxChoreographyId(int nxChoreographyId) {
 
         this.nxChoreographyId = nxChoreographyId;
     }
@@ -479,30 +479,30 @@ public class LoggerForm extends ActionForm {
         return componentName;
     }
 
-    public void setComponentName( String componentName ) {
+    public void setComponentName(String componentName) {
 
         this.componentName = componentName;
     }
 
-    public LogAppender getLoggerInstance() {
+    //    public LogAppender getLoggerInstance() {
+    //
+    //        return loggerInstance;
+    //    }
+    //
+    //    public void setLoggerInstance(LogAppender loggerInstance) {
+    //
+    //        this.loggerInstance = loggerInstance;
+    //    }
 
-        return loggerInstance;
-    }
 
-    public void setLoggerInstance( LogAppender loggerInstance ) {
-
-        this.loggerInstance = loggerInstance;
-    }
-
-    
     public List<ComponentPojo> getAvailableTemplates() {
-    
+
         return availableTemplates;
     }
 
-    
-    public void setAvailableTemplates( List<ComponentPojo> availableTemplates ) {
-    
+
+    public void setAvailableTemplates(List<ComponentPojo> availableTemplates) {
+
         this.availableTemplates = availableTemplates;
     }
 

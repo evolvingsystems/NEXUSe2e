@@ -1,45 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.ui;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.security.KeyPair;
-import java.security.KeyStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -60,12 +42,30 @@ import org.nexuse2e.ui.form.ProtectedFileAccessForm;
 import org.nexuse2e.util.CertificateUtil;
 import org.nexuse2e.util.EncryptionUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * This class substitutes the former DataSaveAsServlet
  * for the purpose of access control and issues with not yet applied configuration changes.
- * 
+ *
  * This action implements exports of several certificate/key related files.
- * 
+ *
  * @author Sebastian Schulze
  * @date 29.01.2009
  */
@@ -75,14 +75,18 @@ public class DataSaveAsAction extends NexusE2EAction {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.nexuse2e.ui.action.NexusE2EAction#executeNexusE2EAction(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm,
-     * javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.nexuse2e.configuration.EngineConfiguration,
+     *
+     * @see org.nexuse2e.ui.action.NexusE2EAction#executeNexusE2EAction(org.apache.struts.action.ActionMapping, org
+     * .apache.struts.action.ActionForm,
+     * javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.nexuse2e.configuration
+     * .EngineConfiguration,
      * org.apache.struts.action.ActionMessages, org.apache.struts.action.ActionMessages)
      */
     @Override
-    public ActionForward executeNexusE2EAction(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response,
-            EngineConfiguration engineConfiguration, ActionMessages errors, ActionMessages messages) throws Exception {
+    public ActionForward executeNexusE2EAction(ActionMapping actionMapping, ActionForm actionForm,
+                                               HttpServletRequest request, HttpServletResponse response,
+                                               EngineConfiguration engineConfiguration, ActionMessages errors,
+                                               ActionMessages messages) throws Exception {
         String contentType = "application/unknown";
 
         LOG.debug("type = " + request.getParameter("type"));
@@ -92,10 +96,13 @@ public class DataSaveAsAction extends NexusE2EAction {
             } else if (request.getParameter("type").equals("serverCert")) {
             } else if (request.getParameter("type").equals("cacerts")) {
 
-                List<CertificatePojo> certificates = engineConfiguration.getCertificates(CertificateType.CA.getOrdinal(), null);
+                List<CertificatePojo> certificates =
+                        engineConfiguration.getCertificates(CertificateType.CA.getOrdinal(), null);
 
                 KeyStore jks = CertificateUtil.generateKeyStoreFromPojos(certificates);
-                CertificatePojo cPojo = engineConfiguration.getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(), true);
+                CertificatePojo cPojo =
+                        engineConfiguration.getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(),
+                                true);
                 String pwd = "changeit";
                 if (cPojo == null) {
                     LOG.warn("ca certificate metadata not found!");
@@ -119,7 +126,8 @@ public class DataSaveAsAction extends NexusE2EAction {
             } else if (request.getParameter("type").equals("cacert")) {
                 byte[] data = new byte[0];
 
-                ProtectedFileAccessForm form = (ProtectedFileAccessForm) request.getSession().getAttribute("protectedFileAccessForm");
+                ProtectedFileAccessForm form = (ProtectedFileAccessForm) request.getSession().getAttribute(
+                        "protectedFileAccessForm");
 
                 int format = form.getFormat();
                 int nxCertificateId = form.getNxCertificateId();
@@ -133,7 +141,9 @@ public class DataSaveAsAction extends NexusE2EAction {
 
                 try {
 
-                    CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.CA.getOrdinal(), nxCertificateId);
+                    CertificatePojo cPojo =
+                            engineConfiguration.getCertificateByNxCertificateId(CertificateType.CA.getOrdinal(),
+                                    nxCertificateId);
                     if (cPojo == null) {
                         return null;
                     }
@@ -155,7 +165,8 @@ public class DataSaveAsAction extends NexusE2EAction {
             } else if (request.getParameter("type").equals("staging")) {
                 byte[] data = new byte[0];
 
-                ProtectedFileAccessForm form = (ProtectedFileAccessForm) request.getSession().getAttribute("protectedFileAccessForm");
+                ProtectedFileAccessForm form = (ProtectedFileAccessForm) request.getSession().getAttribute(
+                        "protectedFileAccessForm");
 
                 int format = form.getFormat();
                 int content = form.getContent();
@@ -176,18 +187,23 @@ public class DataSaveAsAction extends NexusE2EAction {
 
                 try {
 
-                    CertificatePojo cPojo = engineConfiguration.getCertificateByNxCertificateId(CertificateType.STAGING.getOrdinal(), nxCertificateId);
+                    CertificatePojo cPojo =
+                            engineConfiguration.getCertificateByNxCertificateId(CertificateType.STAGING.getOrdinal(),
+                                    nxCertificateId);
                     if (cPojo == null) {
                         return null;
                     }
-                    KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
-                    jks.load(new ByteArrayInputStream(cPojo.getBinaryData()), EncryptionUtil.decryptString(cPojo.getPassword()).toCharArray());
+                    KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE,
+                            CertificateUtil.DEFAULT_JCE_PROVIDER);
+                    jks.load(new ByteArrayInputStream(cPojo.getBinaryData()),
+                            EncryptionUtil.decryptString(cPojo.getPassword()).toCharArray());
                     boolean foundKey = false;
                     String alias = null;
                     Enumeration<String> e = jks.aliases();
                     while (e.hasMoreElements()) {
                         alias = e.nextElement();
-                        // System.out.println( "Alias: '" + alias + "', entry is cert: " + jks.isCertificateEntry( alias ) );
+                        // System.out.println( "Alias: '" + alias + "', entry is cert: " + jks.isCertificateEntry(
+                        // alias ) );
                         if (jks.isKeyEntry(alias)) {
                             foundKey = true;
                             break;
@@ -239,8 +255,8 @@ public class DataSaveAsAction extends NexusE2EAction {
                             pw.println("CommonName: " + cn);
                             pw.println("Organisation: " + o);
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            pw.println("expiresponse: " + sdf.format(((X509Certificate) certs[i]).getNotAfter()) + " - "
-                                    + CertificateUtil.getRemainingValidity((X509Certificate) certs[i]));
+                            pw.println("expiresponse: " + sdf.format(((X509Certificate) certs[i]).getNotAfter()) + " " +
+                                    "- " + CertificateUtil.getRemainingValidity((X509Certificate) certs[i]));
                             pw.println("FingerPrint: " + fingerprint);
 
                             if (i < certs.length - 1) {
@@ -285,12 +301,14 @@ public class DataSaveAsAction extends NexusE2EAction {
             } else if (request.getParameter("type").equals("privatepem")) {
                 LOG.debug("exporting private pem structure ");
 
-                CertificatePojo requestPojo = engineConfiguration.getFirstCertificateByType(CertificateType.REQUEST.getOrdinal(), true);
+                CertificatePojo requestPojo =
+                        engineConfiguration.getFirstCertificateByType(CertificateType.REQUEST.getOrdinal(), true);
                 if (requestPojo == null) {
                     LOG.error("no request found in database");
                     return null;
                 }
-                CertificatePojo privKeyPojo = engineConfiguration.getFirstCertificateByType(CertificateType.PRIVATE_KEY.getOrdinal(), true);
+                CertificatePojo privKeyPojo =
+                        engineConfiguration.getFirstCertificateByType(CertificateType.PRIVATE_KEY.getOrdinal(), true);
                 if (privKeyPojo == null) {
                     LOG.error("no request found in database");
                     return null;
@@ -322,7 +340,9 @@ public class DataSaveAsAction extends NexusE2EAction {
                     LOG.error("no certificateId found!");
                     return null;
                 }
-                CertificatePojo certificate = engineConfiguration.getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(), nxCertificateId);
+                CertificatePojo certificate =
+                        engineConfiguration.getCertificateByNxCertificateId(CertificateType.ALL.getOrdinal(),
+                                nxCertificateId);
 
                 PKCS10CertificationRequest pkcs10request = CertificateUtil.getPKCS10Request(certificate);
                 byte[] data = new byte[0];
@@ -355,7 +375,8 @@ public class DataSaveAsAction extends NexusE2EAction {
                             data = b;
                         }
                     } else {
-                        List<MessagePayloadPojo> payloads = Engine.getInstance().getTransactionService().getMessagePayloadsFromMessage(message);
+                        List<MessagePayloadPojo> payloads =
+                                Engine.getInstance().getTransactionService().getMessagePayloadsFromMessage(message);
                         int no = Integer.parseInt(contentNo);
                         if (no < payloads.size()) {
                             MessagePayloadPojo payload = payloads.get(no);
@@ -380,8 +401,8 @@ public class DataSaveAsAction extends NexusE2EAction {
                     fileExtension = tempFileExtension;
                 }
 
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + message.getMessageId() + "_payload-" + contentNo + "." + fileExtension
-                        + "\"");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + message.getMessageId() +
+                        "_payload-" + contentNo + "." + fileExtension + "\"");
                 OutputStream os = response.getOutputStream();
                 os.write(data);
                 os.flush();

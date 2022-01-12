@@ -115,7 +115,7 @@ public class XiomaBaseClientConfiguration extends XiomaBaseServerConfiguration {
 
             LoggerPojo clientUILogger = new LoggerPojo( uiLoggerComponentPojo, new Date(), new Date(), 1,
                     "Client UI Logger", true, "group_core,group_database,group_backend,group_frontend,group_ui" );
-            clientUILogger.setThreshold( Level.WARN_INT );
+            clientUILogger.setThreshold( 400 ); //Level.INFO_INT
             loggers.add( clientUILogger );
             
             

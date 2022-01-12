@@ -6,14 +6,21 @@
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Version;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
 
 public class ConfigHandler implements Handler {
     private static final Logger LOG = LogManager.getLogger(ConfigHandler.class);
@@ -21,8 +28,7 @@ public class ConfigHandler implements Handler {
 
     @Override
     public boolean canHandle(String path, String method) {
-        return ("GET".equalsIgnoreCase(method) && "/machine-name".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/version".equalsIgnoreCase(path));
+        return ("GET".equalsIgnoreCase(method) && "/machine-name".equalsIgnoreCase(path)) || ("GET".equalsIgnoreCase(method) && "/version".equalsIgnoreCase(path));
     }
 
     @Override
@@ -58,11 +64,9 @@ public class ConfigHandler implements Handler {
                 response.sendError(404, "Machine Name not configured");
             }
         } else {
-            try (
-                    InputStream in = request.getSession(true).getServletContext().getResourceAsStream(CONFIG_BASE + "machine_name.txt");
-                    InputStreamReader isr = new InputStreamReader(in);
-                    BufferedReader br = new BufferedReader(isr)
-            ) {
+            try (InputStream in = request.getSession(true).getServletContext().getResourceAsStream(CONFIG_BASE +
+                    "machine_name.txt"); InputStreamReader isr = new InputStreamReader(in); BufferedReader br =
+                    new BufferedReader(isr)) {
                 String message = new Gson().toJson(br.readLine());
                 response.getOutputStream().print(message);
             }

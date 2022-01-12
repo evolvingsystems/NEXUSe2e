@@ -1,33 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.ui.form;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.nexuse2e.Configurable;
@@ -43,6 +36,13 @@ import org.nexuse2e.pojo.PipeletPojo;
 import org.nexuse2e.pojo.PipelinePojo;
 import org.nexuse2e.pojo.TRPPojo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author gesch
  *
@@ -50,126 +50,127 @@ import org.nexuse2e.pojo.TRPPojo;
 public class PipelineForm extends ActionForm {
 
     /**
-     * 
+     *
      */
-    private static final long       serialVersionUID   = -2860731115832301190L;
+    private static final long serialVersionUID = -2860731115832301190L;
 
-    private static Logger           LOG                = LogManager.getLogger( PipelineForm.class );
+    private static Logger LOG = LogManager.getLogger(PipelineForm.class);
 
-    private int                     nxPipelineId       = 0;
-    private int                     nxTrpId            = 0;
-    private String                  name               = null;
-    private String                  Description        = null;
-    private int                     direction          = -1;
-    private List<PipeletPojo>       pipelets           = new ArrayList<PipeletPojo>();
-    private List<ComponentPojo>     availableTemplates = null;
+    private int nxPipelineId = 0;
+    private int nxTrpId = 0;
+    private String name = null;
+    private String Description = null;
+    private int direction = -1;
+    private List<PipeletPojo> pipelets = new ArrayList<PipeletPojo>();
+    private List<ComponentPojo> availableTemplates = null;
 
-    private List<PipeletParamPojo>  parameters         = new ArrayList<PipeletParamPojo>();
-    private List<PipeletParamPojo>  obsoleteParameters = new ArrayList<PipeletParamPojo>();
-    private List<TRPPojo>           trps               = null;
+    private List<PipeletParamPojo> parameters = new ArrayList<PipeletParamPojo>();
+    private List<PipeletParamPojo> obsoleteParameters = new ArrayList<PipeletParamPojo>();
+    private List<TRPPojo> trps = null;
 
-    private boolean                 frontend           = false;
-    private PipeletPojo             currentPipelet     = null;
-    private Configurable            configurable       = null;
+    private boolean frontend = false;
+    private PipeletPojo currentPipelet = null;
+    private Configurable configurable = null;
 
     private HashMap<String, String> pipeletParamValues = null;
     /**
      * may contain different nexusIds, depends on submitaction 
      */
-    private int                     actionNxId         = 0;
-    private int                     actionNxIdReturn   = 0;
+    private int actionNxId = 0;
+    private int actionNxIdReturn = 0;
 
-    private String                  paramName          = null;
+    private String paramName = null;
 
     /**
      * 1=up, 2=down
      */
-    private int                     sortingDirection   = 0;
+    private int sortingDirection = 0;
 
     /**
-     * sort = used to specify pipelet position in pipeline (actionNxId contains the pipelet which is inteded to be moved and sortingDirections defines
+     * sort = used to specify pipelet position in pipeline (actionNxId contains the pipelet which is inteded to be
+     * moved and sortingDirections defines
      * the direction. (1=up, 2=down)
      * add = adds the the Pipelet whis is found by actionNxId = nxComponentId
      * update = updates the whole pipeline in config and database
      */
-    private String                  submitaction       = null;
+    private String submitaction = null;
 
-    private int                     sortaction         = 0;
+    private int sortaction = 0;
 
-    private String                  key                = null;
-    private String                  value              = null;
-    
-    private boolean                 bidirectional      = false;
-    
+    private String key = null;
+    private String value = null;
+
+    private boolean bidirectional = false;
+
     /**
      * @param component
      */
-    public void setProperties( PipelinePojo pipeline ) {
+    public void setProperties(PipelinePojo pipeline) {
 
-        if ( pipeline == null ) {
+        if (pipeline == null) {
             return;
         }
-        setNxPipelineId( pipeline.getNxPipelineId() );
-        if ( pipeline.getTrp() != null ) {
-            setNxTrpId( pipeline.getTrp().getNxTRPId() );
+        setNxPipelineId(pipeline.getNxPipelineId());
+        if (pipeline.getTrp() != null) {
+            setNxTrpId(pipeline.getTrp().getNxTRPId());
         }
-        setName( pipeline.getName() );
-        setDescription( pipeline.getDescription() );
-        if ( !pipeline.isOutbound() ) {
-            setDirection( 0 );
+        setName(pipeline.getName());
+        setDescription(pipeline.getDescription());
+        if (!pipeline.isOutbound()) {
+            setDirection(0);
         } else {
-            setDirection( 1 );
+            setDirection(1);
         }
 
-        setFrontend( pipeline.isFrontend() );
+        setFrontend(pipeline.isFrontend());
 
         List<PipeletPojo> pipeletList = null;
 
-        setTrps( Engine.getInstance().getActiveConfigurationAccessService().getTrps() );
+        setTrps(Engine.getInstance().getActiveConfigurationAccessService().getTrps());
 
-        pipeletList = new ArrayList<PipeletPojo>( pipeline.getPipelets() );
-        if ( pipeline.getPipelets() != null ) {
-            Collections.sort( pipeletList, Constants.PIPELETCOMPARATOR );
+        pipeletList = new ArrayList<PipeletPojo>(pipeline.getPipelets());
+        if (pipeline.getPipelets() != null) {
+            Collections.sort(pipeletList, Constants.PIPELETCOMPARATOR);
             if ((pipeline.isBackendInbound()) && pipeletList.size() > 1) {
-                pipeletList.add( pipeletList.remove( 0 ) );
+                pipeletList.add(pipeletList.remove(0));
             }
         }
-        setPipelets( pipeletList );
+        setPipelets(pipeletList);
     }
 
-    public PipelinePojo getProperties( PipelinePojo pipeline, EngineConfiguration config ) {
+    public PipelinePojo getProperties(PipelinePojo pipeline, EngineConfiguration config) {
 
-        pipeline.setNxPipelineId( getNxPipelineId() );
-        pipeline.setName( getName() );
-        pipeline.setDescription( getDescription() );
-        if ( getDirection() == 0 ) {
-            pipeline.setOutbound( false );
+        pipeline.setNxPipelineId(getNxPipelineId());
+        pipeline.setName(getName());
+        pipeline.setDescription(getDescription());
+        if (getDirection() == 0) {
+            pipeline.setOutbound(false);
         } else {
-            pipeline.setOutbound( true );
+            pipeline.setOutbound(true);
         }
-        if ( pipeline.getPipelets() == null ) {
-            pipeline.setPipelets( new ArrayList<PipeletPojo>() );
+        if (pipeline.getPipelets() == null) {
+            pipeline.setPipelets(new ArrayList<PipeletPojo>());
         } else {
             pipeline.getPipelets().clear();
         }
 
-        if ( getPipelets() != null ) {
-            List<PipeletPojo> pipeletList = new ArrayList<PipeletPojo>( getPipelets() );
+        if (getPipelets() != null) {
+            List<PipeletPojo> pipeletList = new ArrayList<PipeletPojo>(getPipelets());
             if ((pipeline.isBackendInbound()) && pipeletList.size() > 1) {
-                pipeletList.add( 0, pipeletList.remove( pipeletList.size() - 1 ) );
+                pipeletList.add(0, pipeletList.remove(pipeletList.size() - 1));
             }
             for (int i = 0; i < pipeletList.size(); i++) {
-                PipeletPojo pipelet = pipeletList.get( i );
-                pipelet.setPosition( i );
-                pipeline.getPipelets().add( pipelet );
+                PipeletPojo pipelet = pipeletList.get(i);
+                pipelet.setPosition(i);
+                pipeline.getPipelets().add(pipelet);
             }
         }
 
-        TRPPojo trpPojo = config.getTrpByNxTrpId( nxTrpId );
-        if ( trpPojo != null ) {
-            pipeline.setTrp( trpPojo );
-        } else if ( pipeline.isFrontend() ) {
-            LOG.error( "No valid TRP found!" );
+        TRPPojo trpPojo = config.getTrpByNxTrpId(nxTrpId);
+        if (trpPojo != null) {
+            pipeline.setTrp(trpPojo);
+        } else if (pipeline.isFrontend()) {
+            LOG.error("No valid TRP found!");
         }
 
         return pipeline;
@@ -178,35 +179,35 @@ public class PipelineForm extends ActionForm {
     public void createParameterMapFromPojos() {
 
         pipeletParamValues = new HashMap<String, String>();
-        for ( PipeletParamPojo param : getParameters() ) {
-            pipeletParamValues.put( param.getParamName(), ConfigurationUtil.getParameterStringValue( param ) );
+        for (PipeletParamPojo param : getParameters()) {
+            pipeletParamValues.put(param.getParamName(), ConfigurationUtil.getParameterStringValue(param));
         }
     }
 
     public void fillPojosFromParameterMap() {
 
-        if ( pipeletParamValues == null ) {
+        if (pipeletParamValues == null) {
             return;
         }
-        if ( getParameters() != null ) {
-            for ( PipeletParamPojo param : getParameters() ) {
-                ParameterDescriptor pd = configurable.getParameterMap().get( param.getParamName() );
-                if ( pd != null ) {
+        if (getParameters() != null) {
+            for (PipeletParamPojo param : getParameters()) {
+                ParameterDescriptor pd = configurable.getParameterMap().get(param.getParamName());
+                if (pd != null) {
                     String value;
                     if (pd.getParameterType() == ParameterType.ENUMERATION) {
                         value = param.getValue();
                     } else {
-                        value = pipeletParamValues.get( param.getParamName() );
+                        value = pipeletParamValues.get(param.getParamName());
                     }
-                    if ( pd.getParameterType() == ParameterType.BOOLEAN ) {
-                        if ( "on".equalsIgnoreCase( value ) ) {
+                    if (pd.getParameterType() == ParameterType.BOOLEAN) {
+                        if ("on".equalsIgnoreCase(value)) {
                             value = Boolean.TRUE.toString();
                         }
                     }
-                    if ( value == null ) {
+                    if (value == null) {
                         value = Boolean.FALSE.toString();
                     }
-                    ConfigurationUtil.setParameterStringValue( param, value );
+                    ConfigurationUtil.setParameterStringValue(param, value);
                 }
             }
         }
@@ -217,24 +218,24 @@ public class PipelineForm extends ActionForm {
      * @param request
      */
     @Override
-    public void reset( ActionMapping mapping, HttpServletRequest request ) {
+    public void reset(ActionMapping mapping, HttpServletRequest request) {
 
-//        System.out.println("mapping.name: "+mapping.getName());
-//        System.out.println("request: "+request.getParameterNames());
-//        Enumeration e = request.getParameterNames();
-//        while(e.hasMoreElements() ) {
-//            System.out.println("param:"+e.nextElement());
-//        }
-        String action = request.getParameter( "submitaction" );
-        
-        if(mapping.getPath().indexOf( "PipelineView" ) != -1 &&(action == null)) {
+        //        System.out.println("mapping.name: "+mapping.getName());
+        //        System.out.println("request: "+request.getParameterNames());
+        //        Enumeration e = request.getParameterNames();
+        //        while(e.hasMoreElements() ) {
+        //            System.out.println("param:"+e.nextElement());
+        //        }
+        String action = request.getParameter("submitaction");
+
+        if (mapping.getPath().indexOf("PipelineView") != -1 && (action == null)) {
             this.pipelets = new ArrayList<PipeletPojo>();
             this.parameters = new ArrayList<PipeletParamPojo>();
             this.currentPipelet = null;
-        } else if(mapping.getPath().indexOf( "PipeletParamsUpdate" ) != -1) {
-            for ( PipeletParamPojo pipeletParamPojo : parameters ) {
-                if ( pipeletParamPojo.getParameterDescriptor().getParameterType() == ParameterType.BOOLEAN ) {
-                    pipeletParamPojo.setValue( null );
+        } else if (mapping.getPath().indexOf("PipeletParamsUpdate") != -1) {
+            for (PipeletParamPojo pipeletParamPojo : parameters) {
+                if (pipeletParamPojo.getParameterDescriptor().getParameterType() == ParameterType.BOOLEAN) {
+                    pipeletParamPojo.setValue(null);
                 }
             }
         } else {
@@ -244,15 +245,15 @@ public class PipelineForm extends ActionForm {
     }
 
     /**
-     * 
+     *
      */
     public void cleanSettings() {
 
-        setNxPipelineId( 0 );
-        setName( null );
-        setDescription( null );
-        setDirection( -1 );
-        setPipelets( null );
+        setNxPipelineId(0);
+        setName(null);
+        setDescription(null);
+        setDirection(-1);
+        setPipelets(null);
         bidirectional = false;
 
     }
@@ -268,7 +269,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param description the description to set
      */
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
 
         Description = description;
     }
@@ -284,7 +285,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param name the name to set
      */
-    public void setName( String name ) {
+    public void setName(String name) {
 
         this.name = name;
     }
@@ -300,7 +301,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param nxPipelineId the nxPipelineId to set
      */
-    public void setNxPipelineId( int nxPipelineId ) {
+    public void setNxPipelineId(int nxPipelineId) {
 
         this.nxPipelineId = nxPipelineId;
     }
@@ -316,7 +317,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param direction the direction to set
      */
-    public void setDirection( int direction ) {
+    public void setDirection(int direction) {
 
         this.direction = direction;
     }
@@ -328,7 +329,15 @@ public class PipelineForm extends ActionForm {
 
         return pipelets;
     }
-    
+
+    /**
+     * @param pipelets the pipelets to set
+     */
+    public void setPipelets(List<PipeletPojo> pipelets) {
+
+        this.pipelets = pipelets;
+    }
+
     /**
      * Returns all pipelets that have the <code>forward</code> flag set to <code>true</code>.
      * @return A copied collection containing all forward pipelets.
@@ -339,13 +348,13 @@ public class PipelineForm extends ActionForm {
         if (pipelets != null) {
             for (PipeletPojo pipelet : pipelets) {
                 if (pipelet.isForward()) {
-                    forwardPipelets.add( pipelet );
+                    forwardPipelets.add(pipelet);
                 }
             }
         }
         return forwardPipelets;
     }
-    
+
     /**
      * Returns all pipelets that have the <code>forward</code> flag set to <code>false</code>.
      * @return A copied collection containing all backward pipelets.
@@ -356,21 +365,13 @@ public class PipelineForm extends ActionForm {
         if (pipelets != null) {
             for (PipeletPojo pipelet : pipelets) {
                 if (!pipelet.isForward()) {
-                    returnPipelets.add( pipelet );
+                    returnPipelets.add(pipelet);
                 }
             }
         }
         return returnPipelets;
     }
-    
-    /**
-     * @param pipelets the pipelets to set
-     */
-    public void setPipelets( List<PipeletPojo> pipelets ) {
 
-        this.pipelets = pipelets;
-    }
-    
     public int getForwardPipeletCount() {
         if (pipelets == null) {
             return 0;
@@ -396,7 +397,7 @@ public class PipelineForm extends ActionForm {
         }
         return c;
     }
-    
+
     /**
      * @return the availableTemplates
      */
@@ -408,7 +409,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param availableTemplates the availableTemplates to set
      */
-    public void setAvailableTemplates( List<ComponentPojo> availableTemplates ) {
+    public void setAvailableTemplates(List<ComponentPojo> availableTemplates) {
 
         this.availableTemplates = availableTemplates;
     }
@@ -424,7 +425,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param actionNxId the actionNxId to set
      */
-    public void setActionNxId( int actionNxId ) {
+    public void setActionNxId(int actionNxId) {
 
         this.actionNxId = actionNxId;
     }
@@ -434,7 +435,7 @@ public class PipelineForm extends ActionForm {
         return actionNxIdReturn;
     }
 
-    public void setActionNxIdReturn( int actionNxIdReturn ) {
+    public void setActionNxIdReturn(int actionNxIdReturn) {
 
         this.actionNxIdReturn = actionNxIdReturn;
     }
@@ -450,7 +451,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param sortingDirection the sortingDirection to set
      */
-    public void setSortingDirection( int sortingDirection ) {
+    public void setSortingDirection(int sortingDirection) {
 
         this.sortingDirection = sortingDirection;
     }
@@ -466,7 +467,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param submitaction the submitaction to set
      */
-    public void setSubmitaction( String submitaction ) {
+    public void setSubmitaction(String submitaction) {
 
         this.submitaction = submitaction;
     }
@@ -482,7 +483,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param sortaction the sortaction to set
      */
-    public void setSortaction( int sortaction ) {
+    public void setSortaction(int sortaction) {
 
         this.sortaction = sortaction;
     }
@@ -494,7 +495,7 @@ public class PipelineForm extends ActionForm {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
     public String getKey() {
         return key;
     }
@@ -514,7 +515,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param currentPipelet the currentPipelet to set
      */
-    public void setCurrentPipelet( PipeletPojo currentPipelet ) {
+    public void setCurrentPipelet(PipeletPojo currentPipelet) {
 
         this.currentPipelet = currentPipelet;
     }
@@ -530,19 +531,19 @@ public class PipelineForm extends ActionForm {
     /**
      * @param pipeletParamValues the pipeletParamValues to set
      */
-    public void setPipeletParamValues( HashMap<String, String> pipeletParamValues ) {
+    public void setPipeletParamValues(HashMap<String, String> pipeletParamValues) {
 
         this.pipeletParamValues = pipeletParamValues;
     }
 
-    public Object getParamValue( String key ) {
+    public Object getParamValue(String key) {
 
-        return pipeletParamValues.get( key );
+        return pipeletParamValues.get(key);
     }
 
-    public void setParamValue( String key, Object value ) {
+    public void setParamValue(String key, Object value) {
 
-        pipeletParamValues.put( key, (String) value );
+        pipeletParamValues.put(key, (String) value);
     }
 
     /**
@@ -556,7 +557,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param paramName the paramName to set
      */
-    public void setParamName( String paramName ) {
+    public void setParamName(String paramName) {
 
         this.paramName = paramName;
     }
@@ -572,7 +573,7 @@ public class PipelineForm extends ActionForm {
     /**
      * @param parameters the parameters to set
      */
-    public void setParameters( List<PipeletParamPojo> parameters ) {
+    public void setParameters(List<PipeletParamPojo> parameters) {
 
         this.parameters = parameters;
     }
@@ -580,18 +581,18 @@ public class PipelineForm extends ActionForm {
     public List<PipeletParamPojo> getObsoleteParameters() {
         return obsoleteParameters;
     }
-    
-    public void setObsoleteParameters( List<PipeletParamPojo> obsoleteParameters ) {
+
+    public void setObsoleteParameters(List<PipeletParamPojo> obsoleteParameters) {
         this.obsoleteParameters = obsoleteParameters;
     }
 
-    
+
     public boolean isFrontend() {
 
         return frontend;
     }
 
-    public void setFrontend( boolean frontend ) {
+    public void setFrontend(boolean frontend) {
 
         this.frontend = frontend;
     }
@@ -601,7 +602,7 @@ public class PipelineForm extends ActionForm {
         return nxTrpId;
     }
 
-    public void setNxTrpId( int nxTrpId ) {
+    public void setNxTrpId(int nxTrpId) {
 
         this.nxTrpId = nxTrpId;
     }
@@ -611,7 +612,7 @@ public class PipelineForm extends ActionForm {
         return trps;
     }
 
-    public void setTrps( List<TRPPojo> trps ) {
+    public void setTrps(List<TRPPojo> trps) {
 
         this.trps = trps;
     }
@@ -621,7 +622,7 @@ public class PipelineForm extends ActionForm {
         return configurable;
     }
 
-    public void setConfigurable( Configurable configurable ) {
+    public void setConfigurable(Configurable configurable) {
 
         this.configurable = configurable;
     }
@@ -631,7 +632,7 @@ public class PipelineForm extends ActionForm {
         return bidirectional || getReturnPipelets().size() > 0;
     }
 
-    public void setBidirectional( boolean bidirectional ) {
+    public void setBidirectional(boolean bidirectional) {
 
         this.bidirectional = bidirectional;
     }

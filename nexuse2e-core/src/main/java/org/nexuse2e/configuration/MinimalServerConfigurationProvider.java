@@ -108,7 +108,7 @@ public class MinimalServerConfigurationProvider implements BaseConfigurationProv
 
             LoggerPojo dbRootLogger = new LoggerPojo( dbLoggerComponentPojo, new Date(), new Date(), 1,
                     "DB Root Logger", true, "group_core,group_database,group_backend,group_frontend,group_ui" );
-            dbRootLogger.setThreshold( Level.INFO_INT );
+            dbRootLogger.setThreshold( 400 ); // Level.INFO_INT
             loggers.add( dbRootLogger );
 
             ComponentPojo emailLoggerComponentPojo = new ComponentPojo( new Date(), new Date(), 1, ComponentType.LOGGER

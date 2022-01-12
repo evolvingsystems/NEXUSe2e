@@ -1,23 +1,45 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging.ebxml;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.RecipientId;
+import org.bouncycastle.cms.RecipientInformation;
+import org.bouncycastle.cms.RecipientInformationStore;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.mail.smime.SMIMEEnveloped;
+import org.bouncycastle.mail.smime.SMIMEException;
+import org.bouncycastle.mail.smime.SMIMESigned;
+import org.bouncycastle.mail.smime.SMIMEUtil;
+import org.nexuse2e.Engine;
+import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.CertificateType;
+import org.nexuse2e.messaging.AbstractPipelet;
+import org.nexuse2e.messaging.MessageContext;
+import org.nexuse2e.pojo.CertificatePojo;
+import org.nexuse2e.pojo.MessagePayloadPojo;
+import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.util.CertificateUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,32 +64,10 @@ import javax.mail.Part;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.RecipientId;
-import org.bouncycastle.cms.RecipientInformation;
-import org.bouncycastle.cms.RecipientInformationStore;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.mail.smime.SMIMEEnveloped;
-import org.bouncycastle.mail.smime.SMIMEException;
-import org.bouncycastle.mail.smime.SMIMESigned;
-import org.bouncycastle.mail.smime.SMIMEUtil;
-import org.nexuse2e.Engine;
-import org.nexuse2e.NexusException;
-import org.nexuse2e.configuration.CertificateType;
-import org.nexuse2e.messaging.AbstractPipelet;
-import org.nexuse2e.messaging.MessageContext;
-import org.nexuse2e.pojo.CertificatePojo;
-import org.nexuse2e.pojo.MessagePayloadPojo;
-import org.nexuse2e.pojo.MessagePojo;
-import org.nexuse2e.util.CertificateUtil;
-
 /**
  * This <code>Pipelet</code> prepares an MIME message from a MIME message receiver
  * (e.g., a POP3 receiver) for further movement through an EBXML pipeline.
- * 
+ *
  * @author jonas.reese
  */
 public class MimeMessageUnpackager extends AbstractPipelet {
@@ -127,8 +127,8 @@ public class MimeMessageUnpackager extends AbstractPipelet {
             try {
                 Multipart mp = (Multipart) content;
                 // Prepare for S/MIME decoding
-                List<CertificatePojo> certificates = Engine.getInstance().getActiveConfigurationAccessService()
-                        .getCertificates(CertificateType.LOCAL.getOrdinal(), null);
+                List<CertificatePojo> certificates =
+                        Engine.getInstance().getActiveConfigurationAccessService().getCertificates(CertificateType.LOCAL.getOrdinal(), null);
                 if (certificates.size() > 0) {
                     CertificatePojo localCert = certificates.iterator().next();
                     KeyStore certStore = CertificateUtil.getPKCS12KeyStore(localCert);
@@ -142,7 +142,7 @@ public class MimeMessageUnpackager extends AbstractPipelet {
                 }
 
                 List<MessagePayloadPojo> payloads = new ArrayList<MessagePayloadPojo>();
-                int[] sequenceNumber = new int[] { 0 };
+                int[] sequenceNumber = new int[]{0};
                 extractMultiPart(payloads, sequenceNumber, recipientId, mp, privateKey);
 
                 return payloads;
@@ -154,8 +154,9 @@ public class MimeMessageUnpackager extends AbstractPipelet {
         }
     }// getDataFromMailMsg
 
-    private void extractMultiPart(List<MessagePayloadPojo> payloads, int[] sequenceNumber, RecipientId recipientId, Multipart mp, Key privateKey)
-            throws MessagingException, CMSException, SMIMEException, NoSuchProviderException, IOException, Exception {
+    private void extractMultiPart(List<MessagePayloadPojo> payloads, int[] sequenceNumber, RecipientId recipientId,
+                                  Multipart mp, Key privateKey) throws MessagingException, CMSException,
+            SMIMEException, NoSuchProviderException, IOException, Exception {
 
         for (int i = 0; i < mp.getCount(); i++) {
             BodyPart bp = mp.getBodyPart(i);
@@ -168,8 +169,9 @@ public class MimeMessageUnpackager extends AbstractPipelet {
         }
     }
 
-    private MessagePayloadPojo extractPayload(RecipientId recipientId, BodyPart bp, Key privateKey, int sequenceNumber) throws MessagingException,
-            CMSException, SMIMEException, NoSuchProviderException, IOException, Exception {
+    private MessagePayloadPojo extractPayload(RecipientId recipientId, BodyPart bp, Key privateKey,
+                                              int sequenceNumber) throws MessagingException, CMSException,
+            SMIMEException, NoSuchProviderException, IOException, Exception {
 
         MimeBodyPart mbp = (MimeBodyPart) bp;
 
@@ -204,10 +206,12 @@ public class MimeMessageUnpackager extends AbstractPipelet {
                 mbp = SMIMEUtil.toMimeBodyPart(recipient.getContent(privateKey, CertificateUtil.DEFAULT_JCE_PROVIDER));
                 LOG.debug("Decoded content:\n" + mbp.getContent());
             } else {
-                LOG.error("The inbound message was not encrypted for the currently " + "configured certificate! The message will be discarded.");
+                LOG.error("The inbound message was not encrypted for the currently " + "configured certificate! The " +
+                        "message will be discarded.");
             }
         }
-        if (mbp.getContentType().indexOf("application/pkcs7-mime") != -1 || mbp.getContentType().indexOf("application/pkcs7-signature") != -1) {
+        if (mbp.getContentType().indexOf("application/pkcs7-mime") != -1 || mbp.getContentType().indexOf("application" +
+                "/pkcs7-signature") != -1) {
             // Get content from signed body part
             SMIMESigned sMIMESigned = null;
             // System.out.println( "Mime type: " + mbp.getContentType( ) );
@@ -229,7 +233,8 @@ public class MimeMessageUnpackager extends AbstractPipelet {
         InputStream in = mbp.getInputStream();
         byte[] data = new byte[in.available()];
         in.read(data);
-        return new MessagePayloadPojo(null, sequenceNumber, mimetype, charset, mbp.getContentID(), data, new Date(), new Date(), 0);
+        return new MessagePayloadPojo(null, sequenceNumber, mimetype, charset, mbp.getContentID(), data, new Date(),
+                new Date(), 0);
     }
 
     private X509Certificate[] verifySignature(SMIMESigned s) throws Exception {

@@ -1,27 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging;
 
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -56,9 +56,9 @@ public class BackendOutboundDispatcher extends ChoreographyValidator implements 
 
     private ProtocolAdapter[] protocolAdapters;
 
-    private FrontendInboundDispatcher  frontendInboundDispatcher  = null;
+    private FrontendInboundDispatcher frontendInboundDispatcher = null;
     private FrontendOutboundDispatcher frontendOutboundDispatcher = null;
-    private BeanStatus                 status                     = BeanStatus.UNDEFINED;
+    private BeanStatus status = BeanStatus.UNDEFINED;
 
     private boolean forwardPipeline;
     private boolean frontendPipeline;
@@ -77,16 +77,19 @@ public class BackendOutboundDispatcher extends ChoreographyValidator implements 
         NexusThreadStorage.set("messageId", messageContext.getMessagePojo().getMessageId());
 
         ChoreographyPojo choreography = validateChoreography(messageContext);
-        LOG.trace(new LogMessage("Matching choreography found: " + choreography.getName(), messageContext.getMessagePojo()));
+        LOG.trace(new LogMessage("Matching choreography found: " + choreography.getName(),
+                messageContext.getMessagePojo()));
 
         ParticipantPojo participant = validateParticipant(messageContext);
-        LOG.trace(new LogMessage("Matching participant found: " + participant.getPartner().getPartnerId(), messageContext.getMessagePojo()));
+        LOG.trace(new LogMessage("Matching participant found: " + participant.getPartner().getPartnerId(),
+                messageContext.getMessagePojo()));
 
         // create protocolspecific key
 
         ProtocolSpecificKey key =
-            new ProtocolSpecificKey(messageContext.getMessagePojo().getTRP().getProtocol().toLowerCase(), messageContext.getMessagePojo().getTRP().getVersion(),
-                                    messageContext.getMessagePojo().getTRP().getTransport().toLowerCase());
+                new ProtocolSpecificKey(messageContext.getMessagePojo().getTRP().getProtocol().toLowerCase(),
+                        messageContext.getMessagePojo().getTRP().getVersion(),
+                        messageContext.getMessagePojo().getTRP().getTransport().toLowerCase());
         messageContext.setProtocolSpecificKey(key);
         LOG.debug(new LogMessage("ProtocolKey:" + key, messageContext.getMessagePojo()));
 
@@ -147,8 +150,8 @@ public class BackendOutboundDispatcher extends ChoreographyValidator implements 
                     LOG.error(new LogMessage("Error recovering message " + messageId, messagePojo, ex), ex);
                 }
             }
-            LOG.trace("took " + totalQueueingTime + " ms for message queueing and " + totalGetMessageTime + " ms for retrieving messages, total time is " + (
-                System.currentTimeMillis() - startTime) + " ms");
+            LOG.trace("took " + totalQueueingTime + " ms for message queueing and " + totalGetMessageTime + " ms for " +
+                    "retrieving messages, total time is " + (System.currentTimeMillis() - startTime) + " ms");
         } catch (NexusException e) {
             LOG.error(e);
         }
@@ -320,20 +323,20 @@ public class BackendOutboundDispatcher extends ChoreographyValidator implements 
     }
 
     /* (non-Javadoc)
-     * @see org.nexuse2e.messaging.Pipelet#isFrontendPipelet()
-     */
-    public boolean isFrontendPipelet() {
-
-        return frontendPipeline;
-    }
-
-    /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipelet#setForwardPipelet(boolean)
      */
     public void setForwardPipelet(boolean isForwardPipelet) {
 
         forwardPipeline = isForwardPipelet;
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.nexuse2e.messaging.Pipelet#isFrontendPipelet()
+     */
+    public boolean isFrontendPipelet() {
+
+        return frontendPipeline;
     }
 
     /* (non-Javadoc)

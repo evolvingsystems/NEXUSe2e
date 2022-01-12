@@ -1,23 +1,32 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging.ebxml.legacy;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.nexuse2e.configuration.ParameterDescriptor;
+import org.nexuse2e.logging.LogMessage;
+import org.nexuse2e.messaging.AbstractPipelet;
+import org.nexuse2e.messaging.MessageContext;
+import org.nexuse2e.pojo.MessagePayloadPojo;
+import org.nexuse2e.pojo.MessagePojo;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,22 +35,13 @@ import java.util.Map;
 import javax.mail.internet.ParseException;
 import javax.xml.soap.SOAPException;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.nexuse2e.configuration.ParameterDescriptor;
-import org.nexuse2e.logging.LogMessage;
-import org.nexuse2e.messaging.AbstractPipelet;
-import org.nexuse2e.messaging.MessageContext;
-import org.nexuse2e.pojo.MessagePayloadPojo;
-import org.nexuse2e.pojo.MessagePojo;
-
 /**
  * @author gesch
  *
  */
 public class HTTPMessagePackager extends AbstractPipelet {
 
-    private static Logger       LOG = LogManager.getLogger( HTTPMessagePackager.class );
+    private static Logger LOG = LogManager.getLogger(HTTPMessagePackager.class);
 
     private Map<String, Object> parameters;
 
@@ -54,34 +54,50 @@ public class HTTPMessagePackager extends AbstractPipelet {
         frontendPipelet = true;
     }
 
-    /* (non-Javadoc)
-     * @see org.nexuse2e.messaging.MessagePipelet#processMessage(org.nexuse2e.messaging.MessageContext)
+    /**
+     *
      */
-    public MessageContext processMessage( MessageContext messageContext ) {
+    private static String getJAXMSOAPMsg(MessagePojo messagePojo) throws SOAPException, ParseException {
 
-        String serializedSOAPMessage = null;
-        MessagePojo messagePojo = messageContext.getMessagePojo();
-        LOG.debug( new LogMessage("Entering HTTPMessagePackager.processMessage...",messagePojo) );
+        String soapId = getSOAPId(messagePojo);
+        String hdrContentId = "Content-ID: " + soapId;
+        // TODO (encoding) which encoding is used for headers ?
+        String ebXMLHeader = new String(messagePojo.getHeaderData());
 
-        try {
-            if ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK ) {
-                serializedSOAPMessage = getJAXMSOAPAck( messagePojo );
-            } else {
-                serializedSOAPMessage = getJAXMSOAPMsg( messagePojo );
+        StringBuffer msgBuffer = new StringBuffer();
+        msgBuffer.append(Constants.MIMEPARTBOUNDARY + "\n");
+        // Add ebXML Header
+        msgBuffer.append(hdrContentId + "\n");
+        msgBuffer.append(Constants.HDRCONTENTTYPE + "\n\n");
+        msgBuffer.append(ebXMLHeader + "\n\n");
+
+        if (messagePojo.getMessagePayloads() != null && messagePojo.getMessagePayloads().size() > 0) {
+
+            for (MessagePayloadPojo payloadPojo : messagePojo.getMessagePayloads()) {
+                // add bodyparts
+                msgBuffer.append(Constants.MIMEPARTBOUNDARY + "\n");
+
+                // String payloadContentID = "Content-ID: " + "<" + getContentId( messagePojo.getMessageId(),
+                // payloadPojo.getSequenceNumber() ) + ">";
+                // MBE: Changed 20100215 due to interop problem
+                String payloadContentID = "Content-ID: " + "<" + payloadPojo.getContentId() + ">";
+
+                msgBuffer.append(payloadContentID + "\n");
+                msgBuffer.append("Content-Type: " + payloadPojo.getMimeType() + "\n\n");
+
+                // TODO is Binary !!!
+                //               if ( bodyPartPojo.get.isBinaryType() ) {
+                //                   msgBuffer.append( Base64.encode( newPayload.getContent() ) + "\n" );
+                //               } else {
+                //                   // Get the payload as a string, from the database.
+                msgBuffer.append(new String(payloadPojo.getPayloadData()) + "\n");
+                //               }
             }
-        } catch ( Exception ex ) {
-            ex.printStackTrace();
-            throw new IllegalArgumentException( ex.toString() );
         }
 
-        if ( serializedSOAPMessage != null ) {
-            messageContext.setData( serializedSOAPMessage.getBytes() );
-            //LOG.trace( new String(messageContext.getData()) );
-        } else {
-            throw new IllegalArgumentException( "unable to create SOAPMessage" );
-        }
+        msgBuffer.append(Constants.MIMEPACKBOUNDARY);
 
-        return messageContext;
+        return msgBuffer.toString();
     }
 
     // TODO move to header (for ack and normal msg)
@@ -91,65 +107,19 @@ public class HTTPMessagePackager extends AbstractPipelet {
     /**
      *
      */
-    private static String getJAXMSOAPMsg( MessagePojo messagePojo ) throws SOAPException, ParseException {
+    private static String getJAXMSOAPAck(MessagePojo messagePojo) throws ParseException {
 
-        String soapId = getSOAPId( messagePojo );
+        String soapId = getSOAPId(messagePojo);
         String hdrContentId = "Content-ID: " + soapId;
         // TODO (encoding) which encoding is used for headers ?
-        String ebXMLHeader = new String( messagePojo.getHeaderData() );
-
-        StringBuffer msgBuffer = new StringBuffer();
-        msgBuffer.append( Constants.MIMEPARTBOUNDARY + "\n" );
-        // Add ebXML Header
-        msgBuffer.append( hdrContentId + "\n" );
-        msgBuffer.append( Constants.HDRCONTENTTYPE + "\n\n" );
-        msgBuffer.append( ebXMLHeader + "\n\n" );
-
-        if ( messagePojo.getMessagePayloads() != null && messagePojo.getMessagePayloads().size() > 0 ) {
-
-            for (MessagePayloadPojo payloadPojo : messagePojo.getMessagePayloads()) {
-                // add bodyparts
-                msgBuffer.append( Constants.MIMEPARTBOUNDARY + "\n" );
-
-                // String payloadContentID = "Content-ID: " + "<" + getContentId( messagePojo.getMessageId(), payloadPojo.getSequenceNumber() ) + ">";
-                // MBE: Changed 20100215 due to interop problem
-                String payloadContentID = "Content-ID: " + "<"
-                + payloadPojo.getContentId() + ">";
-
-                msgBuffer.append( payloadContentID + "\n" );
-                msgBuffer.append( "Content-Type: " + payloadPojo.getMimeType() + "\n\n" );
-
-                // TODO is Binary !!!
-                //               if ( bodyPartPojo.get.isBinaryType() ) {
-                //                   msgBuffer.append( Base64.encode( newPayload.getContent() ) + "\n" );
-                //               } else {
-                //                   // Get the payload as a string, from the database.
-                msgBuffer.append( new String( payloadPojo.getPayloadData() ) + "\n" );
-                //               }
-            }
-        }
-
-        msgBuffer.append( Constants.MIMEPACKBOUNDARY );
-
-        return msgBuffer.toString();
-    }
-
-    /**
-     *
-     */
-    private static String getJAXMSOAPAck( MessagePojo messagePojo ) throws ParseException {
-
-        String soapId = getSOAPId( messagePojo );
-        String hdrContentId = "Content-ID: " + soapId;
-        // TODO (encoding) which encoding is used for headers ?
-        String ackHeader = new String( messagePojo.getHeaderData() );
+        String ackHeader = new String(messagePojo.getHeaderData());
 
         StringBuffer ackBuffer = new StringBuffer();
-        ackBuffer.append( Constants.MIMEPARTBOUNDARY + "\n" );
-        ackBuffer.append( hdrContentId + "\n" );
-        ackBuffer.append( Constants.HDRCONTENTTYPE + "\n\n" );
-        ackBuffer.append( ackHeader + "\n\n" );
-        ackBuffer.append( Constants.MIMEPACKBOUNDARY );
+        ackBuffer.append(Constants.MIMEPARTBOUNDARY + "\n");
+        ackBuffer.append(hdrContentId + "\n");
+        ackBuffer.append(Constants.HDRCONTENTTYPE + "\n\n");
+        ackBuffer.append(ackHeader + "\n\n");
+        ackBuffer.append(Constants.MIMEPACKBOUNDARY);
 
         return ackBuffer.toString();
     }
@@ -157,31 +127,62 @@ public class HTTPMessagePackager extends AbstractPipelet {
     /**
      * Retrieve a soap/mime contentId.
      */
-    private static String getSOAPId( MessagePojo nexusMsg ) {
+    private static String getSOAPId(MessagePojo nexusMsg) {
 
         String soapID = "<" + nexusMsg.getMessageId() + nexusMsg.getTRP().getProtocol() + "-Header" + ">";
         return soapID;
     }
 
     /**
-     * Retrieve standard BodyPart content-Id based on it's position in the Enumeration (message ID + "-body" + position).
+     * Retrieve standard BodyPart content-Id based on it's position in the Enumeration (message ID + "-body" +
+     * position).
      * @param position Position of the BodyPart relative to 1.
      * @return conentId based on the BodyPart position parameter.
      */
-    public static String getContentId( String id, int position ) {
+    public static String getContentId(String id, int position) {
 
         String contentId = null;
-        contentId = id + "-body" + ( position );
+        contentId = id + "-body" + (position);
         return contentId;
+    }
+
+    /* (non-Javadoc)
+     * @see org.nexuse2e.messaging.MessagePipelet#processMessage(org.nexuse2e.messaging.MessageContext)
+     */
+    public MessageContext processMessage(MessageContext messageContext) {
+
+        String serializedSOAPMessage = null;
+        MessagePojo messagePojo = messageContext.getMessagePojo();
+        LOG.debug(new LogMessage("Entering HTTPMessagePackager.processMessage...", messagePojo));
+
+        try {
+            if (messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK) {
+                serializedSOAPMessage = getJAXMSOAPAck(messagePojo);
+            } else {
+                serializedSOAPMessage = getJAXMSOAPMsg(messagePojo);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new IllegalArgumentException(ex.toString());
+        }
+
+        if (serializedSOAPMessage != null) {
+            messageContext.setData(serializedSOAPMessage.getBytes());
+            //LOG.trace( new String(messageContext.getData()) );
+        } else {
+            throw new IllegalArgumentException("unable to create SOAPMessage");
+        }
+
+        return messageContext;
     }
 
     public void afterPropertiesSet() throws Exception {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getParameter( String name ) {
+    public <T> T getParameter(String name) {
 
-        return (T) parameters.get( name );
+        return (T) parameters.get(name);
     }
 
     @SuppressWarnings("unchecked")
@@ -192,14 +193,14 @@ public class HTTPMessagePackager extends AbstractPipelet {
 
     public Map<String, Object> getParameters() {
 
-        return Collections.unmodifiableMap( parameters );
+        return Collections.unmodifiableMap(parameters);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.Configurable#setParameter(java.lang.String, java.lang.Object)
      */
-    public void setParameter( String name, Object value ) {
+    public void setParameter(String name, Object value) {
 
-        parameters.put( name, value );
+        parameters.put(name, value);
     }
 }
