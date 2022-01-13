@@ -19,127 +19,112 @@
  */
 package org.nexuse2e.logging;
 
-import java.util.Date;
-
-import org.apache.logging.log4j.Level;
-//import org.apache.logging.log4j.spi.LoggingEvent;
-import org.nexuse2e.BeanStatus;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.nexuse2e.Engine;
-import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.dao.LogDAO;
 import org.nexuse2e.pojo.LogPojo;
 
-/**
- * @author gesch
- *
- */
-public class DatabaseLogger extends AbstractLogger {
+import java.io.Serializable;
+import java.util.Date;
 
-    
-    /**
-     * Default constructor.
-     */
-    public DatabaseLogger() {
+@Plugin(name="DatabaseLogger", category="Core", elementType="appender")
+public class DatabaseLogger extends AbstractAppender {
 
-        status = BeanStatus.INSTANTIATED;
+    protected DatabaseLogger(String name, Filter filter, Layout<? extends Serializable> layout, boolean ignoreExceptions, Property[] properties) {
+        super(name, filter, layout, ignoreExceptions, properties);
     }
 
-//    @Override
-//    protected void append( LoggingEvent loggingevent ) {
-//
-//        LogDAO logDao;
-//        try {
-//            logDao = (LogDAO)Engine.getInstance().getBeanFactory().getBean( "logDao" );
-//        } catch ( Exception e ) {
-//            e.printStackTrace();
-//            return;
-//        }
-//        //        loggingevent.get
-//        if ( status != BeanStatus.ACTIVATED ) {
-//            return;
-//        }
-//
-//        if ( !loggingevent.getLevel().isGreaterOrEqual( Level.toLevel( getLogThreshold(), Level.ERROR ) ) ) {
-//            return;
-//        }
-//
-//        String description = "";
-//        if ( loggingevent.getMessage() instanceof LogMessage ) {
-//            description = ( (LogMessage) loggingevent.getMessage() ).toString(false);
-//        } else {
-//            description = loggingevent.getMessage().toString();
-//        }
-//
-//        if ( ( description != null ) && ( description.length() > 4000 ) ) {
-//            description = description.substring( 0, 3999 );
-//        }
-//
-//        try {
-//            LogPojo pojo = new LogPojo();
-//
-//            String className = loggingevent.getLocationInformation().getClassName();
-//            String methodName = loggingevent.getLocationInformation().getMethodName();
-//            int endIndex = className.indexOf( "." );
-//            String normalizedClassName;
-//
-//            if ( endIndex > 0 ) {
-//                normalizedClassName = className;//.substring( begineIndex, endIndex );
-//            } else {
-//                normalizedClassName = className;
-//            }
-//
-//            //TODO get machine id ?
-//            pojo.setLogId( Engine.getInstance().getEngineController().getEngineControllerStub().getMachineId() );
-//
-//            pojo.setCreatedDate( new Date() );
-//            pojo.setClassName( normalizedClassName );
-//            pojo.setMethodName( methodName );
-//            pojo.setEventId( 0 );
-//            pojo.setSeverity( loggingevent.getLevel().toInt() );
-//            pojo.setDescription( description );
-//            pojo.setConversationId( "unknown" );
-//            pojo.setMessageId( "unknown" );
-//            if ( loggingevent.getMessage() instanceof LogMessage ) {
-//                LogMessage logMessage = (LogMessage) loggingevent.getMessage();
-//                if ( logMessage.getConversationId() != null ) {
-//                    pojo.setConversationId( logMessage.getConversationId() );
-//                }
-//                if ( logMessage.getMessageId() != null ) {
-//                    pojo.setMessageId( logMessage.getMessageId() );
-//                }
-//            }
-//
-//            // avoid concurrent access to session
-//            synchronized (this) {
-//
-//                logDao.saveLog( pojo );
-//            }
-//        } catch ( Exception ex ) {
-//            System.out.println("In case of truncation, please double check the database settings for the table nx_log. The description should be varchar(4000)");
-//        	ex.printStackTrace();
-//        }
-//    }
+    @PluginFactory
+    public static DatabaseLogger createAppender(
+            @PluginAttribute("name") String name,
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginElement("Filter") Filter filter) {
+
+        if (name == null) {
+            LOGGER.error("No name provided for DatabaseLogger");
+            return null;
+        }
+
+        if (layout == null) layout = PatternLayout.createDefaultLayout();
+
+        return new DatabaseLogger(name, filter, layout, true, null);
+    }
 
     @Override
-    public void close() {
-        
-                
-        
+    public void append( LogEvent logEvent ) {
+
+        LogDAO logDao;
+        try {
+            logDao = (LogDAO)Engine.getInstance().getBeanFactory().getBean( "logDao" );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            return;
+        }
+
+        String description = "";
+        if ( logEvent.getMessage() instanceof LogMessage ) {
+            description = ( (LogMessage) logEvent.getMessage() ).toString(false);
+        } else {
+            description = logEvent.getMessage().toString();
+        }
+
+        if ( ( description != null ) && ( description.length() > 4000 ) ) {
+            description = description.substring( 0, 3999 );
+        }
+
+        try {
+            LogPojo pojo = new LogPojo();
+
+            String className = logEvent.getLoggerName();
+            String methodName = logEvent.getThreadName();
+            int endIndex = className.indexOf( "." );
+            String normalizedClassName;
+
+            if ( endIndex > 0 ) {
+                normalizedClassName = className;//.substring( begineIndex, endIndex );
+            } else {
+                normalizedClassName = className;
+            }
+
+            //TODO get machine id ?
+            pojo.setLogId( Engine.getInstance().getEngineController().getEngineControllerStub().getMachineId() );
+
+            pojo.setCreatedDate( new Date() );
+            pojo.setClassName( normalizedClassName );
+            pojo.setMethodName( methodName );
+            pojo.setEventId( 0 );
+            pojo.setSeverity( logEvent.getLevel().intLevel() );
+            pojo.setDescription( description );
+            pojo.setConversationId( "unknown" );
+            pojo.setMessageId( "unknown" );
+            if ( logEvent.getMessage() instanceof LogMessage ) {
+                LogMessage logMessage = (LogMessage) logEvent.getMessage();
+                if ( logMessage.getConversationId() != null ) {
+                    pojo.setConversationId( logMessage.getConversationId() );
+                }
+                if ( logMessage.getMessageId() != null ) {
+                    pojo.setMessageId( logMessage.getMessageId() );
+                }
+            }
+
+            // avoid concurrent access to session
+            synchronized (this) {
+
+                logDao.saveLog( pojo );
+            }
+        } catch ( Exception ex ) {
+            System.out.println("In case of truncation, please double check the database settings for the table nx_log. The description should be varchar(4000)");
+        	ex.printStackTrace();
+        }
     }
-
-    /* (non-Javadoc)
-     * @see org.nexuse2e.Manageable#initialize(org.nexuse2e.configuration.EngineConfiguration)
-     */
-    public void initialize( EngineConfiguration config ) {
-
-        status = BeanStatus.INITIALIZED;
-    }
-
-//    @Override
-//    public void teardown() {
-//
-//        close();
-//        super.teardown();
-//    }
 
 }
