@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.nexuse2e.Engine;
 import org.nexuse2e.dao.LogDAO;
@@ -85,7 +86,14 @@ public class DatabaseLogger extends AbstractAppender {
             LogPojo pojo = new LogPojo();
 
             String className = logEvent.getLoggerName();
-            String methodName = logEvent.getThreadName();
+            String methodName = null;
+            if (logEvent.isIncludeLocation()) {
+                Log4jLogEvent.serialize(logEvent, true);
+                if (logEvent.getSource() != null) {
+                    methodName = logEvent.getSource().getMethodName();
+                }
+            }
+
             int endIndex = className.indexOf( "." );
             String normalizedClassName;
 
