@@ -19,20 +19,15 @@
  */
 package org.nexuse2e.logging;
 
-
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.message.Message;
 import org.nexuse2e.messaging.MessageContext;
 import org.nexuse2e.pojo.MessagePojo;
-
-import java.io.Serializable;
-
 
 /**
  * @author mbreilmann, gesch
  */
-public class LogMessage implements Serializable {
-
-    private static final long serialVersionUID = 7284169389821283301L;
+public class LogMessage implements Message {
 
     private String description    = null;
     private String conversationId = "unknown";
@@ -136,6 +131,21 @@ public class LogMessage implements Serializable {
      */
     public LogMessage(String description, MessageContext messageContext) {
         this(description, (messageContext != null ? messageContext.getMessagePojo() : null));
+    }
+
+    @Override
+    public String getFormattedMessage() {
+        return toString(true);
+    }
+
+    @Override
+    public String getFormat() {
+        return this.getFormattedMessage();
+    }
+
+    @Override
+    public Object[] getParameters() {
+        return new Object[0];
     }
 
     /**
