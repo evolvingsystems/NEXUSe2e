@@ -1,20 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="org.nexuse2e.logging" monitorInterval="30">
+<Configuration status="WARN" name="NEXUSe2e" packages="org.nexuse2e.logging" monitorInterval="30">
     <Appenders>
         <DatabaseLogger name="DatabaseLogger_default"/>
+
         <Console name="STDOUT" target="SYSTEM_OUT">
             <PatternLayout pattern="[%-5p] %d{ISO8601} %l - %m%n"/>
         </Console>
+
+        <RollingFile name="RollingFile" fileName="../logs/nexuse2e.log" filePattern="../logs/nexuse2e-%d{MM-dd-yyyy}.gz" ignoreExceptions="true">
+            <PatternLayout pattern="[%-5p] %d{ISO8601} %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="../logs" maxDepth="10">
+                    <!-- Delete all files older than 30 days -->
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="org.nexuse2e" level="WARN" includeLocation="true" additivity="true" >
+        <!--
+        <Logger name="org" level="ALL" includeLocation="true" additivity="false">
+            <AppenderRef level="ALL" ref="RollingFile"/>
+        </Logger>
+
+        <Logger name="org.nexuse2e" level="WARN" includeLocation="true" additivity="true">
             <AppenderRef ref="DatabaseLogger_default"/>
         </Logger>
 
-        <Logger name="org.nexuse2e" level="INFO" includeLocation="true" additivity="false" >
-            <AppenderRef ref="STDOUT"/>
+        <Logger name="org.nexuse2e" level="ALL" includeLocation="true" additivity="false">
+            <AppenderRef level="INFO" ref="RollingFile"/>
+
         </Logger>
-        <Root level="ERROR" includeLocation="true">
+-->
+        <Logger name="org.apache" level="trace" includeLocation="true" additivity="true">
+            <AppenderRef ref="RollingFile"/>
+        </Logger>
+
+        <Root level="trace" includeLocation="true">
+<!--            <AppenderRef ref="RollingFile"/>-->
             <AppenderRef ref="STDOUT"/>
         </Root>
     </Loggers>
