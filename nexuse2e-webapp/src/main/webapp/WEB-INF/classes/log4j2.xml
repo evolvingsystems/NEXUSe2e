@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" name="NEXUSe2e" packages="org.nexuse2e.logging" monitorInterval="30">
     <Appenders>
-        <DatabaseLogger name="DatabaseLogger_default"/>
+        <DatabaseLogger name="DatabaseLogger_default">
+            <ThresholdFilter level="warn"/>
+        </DatabaseLogger>
 
         <Console name="STDOUT" target="SYSTEM_OUT">
             <PatternLayout pattern="[%-5p] %d{ISO8601} %l - %m%n"/>
+            <ThresholdFilter level="error"/>
         </Console>
 
         <RollingFile name="RollingFile" fileName="../logs/nexuse2e.log" filePattern="../logs/nexuse2e-%d{MM-dd-yyyy}.gz" ignoreExceptions="true">
+            <ThresholdFilter level="trace"/>
             <PatternLayout pattern="[%-5p] %d{ISO8601} %l - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
@@ -17,6 +21,7 @@
                 <Delete basePath="../logs" maxDepth="10">
                     <!-- Delete all files older than 30 days -->
                     <IfLastModified age="30d" />
+<!--                    <ifFilename glob="nexuse2e-*" />-->
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
@@ -30,19 +35,20 @@
         <Logger name="org.nexuse2e" level="WARN" includeLocation="true" additivity="true">
             <AppenderRef ref="DatabaseLogger_default"/>
         </Logger>
-
-        <Logger name="org.nexuse2e" level="ALL" includeLocation="true" additivity="false">
-            <AppenderRef level="INFO" ref="RollingFile"/>
-
-        </Logger>
 -->
-        <Logger name="org.apache" level="trace" includeLocation="true" additivity="true">
+        <logger name="org.hibernate" level="trace" />
+        <logger name="org.nexuse2e" level="trace" />
+        <!--
+        <Logger name="org.hibernate" level="debug" includeLocation="true" additivity="false">
             <AppenderRef ref="RollingFile"/>
         </Logger>
-
-        <Root level="trace" includeLocation="true">
-<!--            <AppenderRef ref="RollingFile"/>-->
-            <AppenderRef ref="STDOUT"/>
+        <Logger name="org.hibernate.SQL" level="DEBUG" includeLocation="true" additivity="false">
+            <AppenderRef ref="RollingFile"/>
+        </Logger>-->
+        <Root level="error">
+            <AppenderRef ref="RollingFile"/>
+<!--            <AppenderRef ref="STDOUT"/>-->
+            <AppenderRef ref="DatabaseLogger_default"/>
         </Root>
     </Loggers>
 </Configuration>
