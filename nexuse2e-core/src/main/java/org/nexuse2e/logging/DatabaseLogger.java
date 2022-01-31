@@ -86,7 +86,7 @@ public class DatabaseLogger extends AbstractAppender {
             LogPojo pojo = new LogPojo();
 
             String className = logEvent.getLoggerName();
-            String methodName = null;
+            String methodName = "unknown";
             if (logEvent.isIncludeLocation()) {
                 Log4jLogEvent.serialize(logEvent, true);
                 if (logEvent.getSource() != null) {
