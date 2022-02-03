@@ -132,13 +132,6 @@
             <nxs:command target="ServiceDelete.do" label="Delete Service" icon="images/icons/bullet_orange.png"/>
           </nxs:page>
         </nxs:page>
-        <nxs:page target="NotifierList.do" label="Notifiers" icon="images/icons/transmit_blue.png">
-          <nxs:command target="NotifierAdd.do" label="Add Notifier" icon="images/icons/bullet_orange.png"/>
-          <nxs:page type="provider" provider="notifierTargetProvider" target="NotifierView.do" label="View Notifier" icon="images/icons/bullet_orange.png">
-            <nxs:command target="NotifierUpdate.do" label="Update Notifier" icon="images/icons/bullet_orange.png"/>
-            <nxs:command target="NotifierDelete.do" label="Delete Notifier" icon="images/icons/bullet_orange.png"/>
-          </nxs:page>
-        </nxs:page>
         <nxs:page target="Certificates.do" label="Certificates" icon="images/icons/medal_silver_3.png">
           <nxs:page target="RequestOverview.do" label="Certificate Request" icon="images/icons/medal_silver_add.png">
             <nxs:command target="RequestCreate.do" label="Create Request" icon="images/icons/bullet_orange.png"/>
