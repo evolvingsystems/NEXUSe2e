@@ -67,6 +67,14 @@ public class DatabaseLogger extends AbstractAppender {
         try {
             logDao = (LogDAO)Engine.getInstance().getBeanFactory().getBean( "logDao" );
         } catch ( Exception e ) {
+            if (e instanceof IllegalStateException
+                    && e.getMessage().startsWith("ApplicationObjectSupport instance [org.nexuse2e.Engine@")
+                    && e.getMessage().endsWith("] does not run in an ApplicationContext")) {
+                System.out.printf("Exception while logging LogEvent '%s' to the database is being suppressed " +
+                        "as it likely caused by the ApplicationContext not being available during application start%n",
+                        logEvent.getMessage().toString());
+                return;
+            }
             e.printStackTrace();
             return;
         }
