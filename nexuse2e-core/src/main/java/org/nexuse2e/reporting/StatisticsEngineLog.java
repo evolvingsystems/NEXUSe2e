@@ -70,22 +70,18 @@ public class StatisticsEngineLog {
     }
 
     private String getSeverityNameFromLevel(int level) {
-        // Integer.MIN_VALUE represents "All" in log4j
-        if (level == Integer.MIN_VALUE) {
-            return null;
-        }
         switch (level) {
-            case 5000:
+            case 600:
                 return "TRACE";
-            case 10000:
+            case 500:
                 return "DEBUG";
-            case 20000:
+            case 400:
                 return "INFO";
-            case 30000:
+            case 300:
                 return "WARN";
-            case 40000:
+            case 200:
                 return "ERROR";
-            case 50000:
+            case 100:
                 return "FATAL";
             default:
                 throw new IllegalArgumentException("Severity level " + level + " could not be resolved.");
