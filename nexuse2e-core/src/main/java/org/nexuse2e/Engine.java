@@ -80,8 +80,7 @@ import javax.xml.xpath.XPathFactory;
  *
  * @author gesch
  */
-public class Engine extends WebApplicationObjectSupport implements BeanNameAware, ApplicationContextAware,
-        InitializingBean {
+public class Engine extends WebApplicationObjectSupport implements BeanNameAware, ApplicationContextAware, InitializingBean {
 
     private static Logger LOG = LoggerFactory.getLogger(Engine.class);
 
@@ -273,7 +272,9 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
                 throw new IllegalStateException("nexusE2ERoot must be set if not running in a WebApplicationContext");
             }
         }
-
+        if (System.getProperty("webapp.root") == null) {
+            System.setProperty("webapp.root", nexusE2ERoot);
+        }
         LOG.debug("NEXUSe2e root directory: " + nexusE2ERoot);
     }
 
@@ -296,8 +297,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
             try {
                 // NOTE: & is needed to retrieve the actual bean class and not a proxy!!!
-                localSessionFactoryBean = (LocalSessionFactoryBean) getBeanFactory().getBean(
-                        "&hibernateSessionFactory");
+                localSessionFactoryBean = (LocalSessionFactoryBean) getBeanFactory().getBean("&hibernateSessionFactory");
                 if (localSessionFactoryBean != null) {
                     // localSessionFactoryBean.createDatabaseSchema();
                     //                    localSessionFactoryBean.updateDatabaseSchema();
@@ -333,8 +333,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
             idGenrators.put("conversationId", new NexusUUIDGenerator());
 
             //initialize TransactionDataService
-            transactionService = (TransactionService) Engine.getInstance().getBeanFactory().getBean(
-                    "transactionService");
+            transactionService = (TransactionService) Engine.getInstance().getBeanFactory().getBean("transactionService");
 
             // create new Config
             if (currentConfiguration == null) {
@@ -351,8 +350,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
             }
 
             // Add transaction service to static beans so its life cycle is managed correctly
-            currentConfiguration.getStaticBeanContainer().getManagableBeans().put(Constants.TRANSACTION_SERVICE,
-                    transactionService);
+            currentConfiguration.getStaticBeanContainer().getManagableBeans().put(Constants.TRANSACTION_SERVICE, transactionService);
 
             for (Manageable bean : currentConfiguration.getStaticBeanContainer().getManagableBeans().values()) {
                 LOG.trace("Initializing bean: " + bean.getClass().getName());
@@ -415,8 +413,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         MailcapCommandMap commandMap = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
         try {
             XPath xpath = XPathFactory.newInstance().newXPath();
-            NodeList handlerNodeList = (NodeList) xpath.evaluate("/MimeConfig/MimeHandlers/Handler", mimeConfigDoc,
-                    XPathConstants.NODESET);
+            NodeList handlerNodeList = (NodeList) xpath.evaluate("/MimeConfig/MimeHandlers/Handler", mimeConfigDoc, XPathConstants.NODESET);
 
             if (handlerNodeList != null) {
                 for (int i = 0; i < handlerNodeList.getLength(); i++) {
@@ -455,8 +452,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
         try {
 
             XPath xpath = XPathFactory.newInstance().newXPath();
-            NodeList mimeTypeNodeList = (NodeList) xpath.evaluate("/MimeConfig/FileMappings/MimeMapping",
-                    mimeConfigDoc, XPathConstants.NODESET);
+            NodeList mimeTypeNodeList = (NodeList) xpath.evaluate("/MimeConfig/FileMappings/MimeMapping", mimeConfigDoc, XPathConstants.NODESET);
 
             if (mimeTypeNodeList != null) {
                 for (int i = 0; i < mimeTypeNodeList.getLength(); i++) {
@@ -466,8 +462,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
                     StringBuffer sb = new StringBuffer(mimeType);
 
                     xpath = XPathFactory.newInstance().newXPath();
-                    NodeList fileTypeNodeList = (NodeList) xpath.evaluate("./FileType/text()", handlerNode,
-                            XPathConstants.NODESET);
+                    NodeList fileTypeNodeList = (NodeList) xpath.evaluate("./FileType/text()", handlerNode, XPathConstants.NODESET);
 
                     for (int x = 0; x < fileTypeNodeList.getLength(); x++) {
                         Node fileTypeNode = fileTypeNodeList.item(x);
@@ -739,13 +734,11 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
                         Class<?> theClass = Class.forName(baseConfigurationProviderClass);
                         baseConfigurationProvider = (BaseConfigurationProvider) theClass.newInstance();
                     } catch (InstantiationException iEx) {
-                        LOG.error("Base configuration class '" + baseConfigurationProviderClass + "' could not be " +
-                                "instantiated: " + iEx);
+                        LOG.error("Base configuration class '" + baseConfigurationProviderClass + "' could not be " + "instantiated: " + iEx);
                     }
                 }
                 if (baseConfigurationProvider == null || !baseConfigurationProvider.isConfigurationAvailable()) {
-                    String message =
-                            "No base configuration available from BaseConfigurationProvider " + baseConfigurationProvider;
+                    String message = "No base configuration available from BaseConfigurationProvider " + baseConfigurationProvider;
                     LOG.error(message);
                     throw new InstantiationException(message);
                 }
@@ -799,6 +792,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
 
     /**
      * Convenience method to get the transaction DAO.
+     *
      * @return The transaction DAO.
      * @throws NexusException If the transaction DAO is not available.
      */
@@ -806,7 +800,6 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
     //
     //        return (TransactionDAO) getDao( "transactionDao" );
     //    }
-
     public TransactionService getTransactionService() {
 
         return transactionService;
@@ -1018,8 +1011,7 @@ public class Engine extends WebApplicationObjectSupport implements BeanNameAware
             }
 
             // Recover any pending messages...
-            BackendOutboundDispatcher backendOutboundDispatcher =
-                    currentConfiguration.getStaticBeanContainer().getBackendOutboundDispatcher();
+            BackendOutboundDispatcher backendOutboundDispatcher = currentConfiguration.getStaticBeanContainer().getBackendOutboundDispatcher();
             if (backendOutboundDispatcher != null) {
                 backendOutboundDispatcher.recoverMessages();
             }
