@@ -71,7 +71,7 @@ public class DatabaseLogger extends AbstractAppender {
                     && e.getMessage().startsWith("ApplicationObjectSupport instance [org.nexuse2e.Engine@")
                     && e.getMessage().endsWith("] does not run in an ApplicationContext")) {
                 System.out.printf("Exception while logging LogEvent '%s' to the database is being suppressed " +
-                        "as it likely caused by the ApplicationContext not being available during application start%n",
+                        "as it likely caused by the ApplicationContext not being available during application start.",
                         logEvent.getMessage().toString());
                 return;
             }

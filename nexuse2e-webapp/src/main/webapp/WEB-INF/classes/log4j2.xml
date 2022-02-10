@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" name="NEXUSe2e" packages="org.nexuse2e.logging" monitorInterval="30">
     <Appenders>
+        <!-- Custom NEXUSe2e database logger. Logs into nx_log table. Log entries used for Transaction Reporting and Engine Log in UI. -->
         <DatabaseLogger name="DatabaseLogger_default">
-            <ThresholdFilter level="warn"/>
+            <ThresholdFilter level="info"/>
         </DatabaseLogger>
-
-        <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%-5p] %d{ISO8601} %l - %m%n"/>
-            <ThresholdFilter level="error"/>
-        </Console>
 
         <RollingFile name="RollingFile" fileName="../logs/nexuse2e.log" filePattern="../logs/nexuse2e-%d{MM-dd-yyyy}.gz" ignoreExceptions="true">
             <ThresholdFilter level="trace"/>
@@ -21,34 +17,43 @@
                 <Delete basePath="../logs" maxDepth="10">
                     <!-- Delete all files older than 30 days -->
                     <IfLastModified age="30d" />
-<!--                    <ifFilename glob="nexuse2e-*" />-->
+                    <!--
+                    <ifFilename glob="nexuse2e-*" />
+                    -->
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
+
+        <!-- Configure SMTP-Appender settings here and comment in <AppenderRef ref="Mail"/> entry for Root logger further below to enable E-Mail Logging. -->
+        <SMTP name="Mail" subject="NEXUSe2eMonitoring" to="receiver@test.com" from="nexuse2e@test.com" smtpHost="localhost" smtpPort="25" bufferSize="0">
+            <!-- Examples of filter options: -->
+            <!--
+            <ThresholdFilter level="error"/>
+            -->
+            <!--
+            <RegexFilter regex="(.|\n)*Dear admin(.|\n)*" onMatch="ACCEPT" onMismatch="DENY"/>
+            -->
+            <PatternLayout pattern="%d[%p]-%m%n%ex{0}"/>
+        </SMTP>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%-5p] %d{ISO8601} %l - %m%n"/>
+            <ThresholdFilter level="trace"/>
+        </Console>
     </Appenders>
     <Loggers>
-        <!--
-        <Logger name="org" level="ALL" includeLocation="true" additivity="false">
-            <AppenderRef level="ALL" ref="RollingFile"/>
-        </Logger>
+        <logger name="org.hibernate" level="warn" />
+        <logger name="org.nexuse2e" level="info" />
 
-        <Logger name="org.nexuse2e" level="WARN" includeLocation="true" additivity="true">
+        <Root level="error" includeLocation="true">
             <AppenderRef ref="DatabaseLogger_default"/>
-        </Logger>
--->
-        <logger name="org.hibernate" level="trace" />
-        <logger name="org.nexuse2e" level="trace" />
-        <!--
-        <Logger name="org.hibernate" level="debug" includeLocation="true" additivity="false">
             <AppenderRef ref="RollingFile"/>
-        </Logger>
-        <Logger name="org.hibernate.SQL" level="DEBUG" includeLocation="true" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-        </Logger>-->
-        <Root level="error">
-            <AppenderRef ref="RollingFile"/>
-<!--            <AppenderRef ref="STDOUT"/>-->
-            <AppenderRef ref="DatabaseLogger_default"/>
+            <!--
+            <AppenderRef ref="Mail"/>
+            -->
+            <!--
+            <AppenderRef ref="STDOUT"/>
+            -->
         </Root>
     </Loggers>
 </Configuration>

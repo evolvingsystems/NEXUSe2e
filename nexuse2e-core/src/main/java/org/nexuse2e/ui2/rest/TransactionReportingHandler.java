@@ -175,17 +175,17 @@ public class TransactionReportingHandler implements Handler {
         }
         switch (severity.toUpperCase()) {
             case "TRACE":
-                return "5000";
+                return "600";
             case "DEBUG":
-                return "10000";
+                return "500";
             case "INFO":
-                return "20000";
+                return "400";
             case "WARN":
-                return "30000";
+                return "300";
             case "ERROR":
-                return "40000";
+                return "200";
             case "FATAL":
-                return "50000";
+                return "100";
             default:
                 throw new IllegalArgumentException("Severity " + severity + " could not be resolved.");
         }
