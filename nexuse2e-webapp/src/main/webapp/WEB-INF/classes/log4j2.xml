@@ -6,7 +6,7 @@
             <ThresholdFilter level="info"/>
         </DatabaseLogger>
 
-        <RollingFile name="RollingFile" fileName="../logs/nexuse2e.log" filePattern="../logs/nexuse2e-%d{MM-dd-yyyy}.gz" ignoreExceptions="true">
+        <RollingFile name="RollingFile" fileName="./logs/nexuse2e.log" filePattern="./logs/nexuse2e-%d{MM-dd-yyyy}.gz" ignoreExceptions="true">
             <ThresholdFilter level="trace"/>
             <PatternLayout pattern="[%-5p] %d{ISO8601} %l - %m%n"/>
             <Policies>
@@ -14,7 +14,7 @@
                 <SizeBasedTriggeringPolicy size="250 MB"/>
             </Policies>
             <DefaultRolloverStrategy max="10">
-                <Delete basePath="../logs" maxDepth="10">
+                <Delete basePath="./logs" maxDepth="10">
                     <!-- Delete all files older than 30 days -->
                     <IfLastModified age="30d" />
                     <!--
