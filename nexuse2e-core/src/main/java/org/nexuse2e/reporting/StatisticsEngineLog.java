@@ -84,7 +84,7 @@ public class StatisticsEngineLog {
             case 100:
                 return "FATAL";
             default:
-                throw new IllegalArgumentException("Severity level " + level + " could not be resolved.");
+                return null;
         }
     }
 }
