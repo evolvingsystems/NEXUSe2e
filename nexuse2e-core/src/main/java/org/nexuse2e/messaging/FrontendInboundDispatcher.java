@@ -1,26 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -55,7 +56,7 @@ import java.util.Map;
  */
 public class FrontendInboundDispatcher extends ChoreographyValidator implements Dispatcher, Pipelet, InitializingBean {
 
-    private static Logger LOG = Logger.getLogger(FrontendInboundDispatcher.class);
+    private static Logger LOG = LogManager.getLogger(FrontendInboundDispatcher.class);
 
     private ProtocolAdapter[] protocolAdapters;
 
@@ -94,10 +95,13 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
         // extract header data
         // Shouldn't only the state machine set the status?
         //            if ( messagePojo.getConversation() != null
-        //                    && messagePojo.getConversation().getStatus() == org.nexuse2e.Constants.CONVERSATION_STATUS_CREATED ) {
-        //                messagePojo.getConversation().setStatus( org.nexuse2e.Constants.CONVERSATION_STATUS_PROCESSING );
+        //                    && messagePojo.getConversation().getStatus() == org.nexuse2e.Constants
+        //                    .CONVERSATION_STATUS_CREATED ) {
+        //                messagePojo.getConversation().setStatus( org.nexuse2e.Constants
+        //                .CONVERSATION_STATUS_PROCESSING );
         //                if ( LOG.isDebugEnabled() ) {
-        //	                LOG.debug( new LogMessage( "MessageType:" + messagePojo.getType(), messagePojo.getConversation()
+        //	                LOG.debug( new LogMessage( "MessageType:" + messagePojo.getType(), messagePojo
+        //	                .getConversation()
         //	                        .getConversationId(), messagePojo.getMessageId() ) );
         //                }
         //            }
@@ -120,20 +124,21 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
         } catch (NexusException e) {
             LOG.error(new LogMessage("Error while validating choreography", messagePojo, e), e);
             responseMessageContext =
-                protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.CHOREOGRAPHY_NOT_FOUND, null, messageContext, null);
+                    protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.CHOREOGRAPHY_NOT_FOUND, null, messageContext, null);
             failureInHeaderProcessing = true;
-            errorMessages
-                .add(new ErrorDescriptor("No matching choreography found in configuration: " + messagePojo.getConversation().getChoreography().getName()));
+            errorMessages.add(new ErrorDescriptor("No matching choreography found in configuration: " + messagePojo.getConversation().getChoreography().getName()));
         }
 
         // get action
         String actionId = messagePojo.getAction().getName();
-        ActionPojo action = Engine.getInstance().getActiveConfigurationAccessService().getActionFromChoreographyByActionId(choreography, actionId);
+        ActionPojo action =
+                Engine.getInstance().getActiveConfigurationAccessService().getActionFromChoreographyByActionId(choreography, actionId);
         if ((action == null) && (messagePojo.getType() == Constants.INT_MESSAGE_TYPE_NORMAL)) {
             failureInHeaderProcessing = true;
             errorMessages.add(new ErrorDescriptor("No matching action found in configuration: " + messagePojo.getAction().getName()));
             responseMessageContext =
-                protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.ACTION_NOT_PERMITTED, null, messageContext, null);
+                    protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.ACTION_NOT_PERMITTED,
+                            null, messageContext, null);
         }
 
         if (!failureInHeaderProcessing) {
@@ -146,10 +151,9 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                 e.printStackTrace();
                 LOG.error(new LogMessage("No matching participant found: " + messagePojo.getConversation().getPartner().getPartnerId(), messagePojo));
                 responseMessageContext =
-                    protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.PARTICIPANT_NOT_FOUND, choreography, messageContext, null);
+                        protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.PARTICIPANT_NOT_FOUND, choreography, messageContext, null);
                 failureInHeaderProcessing = true;
-                errorMessages
-                    .add(new ErrorDescriptor("No matching participant found in configuration: " + messagePojo.getConversation().getPartner().getPartnerId()));
+                errorMessages.add(new ErrorDescriptor("No matching participant found in configuration: " + messagePojo.getConversation().getPartner().getPartnerId()));
             }
         }
 
@@ -165,7 +169,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
         // header data are accessible, but may not be valid for the current conversation
         if (messageContext.getErrors() != null && messageContext.getErrors().size() > 0) {
             //headerInvalid = true;
-            // Shouldn't only the state machine set the status? Why does processing proceed after message/conv was marked as failed/error?
+            // Shouldn't only the state machine set the status? Why does processing proceed after message/conv was
+            // marked as failed/error?
             //                messageContext.getMessagePojo().setStatus( Constants.MessageStatus.FAILED.getOrdinal() );
             //                messageContext.getConversation().setStatus( Constants.CONVERSATION_STATUS_ERROR );
         }
@@ -174,14 +179,13 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
         String msgType = messagePojo.getTypeName().toLowerCase();
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(new LogMessage(
-                "Received " + msgType + " (" + messagePojo.getMessageId() + ") from " + participant.getPartner().getPartnerId() + " for " + choreography
-                    .getName() + (action != null ? "/" + action.getName() : ""), messagePojo));
+            LOG.info(new LogMessage("Received " + msgType + " (" + messagePojo.getMessageId() + ") from " + participant.getPartner().getPartnerId() + " for " + choreography.getName() + (action != null ? "/" + action.getName() : ""), messagePojo));
         }
 
         // handle different message types
         if (messagePojo.isNormal()) {
-            responseMessageContext = handleNormalMessage(messageContext, participant, protocolAdapter, choreography, errorMessages);
+            responseMessageContext = handleNormalMessage(messageContext, participant, protocolAdapter, choreography,
+                    errorMessages);
         } else if (messagePojo.isAck()) {
             handleAcknowledgment(messageContext);
         } else if (messagePojo.isError()) {
@@ -203,8 +207,9 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
      * @param messageContext
      * @throws NexusException
      */
-    private MessageContext handleNormalMessage(MessageContext messageContext, ParticipantPojo participant, ProtocolAdapter protocolAdapter,
-                                               ChoreographyPojo choreography, List<ErrorDescriptor> errorMessages) throws NexusException {
+    private MessageContext handleNormalMessage(MessageContext messageContext, ParticipantPojo participant,
+                                               ProtocolAdapter protocolAdapter, ChoreographyPojo choreography,
+                                               List<ErrorDescriptor> errorMessages) throws NexusException {
         MessageContext responseMessageContext = null;
 
         boolean headerInvalid = false;
@@ -215,11 +220,12 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
             // duplicate found
             // get according acknowledgment
             if (!messageContext.isRequestMessage() && !participant.getConnection().isSynchronous()) {
-                MessageContext ackErr = Engine.getInstance().getTransactionService().getMessageContext(message.getMessageId(), true);
+                MessageContext ackErr =
+                        Engine.getInstance().getTransactionService().getMessageContext(message.getMessageId(), true);
                 boolean foundResponse =
-                    (ackErr != null && ackErr.getMessagePojo() != null && (ackErr.getMessagePojo().isAck() || ackErr.getMessagePojo().isError()));
-                LOG.info(new LogMessage("Received duplicate message: " + message.getMessageId() +
-                                        (foundResponse ? ", re-sending ACK/ERROR " + ackErr.getMessagePojo().getMessageId() : ""), message));
+                        (ackErr != null && ackErr.getMessagePojo() != null && (ackErr.getMessagePojo().isAck() || ackErr.getMessagePojo().isError()));
+                LOG.info(new LogMessage("Received duplicate message: " + message.getMessageId() + (foundResponse ? "," +
+                        " re-sending ACK/ERROR " + ackErr.getMessagePojo().getMessageId() : ""), message));
 
                 if (foundResponse) {
                     MessageHandlingCenter.getInstance().processMessage(ackErr);
@@ -231,7 +237,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
             // this message is not a duplicate
             // now we check the different processing models
             if (messageContext.isRequestMessage()) {
-                responseMessageContext = handleRequest(messageContext, headerInvalid, protocolAdapter, choreography, errorMessages);
+                responseMessageContext = handleRequest(messageContext, headerInvalid, protocolAdapter, choreography,
+                        errorMessages);
             } else {
                 // Forward the message to check the transition, persist it and pass to backend
                 try {
@@ -248,7 +255,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                             responseMessageContext = null;
                             // generate ack for reliable connections
                             try {
-                                responseMessageContext = protocolAdapter.createAcknowledgement(choreography, messageContext);
+                                responseMessageContext = protocolAdapter.createAcknowledgement(choreography,
+                                        messageContext);
                             } catch (NexusException e) {
                                 // Substituted an e.printStackTrace() by LOG.error().
                                 // Do we need to do something else here? How about an error ack?
@@ -257,8 +265,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                             }
                         } else {
                             LOG.debug(new LogMessage("error response message found", message));
-                            responseMessageContext = protocolAdapter
-                                .createErrorAcknowledgement(Constants.ErrorMessageReasonCode.UNKNOWN, choreography, messageContext, errorMessages);
+                            responseMessageContext =
+                                    protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.UNKNOWN, choreography, messageContext, errorMessages);
                         }
                         try {
                             LOG.debug(new LogMessage("dispatching response message", message));
@@ -286,10 +294,7 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                     // Block for synchronous processing
                     if (participant.getConnection().isSynchronous()) {
                         responseMessageContext = waitForSynchronousResponse(messageContext);
-                        if (responseMessageContext.getMessagePojo().getStatus() != MessageStatus.FAILED.getOrdinal()
-                                && responseMessageContext.getMessagePojo().getBackendStatus() != MessageStatus.FAILED
-                                        .getOrdinal())
-                        {
+                        if (responseMessageContext.getMessagePojo().getStatus() != MessageStatus.FAILED.getOrdinal() && responseMessageContext.getMessagePojo().getBackendStatus() != MessageStatus.FAILED.getOrdinal()) {
                             try {
                                 messageContext.getStateMachine().receivedNonReliableMessage();
                             } catch (StateTransitionException e) {
@@ -298,9 +303,7 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                         }
                     }
                 } catch (NexusException e) {
-                    LOG.error(new LogMessage(
-                        "Error processing message: " + message.getMessageId() + " (" + message.getConversation().getChoreography().getName() + "/" + message
-                            .getConversation().getPartner().getPartnerId() + ")", message, e), e);
+                    LOG.error(new LogMessage("Error processing message: " + message.getMessageId() + " (" + message.getConversation().getChoreography().getName() + "/" + message.getConversation().getPartner().getPartnerId() + ")", message, e), e);
                     headerInvalid = true;
                 }
             }
@@ -316,7 +319,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
      * @param messageContext
      * @throws NexusException
      */
-    private MessageContext handleRequest(MessageContext messageContext, boolean headerInvalid, ProtocolAdapter protocolAdapter, ChoreographyPojo choreography,
+    private MessageContext handleRequest(MessageContext messageContext, boolean headerInvalid,
+                                         ProtocolAdapter protocolAdapter, ChoreographyPojo choreography,
                                          List<ErrorDescriptor> errorMessages) throws NexusException {
         // request messages are not passed to backend
         try {
@@ -335,7 +339,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
         } else {
             LOG.debug(new LogMessage("error response message found", message));
             responseMessageContext =
-                protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.UNKNOWN, choreography, messageContext, errorMessages);
+                    protocolAdapter.createErrorAcknowledgement(Constants.ErrorMessageReasonCode.UNKNOWN, choreography
+                            , messageContext, errorMessages);
         }
 
         return responseMessageContext;
@@ -358,7 +363,7 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                 }
             }
             //TODO we should check the replies first before we wait
-            
+
             // Since the processing process uses notifyAll(),
             // we check whether there is a response for this thread.
             // If response is not present, the loop continues.
@@ -382,8 +387,9 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
 
         // duplicate?
         if (isDuplicate(message)) {
-            LOG.info(new LogMessage("Received duplicate " + message.getTypeName() + ": " + message.getMessageId() + " for normal message: " + (
-                message.getReferencedMessage() != null ? message.getReferencedMessage() : "n/a"), message));
+            LOG.info(new LogMessage("Received duplicate " + message.getTypeName() + ": " + message.getMessageId() +
+                    " for normal message: " + (message.getReferencedMessage() != null ?
+                    message.getReferencedMessage() : "n/a"), message));
         } else {
             MessagePojo referencedMessagePojo = message.getReferencedMessage();
             if (referencedMessagePojo != null) {
@@ -396,16 +402,15 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
                 propagateSignalMessageReceived(messageContext);
 
                 // Trigger status update
-                StatusUpdateSerializer statusUpdateSerializer = statusUpdateSerializers.get(message.getConversation().getChoreography().getName());
+                StatusUpdateSerializer statusUpdateSerializer =
+                        statusUpdateSerializers.get(message.getConversation().getChoreography().getName());
                 if (statusUpdateSerializer != null) {
                     // Forward message to StatusUpdateSerializer for further processing/queueing
                     statusUpdateSerializer.processMessage(messageContext);
                 }
 
             } else {
-                LOG.error(
-                    new LogMessage("Received " + MessagePojo.getTypeName(message.getType()) + " signal (" + message.getMessageId() + ") for unknown message",
-                                   message));
+                LOG.error(new LogMessage("Received " + MessagePojo.getTypeName(message.getType()) + " signal (" + message.getMessageId() + ") for unknown message", message));
             }
         }
     }
@@ -421,8 +426,9 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
 
         // duplicate?
         if (isDuplicate(message)) {
-            LOG.info(new LogMessage("Received duplicate " + message.getTypeName() + ": " + message.getMessageId() + " for normal message: " + (
-                message.getReferencedMessage() != null ? message.getReferencedMessage() : "n/a"), message));
+            LOG.info(new LogMessage("Received duplicate " + message.getTypeName() + ": " + message.getMessageId() +
+                    " for normal message: " + (message.getReferencedMessage() != null ?
+                    message.getReferencedMessage() : "n/a"), message));
         } else {
             MessagePojo referencedMessagePojo = message.getReferencedMessage();
             if (referencedMessagePojo != null) {
@@ -447,7 +453,8 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
      * @throws NexusException
      */
     private boolean isDuplicate(MessagePojo message) throws NexusException {
-        MessageContext duplicateMessageContext = Engine.getInstance().getTransactionService().getMessageContext(message.getMessageId());
+        MessageContext duplicateMessageContext =
+                Engine.getInstance().getTransactionService().getMessageContext(message.getMessageId());
         return duplicateMessageContext != null;
     }
 
@@ -627,15 +634,15 @@ public class FrontendInboundDispatcher extends ChoreographyValidator implements 
         return forwardPipelet;
     }
 
-    public boolean isFrontendPipelet() {
-
-        return frontendPipelet;
-    }
-
     public void setForwardPipelet(boolean isForwardPipelet) {
 
         forwardPipelet = isForwardPipelet;
 
+    }
+
+    public boolean isFrontendPipelet() {
+
+        return frontendPipelet;
     }
 
     public void setFrontendPipelet(boolean isFrontendPipelet) {

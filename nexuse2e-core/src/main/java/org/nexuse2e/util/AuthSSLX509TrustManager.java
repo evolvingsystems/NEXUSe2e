@@ -1,23 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.util;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.security.KeyStore;
 import java.security.Principal;
@@ -29,16 +32,14 @@ import java.util.Map;
 
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.log4j.Logger;
-
 /**
  * <p>
- * AuthSSLX509TrustManager can be used to extend the default {@link X509TrustManager} 
+ * AuthSSLX509TrustManager can be used to extend the default {@link X509TrustManager}
  * with additional trust decisions.
  * </p>
- * 
+ *
  * @author <a href="mailto:oleg@ural.ru">Oleg Kalnichevski</a>
- * 
+ *
  * <p>
  * DISCLAIMER: HttpClient developers DO NOT actively support this component.
  * The component is provided as a reference material, which may be inappropriate
@@ -48,52 +49,53 @@ import org.apache.log4j.Logger;
 
 public class AuthSSLX509TrustManager implements X509TrustManager {
 
-    private X509TrustManager                defaultTrustManager = null;
-    private Map<Principal, X509Certificate> trustedCertificates;
-    X509Certificate                         leafCertificate;
-
     /** Log object for this class. */
-    private static final Logger LOG                 = Logger.getLogger( AuthSSLX509TrustManager.class );
+    private static final Logger LOG = LogManager.getLogger(AuthSSLX509TrustManager.class);
+    X509Certificate leafCertificate;
+    private X509TrustManager defaultTrustManager = null;
+    private Map<Principal, X509Certificate> trustedCertificates;
 
     /**
      * Constructs a new <code>AuthSSLX509TrustManager</code>.
      * @param defaultTrustManager The default (parent) trust manager that is used for trusted CA checking.
      * Must not be <code>null</code>.
      * @param keyStore The client certificate <code>KeyStore</code>.
-     * @param leafCertificate A special certificate that is expected when connecting to a server. Can be <code>null</code>
+     * @param leafCertificate A special certificate that is expected when connecting to a server. Can be
+     *                        <code>null</code>
      * if no special leaf is expected but just a valid one with a trusted root.
      */
-    public AuthSSLX509TrustManager( final X509TrustManager defaultTrustManager, KeyStore keyStore, X509Certificate leafCertificate ) {
+    public AuthSSLX509TrustManager(final X509TrustManager defaultTrustManager, KeyStore keyStore,
+                                   X509Certificate leafCertificate) {
 
         super();
         trustedCertificates = new HashMap<Principal, X509Certificate>();
         try {
             Enumeration<String> enumeration = keyStore.aliases();
-            while ( enumeration.hasMoreElements() ) {
+            while (enumeration.hasMoreElements()) {
                 String alias = enumeration.nextElement();
-                X509Certificate cert = (X509Certificate) keyStore.getCertificate( alias );
-				if (cert != null) {
-					trustedCertificates.put(cert.getSubjectDN(), cert);
-					LOG.debug("Found trusted cert: " + cert.getSubjectDN());
-				} else {
-					LOG.debug("No cert associated with alias: " + alias);
-				}
+                X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
+                if (cert != null) {
+                    trustedCertificates.put(cert.getSubjectDN(), cert);
+                    LOG.debug("Found trusted cert: " + cert.getSubjectDN());
+                } else {
+                    LOG.debug("No cert associated with alias: " + alias);
+                }
             }
-        } catch ( Exception ex ) {
-            LOG.error( "Error processing trusted certificates! ", ex );
+        } catch (Exception ex) {
+            LOG.error("Error processing trusted certificates! ", ex);
         }
-        if ( defaultTrustManager == null ) {
-            throw new IllegalArgumentException( "Trust manager may not be null" );
+        if (defaultTrustManager == null) {
+            throw new IllegalArgumentException("Trust manager may not be null");
         }
         this.defaultTrustManager = defaultTrustManager;
-        LOG.debug( "AuthSSLX509TrustManager - defaultTrustManager: " + defaultTrustManager.getClass().getName() );
+        LOG.debug("AuthSSLX509TrustManager - defaultTrustManager: " + defaultTrustManager.getClass().getName());
         this.leafCertificate = leafCertificate;
     }
 
     /**
      * @see //com.sun.net.ssl.X509TrustManager#isClientTrusted(X509Certificate[])
      */
-    public boolean isClientTrusted( X509Certificate[] certificates ) {
+    public boolean isClientTrusted(X509Certificate[] certificates) {
 
         /*
          if ( certificates != null ) {
@@ -120,8 +122,8 @@ public class AuthSSLX509TrustManager implements X509TrustManager {
          }
          */
         try {
-            this.defaultTrustManager.checkClientTrusted( certificates, "RSA" );
-        } catch ( CertificateException e ) {
+            this.defaultTrustManager.checkClientTrusted(certificates, "RSA");
+        } catch (CertificateException e) {
             return false;
         }
         return true;
@@ -130,7 +132,7 @@ public class AuthSSLX509TrustManager implements X509TrustManager {
     /**
      * @see //com.sun.net.ssl.X509TrustManager#isServerTrusted(X509Certificate[])
      */
-    public boolean isServerTrusted( X509Certificate[] certificates ) {
+    public boolean isServerTrusted(X509Certificate[] certificates) {
 
         /*
          if ( certificates != null ) {
@@ -157,8 +159,8 @@ public class AuthSSLX509TrustManager implements X509TrustManager {
          }
          */
         try {
-            this.defaultTrustManager.checkServerTrusted( certificates, "RSA" );
-        } catch ( CertificateException e ) {
+            this.defaultTrustManager.checkServerTrusted(certificates, "RSA");
+        } catch (CertificateException e) {
             return false;
         }
         return true;
@@ -175,17 +177,17 @@ public class AuthSSLX509TrustManager implements X509TrustManager {
     /* (non-Javadoc)
      * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
      */
-    public void checkClientTrusted( X509Certificate[] certificates, String authType ) throws CertificateException {
+    public void checkClientTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
 
-        if ( certificates != null ) {
-            for ( int c = 0; c < certificates.length; c++ ) {
+        if (certificates != null) {
+            for (int c = 0; c < certificates.length; c++) {
                 X509Certificate cert = certificates[c];
-                LOG.debug( " Client certificate " + ( c + 1 ) + ":" );
-                LOG.debug( "  Subject DN: " + cert.getSubjectDN() );
-                LOG.debug( "  Signature Algorithm: " + cert.getSigAlgName() );
-                LOG.debug( "  Valid from: " + cert.getNotBefore() );
-                LOG.debug( "  Valid until: " + cert.getNotAfter() );
-                LOG.debug( "  Issuer: " + cert.getIssuerDN() );
+                LOG.debug(" Client certificate " + (c + 1) + ":");
+                LOG.debug("  Subject DN: " + cert.getSubjectDN());
+                LOG.debug("  Signature Algorithm: " + cert.getSigAlgName());
+                LOG.debug("  Valid from: " + cert.getNotBefore());
+                LOG.debug("  Valid until: " + cert.getNotAfter());
+                LOG.debug("  Issuer: " + cert.getIssuerDN());
             }
             /*
              X509Certificate cert = certificates[0];
@@ -202,24 +204,24 @@ public class AuthSSLX509TrustManager implements X509TrustManager {
              */
         }
 
-        this.defaultTrustManager.checkClientTrusted( certificates, authType );
+        this.defaultTrustManager.checkClientTrusted(certificates, authType);
 
     }
 
     /* (non-Javadoc)
      * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
      */
-    public void checkServerTrusted( X509Certificate[] certificates, String authType ) throws CertificateException {
+    public void checkServerTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
 
-        if ( certificates != null ) {
-            for ( int c = 0; c < certificates.length; c++ ) {
+        if (certificates != null) {
+            for (int c = 0; c < certificates.length; c++) {
                 X509Certificate cert = certificates[c];
-                LOG.debug( " Server certificate " + ( c + 1 ) + ":" );
-                LOG.debug( "  Subject DN: " + cert.getSubjectDN() );
-                LOG.debug( "  Signature Algorithm: " + cert.getSigAlgName() );
-                LOG.debug( "  Valid from: " + cert.getNotBefore() );
-                LOG.debug( "  Valid until: " + cert.getNotAfter() );
-                LOG.debug( "  Issuer: " + cert.getIssuerDN() );
+                LOG.debug(" Server certificate " + (c + 1) + ":");
+                LOG.debug("  Subject DN: " + cert.getSubjectDN());
+                LOG.debug("  Signature Algorithm: " + cert.getSigAlgName());
+                LOG.debug("  Valid from: " + cert.getNotBefore());
+                LOG.debug("  Valid until: " + cert.getNotAfter());
+                LOG.debug("  Issuer: " + cert.getIssuerDN());
             }
             /*
              X509Certificate cert = certificates[0];
@@ -236,16 +238,15 @@ public class AuthSSLX509TrustManager implements X509TrustManager {
         }
 
         // let parent check the trusted roots
-        this.defaultTrustManager.checkServerTrusted( certificates, authType );
+        this.defaultTrustManager.checkServerTrusted(certificates, authType);
 
         // if leaf cert is given, check if that certificate matches
         if (leafCertificate != null) {
-            if (!leafCertificate.equals( certificates[0] )) {
-                throw new CertificateException(
-                        "Expected certificate for subject DN '" + leafCertificate.getSubjectDN().getName() +
-                        "' does not match provided certificate (subject DN '" + certificates[0].getSubjectDN().getName() + "'" );
+            if (!leafCertificate.equals(certificates[0])) {
+                throw new CertificateException("Expected certificate for subject DN '" + leafCertificate.getSubjectDN().getName() + "' does not match provided certificate (subject DN '" + certificates[0].getSubjectDN().getName() + "'");
             }
-            LOG.debug( "Provided certificate for subject DN '" + certificates[0].getSubjectDN().getName() + "' matches expected certificate" );
+            LOG.debug("Provided certificate for subject DN '" + certificates[0].getSubjectDN().getName() + "' matches" +
+                    " expected certificate");
         }
     }
 }

@@ -1,26 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.ui.action;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -34,10 +35,11 @@ import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.UserPojo;
 import org.nexuse2e.ui.security.AccessController;
 
+import java.net.URL;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.net.URL;
 
 
 /**
@@ -48,50 +50,41 @@ import java.net.URL;
  */
 public abstract class NexusE2EAction extends Action {
 
-    protected static Logger LOG = Logger.getLogger(NexusE2EAction.class);
-
     // Action forwards
-    public final static String ACTION_FORWARD_SUCCESS       = "success";
-    public final static String ACTION_FORWARD_FAILURE       = "error";
-    public final static String ACTION_FORWARD_LOGIN         = "login";
+    public final static String ACTION_FORWARD_SUCCESS = "success";
+    public final static String ACTION_FORWARD_FAILURE = "error";
+    public final static String ACTION_FORWARD_LOGIN = "login";
     public final static String ACTION_FORWARD_ACCESS_DENIED = "accessDenied";
-
     // Attributes for JSPs
-    public static final String ATTRIBUTE_TREE_NODES    = "treeNodes";
-    public static final String ATTRIBUTE_WEB_APP_PATH  = "webAppPath";
-    public static final String ATTRIBUTE_USER          = "nxUser";
+    public static final String ATTRIBUTE_TREE_NODES = "treeNodes";
+    public static final String ATTRIBUTE_WEB_APP_PATH = "webAppPath";
+    public static final String ATTRIBUTE_USER = "nxUser";
     public static final String ATTRIBUTE_CONFIGURATION = "engineConfiguration";
-
     public static final String ATTRIBUTE_COLLECTION = "collection";
-
     public static final String ATTRIBUTE_SERVICE_COLLECTION = "service_collection";
-
     public static final String REFRESH_TREE = "refreshTree";
-
     public static final String MESSAGES = "nexus_messages";
-
-    public static final String NEXUSE2E_VERSION    = "NEXUSe2e_version";
+    public static final String NEXUSE2E_VERSION = "NEXUSe2e_version";
     public static final String NEXUSE2E_CONFIGPATH = "NEXUSe2e_configpath";
-    public static final String JAVA_VERSION        = "java_version";
-    public static final String JAVA_HOME           = "java_home";
-    public static final String JAVA_CLASSPATH      = "java_classpath";
-    public static final String SERVICE_UPTIME      = "service_uptime";
-    public static final String ENGINE_UPTIME       = "engine_uptime";
-
-    public static final String INSTANCES   = "instances";
+    public static final String JAVA_VERSION = "java_version";
+    public static final String JAVA_HOME = "java_home";
+    public static final String JAVA_CLASSPATH = "java_classpath";
+    public static final String SERVICE_UPTIME = "service_uptime";
+    public static final String ENGINE_UPTIME = "engine_uptime";
+    public static final String INSTANCES = "instances";
     public static final String DESCRIPTION = "description";
-
-    protected static final String SUBMIT_BUTTON = "Submit";
-
     public static final String MSG_KEY_GENERIC_ERROR = "generic.error";
+    protected static final String SUBMIT_BUTTON = "Submit";
+    protected static Logger LOG = LogManager.getLogger(NexusE2EAction.class);
 
     /* (non-Javadoc)
-     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http
+     * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action
+     * .ActionForm, javax.servlet.http
      * .HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    public final ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request, HttpServletResponse response)
-        throws Exception {
+    public final ActionForward execute(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request
+            , HttpServletResponse response) throws Exception {
 
         response.setContentType("text/html");
         //        response.setHeader( "pragma", "no-cache" );
@@ -129,8 +122,10 @@ public abstract class NexusE2EAction extends Action {
         }
 
         if (Engine.getInstance().getEngineController().getAdvancedController() != null) {
-            request.setAttribute(INSTANCES, Engine.getInstance().getEngineController().getAdvancedController().getInstances());
-            request.setAttribute(DESCRIPTION, Engine.getInstance().getEngineController().getAdvancedController().getDescription());
+            request.setAttribute(INSTANCES,
+                    Engine.getInstance().getEngineController().getAdvancedController().getInstances());
+            request.setAttribute(DESCRIPTION,
+                    Engine.getInstance().getEngineController().getAdvancedController().getDescription());
         }
 
         if (user != null) {
@@ -140,7 +135,8 @@ public abstract class NexusE2EAction extends Action {
                 EngineConfiguration config = Engine.getInstance().getConfiguration(user.getNxUserId());
                 request.setAttribute(ATTRIBUTE_CONFIGURATION, config);
                 try {
-                    actionForward = executeNexusE2EAction(actionMapping, actionForm, request, response, config, errors, messages);
+                    actionForward = executeNexusE2EAction(actionMapping, actionForm, request, response, config,
+                            errors, messages);
                 } catch (Exception ex) {
                     LOG.error("Caught exception in Action", ex);
                     ex.printStackTrace();
@@ -178,7 +174,8 @@ public abstract class NexusE2EAction extends Action {
         long days = serviceUptime / dayLength;
         long hours = (serviceUptime - (days * dayLength)) / hourlength;
         long minutes = (serviceUptime - (days * dayLength) - (hours * hourlength)) / minutelength;
-        long seconds = (serviceUptime - (days * dayLength) - (hours * hourlength) - (minutes * minutelength)) / secondlength;
+        long seconds =
+                (serviceUptime - (days * dayLength) - (hours * hourlength) - (minutes * minutelength)) / secondlength;
 
         return days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds";
     }
@@ -198,8 +195,9 @@ public abstract class NexusE2EAction extends Action {
         request.setAttribute("redirectUrl", url.toString());
     }
 
-    public abstract ActionForward executeNexusE2EAction(ActionMapping actionMapping, ActionForm actionForm, HttpServletRequest request,
-                                                        HttpServletResponse response, EngineConfiguration engineConfiguration, ActionMessages errors,
-                                                        ActionMessages messages) throws Exception;
+    public abstract ActionForward executeNexusE2EAction(ActionMapping actionMapping, ActionForm actionForm,
+                                                        HttpServletRequest request, HttpServletResponse response,
+                                                        EngineConfiguration engineConfiguration,
+                                                        ActionMessages errors, ActionMessages messages) throws Exception;
 
 } // NexusE2EAction

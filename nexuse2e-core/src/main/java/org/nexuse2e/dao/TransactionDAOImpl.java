@@ -20,8 +20,10 @@
 package org.nexuse2e.dao;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.StandardLevel;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.hibernate.dialect.Dialect;
@@ -57,7 +59,7 @@ import static org.nexuse2e.messaging.Constants.*;
 @Repository
 public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
 
-    protected static Logger LOG = Logger.getLogger(TransactionDAOImpl.class);
+    protected static Logger LOG = LogManager.getLogger(TransactionDAOImpl.class);
 
     private static final Map<Integer, int[]> followUpConversationStates;
     private static final Map<Integer, int[]> followUpMessageStates;
@@ -655,8 +657,8 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
      */
     public Map<Level, Long> getLogCount(Date start, Date end, Level minLevel, Level maxLevel) throws NexusException {
 
-        int min = (minLevel == null ? 0 : minLevel.toInt());
-        int max = (maxLevel == null ? 1000000 : maxLevel.toInt());
+        int min = (minLevel == null ? 0 : minLevel.intLevel());
+        int max = (maxLevel == null ? 1000000 : maxLevel.intLevel());
 
         Session session = sessionFactory.getCurrentSession();
         StringBuilder query = new StringBuilder("select count(nx_log_id) as msg_count, severity from nx_log log ");
@@ -678,7 +680,7 @@ public class TransactionDAOImpl extends BasicDAOImpl implements TransactionDAO {
         for (Object o : l) {
             Object[] kv = (Object[]) o;
             Long count = ((Number) kv[0]).longValue();
-            Level level = Level.toLevel(((Number) kv[1]).intValue());
+            Level level = Level.getLevel(StandardLevel.getStandardLevel(((Number) kv[1]).intValue()).name());
             result.put(level, count);
         }
         return result;

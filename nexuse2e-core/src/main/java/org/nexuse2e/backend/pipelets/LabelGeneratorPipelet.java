@@ -1,26 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
@@ -35,16 +36,24 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
-import java.util.*;
 
 /**
- * The pipelet uses XSLT to extract String values from an XML payload and associates these Strings as labels on the message.
+ * The pipelet uses XSLT to extract String values from an XML payload and associates these Strings as labels on the
+ * message.
  * The configuration uses a String parameter that contains a name/value list of label names and XPath definitions pairs
  * to create the labels to associate.
  *
@@ -52,17 +61,16 @@ import java.util.*;
  */
 public class LabelGeneratorPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(LabelGeneratorPipelet.class);
-
     public static final String XPATH_LIST = "xPathList";
     public static final String LABEL_PREFIX = "labelPrefix";
-
+    private static Logger LOG = LogManager.getLogger(LabelGeneratorPipelet.class);
     private HashMap<String, String> labelDefinitions = new HashMap<String, String>();
 
     public LabelGeneratorPipelet() {
 
-        parameterMap.put(XPATH_LIST, new ParameterDescriptor(ParameterType.TEXT, "Label XPath List",
-                "List of labels mapped to xpath statements. One label=<xpath> statement per line. Please check w3schools for tutorials on querying xml with xpath statements.", ""));
+        parameterMap.put(XPATH_LIST, new ParameterDescriptor(ParameterType.TEXT, "Label XPath List", "List of labels "
+                + "mapped to xpath statements. One label=<xpath> statement per line. Please check w3schools for " +
+                "tutorials on querying xml with xpath statements.", ""));
         parameterMap.put(LABEL_PREFIX, new ParameterDescriptor(ParameterType.STRING, "Label Prefix", "Label Prefix",
                 ""));
     }
@@ -120,7 +128,8 @@ public class LabelGeneratorPipelet extends AbstractPipelet {
             for (MessagePayloadPojo payload : messageContext.getMessagePojo().getMessagePayloads()) {
                 if (payload.getPayloadData() != null && payload.getPayloadData().length > 0) {
                     // find labels/label values
-                    Document document = builder.parse(new InputSource(new ByteArrayInputStream(payload.getPayloadData())));
+                    Document document =
+                            builder.parse(new InputSource(new ByteArrayInputStream(payload.getPayloadData())));
                     SortedSet<String> keys = new TreeSet<String>(labelDefinitions.keySet());
                     for (Iterator<String> iter = keys.iterator(); iter.hasNext(); ) {
                         String label = (String) iter.next();
@@ -128,7 +137,8 @@ public class LabelGeneratorPipelet extends AbstractPipelet {
                         Node node = (Node) xPath.evaluate(xPathString, document, XPathConstants.NODE);
                         if (node != null) {
                             String value = node.getNodeValue();
-                            LOG.debug(new LogMessage("Label " + label + " - found: " + value, messageContext.getMessagePojo()));
+                            LOG.debug(new LogMessage("Label " + label + " - found: " + value,
+                                    messageContext.getMessagePojo()));
                             if (value == null) {
                                 value = "n/a";
                             }
@@ -141,7 +151,8 @@ public class LabelGeneratorPipelet extends AbstractPipelet {
                             }
                             messageLabels.add(messageLabelPojo);
                         } else {
-                            LOG.debug(new LogMessage("Label " + label + " - No match found", messageContext.getMessagePojo()));
+                            LOG.debug(new LogMessage("Label " + label + " - No match found",
+                                    messageContext.getMessagePojo()));
                         }
                     }
                 }

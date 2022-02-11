@@ -1,23 +1,35 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
+
+import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.nexuse2e.NexusException;
+import org.nexuse2e.configuration.ListParameter;
+import org.nexuse2e.configuration.ParameterDescriptor;
+import org.nexuse2e.configuration.ParameterType;
+import org.nexuse2e.messaging.AbstractPipelet;
+import org.nexuse2e.messaging.MessageContext;
+import org.nexuse2e.pojo.MessagePayloadPojo;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -30,17 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.LocaleUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.nexuse2e.NexusException;
-import org.nexuse2e.configuration.ListParameter;
-import org.nexuse2e.configuration.ParameterDescriptor;
-import org.nexuse2e.configuration.ParameterType;
-import org.nexuse2e.messaging.AbstractPipelet;
-import org.nexuse2e.messaging.MessageContext;
-import org.nexuse2e.pojo.MessagePayloadPojo;
-
 import freemarker.core.Environment;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -49,7 +50,7 @@ import freemarker.template.TemplateException;
 /**
  * This backend pipelet implementation processes a configured freemarker template and
  * sets the template output as {@code MessageContext.data}.
- * 
+ * <p>
  * The template context consists of the message context and some convenience fields also
  * available through the message context:
  * <ul>
@@ -62,23 +63,22 @@ import freemarker.template.TemplateException;
  *         This is usually what you want to process in the template.
  *   <li>{@code participant}: Shortcut to message context routing data.
  * </ul>
- * 
+ *
  * @author Jonas Reese
  */
 public class FreemarkerBackendPipelet extends AbstractPipelet {
-    private static Logger LOG = Logger.getLogger(FreemarkerBackendPipelet.class);
-
     public static final String USE_EXTERNAL_TEMPLATE_PARAM_NAME = "externalTemplate";
     public static final String TEMPLATE_PARAM_NAME = "template";
     public static final String TEMPLATE_LOCATION_PARAM_NAME = "templateLocation";
     public static final String LOCALE_PARAM_NAME = "locale";
-    
+    private static Logger LOG = LogManager.getLogger(FreemarkerBackendPipelet.class);
+
     /**
      * Default constructor.
      */
     public FreemarkerBackendPipelet() {
-        parameterMap.put(USE_EXTERNAL_TEMPLATE_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Use external template",
-                "Use template in file system instead of the template text box below.", false));
+        parameterMap.put(USE_EXTERNAL_TEMPLATE_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Use " +
+                "external template", "Use template in file system instead of the template text box below.", false));
         parameterMap.put(TEMPLATE_LOCATION_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Template Path",
                 "The file system path to the template. Ignored if external template is disabled.", ""));
         ListParameter localeDropdown = new ListParameter();
@@ -88,18 +88,18 @@ public class FreemarkerBackendPipelet extends AbstractPipelet {
             l.add(new LocaleAndDisplayName(loc));
         }
         Collections.sort(l);
-        
+
         localeDropdown.addElement("Default", "");
         for (LocaleAndDisplayName loc : l) {
             localeDropdown.addElement(loc.locale.getDisplayName(), loc.locale.toString());
         }
-        parameterMap.put(LOCALE_PARAM_NAME, new ParameterDescriptor(
-                ParameterType.LIST, "Locale", "The locale to be used for template processing", localeDropdown));
+        parameterMap.put(LOCALE_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Locale",
+                "The locale to be " + "used for template processing", localeDropdown));
         parameterMap.put(TEMPLATE_PARAM_NAME, new ParameterDescriptor(ParameterType.TEXT, "Template",
-                "The template markup. Ignored if external template is enabled.", ""));
+                "The template " + "markup. Ignored if external template is enabled.", ""));
 
     }
-    
+
     @Override
     public MessageContext processMessage(MessageContext messageContext) throws NexusException {
         try {
@@ -134,7 +134,7 @@ public class FreemarkerBackendPipelet extends AbstractPipelet {
             context.put("participant", messageContext.getParticipant());
             context.put("data", messageContext.getData());
             context.put("routingData", messageContext.getRoutingData());
-            
+
             StringWriter sw = new StringWriter();
             Environment env = template.createProcessingEnvironment(context, sw);
             env.process();
@@ -150,11 +150,11 @@ public class FreemarkerBackendPipelet extends AbstractPipelet {
                 messagePayload.setMimeType("text/html");
                 messagePayload.setPayloadData(sw.toString().getBytes(messageContext.getEncoding()));
             } else {
-                messagePayload = new MessagePayloadPojo(
-                        messageContext.getMessagePojo(), 1, "text/xml", "xml_body_1", sw.toString().getBytes(messageContext.getEncoding()), null, null, 0);
+                messagePayload = new MessagePayloadPojo(messageContext.getMessagePojo(), 1, "text/xml", "xml_body_1",
+                        sw.toString().getBytes(messageContext.getEncoding()), null, null, 0);
                 messageContext.getMessagePojo().getMessagePayloads().add(messagePayload);
             }
-            
+
             return messageContext;
         } catch (IOException e) {
             throw new NexusException(e);
@@ -162,14 +162,14 @@ public class FreemarkerBackendPipelet extends AbstractPipelet {
             throw new NexusException(e);
         }
     }
-    
+
     class LocaleAndDisplayName implements Comparable<LocaleAndDisplayName> {
         Locale locale;
-        
+
         public LocaleAndDisplayName(Locale locale) {
             this.locale = locale;
         }
-        
+
         public int compareTo(LocaleAndDisplayName o) {
             if (locale == null) {
                 return -1;

@@ -33,7 +33,7 @@ import org.nexuse2e.configuration.ComponentType;
 import org.nexuse2e.configuration.ConfigurationUtil;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.logging.LogAppender;
+//import org.nexuse2e.logging.LogAppender;
 import org.nexuse2e.pojo.ComponentPojo;
 import org.nexuse2e.pojo.LoggerPojo;
 import org.nexuse2e.ui.action.NexusE2EAction;
@@ -61,15 +61,15 @@ public class NotifierAddAction extends NexusE2EAction {
 
         // List<LoggerPojo> loggers = null;
         LoggerForm loggerForm = (LoggerForm) actionForm;
-        if ( loggerForm.getName() != null && loggerForm.getName().trim().length() > 0 ) {
-            LogAppender logger = engineConfiguration.getLogger(
-                    loggerForm.getName() );
-            if ( logger != null ) {
-                loggerForm.setName( "" );
-            }
-        } else {
-            loggerForm.setName( "" );
-        }
+//        if ( loggerForm.getName() != null && loggerForm.getName().trim().length() > 0 ) {
+//            LogAppender logger = engineConfiguration.getLogger(
+//                    loggerForm.getName() );
+//            if ( logger != null ) {
+//                loggerForm.setName( "" );
+//            }
+//        } else {
+//            loggerForm.setName( "" );
+//        }
 
         List<ComponentPojo> components = engineConfiguration.getComponents(
                 ComponentType.LOGGER, Constants.COMPONENTCOMPARATOR );
@@ -82,25 +82,25 @@ public class NotifierAddAction extends NexusE2EAction {
             return error;
         }
 
-        ComponentPojo componentPojo = null;
-        if ( loggerForm.getNxComponentId() == 0 ) {
-            componentPojo = components.iterator().next();
-        } else {
-            componentPojo = engineConfiguration.getComponentByNxComponentId(
-                    loggerForm.getNxComponentId() );
-        }
-
-        if ( componentPojo != null ) {
-            LogAppender logger = null;
-            String className = componentPojo.getClassName();
-            Object obj = Class.forName( className ).newInstance();
-            if ( obj instanceof LogAppender ) {
-                logger = (LogAppender) obj;
-                loggerForm.setLoggerInstance( logger );
-                loggerForm.setParameters( ConfigurationUtil.getConfiguration( logger, new LoggerPojo() ) );
-                loggerForm.createParameterMapFromPojos();
-            }
-        }
+//        ComponentPojo componentPojo = null;
+//        if ( loggerForm.getNxComponentId() == 0 ) {
+//            componentPojo = components.iterator().next();
+//        } else {
+//            componentPojo = engineConfiguration.getComponentByNxComponentId(
+//                    loggerForm.getNxComponentId() );
+//        }
+//
+//        if ( componentPojo != null ) {
+//            LogAppender logger = null;
+//            String className = componentPojo.getClassName();
+//            Object obj = Class.forName( className ).newInstance();
+//            if ( obj instanceof LogAppender ) {
+//                logger = (LogAppender) obj;
+//                loggerForm.setLoggerInstance( logger );
+//                loggerForm.setParameters( ConfigurationUtil.getConfiguration( logger, new LoggerPojo() ) );
+//                loggerForm.createParameterMapFromPojos();
+//            }
+//        }
 
         request.setAttribute( ATTRIBUTE_COLLECTION, components );
         request.setAttribute( ATTRIBUTE_SERVICE_COLLECTION, engineConfiguration.getServices( ) );

@@ -1,28 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.messaging;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.ActionSpecificKey;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
@@ -38,6 +36,9 @@ import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.util.NexusThreadStorage;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Component dispatching inbound messages to the correct pipeline based on their choreography.
  *
@@ -45,26 +46,26 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class BackendInboundDispatcher implements InitializingBean, Manageable {
 
-    private static Logger                               LOG                     = Logger
-                                                                                        .getLogger( BackendInboundDispatcher.class );
+    private static Logger LOG = LogManager.getLogger(BackendInboundDispatcher.class);
 
-    private BeanStatus                                  status                  = BeanStatus.UNDEFINED;
+    private BeanStatus status = BeanStatus.UNDEFINED;
 
-    private Map<ActionSpecificKey, BackendPipeline> backendInboundPipelines = new HashMap<ActionSpecificKey, BackendPipeline>();
+    private Map<ActionSpecificKey, BackendPipeline> backendInboundPipelines = new HashMap<ActionSpecificKey,
+            BackendPipeline>();
 
     /**
      * Dispatch a message to the correct backend inbound pipeline.
      * @param messageContext The message to process wrapped in a <code>MessageContext</code>.
-     * @return 
+     * @return
      * @throws NexusException
      */
-    public MessageContext processMessage( MessageContext messageContext ) throws NexusException {
+    public MessageContext processMessage(MessageContext messageContext) throws NexusException {
 
-    	if ( LOG.isDebugEnabled() ) {
-    		LOG.debug( "BackendInboundDispatcher.processMessage..." );
-    	}
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("BackendInboundDispatcher.processMessage...");
+        }
 
-        if ( backendInboundPipelines != null ) {
+        if (backendInboundPipelines != null) {
 
             // Set some thread-local information so everyone in the pipeline can always access it
             NexusThreadStorage.set("conversationId", messageContext.getConversation().getConversationId());
@@ -73,55 +74,52 @@ public class BackendInboundDispatcher implements InitializingBean, Manageable {
             ActionPojo action = messageContext.getMessagePojo().getAction();
             ConversationPojo conversation = messageContext.getMessagePojo().getConversation();
             ChoreographyPojo choreography = (conversation == null ? null : conversation.getChoreography());
-            ActionSpecificKey actionSpecificKey = new ActionSpecificKey(
-                    (action == null ? null : action.getName()), (choreography == null ? null : choreography.getName()) );
-            BackendPipeline backendInboundPipeline = backendInboundPipelines.get( actionSpecificKey );
-            if ( backendInboundPipeline != null ) {
-                if ( LOG.isDebugEnabled() ) {
-	            	LOG.debug( new LogMessage( "Found pipeline: " + backendInboundPipeline + " - " + actionSpecificKey,
-	                        messageContext.getMessagePojo() ) );
+            ActionSpecificKey actionSpecificKey = new ActionSpecificKey((action == null ? null : action.getName()),
+                    (choreography == null ? null : choreography.getName()));
+            BackendPipeline backendInboundPipeline = backendInboundPipelines.get(actionSpecificKey);
+            if (backendInboundPipeline != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(new LogMessage("Found pipeline: " + backendInboundPipeline + " - " + actionSpecificKey,
+                            messageContext.getMessagePojo()));
                 }
 
                 // Clone MessagePojo so that Pipelets in the Pipeline can modify the message/payloads
                 try {
-                    messageContext.setMessagePojo( (MessagePojo) messageContext.getMessagePojo().clone() );
-                } catch ( CloneNotSupportedException e ) {
-                    throw new NexusException( "Error cloning original MessagePojo!" );
+                    messageContext.setMessagePojo((MessagePojo) messageContext.getMessagePojo().clone());
+                } catch (CloneNotSupportedException e) {
+                    throw new NexusException("Error cloning original MessagePojo!");
                 }
 
                 backendInboundPipeline.processMessage(messageContext);
             } else {
-                throw new NexusException( "No backend inbound pipeline found for message: "
-                        + messageContext.getMessagePojo().getMessageId() + " ("
-                        + messageContext.getMessagePojo().getConversation().getChoreography().getName() + " - "
-                        + messageContext.getMessagePojo().getAction() + ")" );
+                throw new NexusException("No backend inbound pipeline found for message: " + messageContext.getMessagePojo().getMessageId() + " (" + messageContext.getMessagePojo().getConversation().getChoreography().getName() + " - " + messageContext.getMessagePojo().getAction() + ")");
             }
 
             // ThreadLocal-objects need to be manually removed
             NexusThreadStorage.remove("conversationId");
             NexusThreadStorage.remove("messageId");
         } else {
-            throw new NexusException( "No backend inbound pipelines configured!" );
+            throw new NexusException("No backend inbound pipelines configured!");
         }
 
         return messageContext;
     } // processMessage
 
     /**
-     * 
+     *
      */
     public void initialize() {
 
-        initialize( Engine.getInstance().getCurrentConfiguration() );
+        initialize(Engine.getInstance().getCurrentConfiguration());
 
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.Manageable#initialize(org.nexuse2e.configuration.EngineConfiguration)
      */
-    public void initialize( EngineConfiguration config ) {
+    public void initialize(EngineConfiguration config) {
 
-        LOG.trace( "Initializing..." );
+        LOG.trace("Initializing...");
 
         backendInboundPipelines = config.getBackendInboundPipelines();
 
@@ -133,7 +131,7 @@ public class BackendInboundDispatcher implements InitializingBean, Manageable {
      */
     public void teardown() {
 
-        LOG.trace( "Freeing resources..." );
+        LOG.trace("Freeing resources...");
 
         status = BeanStatus.INSTANTIATED;
     } // teardown
@@ -151,7 +149,7 @@ public class BackendInboundDispatcher implements InitializingBean, Manageable {
      */
     public void activate() {
 
-        LOG.trace( "activate" );
+        LOG.trace("activate");
         status = BeanStatus.ACTIVATED;
     }
 
@@ -160,7 +158,7 @@ public class BackendInboundDispatcher implements InitializingBean, Manageable {
      */
     public void deactivate() {
 
-        LOG.trace( "deactivate" );
+        LOG.trace("deactivate");
         status = BeanStatus.INITIALIZED;
     }
 

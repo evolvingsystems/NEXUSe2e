@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.nexuse2e.pojo.ActionPojo;
 import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.pojo.ChoreographyPojo;
@@ -115,7 +115,7 @@ public class XiomaBaseClientConfiguration extends XiomaBaseServerConfiguration {
 
             LoggerPojo clientUILogger = new LoggerPojo( uiLoggerComponentPojo, new Date(), new Date(), 1,
                     "Client UI Logger", true, "group_core,group_database,group_backend,group_frontend,group_ui" );
-            clientUILogger.setThreshold( Level.WARN_INT );
+            clientUILogger.setThreshold( 400 ); //Level.INFO_INT
             loggers.add( clientUILogger );
             
             

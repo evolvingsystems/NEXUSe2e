@@ -19,7 +19,7 @@
  */
 package org.nexuse2e.dao;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.hibernate.Session;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.controller.StateTransitionException;

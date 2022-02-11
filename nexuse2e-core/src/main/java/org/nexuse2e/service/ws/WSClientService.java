@@ -1,29 +1,23 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service.ws;
-
-import java.security.KeyStore;
-import java.util.Map;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.TrustManager;
 
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.configuration.security.FiltersType;
@@ -32,7 +26,8 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -50,6 +45,12 @@ import org.nexuse2e.transport.TransportSender;
 import org.nexuse2e.util.CertificateUtil;
 import org.nexuse2e.util.EncryptionUtil;
 
+import java.security.KeyStore;
+import java.util.Map;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.TrustManager;
+
 /**
  * Generic service that acts as a web service client.
  *
@@ -58,45 +59,23 @@ import org.nexuse2e.util.EncryptionUtil;
  */
 public class WSClientService extends AbstractService implements SenderAware {
 
-    private static Logger       LOG                     = Logger.getLogger( WSClientService.class );
-
     private static final String SERVICE_TYPE_PARAM_NAME = "serviceType";
-
-    private TransportSender     transportSender;
-
-    public enum FrontendWebServiceType {
-
-        XML_DOCUMENT("Generic XML document (with routing information)"), CIDX_DOCUMENT(
-                "CIDX business document (no routing information)");
-
-        private String name;
-
-        FrontendWebServiceType( String name ) {
-
-            this.name = name;
-        }
-
-        /**
-         * Gets the human-readable service type name.
-         * @return The name.
-         */
-        public String getName() {
-
-            return name;
-        }
-    };
+    private static Logger LOG = LogManager.getLogger(WSClientService.class);
+    private TransportSender transportSender;
 
     @Override
-    public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
+    public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
 
         ListParameter serviceTypeDrowdown = new ListParameter();
 
-        for ( FrontendWebServiceType type : FrontendWebServiceType.values() ) {
-            serviceTypeDrowdown.addElement( type.getName(), type.toString() );
+        for (FrontendWebServiceType type : FrontendWebServiceType.values()) {
+            serviceTypeDrowdown.addElement(type.getName(), type.toString());
         }
-        parameterMap.put( SERVICE_TYPE_PARAM_NAME, new ParameterDescriptor( ParameterType.LIST, "Web service type",
-                "The type of web service to connect to", serviceTypeDrowdown ) );
+        parameterMap.put(SERVICE_TYPE_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Web service type",
+                "The type of web service to connect to", serviceTypeDrowdown));
     }
+
+    ;
 
     @Override
     public Layer getActivationLayer() {
@@ -109,86 +88,110 @@ public class WSClientService extends AbstractService implements SenderAware {
         return transportSender;
     }
 
-    public MessageContext sendMessage( MessageContext messageContext ) throws NexusException {
+    public void setTransportSender(TransportSender transportSender) {
 
-        if ( getStatus() != BeanStatus.STARTED ) {
-            throw new NexusException( "Service " + getClass().getSimpleName() + " not started" );
+        this.transportSender = transportSender;
+    }
+
+    public MessageContext sendMessage(MessageContext messageContext) throws NexusException {
+
+        if (getStatus() != BeanStatus.STARTED) {
+            throw new NexusException("Service " + getClass().getSimpleName() + " not started");
         }
 
         String receiverURL = messageContext.getParticipant().getConnection().getUri();
 
         JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-        ListParameter parameter = getParameter( SERVICE_TYPE_PARAM_NAME );
+        ListParameter parameter = getParameter(SERVICE_TYPE_PARAM_NAME);
         FrontendWebServiceType wsType = null;
-        if ( parameter != null ) {
-            wsType = FrontendWebServiceType.valueOf( parameter.getSelectedValue() );
+        if (parameter != null) {
+            wsType = FrontendWebServiceType.valueOf(parameter.getSelectedValue());
         }
 
         MessagePojo messagePojo = messageContext.getMessagePojo();
 
-        if ( wsType == FrontendWebServiceType.XML_DOCUMENT ) {
-            factory.setServiceClass( XmlDocumentService.class );
-            factory.setAddress( receiverURL );
+        if (wsType == FrontendWebServiceType.XML_DOCUMENT) {
+            factory.setServiceClass(XmlDocumentService.class);
+            factory.setAddress(receiverURL);
             XmlDocumentService theXmlDocumentService = (XmlDocumentService) factory.create();
 
-            for ( MessagePayloadPojo payload : messageContext.getMessagePojo().getMessagePayloads() ) {
-                LOG.trace( "Calling web service at: " + receiverURL );
+            for (MessagePayloadPojo payload : messageContext.getMessagePojo().getMessagePayloads()) {
+                LOG.trace("Calling web service at: " + receiverURL);
                 // TODO (encoding) WS service doesnt support binary ?
-                theXmlDocumentService.processXmlDocument( messagePojo.getConversation().getChoreography().getName(),
-                        messageContext.getActionSpecificKey().getActionId(), messagePojo.getParticipant()
-                                .getLocalPartner().getPartnerId(), messagePojo.getConversation().getConversationId(),
-                        messagePojo.getMessageId(), new String( payload.getPayloadData() ) );
+                theXmlDocumentService.processXmlDocument(messagePojo.getConversation().getChoreography().getName(),
+                        messageContext.getActionSpecificKey().getActionId(),
+                        messagePojo.getParticipant().getLocalPartner().getPartnerId(),
+                        messagePojo.getConversation().getConversationId(), messagePojo.getMessageId(),
+                        new String(payload.getPayloadData()));
             }
-        } else if ( wsType == FrontendWebServiceType.CIDX_DOCUMENT ) {
-            factory.setServiceClass( CidxDocumentService.class );
-            factory.setAddress( receiverURL );
+        } else if (wsType == FrontendWebServiceType.CIDX_DOCUMENT) {
+            factory.setServiceClass(CidxDocumentService.class);
+            factory.setAddress(receiverURL);
             CidxDocumentService theCidxDocumentService = (CidxDocumentService) factory.create();
 
-            Client cxfClient = ClientProxy.getClient( theCidxDocumentService );
+            Client cxfClient = ClientProxy.getClient(theCidxDocumentService);
 
             HTTPConduit httpConduit = (HTTPConduit) cxfClient.getConduit();
 
             HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-            httpClientPolicy.setConnectionTimeout( messagePojo.getParticipant().getConnection().getTimeout() );
-            httpConduit.setClient( httpClientPolicy );
+            httpClientPolicy.setConnectionTimeout(messagePojo.getParticipant().getConnection().getTimeout());
+            httpConduit.setClient(httpClientPolicy);
 
             // Enable SSL, see also http://cwiki.apache.org/confluence/display/CXF20DOC/Client+HTTP+Transport+%28including+SSL+support%29
             try {
                 KeyStore caCerts = Engine.getInstance().getActiveConfigurationAccessService().getCacertsKeyStore();
                 CertificatePojo localCert = messagePojo.getParticipant().getLocalCertificate();
                 CertificatePojo partnerCert = messagePojo.getParticipant().getConnection().getCertificate();
-                KeyStore privateKeyChain = CertificateUtil.getPKCS12KeyStore( localCert );
-                KeyManager[] keyManagers = CertificateUtil.createKeyManagers( privateKeyChain, EncryptionUtil.decryptString( localCert.getPassword() ) );
-                TrustManager[] trustManagers = CertificateUtil.createTrustManagers( caCerts, partnerCert  );
+                KeyStore privateKeyChain = CertificateUtil.getPKCS12KeyStore(localCert);
+                KeyManager[] keyManagers = CertificateUtil.createKeyManagers(privateKeyChain,
+                        EncryptionUtil.decryptString(localCert.getPassword()));
+                TrustManager[] trustManagers = CertificateUtil.createTrustManagers(caCerts, partnerCert);
 
                 FiltersType filters = new FiltersType();
-                filters.getInclude().add( ".*_WITH_3DES_.*" );
-                filters.getInclude().add( ".*_EXPORT_.*" );
-                filters.getInclude().add( ".*_EXPORT1024_.*" );
-                filters.getInclude().add( ".*_WITH_DES_.*" );
+                filters.getInclude().add(".*_WITH_3DES_.*");
+                filters.getInclude().add(".*_EXPORT_.*");
+                filters.getInclude().add(".*_EXPORT1024_.*");
+                filters.getInclude().add(".*_WITH_DES_.*");
 
                 TLSClientParameters tlsClientParameters = new TLSClientParameters();
-                tlsClientParameters.setCipherSuitesFilter( filters );
-                tlsClientParameters.setTrustManagers( trustManagers );
-                tlsClientParameters.setKeyManagers( keyManagers );
+                tlsClientParameters.setCipherSuitesFilter(filters);
+                tlsClientParameters.setTrustManagers(trustManagers);
+                tlsClientParameters.setKeyManagers(keyManagers);
 
-                httpConduit.setTlsClientParameters( tlsClientParameters );
+                httpConduit.setTlsClientParameters(tlsClientParameters);
 
-            } catch ( Exception e ) {
-                throw new NexusException( e );
+            } catch (Exception e) {
+                throw new NexusException(e);
             }
 
-            for ( MessagePayloadPojo payload : messagePojo.getMessagePayloads() ) {
-                LOG.trace( "Calling web service at: " + receiverURL );
-                theCidxDocumentService.processCidxDocument( new String( payload.getPayloadData() ) );
+            for (MessagePayloadPojo payload : messagePojo.getMessagePayloads()) {
+                LOG.trace("Calling web service at: " + receiverURL);
+                theCidxDocumentService.processCidxDocument(new String(payload.getPayloadData()));
             }
         }
-        
+
         return null;
     }
 
-    public void setTransportSender( TransportSender transportSender ) {
+    public enum FrontendWebServiceType {
 
-        this.transportSender = transportSender;
+        XML_DOCUMENT("Generic XML document (with routing information)"), CIDX_DOCUMENT("CIDX business document (no " +
+                "routing information)");
+
+        private String name;
+
+        FrontendWebServiceType(String name) {
+
+            this.name = name;
+        }
+
+        /**
+         * Gets the human-readable service type name.
+         * @return The name.
+         */
+        public String getName() {
+
+            return name;
+        }
     }
 }

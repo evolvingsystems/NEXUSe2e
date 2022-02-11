@@ -1,23 +1,36 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.ui.structure.impl;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.nexuse2e.configuration.EngineConfiguration;
+import org.nexuse2e.ui.structure.ParentalStructureNode;
+import org.nexuse2e.ui.structure.StructureException;
+import org.nexuse2e.ui.structure.StructureNode;
+import org.nexuse2e.ui.structure.StructureService;
+import org.nexuse2e.ui.structure.TargetProvider;
+import org.nexuse2e.ui.structure.TargetProviderManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,18 +43,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
-import org.nexuse2e.configuration.EngineConfiguration;
-import org.nexuse2e.ui.structure.ParentalStructureNode;
-import org.nexuse2e.ui.structure.StructureException;
-import org.nexuse2e.ui.structure.StructureNode;
-import org.nexuse2e.ui.structure.StructureService;
-import org.nexuse2e.ui.structure.TargetProvider;
-import org.nexuse2e.ui.structure.TargetProviderManager;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 /**
  * Implements the StructureService interface.
  * The structure is build from an XML specification based on the "structure.dtd".
@@ -52,36 +53,36 @@ import org.w3c.dom.NodeList;
  */
 public class XmlStructureServer implements StructureService {
 
-    private static Logger           LOG                             = Logger.getLogger( XmlStructureServer.class );
+    private static Logger LOG = LogManager.getLogger(XmlStructureServer.class);
 
-    private static String           XPATH_MENU                      = "/structure/menu";
+    private static String XPATH_MENU = "/structure/menu";
 
-    private static String           XPATH_SITE                      = "/structure/site";
+    private static String XPATH_SITE = "/structure/site";
 
-    private static String           XPATH_PAGE_AND_COMMAND_CHILDREN = "./page | ./command";
+    private static String XPATH_PAGE_AND_COMMAND_CHILDREN = "./page | ./command";
 
-    private static String           XPATH_ATTRIBUTE_TYPE            = "./@type";
+    private static String XPATH_ATTRIBUTE_TYPE = "./@type";
 
-    private static String           XPATH_ATTRIBUTE_PROVIDER        = "./@provider";
-    
-    private static String           XPATH_ATTRIBUTE_TARGET          = "./@target";
+    private static String XPATH_ATTRIBUTE_PROVIDER = "./@provider";
 
-    private static String           XPATH_ATTRIBUTE_LABEL           = "./@label";
+    private static String XPATH_ATTRIBUTE_TARGET = "./@target";
 
-    private static String           XPATH_ATTRIBUTE_ICON            = "./@icon";
+    private static String XPATH_ATTRIBUTE_LABEL = "./@label";
 
-    private static String           NODE_NAME_PAGE                  = "nxs:page";
+    private static String XPATH_ATTRIBUTE_ICON = "./@icon";
 
-    private static String           NODE_NAME_COMMAND               = "nxs:command";
+    private static String NODE_NAME_PAGE = "nxs:page";
 
-    private static String           TYPE_URL                        = "url";
+    private static String NODE_NAME_COMMAND = "nxs:command";
 
-    private static String           TYPE_PROVIDER                   = "provider";
+    private static String TYPE_URL = "url";
+
+    private static String TYPE_PROVIDER = "provider";
 
     /**
      * The path to the XML specification file.
      */
-    protected String                spec;
+    protected String spec;
 
     /**
      * The TargetProviderManager to use for dynamic nodes.
@@ -91,40 +92,40 @@ public class XmlStructureServer implements StructureService {
     /**
      * XPath object used for this instance.
      */
-    protected XPath                 xpath;
+    protected XPath xpath;
 
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_MENU;
+    protected XPathExpression COMPILED_EXPR_MENU;
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_SITE;
+    protected XPathExpression COMPILED_EXPR_SITE;
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN;
+    protected XPathExpression COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN;
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_ATTRIBUTE_TYPE;
+    protected XPathExpression COMPILED_EXPR_ATTRIBUTE_TYPE;
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_ATTRIBUTE_PROVIDER;
+    protected XPathExpression COMPILED_EXPR_ATTRIBUTE_PROVIDER;
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_ATTRIBUTE_TARGET;
+    protected XPathExpression COMPILED_EXPR_ATTRIBUTE_TARGET;
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_ATTRIBUTE_LABEL;
+    protected XPathExpression COMPILED_EXPR_ATTRIBUTE_LABEL;
     /**
      * Precompiled XPath query.
      */
-    protected XPathExpression       COMPILED_EXPR_ATTRIBUTE_ICON;
+    protected XPathExpression COMPILED_EXPR_ATTRIBUTE_ICON;
 
     /**
      * Initializes the XPath instance and precompiles the queries.
@@ -133,14 +134,14 @@ public class XmlStructureServer implements StructureService {
     public XmlStructureServer() throws XPathExpressionException {
 
         xpath = XPathFactory.newInstance().newXPath();
-        COMPILED_EXPR_MENU = xpath.compile( XPATH_MENU );
-        COMPILED_EXPR_SITE = xpath.compile( XPATH_SITE );
-        COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN = xpath.compile( XPATH_PAGE_AND_COMMAND_CHILDREN );
-        COMPILED_EXPR_ATTRIBUTE_TYPE = xpath.compile( XPATH_ATTRIBUTE_TYPE );
-        COMPILED_EXPR_ATTRIBUTE_PROVIDER = xpath.compile( XPATH_ATTRIBUTE_PROVIDER );
-        COMPILED_EXPR_ATTRIBUTE_TARGET = xpath.compile( XPATH_ATTRIBUTE_TARGET );
-        COMPILED_EXPR_ATTRIBUTE_LABEL = xpath.compile( XPATH_ATTRIBUTE_LABEL );
-        COMPILED_EXPR_ATTRIBUTE_ICON = xpath.compile( XPATH_ATTRIBUTE_ICON );
+        COMPILED_EXPR_MENU = xpath.compile(XPATH_MENU);
+        COMPILED_EXPR_SITE = xpath.compile(XPATH_SITE);
+        COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN = xpath.compile(XPATH_PAGE_AND_COMMAND_CHILDREN);
+        COMPILED_EXPR_ATTRIBUTE_TYPE = xpath.compile(XPATH_ATTRIBUTE_TYPE);
+        COMPILED_EXPR_ATTRIBUTE_PROVIDER = xpath.compile(XPATH_ATTRIBUTE_PROVIDER);
+        COMPILED_EXPR_ATTRIBUTE_TARGET = xpath.compile(XPATH_ATTRIBUTE_TARGET);
+        COMPILED_EXPR_ATTRIBUTE_LABEL = xpath.compile(XPATH_ATTRIBUTE_LABEL);
+        COMPILED_EXPR_ATTRIBUTE_ICON = xpath.compile(XPATH_ATTRIBUTE_ICON);
     }
 
     /**
@@ -151,10 +152,10 @@ public class XmlStructureServer implements StructureService {
      * @see setSpec(String)
      * @see org.nexuse2e.ui.structure.StructureService#getMenuStructure()
      */
-    public List<StructureNode> getMenuStructure( EngineConfiguration engineConfiguration ) throws StructureException {
+    public List<StructureNode> getMenuStructure(EngineConfiguration engineConfiguration) throws StructureException {
 
-        synchronized ( this ) {
-            return getStructure( COMPILED_EXPR_MENU, (engineConfiguration != null), engineConfiguration );
+        synchronized (this) {
+            return getStructure(COMPILED_EXPR_MENU, (engineConfiguration != null), engineConfiguration);
         }
 
     }
@@ -167,13 +168,13 @@ public class XmlStructureServer implements StructureService {
      * @see setSpec(String)
      * @see org.nexuse2e.ui.structure.StructureService#getSiteStructure()
      */
-    public List<StructureNode> getSiteStructure( EngineConfiguration engineConfiguration ) throws StructureException {
+    public List<StructureNode> getSiteStructure(EngineConfiguration engineConfiguration) throws StructureException {
 
-        synchronized ( this ) {
-            return getStructure( COMPILED_EXPR_SITE, (engineConfiguration != null), engineConfiguration );
+        synchronized (this) {
+            return getStructure(COMPILED_EXPR_SITE, (engineConfiguration != null), engineConfiguration);
         }
     }
-    
+
     /**
      * Returns the menu structure skeleton if a valid XML structure file has been set.
      * @return The menu's structure skeleton or an empty list if the specified path or file is invalid.
@@ -183,8 +184,8 @@ public class XmlStructureServer implements StructureService {
      */
     public List<StructureNode> getMenuSkeleton() throws StructureException {
 
-        synchronized ( this ) {
-            return getStructure( COMPILED_EXPR_MENU, false, null );
+        synchronized (this) {
+            return getStructure(COMPILED_EXPR_MENU, false, null);
         }
     }
 
@@ -197,8 +198,8 @@ public class XmlStructureServer implements StructureService {
      */
     public List<StructureNode> getSiteSkeleton() throws StructureException {
 
-        synchronized ( this ) {
-            return getStructure( COMPILED_EXPR_SITE, false, null );
+        synchronized (this) {
+            return getStructure(COMPILED_EXPR_SITE, false, null);
         }
     }
 
@@ -213,38 +214,37 @@ public class XmlStructureServer implements StructureService {
      * @see org.nexuse2e.ui.structure.StructureService#getSiteStructure()
      */
     @SuppressWarnings("unchecked")
-    private List<StructureNode> getStructure(
-            XPathExpression rootPath, boolean evaluateDynamicNodes, EngineConfiguration engineConfiguration )
-            throws StructureException {
+    private List<StructureNode> getStructure(XPathExpression rootPath, boolean evaluateDynamicNodes,
+                                             EngineConfiguration engineConfiguration) throws StructureException {
 
         List<StructureNode> result = Collections.EMPTY_LIST;
 
-        if ( spec != null ) {
+        if (spec != null) {
             Document doc = parseDocument();
-            if ( doc != null ) {
+            if (doc != null) {
                 try {
-                    Node menuNode = (Node) rootPath.evaluate( doc, XPathConstants.NODE );
-                    if ( menuNode != null ) {
-                        NodeList menuList = (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate( menuNode,
-                                XPathConstants.NODESET );
+                    Node menuNode = (Node) rootPath.evaluate(doc, XPathConstants.NODE);
+                    if (menuNode != null) {
+                        NodeList menuList = (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate(menuNode,
+                                XPathConstants.NODESET);
                         RootNode root = new RootNode();
-                        for ( int i = 0; i < menuList.getLength(); i++ ) {
-                            Node currNode = menuList.item( i );
-                            if ( currNode.getNodeName().equals( NODE_NAME_PAGE ) ) {
-                                buildPageStructure( currNode, root, evaluateDynamicNodes, engineConfiguration );
-                            } else if ( currNode.getNodeName().equals( NODE_NAME_COMMAND ) ) {
-                                buildCommandStructure( currNode, root, evaluateDynamicNodes, engineConfiguration );
+                        for (int i = 0; i < menuList.getLength(); i++) {
+                            Node currNode = menuList.item(i);
+                            if (currNode.getNodeName().equals(NODE_NAME_PAGE)) {
+                                buildPageStructure(currNode, root, evaluateDynamicNodes, engineConfiguration);
+                            } else if (currNode.getNodeName().equals(NODE_NAME_COMMAND)) {
+                                buildCommandStructure(currNode, root, evaluateDynamicNodes, engineConfiguration);
                             }
                         }
                         result = root.getChildren();
                     }
-                } catch ( XPathExpressionException e ) {
-                    throw new StructureException( "Error parsing the structure definition \"" + spec + "\"!", e );
+                } catch (XPathExpressionException e) {
+                    throw new StructureException("Error parsing the structure definition \"" + spec + "\"!", e);
                 }
             }
 
         } else {
-            LOG.warn( "No structure specification defined!" );
+            LOG.warn("No structure specification defined!");
         }
 
         return result;
@@ -260,58 +260,53 @@ public class XmlStructureServer implements StructureService {
      * @throws StructureException if no TargetProviderManager is set or a TargetProvider cannot be found for a given
      *         target name.
      */
-    private void buildCommandStructure(
-            Node commandNode,
-            ParentalStructureNode parent,
-            boolean evaluateDynamicNodes,
-            EngineConfiguration engineConfiguration )
-            throws XPathExpressionException, StructureException {
+    private void buildCommandStructure(Node commandNode, ParentalStructureNode parent, boolean evaluateDynamicNodes,
+                                       EngineConfiguration engineConfiguration) throws XPathExpressionException,
+            StructureException {
 
-        if ( commandNode != null && parent != null ) {
-            String type = ( (Node) COMPILED_EXPR_ATTRIBUTE_TYPE.evaluate( commandNode, XPathConstants.NODE ) )
-                    .getNodeValue();
-            Node providerNode = (Node) COMPILED_EXPR_ATTRIBUTE_PROVIDER.evaluate( commandNode, XPathConstants.NODE );
-            String provider = ( providerNode != null ? providerNode.getNodeValue() : null );
-            String target = ( (Node) COMPILED_EXPR_ATTRIBUTE_TARGET.evaluate( commandNode, XPathConstants.NODE ) )
-                    .getNodeValue();
-            String label = ( (Node) COMPILED_EXPR_ATTRIBUTE_LABEL.evaluate( commandNode, XPathConstants.NODE ) )
-                    .getNodeValue();
-            String icon = ( (Node) COMPILED_EXPR_ATTRIBUTE_ICON.evaluate( commandNode, XPathConstants.NODE ) )
-                    .getNodeValue();
+        if (commandNode != null && parent != null) {
+            String type =
+                    ((Node) COMPILED_EXPR_ATTRIBUTE_TYPE.evaluate(commandNode, XPathConstants.NODE)).getNodeValue();
+            Node providerNode = (Node) COMPILED_EXPR_ATTRIBUTE_PROVIDER.evaluate(commandNode, XPathConstants.NODE);
+            String provider = (providerNode != null ? providerNode.getNodeValue() : null);
+            String target =
+                    ((Node) COMPILED_EXPR_ATTRIBUTE_TARGET.evaluate(commandNode, XPathConstants.NODE)).getNodeValue();
+            String label =
+                    ((Node) COMPILED_EXPR_ATTRIBUTE_LABEL.evaluate(commandNode, XPathConstants.NODE)).getNodeValue();
+            String icon =
+                    ((Node) COMPILED_EXPR_ATTRIBUTE_ICON.evaluate(commandNode, XPathConstants.NODE)).getNodeValue();
 
-            parent.setProvider( provider );
-            parent.setChildTarget( target );
-            parent.setChildLabel( label );
-            parent.setChildIcon( icon );
-            
-            if ( TYPE_PROVIDER.equalsIgnoreCase( type ) ) {
+            parent.setProvider(provider);
+            parent.setChildTarget(target);
+            parent.setChildLabel(label);
+            parent.setChildIcon(icon);
+
+            if (TYPE_PROVIDER.equalsIgnoreCase(type)) {
                 // dynamic node as placeholder for a bunch of nodes
-                CommandNode patternNode = new CommandNode( target, label, icon );
-                patternNode.setPattern( true );
-                parent.setDynamicChildren( true );
-                if ( evaluateDynamicNodes ) {
-                    if ( tpManager != null ) {
-                        TargetProvider tp = tpManager.getTargetProvider( provider );
-                        if ( tp != null ) {
-                            parent.addChildren( tp.getStructure( patternNode, parent, engineConfiguration ) );
+                CommandNode patternNode = new CommandNode(target, label, icon);
+                patternNode.setPattern(true);
+                parent.setDynamicChildren(true);
+                if (evaluateDynamicNodes) {
+                    if (tpManager != null) {
+                        TargetProvider tp = tpManager.getTargetProvider(provider);
+                        if (tp != null) {
+                            parent.addChildren(tp.getStructure(patternNode, parent, engineConfiguration));
                         } else {
-                            throw new StructureException( "No TargetProvider instance assigned to provider name \"" + provider
-                                    + "\"!" );
+                            throw new StructureException("No TargetProvider instance assigned to provider name \"" + provider + "\"!");
                         }
                     } else {
-                        throw new StructureException( "No TargetProviderManager set!" );
+                        throw new StructureException("No TargetProviderManager set!");
                     }
-                }
-                else {
+                } else {
                     // add pattern node (skeleton mode)
-                    parent.addChild( patternNode );
+                    parent.addChild(patternNode);
                 }
-            } else if ( TYPE_URL.equalsIgnoreCase( type ) ) {
+            } else if (TYPE_URL.equalsIgnoreCase(type)) {
                 // static command node
-                StructureNode sNode = new CommandNode( target, label, icon );
-                parent.addChild( sNode );
+                StructureNode sNode = new CommandNode(target, label, icon);
+                parent.addChild(sNode);
             } else {
-                LOG.warn( "Unknown command type in \"" + spec + "\": " + type );
+                LOG.warn("Unknown command type in \"" + spec + "\": " + type);
             }
         }
     }
@@ -326,104 +321,105 @@ public class XmlStructureServer implements StructureService {
      * @throws StructureException if no TargetProviderManager is set or a TargetProvider cannot be found for a given
      *         target name.
      */
-    private void buildPageStructure(
-            Node pageNode, ParentalStructureNode parent, boolean evaluateDynamicNodes, EngineConfiguration engineConfiguration )
-    throws XPathExpressionException,
+    private void buildPageStructure(Node pageNode, ParentalStructureNode parent, boolean evaluateDynamicNodes,
+                                    EngineConfiguration engineConfiguration) throws XPathExpressionException,
             StructureException {
 
-        if ( pageNode != null && parent != null ) {
-            String type = ( (Node) COMPILED_EXPR_ATTRIBUTE_TYPE.evaluate( pageNode, XPathConstants.NODE ) )
-                    .getNodeValue();
-            Node providerNode = (Node) COMPILED_EXPR_ATTRIBUTE_PROVIDER.evaluate( pageNode, XPathConstants.NODE );
-            String provider = ( providerNode != null ? providerNode.getNodeValue() : null );
-            String target = ( (Node) COMPILED_EXPR_ATTRIBUTE_TARGET.evaluate( pageNode, XPathConstants.NODE ) )
-                    .getNodeValue();
-            String label = ( (Node) COMPILED_EXPR_ATTRIBUTE_LABEL.evaluate( pageNode, XPathConstants.NODE ) )
-                    .getNodeValue();
-            String icon = ( (Node) COMPILED_EXPR_ATTRIBUTE_ICON.evaluate( pageNode, XPathConstants.NODE ) )
-                    .getNodeValue();
+        if (pageNode != null && parent != null) {
+            String type = ((Node) COMPILED_EXPR_ATTRIBUTE_TYPE.evaluate(pageNode, XPathConstants.NODE)).getNodeValue();
+            Node providerNode = (Node) COMPILED_EXPR_ATTRIBUTE_PROVIDER.evaluate(pageNode, XPathConstants.NODE);
+            String provider = (providerNode != null ? providerNode.getNodeValue() : null);
+            String target =
+                    ((Node) COMPILED_EXPR_ATTRIBUTE_TARGET.evaluate(pageNode, XPathConstants.NODE)).getNodeValue();
+            String label =
+                    ((Node) COMPILED_EXPR_ATTRIBUTE_LABEL.evaluate(pageNode, XPathConstants.NODE)).getNodeValue();
+            String icon = ((Node) COMPILED_EXPR_ATTRIBUTE_ICON.evaluate(pageNode, XPathConstants.NODE)).getNodeValue();
 
-            parent.setProvider( provider );
-            parent.setChildTarget( target );
-            parent.setChildLabel( label );
-            parent.setChildIcon( icon );
-            
-            if ( TYPE_PROVIDER.equalsIgnoreCase( type ) ) {
+            parent.setProvider(provider);
+            parent.setChildTarget(target);
+            parent.setChildLabel(label);
+            parent.setChildIcon(icon);
+
+            if (TYPE_PROVIDER.equalsIgnoreCase(type)) {
                 // dynamic node as placeholder for a bunch of nodes
-                PageNode patternNode = new PageNode( target, label, icon );
-                patternNode.setPattern( true );
-                parent.setDynamicChildren( true );
-                if ( evaluateDynamicNodes ) {
-                    if ( tpManager != null ) {
-                        TargetProvider tp = tpManager.getTargetProvider( provider );
-                        if ( tp != null ) {
-                            List<StructureNode> sNodes = tp.getStructure( patternNode, parent, engineConfiguration );
-                            parent.addChildren( sNodes );
-                            for ( StructureNode sNode : sNodes ) {
-                                if ( sNode instanceof PageNode ) {
+                PageNode patternNode = new PageNode(target, label, icon);
+                patternNode.setPattern(true);
+                parent.setDynamicChildren(true);
+                if (evaluateDynamicNodes) {
+                    if (tpManager != null) {
+                        TargetProvider tp = tpManager.getTargetProvider(provider);
+                        if (tp != null) {
+                            List<StructureNode> sNodes = tp.getStructure(patternNode, parent, engineConfiguration);
+                            parent.addChildren(sNodes);
+                            for (StructureNode sNode : sNodes) {
+                                if (sNode instanceof PageNode) {
                                     // search for children of the new page node
-                                    NodeList children = (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate(
-                                            pageNode, XPathConstants.NODESET );
-                                    if ( children != null ) {
-                                        for ( int i = 0; i < children.getLength(); i++ ) {
-                                            Node currNode = children.item( i );
-                                            if ( currNode.getNodeName().equals( NODE_NAME_PAGE ) ) {
-                                                buildPageStructure( currNode, (ParentalStructureNode) sNode, evaluateDynamicNodes, engineConfiguration );
-                                            } else if ( currNode.getNodeName().equals( NODE_NAME_COMMAND ) ) {
-                                                buildCommandStructure( currNode, (ParentalStructureNode) sNode, evaluateDynamicNodes, engineConfiguration );
+                                    NodeList children =
+                                            (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate(pageNode,
+                                                    XPathConstants.NODESET);
+                                    if (children != null) {
+                                        for (int i = 0; i < children.getLength(); i++) {
+                                            Node currNode = children.item(i);
+                                            if (currNode.getNodeName().equals(NODE_NAME_PAGE)) {
+                                                buildPageStructure(currNode, (ParentalStructureNode) sNode,
+                                                        evaluateDynamicNodes, engineConfiguration);
+                                            } else if (currNode.getNodeName().equals(NODE_NAME_COMMAND)) {
+                                                buildCommandStructure(currNode, (ParentalStructureNode) sNode,
+                                                        evaluateDynamicNodes, engineConfiguration);
                                             }
                                         }
                                     }
                                 } else {
-                                    LOG.error( "Structure pattern inconsistency! TargetProvider \"" + tp
-                                            + "\" must not return a StructureNode of type \"" + sNode.getClass()
-                                            + "\" for a pattern node of type PageNode." );
+                                    LOG.error("Structure pattern inconsistency! TargetProvider \"" + tp + "\" must " +
+                                            "not return a StructureNode of type \"" + sNode.getClass() + "\" for a " +
+                                            "pattern node of type PageNode.");
                                 }
                             }
                         } else {
-                            throw new StructureException( "No TargetProvider instance assigned to target name \"" + target
-                                    + "\"!" );
+                            throw new StructureException("No TargetProvider instance assigned to target name \"" + target + "\"!");
                         }
                     } else {
-                        throw new StructureException( "No TargetProviderManager set!" );
+                        throw new StructureException("No TargetProviderManager set!");
                     }
                 } else {
                     // add pattern node (skeleton mode)
-                    parent.addChild( patternNode );
+                    parent.addChild(patternNode);
                     // search for children of the pattern node
-                    NodeList children = (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate(
-                            pageNode, XPathConstants.NODESET );
-                    if ( children != null ) {
-                        for ( int i = 0; i < children.getLength(); i++ ) {
-                            Node currNode = children.item( i );
-                            if ( currNode.getNodeName().equals( NODE_NAME_PAGE ) ) {
-                                buildPageStructure( currNode, (ParentalStructureNode) patternNode, evaluateDynamicNodes, engineConfiguration );
-                            } else if ( currNode.getNodeName().equals( NODE_NAME_COMMAND ) ) {
-                                buildCommandStructure( currNode, (ParentalStructureNode) patternNode, evaluateDynamicNodes, engineConfiguration );
+                    NodeList children = (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate(pageNode,
+                            XPathConstants.NODESET);
+                    if (children != null) {
+                        for (int i = 0; i < children.getLength(); i++) {
+                            Node currNode = children.item(i);
+                            if (currNode.getNodeName().equals(NODE_NAME_PAGE)) {
+                                buildPageStructure(currNode, (ParentalStructureNode) patternNode,
+                                        evaluateDynamicNodes, engineConfiguration);
+                            } else if (currNode.getNodeName().equals(NODE_NAME_COMMAND)) {
+                                buildCommandStructure(currNode, (ParentalStructureNode) patternNode,
+                                        evaluateDynamicNodes, engineConfiguration);
                             }
                         }
                     }
                 }
-            } else if ( TYPE_URL.equalsIgnoreCase( type ) ) {
+            } else if (TYPE_URL.equalsIgnoreCase(type)) {
                 // static page node
-                PageNode sNode = new PageNode( target, label, icon );
-                parent.addChild( sNode );
+                PageNode sNode = new PageNode(target, label, icon);
+                parent.addChild(sNode);
                 // search for children of the new page node
-                NodeList children = (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate( pageNode,
-                        XPathConstants.NODESET );
-                if ( children != null ) {
-                    for ( int i = 0; i < children.getLength(); i++ ) {
-                        Node currNode = children.item( i );
-                        if ( currNode.getNodeName().equals( NODE_NAME_PAGE ) ) {
-                            buildPageStructure( currNode, sNode, evaluateDynamicNodes, engineConfiguration );
-                        } else if ( currNode.getNodeName().equals( NODE_NAME_COMMAND ) ) {
-                            buildCommandStructure( currNode, sNode, evaluateDynamicNodes, engineConfiguration );
+                NodeList children = (NodeList) COMPILED_EXPR_PAGE_AND_COMMAND_CHILDREN.evaluate(pageNode,
+                        XPathConstants.NODESET);
+                if (children != null) {
+                    for (int i = 0; i < children.getLength(); i++) {
+                        Node currNode = children.item(i);
+                        if (currNode.getNodeName().equals(NODE_NAME_PAGE)) {
+                            buildPageStructure(currNode, sNode, evaluateDynamicNodes, engineConfiguration);
+                        } else if (currNode.getNodeName().equals(NODE_NAME_COMMAND)) {
+                            buildCommandStructure(currNode, sNode, evaluateDynamicNodes, engineConfiguration);
                         }
                     }
                 }
 
             } else {
-                LOG.warn( "Unknown command type in \"" + spec + "\": " + type );
+                LOG.warn("Unknown command type in \"" + spec + "\": " + type);
             }
         }
     }
@@ -433,9 +429,9 @@ public class XmlStructureServer implements StructureService {
      * This has to be done before one of the service methods is called.
      * @param spec the spec to set
      */
-    public void setSpec( String spec ) {
+    public void setSpec(String spec) {
 
-        synchronized ( this ) {
+        synchronized (this) {
             this.spec = spec;
         }
     }
@@ -444,9 +440,9 @@ public class XmlStructureServer implements StructureService {
      * Sets the TargetProviderManager instance to resolve dynamic structure nodes.
      * @param tpManager the TargetProviderManager to set.
      */
-    public void setTargetProviderManager( TargetProviderManager tpManager ) {
+    public void setTargetProviderManager(TargetProviderManager tpManager) {
 
-        synchronized ( this ) {
+        synchronized (this) {
             this.tpManager = tpManager;
         }
     }
@@ -458,12 +454,12 @@ public class XmlStructureServer implements StructureService {
     protected Document parseDocument() {
 
         DocumentBuilderFactory dof = DocumentBuilderFactory.newInstance();
-        dof.setValidating( true );
+        dof.setValidating(true);
         try {
             DocumentBuilder docBuilder = dof.newDocumentBuilder();
-            return docBuilder.parse( this.getClass().getResourceAsStream( spec ) );
-        } catch ( Exception e ) {
-            LOG.error( e );
+            return docBuilder.parse(this.getClass().getResourceAsStream(spec));
+        } catch (Exception e) {
+            LOG.error(e);
         }
 
         return null;
@@ -478,7 +474,7 @@ public class XmlStructureServer implements StructureService {
 
         private RootNode() {
 
-            super( null, null, null );
+            super(null, null, null);
         }
     }
 }

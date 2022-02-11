@@ -1,43 +1,23 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service.ws.aggateway;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.TrustManager;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
@@ -53,7 +33,8 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
@@ -91,6 +72,26 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.TrustManager;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
  * Service that acts as an Ag Gateway compliant web service client.
  *
@@ -99,29 +100,30 @@ import org.xml.sax.SAXException;
  */
 public class WSClientService extends AbstractService implements SenderAware {
 
-    private static Logger   LOG = Logger.getLogger( WSClientService.class );
-
     private static final String AUTH_TYPE_PARAM_NAME = "authType";
     private static final String SEND_RESPONSE_TO_FRONTEND_PARAM_NAME = "sendResponseToFrontend";
     private static final String EXCEPTIONS_PARAM_NAME = "exceptions";
     private static final String CONTENT_TYPE_PARAM_NAME = "contentType";
-    
+    private static Logger LOG = LogManager.getLogger(WSClientService.class);
     private TransportSender transportSender;
 
     @Override
-    public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
+    public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
 
         ListParameter authTypeDrowdown = new ListParameter();
-        authTypeDrowdown.addElement( "Basic authentication (HTTP)", "basic" );
-        authTypeDrowdown.addElement( "WS* authentication", "ws" );
-        parameterMap.put( AUTH_TYPE_PARAM_NAME, new ParameterDescriptor( ParameterType.LIST, "Authentication type",
-                "The client authentication type", authTypeDrowdown ) );
-        parameterMap.put( SEND_RESPONSE_TO_FRONTEND_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN, "Process response",
-                "Activate in order to process the WS response through a frontend inbound pipeline", Boolean.TRUE ) );
-        parameterMap.put( EXCEPTIONS_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Exceptions",
-                "Comma-separated list of action names (process steps) that shall/shall not be processed through a frontend inbound pipeline", "" ) );
-        parameterMap.put( CONTENT_TYPE_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Content-Type",
-                "Some Web Services require a specific content type (e.g., 'application/soap+xml; charset=utf-8'). Leave blank for default content type", "" ) );
+        authTypeDrowdown.addElement("Basic authentication (HTTP)", "basic");
+        authTypeDrowdown.addElement("WS* authentication", "ws");
+        parameterMap.put(AUTH_TYPE_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Authentication type",
+                "The client authentication type", authTypeDrowdown));
+        parameterMap.put(SEND_RESPONSE_TO_FRONTEND_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN,
+                "Process response", "Activate in order to process the WS response through a frontend inbound " +
+                "pipeline", Boolean.TRUE));
+        parameterMap.put(EXCEPTIONS_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Exceptions", "Comma" +
+                "-separated list of action names (process steps) that shall/shall not be processed through a frontend" +
+                " inbound pipeline", ""));
+        parameterMap.put(CONTENT_TYPE_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Content-Type", "Some" +
+                " Web Services require a specific content type (e.g., 'application/soap+xml; charset=utf-8'). Leave " +
+                "blank for default content type", ""));
     }
 
     @Override
@@ -135,12 +137,17 @@ public class WSClientService extends AbstractService implements SenderAware {
         return transportSender;
     }
 
-    public MessageContext sendMessage( MessageContext messageContext ) throws NexusException {
+    public void setTransportSender(TransportSender transportSender) {
+
+        this.transportSender = transportSender;
+    }
+
+    public MessageContext sendMessage(MessageContext messageContext) throws NexusException {
 
         MessageContext replyMessageContext = null;
 
-        if ( getStatus() != BeanStatus.STARTED ) {
-            throw new NexusException( "Service " + getClass().getSimpleName() + " not started" );
+        if (getStatus() != BeanStatus.STARTED) {
+            throw new NexusException("Service " + getClass().getSimpleName() + " not started");
         }
 
         String receiverURL = messageContext.getParticipant().getConnection().getUri();
@@ -149,288 +156,278 @@ public class WSClientService extends AbstractService implements SenderAware {
 
         MessagePojo messagePojo = messageContext.getMessagePojo();
 
-        factory.setServiceClass( DocExchangePortType.class );
-        factory.setServiceName( new QName( "urn:aggateway:names:ws:docexchange", "AgGatewayDocumentExchange" ) );
-        factory.setWsdlLocation( "classpath:org/nexuse2e/integration/AgGateway.wsdl" );
-        factory.setAddress( receiverURL );
+        factory.setServiceClass(DocExchangePortType.class);
+        factory.setServiceName(new QName("urn:aggateway:names:ws:docexchange", "AgGatewayDocumentExchange"));
+        factory.setWsdlLocation("classpath:org/nexuse2e/integration/AgGateway.wsdl");
+        factory.setAddress(receiverURL);
         DocExchangePortType theDocExchangePortType = (DocExchangePortType) factory.create();
 
-        Client cxfClient = ClientProxy.getClient( theDocExchangePortType );
+        Client cxfClient = ClientProxy.getClient(theDocExchangePortType);
 
         HTTPConduit httpConduit = (HTTPConduit) cxfClient.getConduit();
 
         HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-        httpClientPolicy.setConnectionTimeout( messagePojo.getParticipant().getConnection().getTimeout() * 1000 );
+        httpClientPolicy.setConnectionTimeout(messagePojo.getParticipant().getConnection().getTimeout() * 1000);
 
         // check if differing content-type is configured
         String contentType = getParameter(CONTENT_TYPE_PARAM_NAME);
         if (!StringUtils.isBlank(contentType)) {
             httpClientPolicy.setContentType(contentType.trim());
         }
-        httpConduit.setClient( httpClientPolicy );
+        httpConduit.setClient(httpClientPolicy);
 
         // HTTP basic auth
         String username = messageContext.getMessagePojo().getParticipant().getConnection().getLoginName();
         final String password = messageContext.getMessagePojo().getParticipant().getConnection().getPassword();
-        if ( !StringUtils.isEmpty( username ) ) {
-            ListParameter authType = getParameter( AUTH_TYPE_PARAM_NAME );
-            if (authType != null && "ws".equals( authType.getSelectedValue() )) {
+        if (!StringUtils.isEmpty(username)) {
+            ListParameter authType = getParameter(AUTH_TYPE_PARAM_NAME);
+            if (authType != null && "ws".equals(authType.getSelectedValue())) {
                 // WS-Security - User Tokens
                 Endpoint cxfEndpoint = cxfClient.getEndpoint();
 
                 Map<String, Object> outProps = new HashMap<String, Object>();
-                outProps.put( WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN );
+                outProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
                 // Specify our username
-                outProps.put( WSHandlerConstants.USER, username );
+                outProps.put(WSHandlerConstants.USER, username);
                 // Password type : plain text
-                outProps.put( WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT );
+                outProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
                 // Callback used to retrieve password for given user.
                 CallbackHandler callback = new CallbackHandler() {
-                    public void handle( Callback[] callbacks ) throws IOException, UnsupportedCallbackException {
+                    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
                         WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
                         // set the password for our message.
-                        pc.setPassword( password );
+                        pc.setPassword(password);
                     }
                 };
-                outProps.put( WSHandlerConstants.PW_CALLBACK_REF, callback );
-                WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor( outProps );
+                outProps.put(WSHandlerConstants.PW_CALLBACK_REF, callback);
+                WSS4JOutInterceptor wssOut = new WSS4JOutInterceptor(outProps);
                 if (LOG.isTraceEnabled()) {
-                    cxfEndpoint.getOutInterceptors().add( new LoggingOutInterceptor() );
-                    cxfEndpoint.getInInterceptors().add( new LoggingInInterceptor() );
+                    cxfEndpoint.getOutInterceptors().add(new LoggingOutInterceptor());
+                    cxfEndpoint.getInInterceptors().add(new LoggingInInterceptor());
                 }
-                cxfEndpoint.getOutInterceptors().add( wssOut );
+                cxfEndpoint.getOutInterceptors().add(wssOut);
             } else {
                 // basic auth
-                LOG.debug( "Using basic auth" );
-                factory.setUsername( username );
-                factory.setPassword( password );
+                LOG.debug("Using basic auth");
+                factory.setUsername(username);
+                factory.setPassword(password);
 
                 AuthorizationPolicy authorizationPolicy = httpConduit.getAuthorization();
-                if ( authorizationPolicy == null ) {
+                if (authorizationPolicy == null) {
                     authorizationPolicy = new AuthorizationPolicy();
-                    httpConduit.setAuthorization( authorizationPolicy );
+                    httpConduit.setAuthorization(authorizationPolicy);
                 }
-                authorizationPolicy.setUserName( username );
-                authorizationPolicy.setPassword( password );
-                LOG.debug( "Credentials set" );
+                authorizationPolicy.setUserName(username);
+                authorizationPolicy.setPassword(password);
+                LOG.debug("Credentials set");
             }
         } else {
-            LOG.debug( "Not using auth" );
+            LOG.debug("Not using auth");
         }
 
         // Enable SSL, see also http://cwiki.apache.org/confluence/display/CXF20DOC/Client+HTTP+Transport+%28including+SSL+support%29
-        if ( messageContext.getMessagePojo().getParticipant().getConnection().isSecure() ) {
+        if (messageContext.getMessagePojo().getParticipant().getConnection().isSecure()) {
             try {
 
                 ParticipantPojo participant = messagePojo.getParticipant();
-//                if (participant == null || participant.getLocalCertificate() == null) {
-//                    throw new NexusException( "Connection to participant " + participant.getDescription() + " configured 'secure', but no certificate was selected" );
-//                }
+                //                if (participant == null || participant.getLocalCertificate() == null) {
+                //                    throw new NexusException( "Connection to participant " + participant
+                //                    .getDescription() + " configured 'secure', but no certificate was selected" );
+                //                }
                 CertificatePojo localCert = participant.getLocalCertificate();
                 CertificatePojo partnerCert = messagePojo.getParticipant().getConnection().getCertificate();
                 KeyStore caCerts = Engine.getInstance().getActiveConfigurationAccessService().getCacertsKeyStore();
                 KeyManager[] keyManagers = null;
                 if (localCert != null) {
-                    KeyStore privateKeyChain = CertificateUtil.getPKCS12KeyStore( localCert );
-                    keyManagers = CertificateUtil.createKeyManagers(
-                            privateKeyChain, EncryptionUtil.decryptString( localCert.getPassword() ) );
+                    KeyStore privateKeyChain = CertificateUtil.getPKCS12KeyStore(localCert);
+                    keyManagers = CertificateUtil.createKeyManagers(privateKeyChain,
+                            EncryptionUtil.decryptString(localCert.getPassword()));
                 }
-                TrustManager[] trustManagers = CertificateUtil.createTrustManagers( caCerts, partnerCert );
+                TrustManager[] trustManagers = CertificateUtil.createTrustManagers(caCerts, partnerCert);
 
                 FiltersType filters = new FiltersType();
-                filters.getInclude().add( ".*_WITH_3DES_.*" );
-                filters.getInclude().add( ".*_EXPORT_.*" );
-                filters.getInclude().add( ".*_EXPORT1024_.*" );
-                filters.getInclude().add( ".*_WITH_DES_.*" );
+                filters.getInclude().add(".*_WITH_3DES_.*");
+                filters.getInclude().add(".*_EXPORT_.*");
+                filters.getInclude().add(".*_EXPORT1024_.*");
+                filters.getInclude().add(".*_WITH_DES_.*");
 
                 TLSClientParameters tlsClientParameters = new TLSClientParameters();
-                tlsClientParameters.setCipherSuitesFilter( filters );
-                tlsClientParameters.setTrustManagers( trustManagers );
+                tlsClientParameters.setCipherSuitesFilter(filters);
+                tlsClientParameters.setTrustManagers(trustManagers);
                 if (keyManagers != null) {
-                    tlsClientParameters.setKeyManagers( keyManagers );
+                    tlsClientParameters.setKeyManagers(keyManagers);
                 }
 
-                httpConduit.setTlsClientParameters( tlsClientParameters );
+                httpConduit.setTlsClientParameters(tlsClientParameters);
 
             } catch (NexusException nex) {
                 throw nex;
-            } catch ( Exception e ) {
-                throw new NexusException( e );
+            } catch (Exception e) {
+                throw new NexusException(e);
             }
         }
-        
+
         replyMessageContext = new MessageContext();
-        replyMessageContext.setRequestMessage( messageContext );
+        replyMessageContext.setRequestMessage(messageContext);
         try {
-            replyMessageContext.setProtocolSpecificKey( messageContext.getProtocolSpecificKey() );
-            replyMessageContext.setActionSpecificKey( messageContext.getActionSpecificKey() );
-            replyMessageContext.setConversation( messageContext.getConversation() );
-            replyMessageContext.setMessagePojo( (MessagePojo) messagePojo.clone() );
+            replyMessageContext.setProtocolSpecificKey(messageContext.getProtocolSpecificKey());
+            replyMessageContext.setActionSpecificKey(messageContext.getActionSpecificKey());
+            replyMessageContext.setConversation(messageContext.getConversation());
+            replyMessageContext.setMessagePojo((MessagePojo) messagePojo.clone());
             replyMessageContext.getMessagePojo().getMessagePayloads().clear();
-        } catch ( CloneNotSupportedException e ) {
-            LOG.error( "Error cloning outbound message: " + e );
+        } catch (CloneNotSupportedException e) {
+            LOG.error("Error cloning outbound message: " + e);
         }
 
         ParticipantPojo participant = messagePojo.getParticipant();
-        LOG.trace( "Calling web service at: " + receiverURL );
+        LOG.trace("Calling web service at: " + receiverURL);
 
-        for ( MessagePayloadPojo payload : messagePojo.getMessagePayloads() ) {
+        for (MessagePayloadPojo payload : messagePojo.getMessagePayloads()) {
 
             InboundData inboundData = new InboundData();
-            inboundData.setBusinessProcess( messagePojo.getConversation().getChoreography().getName() );
-            inboundData.setProcessStep( messagePojo.getConversation().getCurrentAction().getName() );
-            inboundData.setPartnerId( participant.getLocalPartner().getPartnerId() );
-            inboundData.setPartnerType( participant.getLocalPartner().getPartnerIdType() );
-            inboundData.setConversationId( messagePojo.getConversation().getConversationId() );
-            inboundData.setMessageId( messagePojo.getMessageId() );
+            inboundData.setBusinessProcess(messagePojo.getConversation().getChoreography().getName());
+            inboundData.setProcessStep(messagePojo.getConversation().getCurrentAction().getName());
+            inboundData.setPartnerId(participant.getLocalPartner().getPartnerId());
+            inboundData.setPartnerType(participant.getLocalPartner().getPartnerIdType());
+            inboundData.setConversationId(messagePojo.getConversation().getConversationId());
+            inboundData.setMessageId(messagePojo.getMessageId());
             XmlPayload p = new XmlPayload();
             Document d;
             try {
                 DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-                builderFactory.setNamespaceAware( true );
-                d = builderFactory.newDocumentBuilder().parse( new ByteArrayInputStream( payload.getPayloadData() ) );
+                builderFactory.setNamespaceAware(true);
+                d = builderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(payload.getPayloadData()));
                 Element element = d.getDocumentElement();
-                p.setAny( element );
+                p.setAny(element);
             } catch (SAXException e) {
-                throw new NexusException( e );
+                throw new NexusException(e);
             } catch (IOException e) {
-                throw new NexusException( e );
+                throw new NexusException(e);
             } catch (ParserConfigurationException e) {
-                throw new NexusException( e );
+                throw new NexusException(e);
             }
-            inboundData.setXmlPayload( p );
+            inboundData.setXmlPayload(p);
 
             try {
-                OutboundData outboundData = theDocExchangePortType.execute( inboundData );
+                OutboundData outboundData = theDocExchangePortType.execute(inboundData);
 
                 // process messageContext through applicable frontend inbound pipeline
-                replyMessageContext = initializeReplyMessageContext(
-                        replyMessageContext,
-                        outboundData,
+                replyMessageContext = initializeReplyMessageContext(replyMessageContext, outboundData,
                         messageContext.getConversation().getConversationId(),
-                        messageContext.getChoreography().getName() );
-            } catch ( Exception e ) {
+                        messageContext.getChoreography().getName());
+            } catch (Exception e) {
                 try {
                     messageContext.getStateMachine().processingFailed();
                 } catch (StateTransitionException stex) {
                     LOG.warn(stex);
                 }
-                LOG.error( new LogMessage("Error calling web service", messageContext, e) );
-                throw new NexusException( e );
+                LOG.error(new LogMessage("Error calling web service", messageContext, e));
+                throw new NexusException(e);
             }
         }
         return replyMessageContext;
     }
-    
-    private boolean filtered( String actionId ) {
-        
-        String exceptions = getParameter( EXCEPTIONS_PARAM_NAME );
+
+    private boolean filtered(String actionId) {
+
+        String exceptions = getParameter(EXCEPTIONS_PARAM_NAME);
         boolean match = false;
         if (exceptions != null) {
-            StringTokenizer st = new StringTokenizer( exceptions, "," );
+            StringTokenizer st = new StringTokenizer(exceptions, ",");
             while (st.hasMoreTokens()) {
                 String s = st.nextToken().trim();
-                if (actionId.matches( FileUtil.dosStyleToRegEx( s ) )) {
+                if (actionId.matches(FileUtil.dosStyleToRegEx(s))) {
                     match = true;
                     break;
                 }
             }
         }
-        
-        Boolean b = getParameter( SEND_RESPONSE_TO_FRONTEND_PARAM_NAME );
+
+        Boolean b = getParameter(SEND_RESPONSE_TO_FRONTEND_PARAM_NAME);
         return !(match ^ (b == null || b.booleanValue()));
     }
-    
-    private MessageContext initializeReplyMessageContext(
-            MessageContext replyMessageContext,
-            OutboundData outboundData,
-            String conversationId,
-            String choreographyId ) throws NexusException {
+
+    private MessageContext initializeReplyMessageContext(MessageContext replyMessageContext,
+                                                         OutboundData outboundData, String conversationId,
+                                                         String choreographyId) throws NexusException {
 
         String actionId = outboundData.getProcessStep();
-        
+
         String messageId = outboundData.getMessageId();
         MessagePojo message = replyMessageContext.getMessagePojo();
         EngineConfiguration config = Engine.getInstance().getCurrentConfiguration();
-        ChoreographyPojo choreography = config.getChoreographyByChoreographyId( choreographyId );
+        ChoreographyPojo choreography = config.getChoreographyByChoreographyId(choreographyId);
         if (choreography == null) {
-            throw new NexusException( "Choreography " + choreographyId + " was not found" );
+            throw new NexusException("Choreography " + choreographyId + " was not found");
         }
         ActionPojo action = null;
-        if (actionId == null || filtered( actionId )) {
-            LOG.info( "Message with message ID " + outboundData.getMessageId() +
-                    " (" + outboundData.getProcessStep() + ") filtered, not processing through return pipeline." );
-            replyMessageContext.setProcessThroughReturnPipeline( false );
+        if (actionId == null || filtered(actionId)) {
+            LOG.info("Message with message ID " + outboundData.getMessageId() + " (" + outboundData.getProcessStep() + ") filtered, not processing through return pipeline.");
+            replyMessageContext.setProcessThroughReturnPipeline(false);
         } else {
-            action = config.getActionFromChoreographyByActionId( choreography, actionId );
+            action = config.getActionFromChoreographyByActionId(choreography, actionId);
             if (action == null) {
-                throw new NexusException( "Action " + actionId + " was not found in choreography " + choreographyId );
+                throw new NexusException("Action " + actionId + " was not found in choreography " + choreographyId);
             }
         }
 
-        message.setAction( action );
-        message.setCreatedDate( new Date() );
-        message.setMessageId( messageId );
-        message.setOutbound( false );
-        replyMessageContext.setMessagePojo( message );
-        replyMessageContext.setOriginalMessagePojo( message );
+        message.setAction(action);
+        message.setCreatedDate(new Date());
+        message.setMessageId(messageId);
+        message.setOutbound(false);
+        replyMessageContext.setMessagePojo(message);
+        replyMessageContext.setOriginalMessagePojo(message);
         if (action != null) {
-            replyMessageContext.setChoreography( action.getChoreography() );
+            replyMessageContext.setChoreography(action.getChoreography());
         }
         if (message != null && message.getConversation() != null) {
-            replyMessageContext.setPartner( message.getConversation().getPartner() );
+            replyMessageContext.setPartner(message.getConversation().getPartner());
         }
-        
-        if ( outboundData.getXmlPayload() != null ) {
 
-            List<MessagePayloadPojo> messagePayloads = new ArrayList<MessagePayloadPojo>( 1 );
+        if (outboundData.getXmlPayload() != null) {
+
+            List<MessagePayloadPojo> messagePayloads = new ArrayList<MessagePayloadPojo>(1);
             int sn = 1;
             for (XmlPayload xmlPayload : outboundData.getXmlPayload()) {
                 String document = null;
                 try {
-                    OutputFormat outputFormat = new OutputFormat( "XML", "UTF-8", true );
+                    OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
                     StringWriter writer = new StringWriter();
-                    XMLSerializer xmlSerializer = new XMLSerializer( writer, outputFormat );
+                    XMLSerializer xmlSerializer = new XMLSerializer(writer, outputFormat);
                     xmlSerializer.asDOMSerializer();
 
                     Element element = (Element) xmlPayload.getAny();
 
                     if (element != null) {
                         // serialize the document
-                        xmlSerializer.setNamespaces( true );
-                        xmlSerializer.serialize( element.getOwnerDocument() );
+                        xmlSerializer.setNamespaces(true);
+                        xmlSerializer.serialize(element.getOwnerDocument());
                         document = writer.getBuffer().toString();
                     }
                 } catch (IOException e) {
-                    throw new NexusException( e );
+                    throw new NexusException(e);
                 }
                 if (document != null) {
-                    LOG.trace( "Returned document:\n" + document );
+                    LOG.trace("Returned document:\n" + document);
                     MessagePayloadPojo messagePayloadPojo = new MessagePayloadPojo();
-                    messagePayloadPojo.setSequenceNumber( sn++ );
-                    messagePayloadPojo.setMessage( replyMessageContext.getMessagePojo() );
-                    messagePayloadPojo.setContentId( Engine.getInstance().getIdGenerator(
-                            Constants.ID_GENERATOR_MESSAGE_PAYLOAD ).getId() );
-                    messagePayloadPojo.setMimeType( "text/xml" );
-                    messagePayloadPojo.setPayloadData( (document == null ? null : document.getBytes()) );
-                    messagePayloads.add( messagePayloadPojo );
+                    messagePayloadPojo.setSequenceNumber(sn++);
+                    messagePayloadPojo.setMessage(replyMessageContext.getMessagePojo());
+                    messagePayloadPojo.setContentId(Engine.getInstance().getIdGenerator(Constants.ID_GENERATOR_MESSAGE_PAYLOAD).getId());
+                    messagePayloadPojo.setMimeType("text/xml");
+                    messagePayloadPojo.setPayloadData((document == null ? null : document.getBytes()));
+                    messagePayloads.add(messagePayloadPojo);
                 } else {
-                    LOG.trace( "Empty document returned" );
+                    LOG.trace("Empty document returned");
                 }
             }
-            replyMessageContext.getMessagePojo().setMessagePayloads( messagePayloads );
+            replyMessageContext.getMessagePojo().setMessagePayloads(messagePayloads);
 
-            if ( outboundData.getProcessStep() != null ) {
-                replyMessageContext.getMessagePojo().setMessageId( outboundData.getMessageId() );
+            if (outboundData.getProcessStep() != null) {
+                replyMessageContext.getMessagePojo().setMessageId(outboundData.getMessageId());
             }
         }
 
-        
+
         return replyMessageContext;
-    }
-
-    public void setTransportSender( TransportSender transportSender ) {
-
-        this.transportSender = transportSender;
     }
 }

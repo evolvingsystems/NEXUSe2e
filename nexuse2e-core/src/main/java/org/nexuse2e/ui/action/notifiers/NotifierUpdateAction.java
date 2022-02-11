@@ -135,18 +135,18 @@ public class NotifierUpdateAction extends NexusE2EAction {
                 param.setLogger( originalLogger );
             }
 
-            if ( !originalLogger.getName().equals( form.getName() ) ) {
-                engineConfiguration.renameLogger( originalLogger.getName(),
-                        form.getName() );
-                originalLogger.setName( form.getName() );
-            }
-            originalLogger.setLoggerParams( list );
-
-            originalLogger.setThreshold( form.getThreshold() );
-
-            engineConfiguration.updateLogger( originalLogger );
-            form.setLoggerInstance( engineConfiguration.getLogger(
-                    originalLogger.getName() ) );
+//            if ( !originalLogger.getName().equals( form.getName() ) ) {
+//                engineConfiguration.renameLogger( originalLogger.getName(),
+//                        form.getName() );
+//                originalLogger.setName( form.getName() );
+//            }
+//            originalLogger.setLoggerParams( list );
+//
+//            originalLogger.setThreshold( form.getThreshold() );
+//
+//            engineConfiguration.updateLogger( originalLogger );
+//            form.setLoggerInstance( engineConfiguration.getLogger(
+//                    originalLogger.getName() ) );
 
             return update;
         }

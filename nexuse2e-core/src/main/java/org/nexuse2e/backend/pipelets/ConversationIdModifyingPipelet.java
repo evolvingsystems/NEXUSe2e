@@ -1,26 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -42,16 +43,17 @@ import java.util.List;
  */
 public class ConversationIdModifyingPipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(ConversationIdModifyingPipelet.class);
-
     public static final String DEFINITION_LIST = "definitionList";
-
+    private static Logger LOG = LogManager.getLogger(ConversationIdModifyingPipelet.class);
     private List<String> segments = new ArrayList<>();
 
     public ConversationIdModifyingPipelet() {
 
         parameterMap.put(DEFINITION_LIST, new ParameterDescriptor(ParameterType.TEXT, "Label List",
-                "List of labels and build-ins concatenated into the new conversation id. Be careful with special characters. You can use static texts in quotes like \"-\" for separators, labels (simply the label name) and build-ins. (supported: ${now}, ${action}, ${choreography} )", ""));
+                "List of labels " + "and build-ins concatenated into the new conversation id. Be careful with special" +
+                        " characters. You can" + " use static texts in quotes like \"-\" for separators, labels " +
+                        "(simply the label name) and build-ins." + " (supported: ${now}, ${action}, ${choreography} )"
+                , ""));
 
     }
 
@@ -92,7 +94,7 @@ public class ConversationIdModifyingPipelet extends AbstractPipelet {
                     for (String segment : segments) {
                         String value = "";
                         if (segment.startsWith("${")) {
-                            value = replaceBuildIn(segment.substring(2, segment.length() - 1),messageContext);
+                            value = replaceBuildIn(segment.substring(2, segment.length() - 1), messageContext);
                         } else if (segment.startsWith("\"")) { // Spaces and other static parts
                             value = segment.substring(1, segment.length() - 1);
                         } else {
@@ -122,7 +124,7 @@ public class ConversationIdModifyingPipelet extends AbstractPipelet {
         return null;
     }
 
-    private String replaceBuildIn(String buildIn,MessageContext messageContext) {
+    private String replaceBuildIn(String buildIn, MessageContext messageContext) {
         switch (buildIn) {
             case "now":
                 SimpleDateFormat format = new SimpleDateFormat("ddMMyyyyHHmmssSSS");

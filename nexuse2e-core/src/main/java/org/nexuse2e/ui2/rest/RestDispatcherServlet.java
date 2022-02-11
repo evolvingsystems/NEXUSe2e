@@ -1,16 +1,18 @@
 package org.nexuse2e.ui2.rest;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RestDispatcherServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(RestDispatcherServlet.class);
+    private static final Logger LOG = LogManager.getLogger(RestDispatcherServlet.class);
 
     private final List<Handler> handlers = new ArrayList<>();
 

@@ -1,21 +1,21 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.integration.secure;
 
@@ -24,7 +24,8 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSPasswordCallback;
 import org.apache.ws.security.handler.WSHandlerConstants;
@@ -36,13 +37,14 @@ import org.nexuse2e.configuration.ParameterType;
 import org.nexuse2e.integration.NEXUSe2eInterfaceImpl;
 import org.nexuse2e.service.AbstractService;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.xml.ws.Endpoint;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -51,7 +53,7 @@ import java.util.Map;
  * @author Jascha Jerke
  */
 public class WSDispatcherService extends AbstractService {
-    private static Logger LOG = Logger.getLogger(WSDispatcherService.class);
+    private static Logger LOG = LogManager.getLogger(WSDispatcherService.class);
 
     private static String URL_PARAM_NAME = "url";
     private static String USER_PARAM_NAME = "username";
@@ -61,10 +63,12 @@ public class WSDispatcherService extends AbstractService {
 
     @Override
     public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
-        parameterMap.put(URL_PARAM_NAME,
-                         new ParameterDescriptor(ParameterType.STRING, "Web service URL", "The last part of the web service URL, e.g. /sendMessage", ""));
-        parameterMap.put(USER_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Username", "Username for WS-Security on this endpoint.", ""));
-        parameterMap.put(PASS_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "Password for WS-Security on this endpoint.", ""));
+        parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Web service URL", "The last " +
+                "part of the web service URL, e.g. /sendMessage", ""));
+        parameterMap.put(USER_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Username", "Username for " +
+                "WS-Security on this endpoint.", ""));
+        parameterMap.put(PASS_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "Password for " +
+                "WS-Security on this endpoint.", ""));
     }
 
     @Override
@@ -94,7 +98,7 @@ public class WSDispatcherService extends AbstractService {
                     WSPasswordCallback pc = (WSPasswordCallback) callbacks[0];
                     String user = pc.getIdentifier();
                     if (!(user.equals(username) && pc.getPassword().equals(password))) {
-                    //    pc.setPassword(password);
+                        //    pc.setPassword(password);
                         throw new IOException("invalid credentials");
                     }
 

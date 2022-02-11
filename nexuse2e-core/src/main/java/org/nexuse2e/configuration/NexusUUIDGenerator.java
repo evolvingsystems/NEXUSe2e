@@ -25,7 +25,7 @@ import org.nexuse2e.NexusException;
 
 public class NexusUUIDGenerator implements IdGenerator {
 
-    // private static Logger LOG = Logger.getLogger( NexusUUIDGenerator.class );
+    // private static Logger LOG = LogManager.getLogger( NexusUUIDGenerator.class );
 
     public String getId() throws NexusException {
 

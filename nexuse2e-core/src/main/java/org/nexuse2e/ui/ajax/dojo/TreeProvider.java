@@ -1,27 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.ui.ajax.dojo;
 
 
-import edu.emory.mathcs.backport.java.util.Collections;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -37,11 +37,14 @@ import org.nexuse2e.ui.structure.StructureService;
 import org.nexuse2e.ui.structure.impl.PageNode;
 import org.springframework.beans.factory.BeanFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 
 /**
@@ -51,7 +54,7 @@ import java.util.Map;
  */
 public class TreeProvider implements AjaxRequestHandler {
 
-    private static final Logger LOG = Logger.getLogger(TreeProvider.class);
+    private static final Logger LOG = LogManager.getLogger(TreeProvider.class);
 
     private static final String BEAN_STRUCTURE_SERVICE = "structureService";
 
@@ -74,9 +77,9 @@ public class TreeProvider implements AjaxRequestHandler {
         String parentId = (params.containsKey("parentId") ? ((String[]) params.get("parentId"))[0] : null);
         if (action != null) {
             // parse JSON request data
-            result = "{ \"label\": \"title\"," +
-                     "\"identifier\":\"objectId\"," +
-                     "\"items\": " + getChildren(parentId, engineConfiguration).toString() + " }";
+            result =
+                    "{ \"label\": \"title\"," + "\"identifier\":\"objectId\"," + "\"items\": " + getChildren(parentId
+                            , engineConfiguration).toString() + " }";
 
         } else {
             LOG.warn("Missing request parameter: action was null");
@@ -156,9 +159,7 @@ public class TreeProvider implements AjaxRequestHandler {
 
     private String buildObjectId(StructureNode node) {
         int hashCode = (node.getTarget() + node.getLabel() + node.getIcon()).hashCode();
-        return (node instanceof PageNode && ((ParentalStructureNode) node).hasDynamicChildren() ? "d" : "s") + (hashCode < 0 ?
-            "_n" + (hashCode * -1) :
-            "_p" + hashCode);
+        return (node instanceof PageNode && ((ParentalStructureNode) node).hasDynamicChildren() ? "d" : "s") + (hashCode < 0 ? "_n" + (hashCode * -1) : "_p" + hashCode);
     }
 
     private Map<String, StructureNode> buildNodeCatalog(List<StructureNode> nodes) {

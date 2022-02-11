@@ -1,31 +1,32 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.integration;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.rmi.Remote;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * The NexusE2EServer main class. This class is used for registering the RMI interface of the server with the default
@@ -36,28 +37,28 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class NEXUSe2eRMIServer implements InitializingBean {
 
-    private static Logger         LOG                   = Logger.getLogger( NEXUSe2eRMIServer.class );
+    private static Logger LOG = LogManager.getLogger(NEXUSe2eRMIServer.class);
 
-    private String                hostName              = null;
-    private String                interfaceName         = null;
-    private int                   rmiPort               = 1099;
+    private String hostName = null;
+    private String interfaceName = null;
+    private int rmiPort = 1099;
 
     private NEXUSe2eInterfaceImpl nexuse2eInterfaceImpl = null;
 
     public void afterPropertiesSet() throws Exception {
 
         nexuse2eInterfaceImpl = new NEXUSe2eInterfaceImpl();
-        
-        if ( (hostName == null) || (hostName.length() == 0) || (interfaceName == null) || (interfaceName.length() == 0)) {
-            LOG.info( "RMI not configured, skipping initialization." );
+
+        if ((hostName == null) || (hostName.length() == 0) || (interfaceName == null) || (interfaceName.length() == 0)) {
+            LOG.info("RMI not configured, skipping initialization.");
             return;
         }
-        
-        if ( rmiPort == 0 ) {
+
+        if (rmiPort == 0) {
             rmiPort = 1099;
         }
-        
-        registerListener( hostName, interfaceName, rmiPort );
+
+        registerListener(hostName, interfaceName, rmiPort);
     }
 
     public String getHostName() {
@@ -65,14 +66,29 @@ public class NEXUSe2eRMIServer implements InitializingBean {
         return hostName;
     }
 
+    public void setHostName(String hostName) {
+
+        this.hostName = hostName;
+    }
+
     public String getInterfaceName() {
 
         return interfaceName;
     }
 
+    public void setInterfaceName(String interfaceName) {
+
+        this.interfaceName = interfaceName;
+    }
+
     public int getRmiPort() {
 
         return rmiPort;
+    }
+
+    public void setRmiPort(int rmiPort) {
+
+        this.rmiPort = rmiPort;
     }
 
     /**
@@ -81,54 +97,39 @@ public class NEXUSe2eRMIServer implements InitializingBean {
      * @param interfaceName
      */
 
-    public void registerListener( String host, String interfaceName ) {
+    public void registerListener(String host, String interfaceName) {
 
-        registerListener( host, interfaceName, rmiPort );
+        registerListener(host, interfaceName, rmiPort);
     }
 
-    public void registerListener( String host, String interfaceName, int portNo ) {
+    public void registerListener(String host, String interfaceName, int portNo) {
 
         try {
             Registry registry = null;
             Remote remoteObj = null;
 
-            remoteObj = UnicastRemoteObject.exportObject( nexuse2eInterfaceImpl, portNo );
+            remoteObj = UnicastRemoteObject.exportObject(nexuse2eInterfaceImpl, portNo);
 
             try {
-                registry = LocateRegistry.createRegistry( portNo );
-            } catch ( Exception rEx ) {
-                LOG.warn( "RMI: Registry already exists." );
+                registry = LocateRegistry.createRegistry(portNo);
+            } catch (Exception rEx) {
+                LOG.warn("RMI: Registry already exists.");
                 registry = null;
             } // try
 
-            if ( registry == null ) {
-                registry = LocateRegistry.getRegistry( portNo );
+            if (registry == null) {
+                registry = LocateRegistry.getRegistry(portNo);
             }
 
             String bindTo = "//" + host + "/" + interfaceName;
-            LOG.debug( "RMI: Trying to bind to: " + bindTo );
+            LOG.debug("RMI: Trying to bind to: " + bindTo);
 
-            registry.rebind( bindTo, remoteObj );
+            registry.rebind(bindTo, remoteObj);
 
-            LOG.info( "RMI: " + bindTo + " bound in registry" );
-        } catch ( Exception e ) {
-            LOG.error( "Error initializing RMI interface.  Exception " + e.getMessage() );
+            LOG.info("RMI: " + bindTo + " bound in registry");
+        } catch (Exception e) {
+            LOG.error("Error initializing RMI interface.  Exception " + e.getMessage());
         } // try
     } // registerListener
-
-    public void setHostName( String hostName ) {
-
-        this.hostName = hostName;
-    }
-
-    public void setInterfaceName( String interfaceName ) {
-
-        this.interfaceName = interfaceName;
-    }
-
-    public void setRmiPort( int rmiPort ) {
-
-        this.rmiPort = rmiPort;
-    }
 
 } // NEXUSe2eRMIServer

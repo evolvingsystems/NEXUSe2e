@@ -1,33 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -38,43 +32,48 @@ import org.nexuse2e.configuration.ParameterType;
 import org.nexuse2e.messaging.MessageContext;
 import org.nexuse2e.util.DateUtil;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Map;
+
 /**
  * @author gesch
  *
  */
 public class DBIntegrationService extends AbstractService implements SchedulerClient {
 
-    private static Logger     LOG               = Logger.getLogger( DBIntegrationService.class );
-
-    public static String      DATABASESERVICE   = "databasename";
-    public static String      SCHEDULINGSERVICE = "schedulingname";
-    public static String      TABLENAME         = "tablename";
-    public static String      CHOREOGRAPHY      = "choreography";
-    public static String      ACTION            = "action";
-    public static String      INTERVAL          = "interval";
-
-    protected DatabaseService   dbService         = null;
+    public static String DATABASESERVICE = "databasename";
+    public static String SCHEDULINGSERVICE = "schedulingname";
+    public static String TABLENAME = "tablename";
+    public static String CHOREOGRAPHY = "choreography";
+    public static String ACTION = "action";
+    public static String INTERVAL = "interval";
+    private static Logger LOG = LogManager.getLogger(DBIntegrationService.class);
+    protected DatabaseService dbService = null;
     protected SchedulingService schedulingService = null;
-    protected String            choreography      = null;
-    protected String            action            = null;
-    protected String            tableName         = null;
-    protected int               interval          = 10000;
+    protected String choreography = null;
+    protected String action = null;
+    protected String tableName = null;
+    protected int interval = 10000;
 
     @Override
-    public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
+    public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
 
-        parameterMap.put( DATABASESERVICE, new ParameterDescriptor( ParameterType.SERVICE, "Database Service",
-                "The name of the service that shall be used for database connection pooling", DatabaseService.class ) );
-        parameterMap.put( SCHEDULINGSERVICE, new ParameterDescriptor( ParameterType.SERVICE, "Scheduling Service",
-                "The name of the service that shall be used for time schedule", SchedulingService.class ) );
-        parameterMap.put( TABLENAME, new ParameterDescriptor( ParameterType.STRING, "Table name",
-                "The name of the table used for backend integration", "Payloads" ) );
-        parameterMap.put( CHOREOGRAPHY, new ParameterDescriptor( ParameterType.STRING, "Choreography",
-                "The name of the Choreography  used for optionally filtering messages", "" ) );
-        parameterMap.put( ACTION, new ParameterDescriptor( ParameterType.STRING, "Action",
-                "Additional Action filter when Choreogrphy is specified", "" ) );
-        parameterMap.put( INTERVAL, new ParameterDescriptor( ParameterType.STRING, "Interval",
-                "Database polling interval (Millseconds)", "10000" ) );
+        parameterMap.put(DATABASESERVICE, new ParameterDescriptor(ParameterType.SERVICE, "Database Service", "The " +
+                "name of the service that shall be used for database connection pooling", DatabaseService.class));
+        parameterMap.put(SCHEDULINGSERVICE, new ParameterDescriptor(ParameterType.SERVICE, "Scheduling Service", "The" +
+                " name of the service that shall be used for time schedule", SchedulingService.class));
+        parameterMap.put(TABLENAME, new ParameterDescriptor(ParameterType.STRING, "Table name", "The name of the " +
+                "table used for backend integration", "Payloads"));
+        parameterMap.put(CHOREOGRAPHY, new ParameterDescriptor(ParameterType.STRING, "Choreography", "The name of the" +
+                " Choreography  used for optionally filtering messages", ""));
+        parameterMap.put(ACTION, new ParameterDescriptor(ParameterType.STRING, "Action", "Additional Action filter " +
+                "when Choreogrphy is specified", ""));
+        parameterMap.put(INTERVAL, new ParameterDescriptor(ParameterType.STRING, "Interval", "Database polling " +
+                "interval (Millseconds)", "10000"));
     }
 
     @Override
@@ -89,7 +88,7 @@ public class DBIntegrationService extends AbstractService implements SchedulerCl
     @Override
     public void start() {
 
-        LOG.trace( "starting" );
+        LOG.trace("starting");
 
         super.start();
     }
@@ -100,11 +99,11 @@ public class DBIntegrationService extends AbstractService implements SchedulerCl
     @Override
     public void stop() {
 
-        LOG.trace( "stopping" );
-        if ( schedulingService != null ) {
-            schedulingService.deregisterClient( this );
+        LOG.trace("stopping");
+        if (schedulingService != null) {
+            schedulingService.deregisterClient(this);
         } else {
-            LOG.error( "no scheduling service configured!" );
+            LOG.error("no scheduling service configured!");
         }
         super.stop();
     }
@@ -113,64 +112,63 @@ public class DBIntegrationService extends AbstractService implements SchedulerCl
      * @see org.nexuse2e.service.AbstractService#initialize(org.nexuse2e.configuration.EngineConfiguration)
      */
     @Override
-    public void initialize( EngineConfiguration config ) throws InstantiationException {
+    public void initialize(EngineConfiguration config) throws InstantiationException {
 
-        
-        
-        LOG.trace( "initializing" );
-        String dbServiceName = getParameter( DATABASESERVICE );
-        String schedulingServiceName = getParameter( SCHEDULINGSERVICE );
-        action = getParameter( ACTION );
-        choreography = getParameter( CHOREOGRAPHY );
-        tableName = getParameter( TABLENAME );
-        interval = Integer.parseInt((String) getParameter( INTERVAL ) );
 
-        if ( !StringUtils.isEmpty( dbServiceName ) ) {
+        LOG.trace("initializing");
+        String dbServiceName = getParameter(DATABASESERVICE);
+        String schedulingServiceName = getParameter(SCHEDULINGSERVICE);
+        action = getParameter(ACTION);
+        choreography = getParameter(CHOREOGRAPHY);
+        tableName = getParameter(TABLENAME);
+        interval = Integer.parseInt((String) getParameter(INTERVAL));
 
-            Service service = Engine.getInstance().getActiveConfigurationAccessService().getService( dbServiceName );
-            if ( service == null ) {
+        if (!StringUtils.isEmpty(dbServiceName)) {
+
+            Service service = Engine.getInstance().getActiveConfigurationAccessService().getService(dbServiceName);
+            if (service == null) {
                 status = BeanStatus.ERROR;
-                LOG.error( "Service not found in configuration: " + dbServiceName );
+                LOG.error("Service not found in configuration: " + dbServiceName);
                 return;
             }
-            if ( !( service instanceof DatabaseService ) ) {
+            if (!(service instanceof DatabaseService)) {
                 status = BeanStatus.ERROR;
-                LOG.error( "dbServiceName is instance of " + service.getClass().getName()
-                        + " but DatabaseService is required" );
+                LOG.error("dbServiceName is instance of " + service.getClass().getName() + " but DatabaseService is " +
+                        "required");
                 return;
             }
             dbService = (DatabaseService) service;
 
         } else {
             status = BeanStatus.ERROR;
-            LOG.error( "DatabaseService is not properly configured (databaseServiceObj == null)!" );
+            LOG.error("DatabaseService is not properly configured (databaseServiceObj == null)!");
             return;
         }
-        if ( !StringUtils.isEmpty( schedulingServiceName ) ) {
+        if (!StringUtils.isEmpty(schedulingServiceName)) {
 
-            Service service = Engine.getInstance().getActiveConfigurationAccessService().getService(
-                    schedulingServiceName );
-            if ( service == null ) {
+            Service service =
+                    Engine.getInstance().getActiveConfigurationAccessService().getService(schedulingServiceName);
+            if (service == null) {
                 status = BeanStatus.ERROR;
-                LOG.error( "Service not found in configuration: " + schedulingServiceName );
+                LOG.error("Service not found in configuration: " + schedulingServiceName);
                 return;
             }
-            if ( !( service instanceof SchedulingService ) ) {
+            if (!(service instanceof SchedulingService)) {
                 status = BeanStatus.ERROR;
-                LOG.error( schedulingServiceName + " is instance of " + service.getClass().getName()
-                        + " but SchedulingService is required" );
+                LOG.error(schedulingServiceName + " is instance of " + service.getClass().getName() + " but " +
+                        "SchedulingService is required");
                 return;
             }
             schedulingService = (SchedulingService) service;
 
         } else {
             status = BeanStatus.ERROR;
-            LOG.error( "SchedulingService is not properly configured (schedulingServiceObj == null)!" );
+            LOG.error("SchedulingService is not properly configured (schedulingServiceObj == null)!");
             return;
         }
 
-        ( (SchedulingService) schedulingService ).registerClient( this, interval );
-        super.initialize( config );
+        ((SchedulingService) schedulingService).registerClient(this, interval);
+        super.initialize(config);
     }
 
     /* (non-Javadoc)
@@ -179,7 +177,7 @@ public class DBIntegrationService extends AbstractService implements SchedulerCl
     @Override
     public void teardown() {
 
-        LOG.trace( "teardown" );
+        LOG.trace("teardown");
         dbService = null;
         schedulingService = null;
         super.teardown();
@@ -191,9 +189,9 @@ public class DBIntegrationService extends AbstractService implements SchedulerCl
     public void scheduleNotify() {
 
         // LOG.debug( "do something" );
-        if ( status == BeanStatus.STARTED ) {
-            if ( dbService == null ) {
-                LOG.error( "no Database Service found!" );
+        if (status == BeanStatus.STARTED) {
+            if (dbService == null) {
+                LOG.error("no Database Service found!");
                 status = BeanStatus.ERROR;
                 return;
             }
@@ -203,21 +201,21 @@ public class DBIntegrationService extends AbstractService implements SchedulerCl
     }
 
     /**
-     * 
+     *
      */
     protected void checkForNewMessages() {
 
         ResultSet resultSet = null;
         Connection connection = null;
         Statement statement = null;
-        String tableName = getParameter( TABLENAME );
+        String tableName = getParameter(TABLENAME);
 
-        String sql = "select KeyField, ConversationID, MessageID, ChoreographyID, ActionID, ParticipantID, Contenttype, PayloadField, SentFlag, LastModified_Date from "
-                + tableName
-                + " where SentFlag=0 and InboundFlag=0";
-        if ( !StringUtils.isEmpty( choreography ) ) {
+        String sql = "select KeyField, ConversationID, MessageID, ChoreographyID, ActionID, ParticipantID, " +
+                "Contenttype, PayloadField, SentFlag, LastModified_Date from " + tableName + " where SentFlag=0 and " +
+                "InboundFlag=0";
+        if (!StringUtils.isEmpty(choreography)) {
             sql = sql + " and ChoreographyID='" + choreography;
-            if ( !StringUtils.isEmpty( action ) ) {
+            if (!StringUtils.isEmpty(action)) {
                 sql = sql + "' and ActionID = '" + action + "'";
             }
 
@@ -227,100 +225,102 @@ public class DBIntegrationService extends AbstractService implements SchedulerCl
             connection = dbService.getDatabaseConnection();
 
             // set transaction level to avoid other nodes in a cluster to send the same message
-            connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE );
-            connection.setAutoCommit( false );
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            connection.setAutoCommit(false);
 
-            statement = connection.createStatement( ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY );
+            statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
             // Process all rows that match the criteria
-            LOG.trace( "Running query - SQL: " + sql );
+            LOG.trace("Running query - SQL: " + sql);
 
-            for ( resultSet = statement.executeQuery( sql ); resultSet.next(); ) {
-                int key = resultSet.getInt( "KeyField" );
-                String conversationId = resultSet.getString( "ConversationID" );
-                String messageId = resultSet.getString( "MessageID" );
-                String choreographyId = resultSet.getString( "ChoreographyID" );
-                String actionId = resultSet.getString( "ActionID" );
-                String participantId = resultSet.getString( "ParticipantID" );
-                String contentType = resultSet.getString( "Contenttype" );
-                byte[] payload = resultSet.getString( "PayloadField" ).getBytes();
+            for (resultSet = statement.executeQuery(sql); resultSet.next(); ) {
+                int key = resultSet.getInt("KeyField");
+                String conversationId = resultSet.getString("ConversationID");
+                String messageId = resultSet.getString("MessageID");
+                String choreographyId = resultSet.getString("ChoreographyID");
+                String actionId = resultSet.getString("ActionID");
+                String participantId = resultSet.getString("ParticipantID");
+                String contentType = resultSet.getString("Contenttype");
+                byte[] payload = resultSet.getString("PayloadField").getBytes();
 
-                LOG.trace( "KeyField: " + key );
-                LOG.trace( "PaticipantId: " + participantId );
-                LOG.trace( "ConversationId:" + conversationId );
-                LOG.trace( "MessageId: " +messageId );
-                LOG.trace( "ContentType: " + contentType );
-                LOG.trace( "Choreography: " + choreographyId );
-                LOG.trace( "Action: " + actionId );
+                LOG.trace("KeyField: " + key);
+                LOG.trace("PaticipantId: " + participantId);
+                LOG.trace("ConversationId:" + conversationId);
+                LOG.trace("MessageId: " + messageId);
+                LOG.trace("ContentType: " + contentType);
+                LOG.trace("Choreography: " + choreographyId);
+                LOG.trace("Action: " + actionId);
 
-                MessageContext message = Engine.getInstance().getCurrentConfiguration().getBackendPipelineDispatcher()
-                        .processMessage( participantId, choreographyId, actionId, conversationId, null, null, payload );
+                MessageContext message =
+                        Engine.getInstance().getCurrentConfiguration().getBackendPipelineDispatcher().processMessage(participantId, choreographyId, actionId, conversationId, null, null, payload);
 
                 conversationId = message.getMessagePojo().getConversation().getConversationId();
                 messageId = message.getMessagePojo().getMessageId();
                 boolean inline = false;
-                if ( inline ) {
-                    resultSet.updateInt( "SentFlag", 1 );
-                    resultSet.updateString( "ConversationID", conversationId );
-                    resultSet.updateString( "MessageID", messageId );
-                    resultSet.updateString( "LastModified_Date", DateUtil.getFormatedNowString() );
+                if (inline) {
+                    resultSet.updateInt("SentFlag", 1);
+                    resultSet.updateString("ConversationID", conversationId);
+                    resultSet.updateString("MessageID", messageId);
+                    resultSet.updateString("LastModified_Date", DateUtil.getFormatedNowString());
                     resultSet.updateRow();
                 } else {
-                    updateSentFlag( connection,messageId, conversationId, key );
+                    updateSentFlag(connection, messageId, conversationId, key);
                 }
 
-                LOG.trace( "ConversationId: " +conversationId );
+                LOG.trace("ConversationId: " + conversationId);
 
             }
-        } catch ( SQLException sqlException ) {
+        } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            LOG.error( "Error accessing result set retrieved for new payloads. Exception:  " + sqlException, sqlException );
-        } catch ( Exception exception ) {
-            LOG.error( "Error sending new payloads. Exception:  " + exception, exception );
+            LOG.error("Error accessing result set retrieved for new payloads. Exception:  " + sqlException,
+                    sqlException);
+        } catch (Exception exception) {
+            LOG.error("Error sending new payloads. Exception:  " + exception, exception);
         } finally {
             try {
                 resultSet.close();
                 statement.close();
                 // Commit changes so other nodes in a cluster can access the data
                 connection.commit();
-                connection.setAutoCommit( true );
-            } catch ( Exception exception1 ) {
+                connection.setAutoCommit(true);
+            } catch (Exception exception1) {
             }
             try {
-                dbService.releaseDatabaseConnection( connection );
-            } catch ( SQLException e ) {
+                dbService.releaseDatabaseConnection(connection);
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
     /**
-     * 
+     *
      * @param conversationId
      * @param key
      * @throws ConnectorException
      */
-    private void updateSentFlag( Connection connection, String messageId, String conversationId, int key ) throws NexusException {
+    private void updateSentFlag(Connection connection, String messageId, String conversationId, int key) throws NexusException {
 
         String currentDate = DateUtil.getFormatedNowString();
         PreparedStatement preparedstatement = null;
-        String sql = "update " + tableName + " set SentFlag=1, LastModified_Date=?, MessageID=?, ConversationID=? "
-                + "where KeyField=?";
+        String sql =
+                "update " + tableName + " set SentFlag=1, LastModified_Date=?, MessageID=?, ConversationID=? " +
+                        "where KeyField=?";
         try {
-            preparedstatement = connection.prepareStatement( sql );
-            preparedstatement.setString( 1, currentDate );
-            preparedstatement.setString( 2, messageId );
-            preparedstatement.setString( 3, conversationId );
-            preparedstatement.setInt( 4, key );
+            preparedstatement = connection.prepareStatement(sql);
+            preparedstatement.setString(1, currentDate);
+            preparedstatement.setString(2, messageId);
+            preparedstatement.setString(3, conversationId);
+            preparedstatement.setInt(4, key);
             preparedstatement.executeUpdate();
-        } catch ( Exception exception ) {
+        } catch (Exception exception) {
             exception.printStackTrace();
-            LOG.error( "Error updating payload with the key of " + key + " Exception:  " + exception.toString() );
-            throw new NexusException( "Error in ProcessOutboundMessage", exception );
+            LOG.error("Error updating payload with the key of " + key + " Exception:  " + exception.toString());
+            throw new NexusException("Error in ProcessOutboundMessage", exception);
         } finally {
             try {
                 preparedstatement.close();
-            } catch ( Exception exception2 ) {
+            } catch (Exception exception2) {
             }
         }
     } // updateSentFlag

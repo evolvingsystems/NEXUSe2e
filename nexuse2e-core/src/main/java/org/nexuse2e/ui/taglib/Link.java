@@ -34,7 +34,7 @@ public class Link extends BodyTagSupport {
 
     private static final long     serialVersionUID  = 8745028952283187452L;
 
-    // private static final Logger LOG = Logger.getLogger( Link.class );
+    // private static final Logger LOG = LogManager.getLogger( Link.class );
 
     /**
      * The default widget id is <code>docpane</code>.

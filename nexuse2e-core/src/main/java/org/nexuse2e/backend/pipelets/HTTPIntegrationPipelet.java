@@ -1,30 +1,23 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -36,7 +29,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.pipelets.helper.RequestResponseData;
 import org.nexuse2e.configuration.ParameterDescriptor;
@@ -48,55 +42,60 @@ import org.nexuse2e.pojo.MessageLabelPojo;
 import org.nexuse2e.pojo.MessagePayloadPojo;
 import org.nexuse2e.pojo.MessagePojo;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author mbreilmann
- *
  */
 public class HTTPIntegrationPipelet extends AbstractPipelet {
 
-    private static Logger      LOG            = Logger.getLogger( HTTPIntegrationPipelet.class );
-
-    public static final String URL            = "URL";
-    public static final String SEND_AS_PARAM  = "SendAsParameters";
-    public static final String HEADERS        = "Headers";
+    public static final String URL = "URL";
+    public static final String SEND_AS_PARAM = "SendAsParameters";
+    public static final String HEADERS = "Headers";
     public static final String INCLUDE_LABELS = "IncludeLabels";
-    public static final String LABEL_PREFIX   = "LabelPrefix";
-    public static final String DEBUG          = "Debug";
-    public static final String DEFAULT_URL    = "http://localhost:8080/NEXUSe2e/integration/http";
-    public static final String USER           = "User";
-    public static final String PASSWORD       = "Password";
+    public static final String LABEL_PREFIX = "LabelPrefix";
+    public static final String DEBUG = "Debug";
+    public static final String DEFAULT_URL = "http://localhost:8080/NEXUSe2e/integration/http";
+    public static final String USER = "User";
+    public static final String PASSWORD = "Password";
+    private static Logger LOG = LogManager.getLogger(HTTPIntegrationPipelet.class);
 
     /**
      * Default constructor.
      */
     public HTTPIntegrationPipelet() {
 
-        parameterMap.put( URL, new ParameterDescriptor( ParameterType.STRING, "URL of legacy system",
-                "The URL that inbound messages are forwarded to.", DEFAULT_URL ) );
-        parameterMap.put( SEND_AS_PARAM, new ParameterDescriptor( ParameterType.BOOLEAN, "Send content URL-encoded",
-                "Send the content as a URL-encoded HTTP parameter.", Boolean.TRUE ) );
-        parameterMap.put( HEADERS, new ParameterDescriptor( ParameterType.TEXT, "Headers",
-                "Additional headers (optional, one key:value pair per line).", "" ) );
-        parameterMap.put( USER, new ParameterDescriptor( ParameterType.STRING, "User name",
-                "User name required for legacy system (optional).", "" ) );
-        parameterMap.put( PASSWORD, new ParameterDescriptor( ParameterType.PASSWORD, "Password",
-                "Password required for legacy system (optional).", "" ) );
-        parameterMap.put( INCLUDE_LABELS, new ParameterDescriptor( ParameterType.BOOLEAN, "Include Labels",
-                "Include Labels as HTTP parameters.", Boolean.FALSE ) );
-        parameterMap.put( LABEL_PREFIX, new ParameterDescriptor( ParameterType.STRING, "Label Prefix", "Label Prefix",
-                "" ) );
+        parameterMap.put(URL, new ParameterDescriptor(ParameterType.STRING, "URL of legacy system",
+                "The URL that " + "inbound messages are forwarded to.", DEFAULT_URL));
+        parameterMap.put(SEND_AS_PARAM, new ParameterDescriptor(ParameterType.BOOLEAN, "Send content URL-encoded",
+                "Send the content as a URL-encoded HTTP parameter.", Boolean.TRUE));
+        parameterMap.put(HEADERS, new ParameterDescriptor(ParameterType.TEXT, "Headers", "Additional headers " +
+                "(optional, one key:value pair per line).", ""));
+        parameterMap.put(USER, new ParameterDescriptor(ParameterType.STRING, "User name",
+                "User name required for " + "legacy system (optional).", ""));
+        parameterMap.put(PASSWORD, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "Password required " +
+                "for" + " legacy system (optional).", ""));
+        parameterMap.put(INCLUDE_LABELS, new ParameterDescriptor(ParameterType.BOOLEAN, "Include Labels",
+                "Include " + "Labels as HTTP parameters.", Boolean.FALSE));
+        parameterMap.put(LABEL_PREFIX, new ParameterDescriptor(ParameterType.STRING, "Label Prefix", "Label Prefix",
+                ""));
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipelet#processMessage(org.nexuse2e.messaging.MessageContext)
      */
-    public MessageContext processMessage( MessageContext messageContext ) throws IllegalArgumentException,
+    public MessageContext processMessage(MessageContext messageContext) throws IllegalArgumentException,
             IllegalStateException, NexusException {
 
         boolean debug = false;
         String labelPrefix = "";
-        String debugString = getParameter( DEBUG );
-        Boolean sendAsParamBoolean = getParameter( SEND_AS_PARAM );
+        String debugString = getParameter(DEBUG);
+        Boolean sendAsParamBoolean = getParameter(SEND_AS_PARAM);
         boolean sendAsParam = sendAsParamBoolean.booleanValue();
 
         MessagePojo messagePojo = messageContext.getMessagePojo();
@@ -122,10 +121,9 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
             }
         }
 
-        Boolean includeLabelsBoolean = getParameter( SEND_AS_PARAM );
-        if ( includeLabelsBoolean.booleanValue() ) {
-            if ( ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK )
-                    || ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR ) ) {
+        Boolean includeLabelsBoolean = getParameter(SEND_AS_PARAM);
+        if (includeLabelsBoolean.booleanValue()) {
+            if ((messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK) || (messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR)) {
                 messageLabels = messagePojo.getReferencedMessage().getMessageLabels();
             } else {
                 messageLabels = messagePojo.getMessageLabels();
@@ -136,33 +134,29 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
         //        && ( messageLabels.size() != 0 );
 
         // Set label prefix
-        String tempLabelPrefix = getParameter( LABEL_PREFIX );
-        if ( tempLabelPrefix != null ) {
+        String tempLabelPrefix = getParameter(LABEL_PREFIX);
+        if (tempLabelPrefix != null) {
             labelPrefix = tempLabelPrefix;
         }
 
-        String user = getParameter( USER );
-        String password = getParameter( PASSWORD );
+        String user = getParameter(USER);
+        String password = getParameter(PASSWORD);
 
-        if ( ( debugString != null )
-                && ( debugString.trim().equalsIgnoreCase( "true" ) || debugString.trim().equalsIgnoreCase( "yes" ) ) ) {
+        if ((debugString != null) && (debugString.trim().equalsIgnoreCase("true") || debugString.trim().equalsIgnoreCase("yes"))) {
             debug = true;
         }
 
         // System.out.println( "start *********************************************************************" );
-        if ( debug ) {
-            LOG.debug( new LogMessage( "Executing HTTP POST for choreography ID '"
-                    + messagePojo.getConversation().getChoreography().getName() + "', conversation ID '"
-                    + messagePojo.getConversation().getConversationId() + "', sender '"
-                    + messagePojo.getConversation().getPartner().getPartnerId() + "'!",messagePojo) );
-            LOG.debug(new LogMessage(  "Sending content as URL-encoded parameter: " + sendAsParam,messagePojo) );
+        if (debug) {
+            LOG.debug(new LogMessage("Executing HTTP POST for choreography ID '" + messagePojo.getConversation().getChoreography().getName() + "', conversation ID '" + messagePojo.getConversation().getConversationId() + "', sender '" + messagePojo.getConversation().getPartner().getPartnerId() + "'!", messagePojo));
+            LOG.debug(new LogMessage("Sending content as URL-encoded parameter: " + sendAsParam, messagePojo));
         }
-        PostMethod post = new PostMethod( (String) getParameter( URL ) );
+        PostMethod post = new PostMethod((String) getParameter(URL));
         // Disable cookies
         HttpMethodParams httpMethodParams = new HttpMethodParams();
-        httpMethodParams.setCookiePolicy( CookiePolicy.IGNORE_COOKIES );
+        httpMethodParams.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
         httpMethodParams.setContentCharset("UTF-8");
-        post.setParams( httpMethodParams );
+        post.setParams(httpMethodParams);
 
         if (headers != null && headers.size() > 0) {
             for (Map.Entry<String, String> header : headers.entrySet()) {
@@ -173,77 +167,77 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
         HttpClient httpclient = new HttpClient();
 
         // Use basic auth if credentials are present
-        if ( ( user != null ) && ( user.length() != 0 ) && ( password != null ) ) {
-            Credentials credentials = new UsernamePasswordCredentials( user, password );
-            LOG.debug( new LogMessage( "HTTPBackendConnector: Using basic auth.",messagePojo) );
-            httpclient.getState().setCredentials( AuthScope.ANY, credentials );
-            post.setDoAuthentication( true );
+        if ((user != null) && (user.length() != 0) && (password != null)) {
+            Credentials credentials = new UsernamePasswordCredentials(user, password);
+            LOG.debug(new LogMessage("HTTPBackendConnector: Using basic auth.", messagePojo));
+            httpclient.getState().setCredentials(AuthScope.ANY, credentials);
+            post.setDoAuthentication(true);
         }
 
-        if ( ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK )
-                || ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR ) ) {
-            NameValuePair[] data = createHTTPParameters( messagePojo, null, messageLabels, labelPrefix );
-            post.setRequestBody( data );
+        if ((messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK) || (messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR)) {
+            NameValuePair[] data = createHTTPParameters(messagePojo, null, messageLabels, labelPrefix);
+            post.setRequestBody(data);
             // Execute request
             try {
-                int result = httpclient.executeMethod( post );
+                int result = httpclient.executeMethod(post);
 
-                LOG.debug( new LogMessage( "Response status code: " + result,messagePojo) );
-                LOG.debug( new LogMessage( "Response status message:\n" + post.getResponseBodyAsString(),messagePojo) );
-            } catch ( Exception ex ) {
-                LOG.error( new LogMessage( "Error posting inbound message body to '" + getParameter( URL ) + "': " + ex,messagePojo), ex );
+                LOG.debug(new LogMessage("Response status code: " + result, messagePojo));
+                LOG.debug(new LogMessage("Response status message:\n" + post.getResponseBodyAsString(), messagePojo));
+            } catch (Exception ex) {
+                LOG.error(new LogMessage("Error posting inbound message body to '" + getParameter(URL) + "': " + ex,
+                        messagePojo), ex);
             } finally {
                 // Release current connection to the connection pool once you are done
                 post.releaseConnection();
             }
         } else {
-            for ( MessagePayloadPojo messagePayloadPojo : messagePojo.getMessagePayloads() ) {
+            for (MessagePayloadPojo messagePayloadPojo : messagePojo.getMessagePayloads()) {
                 String documentString;
-				try {
-				    LOG.debug( new LogMessage( "Content Encoding: " + messageContext.getEncoding(),messagePojo) );
-				    documentString = new String( messagePayloadPojo.getPayloadData(), messageContext.getEncoding() );
-				} catch (UnsupportedEncodingException e1) {
-					throw new NexusException(new LogMessage("the configured encoding '"+messageContext.getEncoding()+"' is not supported.",messageContext),e1);
-				}
+                try {
+                    LOG.debug(new LogMessage("Content Encoding: " + messageContext.getEncoding(), messagePojo));
+                    documentString = new String(messagePayloadPojo.getPayloadData(), messageContext.getEncoding());
+                } catch (UnsupportedEncodingException e1) {
+                    throw new NexusException(new LogMessage("the configured encoding '" + messageContext.getEncoding() + "' is not supported.", messageContext), e1);
+                }
 
-                if ( sendAsParam ) {
-                	// TODO (encoding) http parameters doesn't support binary content (Base64 Encoding?)
-                    NameValuePair[] data = createHTTPParameters( messagePojo, documentString, messageLabels,
-                            labelPrefix );
-                    
-                    post.setRequestBody( data );
+                if (sendAsParam) {
+                    // TODO (encoding) http parameters doesn't support binary content (Base64 Encoding?)
+                    NameValuePair[] data = createHTTPParameters(messagePojo, documentString, messageLabels,
+                            labelPrefix);
+
+                    post.setRequestBody(data);
                 } else {
                     try {
-                        post.setRequestEntity( new StringRequestEntity( documentString, "text/xml", "UTF-8" ) );
-                    } catch ( UnsupportedEncodingException e ) {
+                        post.setRequestEntity(new StringRequestEntity(documentString, "text/xml", "UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
                 }
 
                 // Execute request
                 try {
-                    if ( LOG.isTraceEnabled() ) {
-                        LOG.trace(new LogMessage(  "Payload:\n--- PAYLOAD START ---\n" + documentString + "\n---  PAYLOAD END  ---",messagePojo) );
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(new LogMessage("Payload:\n--- PAYLOAD START ---\n" + documentString + "\n---  " +
+                                "PAYLOAD END  ---", messagePojo));
                     }
 
-                    int result = httpclient.executeMethod( post );
+                    int result = httpclient.executeMethod(post);
 
                     // Store response in data field of context
-                    messageContext.setData( new RequestResponseData( result, post.getResponseBodyAsString(),
-                            documentString ) );
+                    messageContext.setData(new RequestResponseData(result, post.getResponseBodyAsString(),
+                            documentString));
 
-                    LOG.debug( new LogMessage( "Response status code: " + result,messagePojo) );
-                    LOG.debug( new LogMessage( "Response status message:\n" + post.getResponseBodyAsString(),messagePojo) );
-                    if ( LOG.isTraceEnabled() ) {
-                        LOG.trace( new LogMessage( "Response:\n--- RESPONSE START ---\n"
-                                + ( (RequestResponseData) messageContext.getData() ).getResponseString()
-                                + "\n---  RESPONSE END  ---",messagePojo) );
+                    LOG.debug(new LogMessage("Response status code: " + result, messagePojo));
+                    LOG.debug(new LogMessage("Response status message:\n" + post.getResponseBodyAsString(),
+                            messagePojo));
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(new LogMessage("Response:\n--- RESPONSE START ---\n" + ((RequestResponseData) messageContext.getData()).getResponseString() + "\n---  RESPONSE END  ---", messagePojo));
                     }
-                    if( result <200 || result >=300) {
-                        throw new NexusException( new LogMessage("Error posting inbound message body to '" + getParameter( URL ) + "' HTTP ReturnCode: "+result,messageContext));
+                    if (result < 200 || result >= 300) {
+                        throw new NexusException(new LogMessage("Error posting inbound message body to '" + getParameter(URL) + "' HTTP ReturnCode: " + result, messageContext));
                     }
-                } catch ( IOException ex ) {
-                    throw new NexusException(new LogMessage( "Error posting inbound message body to '" + getParameter( URL ) + "': " + ex,messageContext),ex);
+                } catch (IOException ex) {
+                    throw new NexusException(new LogMessage("Error posting inbound message body to '" + getParameter(URL) + "': " + ex, messageContext), ex);
                 } finally {
                     // Release current connection to the connection pool once you are done
                     post.releaseConnection();
@@ -251,55 +245,55 @@ public class HTTPIntegrationPipelet extends AbstractPipelet {
             } // for
         } // is Ack?
 
-        LOG.debug( new LogMessage( "Done!",messagePojo) );
+        LOG.debug(new LogMessage("Done!", messagePojo));
         return messageContext;
     }
 
-    protected NameValuePair[] createHTTPParameters( MessagePojo messagePojo, String documentString,
-            List<MessageLabelPojo> messageLabels, String labelPrefix ) {
+    protected NameValuePair[] createHTTPParameters(MessagePojo messagePojo, String documentString,
+                                                   List<MessageLabelPojo> messageLabels, String labelPrefix) {
 
-        boolean includeLabels = ( messageLabels != null ) && ( messageLabels.size() != 0 );
-        
+        boolean includeLabels = (messageLabels != null) && (messageLabels.size() != 0);
+
         // Determine whether ack or error message
-        if ( messagePojo.getReferencedMessage() != null ) {
+        if (messagePojo.getReferencedMessage() != null) {
             messagePojo = messagePojo.getReferencedMessage();
         }
 
         NameValuePair[] data = null;
-        data = new NameValuePair[8 + ( documentString != null ? 1 : 2 ) + ( includeLabels ? messageLabels.size() : 0 )];
+        data = new NameValuePair[8 + (documentString != null ? 1 : 2) + (includeLabels ? messageLabels.size() : 0)];
 
-        data[0] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_CHOREOGRAPY_ID, messagePojo
-                .getConversation().getChoreography().getName() );
-        data[1] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_CONVERSATION_ID, messagePojo
-                .getConversation().getConversationId() );
-        data[2] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_MESSAGE_ID, messagePojo.getMessageId() );
-        data[3] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_CONVERSATION_TIMESTAMP, messagePojo
-                .getConversation().getCreatedDate().toGMTString() );
-        data[4] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_MESSAGE_TIMESTAMP, messagePojo
-                .getCreatedDate().toGMTString() );
-        data[5] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_PARTNER_ID, messagePojo.getParticipant()
-                .getLocalPartner().getPartnerId() );
-        data[6] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_SENDER_ID, messagePojo.getConversation()
-                .getPartner().getPartnerId() );
-        data[7] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_ACTION_ID, messagePojo.getAction()
-                .getName() );
+        data[0] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_CHOREOGRAPY_ID,
+                messagePojo.getConversation().getChoreography().getName());
+        data[1] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_CONVERSATION_ID,
+                messagePojo.getConversation().getConversationId());
+        data[2] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_MESSAGE_ID, messagePojo.getMessageId());
+        data[3] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_CONVERSATION_TIMESTAMP,
+                messagePojo.getConversation().getCreatedDate().toGMTString());
+        data[4] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_MESSAGE_TIMESTAMP,
+                messagePojo.getCreatedDate().toGMTString());
+        data[5] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_PARTNER_ID,
+                messagePojo.getParticipant().getLocalPartner().getPartnerId());
+        data[6] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_SENDER_ID,
+                messagePojo.getConversation().getPartner().getPartnerId());
+        data[7] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_ACTION_ID,
+                messagePojo.getAction().getName());
         int i = 8;
-        if ( documentString != null ) {
-            data[i++] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_CONTENT, documentString );
+        if (documentString != null) {
+            data[i++] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_CONTENT, documentString);
         } else {
 
-            data[i++] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_STATUS, ""
-                    + messagePojo.getStatus() );
-            data[i++] = new NameValuePair( org.nexuse2e.integration.Constants.PARAM_STATUSTEXT, Constants
-                    .getMessageStatusString( messagePojo.getStatus() ) );
+            data[i++] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_STATUS,
+                    "" + messagePojo.getStatus());
+            data[i++] = new NameValuePair(org.nexuse2e.integration.Constants.PARAM_STATUSTEXT,
+                    Constants.getMessageStatusString(messagePojo.getStatus()));
         }
 
-        if ( includeLabels ) {
-            for ( Iterator<MessageLabelPojo> iter = messageLabels.iterator(); iter.hasNext(); ) {
+        if (includeLabels) {
+            for (Iterator<MessageLabelPojo> iter = messageLabels.iterator(); iter.hasNext(); ) {
                 MessageLabelPojo messageLabelPojo = iter.next();
-                LOG.debug( new LogMessage( "Adding label to HTTP call: " + labelPrefix + messageLabelPojo.getLabel() + " - "
-                        + messageLabelPojo.getValue(),messagePojo) );
-                data[i++] = new NameValuePair( labelPrefix + messageLabelPojo.getLabel(), messageLabelPojo.getValue() );
+                LOG.debug(new LogMessage("Adding label to HTTP call: " + labelPrefix + messageLabelPojo.getLabel() +
+                        " - " + messageLabelPojo.getValue(), messagePojo));
+                data[i++] = new NameValuePair(labelPrefix + messageLabelPojo.getLabel(), messageLabelPojo.getValue());
             }
         }
 

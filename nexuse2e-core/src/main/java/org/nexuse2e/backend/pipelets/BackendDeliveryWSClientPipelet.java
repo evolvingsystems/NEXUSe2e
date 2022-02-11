@@ -1,27 +1,23 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
-
-import java.rmi.RemoteException;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Client;
@@ -30,7 +26,8 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.ParameterDescriptor;
 import org.nexuse2e.configuration.ParameterType;
@@ -44,103 +41,62 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.pojo.PartnerPojo;
 
+import java.rmi.RemoteException;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A pipelet that sends messages to a backend delivery web service that can be configured.
- * @see BackendDeliveryInterface
- * 
+ *
  * @author jonas.reese
+ * @see BackendDeliveryInterface
  */
 public class BackendDeliveryWSClientPipelet extends AbstractPipelet {
 
-    private static Logger      LOG                   = Logger.getLogger( BackendDeliveryWSClientPipelet.class );
-
-    public static final String URL_PARAM_NAME        = "url";
+    public static final String URL_PARAM_NAME = "url";
     public static final String BASIC_AUTH_PARAM_NAME = "basicAuth";
-    public static final String USERNAME_PARAM_NAME   = "username";
-    public static final String PASSWORD_PARAM_NAME   = "password";
+    public static final String USERNAME_PARAM_NAME = "username";
+    public static final String PASSWORD_PARAM_NAME = "password";
+    private static Logger LOG = LogManager.getLogger(BackendDeliveryWSClientPipelet.class);
 
     public BackendDeliveryWSClientPipelet() {
 
-        parameterMap.put( URL_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "URL",
-                "The backend delivery web service URL", "" ) );
-        parameterMap.put( BASIC_AUTH_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN,
-                "HTTP Basic Authentication", "Enable HTTP Basic Authentication", Boolean.FALSE ) );
-        parameterMap.put( USERNAME_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "User Name",
-                "HTTP Basic Auth User Name", "" ) );
-        parameterMap.put( PASSWORD_PARAM_NAME, new ParameterDescriptor( ParameterType.PASSWORD, "Password",
-                "HTTP Basic Auth Password", "" ) );
+        parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "URL",
+                "The backend delivery " + "web service URL", ""));
+        parameterMap.put(BASIC_AUTH_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "HTTP Basic " +
+                "Authentication", "Enable HTTP Basic Authentication", Boolean.FALSE));
+        parameterMap.put(USERNAME_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "User Name", "HTTP Basic "
+                + "Auth User Name", ""));
+        parameterMap.put(PASSWORD_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password", "HTTP " +
+                "Basic" + " Auth Password", ""));
     }
 
-    /* (non-Javadoc)
-     * @see org.nexuse2e.messaging.AbstractPipelet#processMessage(org.nexuse2e.messaging.MessageContext)
-     */
-    @Override
-    public MessageContext processMessage( MessageContext messageContext ) throws IllegalArgumentException,
-            IllegalStateException, NexusException {
+    public static void main(String[] args) throws Exception {
 
-        String username = getParameter( USERNAME_PARAM_NAME );
-        String password = getParameter( PASSWORD_PARAM_NAME );
-
-        if ( username == null ) {
-            username = "";
-        }
-        if ( password == null ) {
-            password = "";
-        }
-
-        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-        factory.setServiceClass( BackendDeliveryInterface.class );
-        factory.setAddress( (String) getParameter( URL_PARAM_NAME ) );
-
-        // Add logging
-        factory.getInInterceptors().add( new LoggingInInterceptor() );
-        factory.getOutInterceptors().add( new LoggingOutInterceptor() );
-
-        // HTTP basic auth
-        boolean httpAuth = ( (Boolean) getParameter( BASIC_AUTH_PARAM_NAME ) ).booleanValue();
-        if ( httpAuth ) {
-            factory.setUsername( username );
-            factory.setPassword( password );
-        }
-
-        List<MessagePayloadPojo> payloadPojos = messageContext.getMessagePojo().getMessagePayloads();
-        String payload = null;
-        if ( !payloadPojos.isEmpty() ) {
-        	// TODO (encoding) encoding for webservice content ?
-            payload = new String( payloadPojos.get( 0 ).getPayloadData() );
-        }
-        String actionId = null;
-        if ( messageContext.getMessagePojo().getConversation().getCurrentAction() != null ) {
-            actionId = messageContext.getMessagePojo().getConversation().getCurrentAction().getName();
-        }
-
-        BackendDeliveryInterface service = (BackendDeliveryInterface) factory.create();
-        try {
-            if ( httpAuth ) {
-                LOG.debug( "Using basic auth" );
-                Client cxfClient = ClientProxy.getClient( service );
-
-                HTTPConduit httpConduit = (HTTPConduit) cxfClient.getConduit();
-                AuthorizationPolicy authorizationPolicy = httpConduit.getAuthorization();
-                if ( authorizationPolicy == null ) {
-                    authorizationPolicy = new AuthorizationPolicy();
-                    httpConduit.setAuthorization( authorizationPolicy );
-                }
-                authorizationPolicy.setUserName( username );
-                authorizationPolicy.setPassword( password );
-                LOG.debug( "Credentials set" );
-            } else {
-                LOG.debug( "Not using auth" );
-            }
-
-            service.processInboundMessage( messageContext.getChoreography().getName(), messageContext.getPartner()
-                    .getName(), actionId, messageContext.getConversation().getConversationId(), messageContext
-                    .getMessagePojo().getMessageId(), payload );
-            LOG.debug( "Backend delivery WS called!" );
-            return messageContext;
-        } catch ( RemoteException e ) {
-            throw new NexusException( e );
-        }
+        BackendDeliveryWSClientPipelet pipelet = new BackendDeliveryWSClientPipelet();
+        pipelet.setParameter(URL_PARAM_NAME, "http://localhost:8080/NEXUSe2e/webservice/TrafficLogger");
+        pipelet.setParameter(BASIC_AUTH_PARAM_NAME, Boolean.FALSE);
+        MessageContext mc = new MessageContext();
+        ConversationPojo conversation = new ConversationPojo();
+        ActionPojo action = new ActionPojo();
+        action.setName("actionId");
+        conversation.setCurrentAction(action);
+        conversation.setConversationId("conversationId");
+        mc.setConversation(conversation);
+        MessagePojo message = new MessagePojo();
+        message.setMessageId("messageId");
+        MessagePayloadPojo payload = new MessagePayloadPojo();
+        payload.setPayloadData("payload".getBytes());
+        message.setMessagePayloads(Collections.singletonList(payload));
+        message.setConversation(conversation);
+        mc.setMessagePojo(message);
+        ChoreographyPojo choreo = new ChoreographyPojo();
+        choreo.setName("choreographyId");
+        mc.setChoreography(choreo);
+        PartnerPojo partner = new PartnerPojo();
+        partner.setName("partnerId");
+        mc.setCommunicationPartner(partner);
+        pipelet.processMessage(mc);
     }
 
     //    /**
@@ -188,32 +144,77 @@ public class BackendDeliveryWSClientPipelet extends AbstractPipelet {
     //        }
     //    }
 
-    public static void main( String[] args ) throws Exception {
+    /* (non-Javadoc)
+     * @see org.nexuse2e.messaging.AbstractPipelet#processMessage(org.nexuse2e.messaging.MessageContext)
+     */
+    @Override
+    public MessageContext processMessage(MessageContext messageContext) throws IllegalArgumentException,
+            IllegalStateException, NexusException {
 
-        BackendDeliveryWSClientPipelet pipelet = new BackendDeliveryWSClientPipelet();
-        pipelet.setParameter( URL_PARAM_NAME, "http://localhost:8080/NEXUSe2e/webservice/TrafficLogger" );
-        pipelet.setParameter( BASIC_AUTH_PARAM_NAME, Boolean.FALSE );
-        MessageContext mc = new MessageContext();
-        ConversationPojo conversation = new ConversationPojo();
-        ActionPojo action = new ActionPojo();
-        action.setName( "actionId" );
-        conversation.setCurrentAction( action );
-        conversation.setConversationId( "conversationId" );
-        mc.setConversation( conversation );
-        MessagePojo message = new MessagePojo();
-        message.setMessageId( "messageId" );
-        MessagePayloadPojo payload = new MessagePayloadPojo();
-        payload.setPayloadData( "payload".getBytes() );
-        message.setMessagePayloads( Collections.singletonList( payload ) );
-        message.setConversation( conversation );
-        mc.setMessagePojo( message );
-        ChoreographyPojo choreo = new ChoreographyPojo();
-        choreo.setName( "choreographyId" );
-        mc.setChoreography( choreo );
-        PartnerPojo partner = new PartnerPojo();
-        partner.setName( "partnerId" );
-        mc.setCommunicationPartner( partner );
-        pipelet.processMessage( mc );
+        String username = getParameter(USERNAME_PARAM_NAME);
+        String password = getParameter(PASSWORD_PARAM_NAME);
+
+        if (username == null) {
+            username = "";
+        }
+        if (password == null) {
+            password = "";
+        }
+
+        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+        factory.setServiceClass(BackendDeliveryInterface.class);
+        factory.setAddress((String) getParameter(URL_PARAM_NAME));
+
+        // Add logging
+        factory.getInInterceptors().add(new LoggingInInterceptor());
+        factory.getOutInterceptors().add(new LoggingOutInterceptor());
+
+        // HTTP basic auth
+        boolean httpAuth = ((Boolean) getParameter(BASIC_AUTH_PARAM_NAME)).booleanValue();
+        if (httpAuth) {
+            factory.setUsername(username);
+            factory.setPassword(password);
+        }
+
+        List<MessagePayloadPojo> payloadPojos = messageContext.getMessagePojo().getMessagePayloads();
+        String payload = null;
+        if (!payloadPojos.isEmpty()) {
+            // TODO (encoding) encoding for webservice content ?
+            payload = new String(payloadPojos.get(0).getPayloadData());
+        }
+        String actionId = null;
+        if (messageContext.getMessagePojo().getConversation().getCurrentAction() != null) {
+            actionId = messageContext.getMessagePojo().getConversation().getCurrentAction().getName();
+        }
+
+        BackendDeliveryInterface service = (BackendDeliveryInterface) factory.create();
+        try {
+            if (httpAuth) {
+                LOG.debug("Using basic auth");
+                Client cxfClient = ClientProxy.getClient(service);
+
+                HTTPConduit httpConduit = (HTTPConduit) cxfClient.getConduit();
+                AuthorizationPolicy authorizationPolicy = httpConduit.getAuthorization();
+                if (authorizationPolicy == null) {
+                    authorizationPolicy = new AuthorizationPolicy();
+                    httpConduit.setAuthorization(authorizationPolicy);
+                }
+                authorizationPolicy.setUserName(username);
+                authorizationPolicy.setPassword(password);
+                LOG.debug("Credentials set");
+            } else {
+                LOG.debug("Not using auth");
+            }
+
+            service.processInboundMessage(messageContext.getChoreography().getName(),
+                    messageContext.getPartner().getName(), actionId,
+                    messageContext.getConversation().getConversationId(),
+                    messageContext.getMessagePojo().getMessageId(), payload);
+            LOG.debug("Backend delivery WS called!");
+            return messageContext;
+        } catch (RemoteException e) {
+            throw new NexusException(e);
+        }
     }
 
 }

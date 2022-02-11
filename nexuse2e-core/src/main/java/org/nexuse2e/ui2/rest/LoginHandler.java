@@ -6,30 +6,31 @@
 package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.UserPojo;
 import org.nexuse2e.ui.action.NexusE2EAction;
 import org.nexuse2e.util.PasswordUtil;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 import static org.nexuse2e.util.FileUtil.readAll;
 
 public class LoginHandler implements Handler {
-    private static final Logger LOG = Logger.getLogger(LoginHandler.class);
+    private static final Logger LOG = LogManager.getLogger(LoginHandler.class);
 
     @Override
     public boolean canHandle(String path, String method) {
-        return ("POST".equalsIgnoreCase(method) && "/login".equalsIgnoreCase(path)) ||
-                ("POST".equalsIgnoreCase(method) && "/logout".equalsIgnoreCase(path)) ||
-                ("GET".equalsIgnoreCase(method) && "/logged-in".equalsIgnoreCase(path));
+        return ("POST".equalsIgnoreCase(method) && "/login".equalsIgnoreCase(path)) || ("POST".equalsIgnoreCase(method) && "/logout".equalsIgnoreCase(path)) || ("GET".equalsIgnoreCase(method) && "/logged-in".equalsIgnoreCase(path));
     }
 
     @Override

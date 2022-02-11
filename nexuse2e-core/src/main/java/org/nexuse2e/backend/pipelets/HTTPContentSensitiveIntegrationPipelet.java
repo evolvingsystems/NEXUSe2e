@@ -1,27 +1,23 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend.pipelets;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.util.List;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -33,7 +29,8 @@ import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.backend.pipelets.helper.RequestResponseData;
 import org.nexuse2e.logging.LogMessage;
@@ -42,38 +39,40 @@ import org.nexuse2e.pojo.MessageLabelPojo;
 import org.nexuse2e.pojo.MessagePayloadPojo;
 import org.nexuse2e.pojo.MessagePojo;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.List;
+
 /**
- * @author sroggensack,s_schulze
- * 
+ * @author sroggensack, s_schulze
  */
 public class HTTPContentSensitiveIntegrationPipelet extends HTTPIntegrationPipelet {
 
-    private static Logger LOG = Logger.getLogger( HTTPContentSensitiveIntegrationPipelet.class );
+    private static Logger LOG = LogManager.getLogger(HTTPContentSensitiveIntegrationPipelet.class);
 
     /**
      * Content sensitive processing of payloads. In comparison to the super
      * class this method takes care of content types, and charsets of the
      * payloads. It can handle binary payloads, if
      * "Send the content as a URL-encoded HTTP parameter" is disabled.
-     * 
+     *
      * @see org.nexuse2e.backend.pipelets.HTTPIntegrationPipelet#processMessage(org.nexuse2e.messaging.MessageContext)
      */
-    public MessageContext processMessage( MessageContext messageContext ) throws IllegalArgumentException,
-                                                                         IllegalStateException, NexusException {
+    public MessageContext processMessage(MessageContext messageContext) throws IllegalArgumentException,
+            IllegalStateException, NexusException {
 
         boolean debug = false;
         String labelPrefix = "";
-        String debugString = getParameter( DEBUG );
-        Boolean sendAsParamBoolean = getParameter( SEND_AS_PARAM );
+        String debugString = getParameter(DEBUG);
+        Boolean sendAsParamBoolean = getParameter(SEND_AS_PARAM);
         boolean sendAsParam = sendAsParamBoolean.booleanValue();
 
         MessagePojo messagePojo = messageContext.getMessagePojo();
         List<MessageLabelPojo> messageLabels = null;
 
-        Boolean includeLabelsBoolean = getParameter( SEND_AS_PARAM );
-        if ( includeLabelsBoolean.booleanValue() ) {
-            if ( ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK )
-                    || ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR ) ) {
+        Boolean includeLabelsBoolean = getParameter(SEND_AS_PARAM);
+        if (includeLabelsBoolean.booleanValue()) {
+            if ((messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK) || (messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR)) {
                 messageLabels = messagePojo.getReferencedMessage().getMessageLabels();
             } else {
                 messageLabels = messagePojo.getMessageLabels();
@@ -81,57 +80,53 @@ public class HTTPContentSensitiveIntegrationPipelet extends HTTPIntegrationPipel
         }
 
         // Set label prefix
-        String tempLabelPrefix = getParameter( LABEL_PREFIX );
-        if ( tempLabelPrefix != null ) {
+        String tempLabelPrefix = getParameter(LABEL_PREFIX);
+        if (tempLabelPrefix != null) {
             labelPrefix = tempLabelPrefix;
         }
 
-        String user = getParameter( USER );
-        String password = getParameter( PASSWORD );
+        String user = getParameter(USER);
+        String password = getParameter(PASSWORD);
 
-        if ( ( debugString != null )
-                && ( debugString.trim().equalsIgnoreCase( "true" ) || debugString.trim().equalsIgnoreCase( "yes" ) ) ) {
+        if ((debugString != null) && (debugString.trim().equalsIgnoreCase("true") || debugString.trim().equalsIgnoreCase("yes"))) {
             debug = true;
         }
 
         // System.out.println(
         // "start *********************************************************************"
         // );
-        if ( debug ) {
-            LOG.debug( new LogMessage( "Executing HTTP POST for choreography ID '"
-                    + messagePojo.getConversation().getChoreography().getName() + "', conversation ID '"
-                    + messagePojo.getConversation().getConversationId() + "', sender '"
-                    + messagePojo.getConversation().getPartner().getPartnerId() + "'!",messagePojo) );
-            LOG.debug( "Sending content as URL-encoded parameter: " + sendAsParam );
+        if (debug) {
+            LOG.debug(new LogMessage("Executing HTTP POST for choreography ID '" + messagePojo.getConversation().getChoreography().getName() + "', conversation ID '" + messagePojo.getConversation().getConversationId() + "', sender '" + messagePojo.getConversation().getPartner().getPartnerId() + "'!", messagePojo));
+            LOG.debug("Sending content as URL-encoded parameter: " + sendAsParam);
         }
-        PostMethod post = new PostMethod( (String) getParameter( URL ) );
+        PostMethod post = new PostMethod((String) getParameter(URL));
         // Disable cookies
         HttpMethodParams httpMethodParams = new HttpMethodParams();
-        httpMethodParams.setCookiePolicy( CookiePolicy.IGNORE_COOKIES );
-        post.setParams( httpMethodParams );
+        httpMethodParams.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+        post.setParams(httpMethodParams);
 
         HttpClient httpclient = new HttpClient();
 
         // Use basic auth if credentials are present
-        if ( ( user != null ) && ( user.length() != 0 ) && ( password != null ) ) {
-            Credentials credentials = new UsernamePasswordCredentials( user, password );
-            LOG.debug( new LogMessage( "HTTPBackendConnector: Using basic auth.",messagePojo) );
-            httpclient.getState().setCredentials( AuthScope.ANY, credentials );
-            post.setDoAuthentication( true );
+        if ((user != null) && (user.length() != 0) && (password != null)) {
+            Credentials credentials = new UsernamePasswordCredentials(user, password);
+            LOG.debug(new LogMessage("HTTPBackendConnector: Using basic auth.", messagePojo));
+            httpclient.getState().setCredentials(AuthScope.ANY, credentials);
+            post.setDoAuthentication(true);
         }
 
-        if ( ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK )
-                || ( messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR ) ) {
-            NameValuePair[] data = createHTTPParameters( messagePojo, null, messageLabels, labelPrefix );
-            post.setRequestBody( data );
+        if ((messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ACK) || (messagePojo.getType() == org.nexuse2e.messaging.Constants.INT_MESSAGE_TYPE_ERROR)) {
+            NameValuePair[] data = createHTTPParameters(messagePojo, null, messageLabels, labelPrefix);
+            post.setRequestBody(data);
             // Execute request
             try {
-                int result = httpclient.executeMethod( post );
+                int result = httpclient.executeMethod(post);
 
-                LOG.debug(new LogMessage( "Response status code: " + result,messagePojo) );
-                LOG.debug( new LogMessage( "Response status message:\n" + post.getResponseBodyAsString(),messagePojo) );
-            } catch ( Exception ex ) {
-                LOG.error(new LogMessage( "Error posting inbound message body to '" + getParameter( URL ) + "': " + ex, messagePojo), ex );
+                LOG.debug(new LogMessage("Response status code: " + result, messagePojo));
+                LOG.debug(new LogMessage("Response status message:\n" + post.getResponseBodyAsString(), messagePojo));
+            } catch (Exception ex) {
+                LOG.error(new LogMessage("Error posting inbound message body to '" + getParameter(URL) + "': " + ex,
+                        messagePojo), ex);
                 ex.printStackTrace();
             } finally {
                 // Release current connection to the connection pool once you
@@ -139,63 +134,58 @@ public class HTTPContentSensitiveIntegrationPipelet extends HTTPIntegrationPipel
                 post.releaseConnection();
             }
         } else {
-            for ( MessagePayloadPojo messagePayloadPojo : messagePojo.getMessagePayloads() ) {
+            for (MessagePayloadPojo messagePayloadPojo : messagePojo.getMessagePayloads()) {
                 String contentType = messagePayloadPojo.getMimeType();
                 String charset = messagePayloadPojo.getCharset();
-                boolean isTextContent = ( contentType != null && contentType.trim().toLowerCase().startsWith( "text" ) ) || charset != null;
-                if ( charset == null ) {
+                boolean isTextContent =
+                        (contentType != null && contentType.trim().toLowerCase().startsWith("text")) || charset != null;
+                if (charset == null) {
                     // must be after text content detection! 
                     charset = Charset.defaultCharset().name();
                 }
-                
-                if ( sendAsParam ) {
+
+                if (sendAsParam) {
                     try {
-                        NameValuePair[] data = createHTTPParameters(
-                            messagePojo,
-                            new String( messagePayloadPojo.getPayloadData(), charset ),
-                            messageLabels,
-                            labelPrefix );
-                        post.setRequestBody( data );
-                    } catch ( UnsupportedEncodingException e ) {
-                        LOG.error(new LogMessage(  "Cannot encode payload with charset encoding '" + charset + "'", messagePojo), e );
+                        NameValuePair[] data = createHTTPParameters(messagePojo,
+                                new String(messagePayloadPojo.getPayloadData(), charset), messageLabels, labelPrefix);
+                        post.setRequestBody(data);
+                    } catch (UnsupportedEncodingException e) {
+                        LOG.error(new LogMessage("Cannot encode payload with charset encoding '" + charset + "'",
+                                messagePojo), e);
                     }
                 } else {
                     try {
-                        if ( isTextContent ) {
-                            post.setRequestEntity(
-                                new StringRequestEntity(
-                                    new String( messagePayloadPojo.getPayloadData(), charset ), contentType, charset ) );
+                        if (isTextContent) {
+                            post.setRequestEntity(new StringRequestEntity(new String(messagePayloadPojo.getPayloadData(), charset), contentType, charset));
                         } else {
-                            post.setRequestEntity( new ByteArrayRequestEntity( messagePayloadPojo.getPayloadData() ) );
+                            post.setRequestEntity(new ByteArrayRequestEntity(messagePayloadPojo.getPayloadData()));
                         }
-                    } catch ( UnsupportedEncodingException e ) {
-                        LOG.error( new LogMessage( "Cannot encode payload with charset encoding '" + charset + "'",messagePojo), e );
+                    } catch (UnsupportedEncodingException e) {
+                        LOG.error(new LogMessage("Cannot encode payload with charset encoding '" + charset + "'",
+                                messagePojo), e);
                     }
                 }
 
                 // Execute request
                 try {
-                    if ( LOG.isTraceEnabled() ) {
-                        LOG.trace( new LogMessage(  "Payload:\n--- PAYLOAD START ---\n" + new String( messagePayloadPojo.getPayloadData(), charset ) + "\n---  PAYLOAD END  ---",messagePojo) );
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(new LogMessage("Payload:\n--- PAYLOAD START ---\n" + new String(messagePayloadPojo.getPayloadData(), charset) + "\n---  PAYLOAD END  ---", messagePojo));
                     }
 
-                    int result = httpclient.executeMethod( post );
+                    int result = httpclient.executeMethod(post);
 
                     // Store response in data field of context
-                    messageContext.setData(
-                        new RequestResponseData( result,
-                                                 post.getResponseBodyAsString(),
-                                                 new String( messagePayloadPojo.getPayloadData(), charset ) ) );
+                    messageContext.setData(new RequestResponseData(result, post.getResponseBodyAsString(),
+                            new String(messagePayloadPojo.getPayloadData(), charset)));
 
-                    LOG.debug( new LogMessage( "Response status code: " + result,messagePojo) );
-                    LOG.debug( new LogMessage( "Response status message:\n" + post.getResponseBodyAsString(),messagePojo) );
-                    if ( LOG.isTraceEnabled() ) {
-                        LOG.trace(new LogMessage(  "Response:\n--- RESPONSE START ---\n"
-                                + ( (RequestResponseData) messageContext.getData() ).getResponseString()
-                                + "\n---  RESPONSE END  ---" ,messagePojo));
+                    LOG.debug(new LogMessage("Response status code: " + result, messagePojo));
+                    LOG.debug(new LogMessage("Response status message:\n" + post.getResponseBodyAsString(),
+                            messagePojo));
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(new LogMessage("Response:\n--- RESPONSE START ---\n" + ((RequestResponseData) messageContext.getData()).getResponseString() + "\n---  RESPONSE END  ---", messagePojo));
                     }
-                } catch ( Exception ex ) {
-                    LOG.error(new LogMessage(  "Error posting inbound message body to '" + getParameter( URL ) + "': " + ex, messagePojo), ex );
+                } catch (Exception ex) {
+                    LOG.error(new LogMessage("Error posting inbound message body to '" + getParameter(URL) + "': " + ex, messagePojo), ex);
                 } finally {
                     // Release current connection to the connection pool once
                     // you are done
@@ -204,7 +194,7 @@ public class HTTPContentSensitiveIntegrationPipelet extends HTTPIntegrationPipel
             } // for
         } // is Ack?
 
-        LOG.debug( new LogMessage( "Done!",messagePojo) );
+        LOG.debug(new LogMessage("Done!", messagePojo));
         return messageContext;
     }
 } // HTTPContentSensitiveIntegrationPipelet

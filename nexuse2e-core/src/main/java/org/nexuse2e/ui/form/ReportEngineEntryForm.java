@@ -21,8 +21,7 @@ package org.nexuse2e.ui.form;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
+import org.apache.logging.log4j.Level;
 import org.apache.struts.action.ActionForm;
 import org.nexuse2e.pojo.LogPojo;
 
@@ -45,23 +44,41 @@ public class ReportEngineEntryForm extends ActionForm {
 
     public void setEnginePorperties( LogPojo pojo ) {
 
+        // from standardLevel
+        //   FATAL(100),
+        //    ERROR(200),
+        //    WARN(300),
+        //    INFO(400),
+        //    DEBUG(500),
+        //    TRACE(600),
+        //    ALL(2147483647);
+
+        // from priority
+        //public static final int 	ALL_INT 	-2147483648
+        //public static final int 	DEBUG_INT 	10000
+        //public static final int 	ERROR_INT 	40000
+        //public static final int 	FATAL_INT 	50000
+        //public static final int 	INFO_INT 	20000
+        //public static final int 	OFF_INT 	2147483647
+        //public static final int 	WARN_INT 	30000
+
         switch ( pojo.getSeverity() ) {
-            case Priority.FATAL_INT:
+            case 100:
                 setSeverity( Level.FATAL.toString() );
                 break;
-            case Priority.ERROR_INT:
+            case 200:
                 setSeverity( Level.ERROR.toString() );
                 break;
-            case Priority.WARN_INT:
+            case 300:
                 setSeverity( Level.WARN.toString() );
                 break;
-            case Priority.INFO_INT:
+            case 400:
                 setSeverity( Level.INFO.toString() );
                 break;
-            case Priority.DEBUG_INT:
+            case 500:
                 setSeverity( Level.DEBUG.toString() );
                 break;
-            case Priority.ALL_INT:
+            case 2147483647:
                 setSeverity( Level.ALL.toString() );
                 break;
             default:

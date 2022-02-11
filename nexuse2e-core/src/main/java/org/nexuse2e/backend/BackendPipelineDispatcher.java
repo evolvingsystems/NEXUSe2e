@@ -1,35 +1,29 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.backend;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
+import com.ibm.icu.text.CharsetDetector;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
@@ -55,17 +49,23 @@ import org.nexuse2e.pojo.MessagePojo;
 import org.springframework.beans.factory.InitializingBean;
 import org.xml.sax.ContentHandler;
 
-import com.ibm.icu.text.CharsetDetector;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 /**
  * @author gesch, sschulze
- *
  */
 public class BackendPipelineDispatcher implements Manageable, InitializingBean {
 
-    private BeanStatus status = BeanStatus.UNDEFINED;
+    private static Logger LOG = LogManager.getLogger(BackendPipelineDispatcher.class);
     Map<ActionSpecificKey, BackendPipeline> pipelines = null;
-    private static Logger LOG = Logger.getLogger(BackendPipelineDispatcher.class);
+    private BeanStatus status = BeanStatus.UNDEFINED;
 
     /**
      * @param conversationId
@@ -75,17 +75,17 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
      * @return
      * @throws NexusException
      */
-    public MessageContext processMessage(String conversationId, String actionId, Object primaryKey, byte[] payload)
-            throws NexusException {
+    public MessageContext processMessage(String conversationId, String actionId, Object primaryKey, byte[] payload) throws NexusException {
 
-        ConversationPojo conversationPojo = Engine.getInstance().getTransactionService().getConversation(
-                conversationId);
+        ConversationPojo conversationPojo =
+                Engine.getInstance().getTransactionService().getConversation(conversationId);
         if (conversationPojo == null) {
             throw new NexusException("No valid conversation found for ID: " + conversationId);
         }
 
-        return processMessage(conversationPojo.getPartner().getPartnerId(), conversationPojo.getChoreography()
-                .getName(), actionId, conversationPojo.getConversationId(), null, null, primaryKey, payload, null);
+        return processMessage(conversationPojo.getPartner().getPartnerId(),
+                conversationPojo.getChoreography().getName(), actionId, conversationPojo.getConversationId(), null,
+                null, primaryKey, payload, null);
     } // processMessage
 
     /**
@@ -124,8 +124,8 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
      * @throws NexusException
      */
     public MessageContext processMessage(String partnerId, String choreographyId, String actionId,
-                                         String conversationId, String messageId, String label, Object primaryKey, byte[] payload)
-            throws NexusException {
+                                         String conversationId, String messageId, String label, Object primaryKey,
+                                         byte[] payload) throws NexusException {
 
         return processMessage(partnerId, choreographyId, actionId, conversationId, messageId, label, primaryKey,
                 payload, null);
@@ -145,8 +145,8 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
      * @throws NexusException
      */
     public MessageContext processMessage(String partnerId, String choreographyId, String actionId,
-                                         String conversationId, String messageId, String label, Object primaryKey, byte[] payload,
-                                         List<ErrorDescriptor> errors) throws NexusException {
+                                         String conversationId, String messageId, String label, Object primaryKey,
+                                         byte[] payload, List<ErrorDescriptor> errors) throws NexusException {
 
         List<byte[]> payloads = new ArrayList<byte[]>();
         if (payload != null) {
@@ -162,17 +162,18 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
      * @param actionId
      * @param conversationId
      * @param messageId
-     * @param label A single label. The format is {@code <KEY>|<VALUE>}.
+     * @param label          A single label. The format is {@code <KEY>|<VALUE>}.
      * @param primaryKey
-     * @param payloads A list of Objects that can be either of type <code>byte[]</code> or {@link MessagePayloadPojo}.
-     *                  The elements must not necessarily be all of the same type. 
+     * @param payloads       A list of Objects that can be either of type <code>byte[]</code> or
+     * {@link MessagePayloadPojo}.
+     *                       The elements must not necessarily be all of the same type.
      * @param errors
      * @return
      * @throws NexusException
      */
     public MessageContext processMessage(String partnerId, String choreographyId, String actionId,
-                                         String conversationId, String messageId, String label, Object primaryKey, List<? extends Object> payloads,
-                                         List<ErrorDescriptor> errors) throws NexusException {
+                                         String conversationId, String messageId, String label, Object primaryKey,
+                                         List<? extends Object> payloads, List<ErrorDescriptor> errors) throws NexusException {
         Map<String, String> labels = new HashMap<>(1);
         if (label != null && label.contains("|")) {
             StringTokenizer st = new StringTokenizer(label, "|");
@@ -191,15 +192,17 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
      * @param messageId
      * @param labels
      * @param primaryKey
-     * @param payloads A list of Objects that can be either of type <code>byte[]</code> or {@link MessagePayloadPojo}.
-     *                  The elements must not necessarily be all of the same type. 
+     * @param payloads       A list of Objects that can be either of type <code>byte[]</code> or
+     * {@link MessagePayloadPojo}.
+     *                       The elements must not necessarily be all of the same type.
      * @param errors
      * @return
      * @throws NexusException
      */
     public MessageContext processMessageWithLabels(String partnerId, String choreographyId, String actionId,
-                                                   String conversationId, String messageId, Map<String, String> labels, Object primaryKey,
-                                                   List<? extends Object> payloads, List<ErrorDescriptor> errors) throws NexusException {
+                                                   String conversationId, String messageId,
+                                                   Map<String, String> labels, Object primaryKey, List<?
+            extends Object> payloads, List<ErrorDescriptor> errors) throws NexusException {
         String contentId = null;
 
         if (choreographyId == null || choreographyId.trim().equals("")) {
@@ -220,8 +223,7 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
                     LOG.debug(new LogMessage("PipelineKey: " + actionSpecificKey + " - " + pipelines.get(actionSpecificKey), conversationId, messageId));
                 }
             }
-            throw new NexusException("no matching pipeline found for choreography:" + choreographyId + " and Action:"
-                    + actionId);
+            throw new NexusException("no matching pipeline found for choreography:" + choreographyId + " and Action:" + actionId);
         }
 
         MessageContext messageContext = new MessageContext();
@@ -233,7 +235,8 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
         }
 
         if (conversationId == null || conversationId.equals("")) {
-            IdGenerator conversationIdGenerator = Engine.getInstance().getIdGenerator(Constants.ID_GENERATOR_CONVERSATION);
+            IdGenerator conversationIdGenerator =
+                    Engine.getInstance().getIdGenerator(Constants.ID_GENERATOR_CONVERSATION);
             conversationId = conversationIdGenerator.getId();
         }
 
@@ -276,7 +279,8 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
                 } else if (currPayload instanceof MessagePayloadPojo) {
                     messagePayloadPojo = (MessagePayloadPojo) currPayload;
                 } else {
-                    throw new NexusException("Invalid payload type detected. Must be either of type byte[] or MessagePayloadPojo.");
+                    throw new NexusException("Invalid payload type detected. Must be either of type byte[] or " +
+                            "MessagePayloadPojo.");
                 }
 
                 payloadPojos.add(messagePayloadPojo);
@@ -303,7 +307,8 @@ public class BackendPipelineDispatcher implements Manageable, InitializingBean {
                             detector.setText(messagePayloadPojo.getPayloadData());
                         }
                     } catch (Exception e) {
-                        throw new NexusException(new LogMessage("mime detection failed: " + e.getMessage(), messageContext), e);
+                        throw new NexusException(new LogMessage("mime detection failed: " + e.getMessage(),
+                                messageContext), e);
                     }
                     messagePayloadPojo.setMimeType(mimetype);
                 }

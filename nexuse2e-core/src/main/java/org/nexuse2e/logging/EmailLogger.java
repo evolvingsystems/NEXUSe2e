@@ -20,8 +20,8 @@
 package org.nexuse2e.logging;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
+//import org.apache.logging.log4j.spi.LoggingEvent;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
@@ -186,53 +186,53 @@ public class EmailLogger extends AbstractLogger {
     }
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.AppenderSkeleton#append(org.apache.log4j.spi.LoggingEvent)
+     * @see org.apache.logging.log4j.AppenderSkeleton#append(org.apache.logging.log4j.spi.LoggingEvent)
      */
-    @Override
-    protected void append(LoggingEvent loggingEvent) {
-
-        try {
-            ChoreographyPojo choreographyPojo = null;
-            boolean matchedChoreography = false;
-
-            if (status != BeanStatus.ACTIVATED) {
-                return;
-            }
-
-
-            if (!loggingEvent.getLevel().isGreaterOrEqual(Level.toLevel(getLogThreshold(), Level.ERROR))) {
-                return;
-            }
-            if (checkChoreography && (loggingEvent.getMessage() instanceof LogMessage)) {
-                LogMessage logMessage = (LogMessage) loggingEvent.getMessage();
-                if (logMessage.getConversationId() != null) {
-                    ConversationPojo conversationPojo;
-                    try {
-                        conversationPojo = Engine.getInstance().getTransactionService().getConversation(
-                                logMessage.getConversationId());
-                        if (conversationPojo != null) {
-                            choreographyPojo = conversationPojo.getChoreography();
-                            if (choreographyPojo != null) {
-                                matchedChoreography = choreographyFilter.equals(choreographyPojo.getName());
-                            }
-                        }
-                    } catch (NexusException e) {
-                        System.err.println("Error identifying choreography when filtering email notification: " + e);
-                    }
-                }
-            }
-
-            if ((!checkChoreography || matchedChoreography) && mailQueue != null) {
-                if (matchLogText(loggingEvent.getRenderedMessage())) {
-                    mailQueue.offer(new String[]{loggingEvent.getRenderedMessage()});
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("An Excpetion occured while creating email notification: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-    }
+//    @Override
+//    protected void append(LoggingEvent loggingEvent) {
+//
+//        try {
+//            ChoreographyPojo choreographyPojo = null;
+//            boolean matchedChoreography = false;
+//
+//            if (status != BeanStatus.ACTIVATED) {
+//                return;
+//            }
+//
+//
+//            if (!loggingEvent.getLevel().isGreaterOrEqual(Level.toLevel(getLogThreshold(), Level.ERROR))) {
+//                return;
+//            }
+//            if (checkChoreography && (loggingEvent.getMessage() instanceof LogMessage)) {
+//                LogMessage logMessage = (LogMessage) loggingEvent.getMessage();
+//                if (logMessage.getConversationId() != null) {
+//                    ConversationPojo conversationPojo;
+//                    try {
+//                        conversationPojo = Engine.getInstance().getTransactionService().getConversation(
+//                                logMessage.getConversationId());
+//                        if (conversationPojo != null) {
+//                            choreographyPojo = conversationPojo.getChoreography();
+//                            if (choreographyPojo != null) {
+//                                matchedChoreography = choreographyFilter.equals(choreographyPojo.getName());
+//                            }
+//                        }
+//                    } catch (NexusException e) {
+//                        System.err.println("Error identifying choreography when filtering email notification: " + e);
+//                    }
+//                }
+//            }
+//
+//            if ((!checkChoreography || matchedChoreography) && mailQueue != null) {
+//                if (matchLogText(loggingEvent.getRenderedMessage())) {
+//                    mailQueue.offer(new String[]{loggingEvent.getRenderedMessage()});
+//                }
+//            }
+//        } catch (Exception e) {
+//            System.err.println("An Excpetion occured while creating email notification: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     private boolean matchLogText(String renderedMessage) {
         if (StringUtils.isNotBlank(renderedMessage)) {
@@ -263,7 +263,7 @@ public class EmailLogger extends AbstractLogger {
     }
 
     /* (non-Javadoc)
-     * @see org.apache.log4j.AppenderSkeleton#close()
+     * @see org.apache.logging.log4j.AppenderSkeleton#close()
      */
     @Override
     public void close() {

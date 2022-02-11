@@ -1,23 +1,37 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.service.mail;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.nexuse2e.BeanStatus;
+import org.nexuse2e.Layer;
+import org.nexuse2e.configuration.ListParameter;
+import org.nexuse2e.configuration.ParameterDescriptor;
+import org.nexuse2e.configuration.ParameterType;
+import org.nexuse2e.messaging.MessageContext;
+import org.nexuse2e.service.AbstractService;
+import org.nexuse2e.service.ReceiverAware;
+import org.nexuse2e.transport.TransportReceiver;
+import org.nexuse2e.util.CertificatePojoSocketFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
@@ -34,19 +48,6 @@ import javax.mail.URLName;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.nexuse2e.BeanStatus;
-import org.nexuse2e.Layer;
-import org.nexuse2e.configuration.ListParameter;
-import org.nexuse2e.configuration.ParameterDescriptor;
-import org.nexuse2e.configuration.ParameterType;
-import org.nexuse2e.messaging.MessageContext;
-import org.nexuse2e.service.AbstractService;
-import org.nexuse2e.service.ReceiverAware;
-import org.nexuse2e.transport.TransportReceiver;
-import org.nexuse2e.util.CertificatePojoSocketFactory;
-
 /**
  * This class implements the POP3 receiver service.
  *
@@ -54,45 +55,44 @@ import org.nexuse2e.util.CertificatePojoSocketFactory;
  */
 public class Pop3Receiver extends AbstractService implements ReceiverAware, Runnable {
 
-    private static Logger      LOG                      = Logger.getLogger( Pop3Receiver.class );
-
-    public static final String HOST_PARAM_NAME          = "host";
-    public static final String PORT_PARAM_NAME          = "port";
-    public static final String USER_PARAM_NAME          = "user";
-    public static final String PASSWORD_PARAM_NAME      = "password";
-    public static final String ENCRYPTION_PARAM_NAME    = "encryption";
+    public static final String HOST_PARAM_NAME = "host";
+    public static final String PORT_PARAM_NAME = "port";
+    public static final String USER_PARAM_NAME = "user";
+    public static final String PASSWORD_PARAM_NAME = "password";
+    public static final String ENCRYPTION_PARAM_NAME = "encryption";
     //    public static final String AUTOPOLL_PARAM_NAME      = "autopoll";
     public static final String POLL_INTERVAL_PARAM_NAME = "pollInterval";
+    private static Logger LOG = LogManager.getLogger(Pop3Receiver.class);
+    private TransportReceiver transportReceiver;
 
-    private TransportReceiver  transportReceiver;
-
-    private Thread             thread                   = null;
-    private long               pollingInterval          = 30000;
+    private Thread thread = null;
+    private long pollingInterval = 30000;
 
     @Override
-    public void fillParameterMap( Map<String, ParameterDescriptor> parameterMap ) {
+    public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
 
-        parameterMap.put( HOST_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Host",
-                "POP3 host name or IP address", "" ) );
-        parameterMap.put( PORT_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "Port",
-                "POP3 port number (default is 110 or 995 for SSL)", "110" ) );
-        parameterMap.put( USER_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING, "User",
-                "Authentication user name", "" ) );
-        parameterMap.put( PASSWORD_PARAM_NAME, new ParameterDescriptor( ParameterType.PASSWORD, "Password",
-                "Authentication user password", "" ) );
+        parameterMap.put(HOST_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Host", "POP3 host name or IP" +
+                " address", ""));
+        parameterMap.put(PORT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Port", "POP3 port number " +
+                "(default is 110 or 995 for SSL)", "110"));
+        parameterMap.put(USER_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "User", "Authentication user " +
+                "name", ""));
+        parameterMap.put(PASSWORD_PARAM_NAME, new ParameterDescriptor(ParameterType.PASSWORD, "Password",
+                "Authentication user password", ""));
         ListParameter encryptionTypeDrowdown = new ListParameter();
-        encryptionTypeDrowdown.addElement( "None", "none" );
-        encryptionTypeDrowdown.addElement( "TLS", "tls" );
-        encryptionTypeDrowdown.addElement( "SSL", "ssl" );
-        parameterMap.put( ENCRYPTION_PARAM_NAME, new ParameterDescriptor(
-                ParameterType.LIST, "Encryption", "Connection encryption type", encryptionTypeDrowdown ) );
+        encryptionTypeDrowdown.addElement("None", "none");
+        encryptionTypeDrowdown.addElement("TLS", "tls");
+        encryptionTypeDrowdown.addElement("SSL", "ssl");
+        parameterMap.put(ENCRYPTION_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Encryption", "Connection" +
+                " encryption type", encryptionTypeDrowdown));
 
         // obsolete, service polls automatically when started. Method poll is available when service is active.
 
-        //        parameterMap.put( AUTOPOLL_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN, "Poll automatically",
+        //        parameterMap.put( AUTOPOLL_PARAM_NAME, new ParameterDescriptor( ParameterType.BOOLEAN, "Poll
+        //        automatically",
         //                "Automatically check for new emails", Boolean.TRUE ) );
-        parameterMap.put( POLL_INTERVAL_PARAM_NAME, new ParameterDescriptor( ParameterType.STRING,
-                "Polling interval (sec)", "Polling interval in seconds", "300" ) );
+        parameterMap.put(POLL_INTERVAL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Polling interval " +
+                "(sec)", "Polling interval in seconds", "300"));
     }
 
     /* (non-Javadoc)
@@ -110,16 +110,16 @@ public class Pop3Receiver extends AbstractService implements ReceiverAware, Runn
     @Override
     public void start() {
 
-        if ( getStatus().getValue() < BeanStatus.STARTED.getValue() ) {
+        if (getStatus().getValue() < BeanStatus.STARTED.getValue()) {
             super.start();
 
-            int intervalSeconds = Integer.parseInt( (String) getParameter( POLL_INTERVAL_PARAM_NAME ) );
+            int intervalSeconds = Integer.parseInt((String) getParameter(POLL_INTERVAL_PARAM_NAME));
             pollingInterval = intervalSeconds * 1000;
 
-            thread = new Thread( this, "MailPolling" );
+            thread = new Thread(this, "MailPolling");
             thread.start();
 
-            LOG.debug( "Pop3Receiver service started" );
+            LOG.debug("Pop3Receiver service started");
         }
     }
 
@@ -129,8 +129,8 @@ public class Pop3Receiver extends AbstractService implements ReceiverAware, Runn
     @Override
     public void stop() {
 
-        if ( getStatus() == BeanStatus.STARTED ) {
-            if ( thread != null ) {
+        if (getStatus() == BeanStatus.STARTED) {
+            if (thread != null) {
                 thread.interrupt();
                 thread = null;
             }
@@ -139,105 +139,105 @@ public class Pop3Receiver extends AbstractService implements ReceiverAware, Runn
     }
 
     /**
-     * 
+     *
      */
     public void poll() {
 
         // do nothing if not activated
-        if ( getStatus().getValue() < BeanStatus.ACTIVATED.getValue() ) {
+        if (getStatus().getValue() < BeanStatus.ACTIVATED.getValue()) {
             return;
         }
 
-        LOG.trace( "Polling mail account..." );
+        LOG.trace("Polling mail account...");
 
-        receiveMail( (String) getParameter( HOST_PARAM_NAME ), (String) getParameter( USER_PARAM_NAME ),
-                (String) getParameter( PASSWORD_PARAM_NAME ), (String) getParameter( PORT_PARAM_NAME ) );
+        receiveMail((String) getParameter(HOST_PARAM_NAME), (String) getParameter(USER_PARAM_NAME),
+                (String) getParameter(PASSWORD_PARAM_NAME), (String) getParameter(PORT_PARAM_NAME));
     }
 
-    private boolean receiveMail( String popServer, String popUser, String popPassword, String port ) {
+    private boolean receiveMail(String popServer, String popUser, String popPassword, String port) {
 
         Store store = null;
         Folder folder = null;
         boolean result = false;
 
-        if ( ( popServer == null ) || ( popUser == null ) || ( popPassword == null ) ) {
+        if ((popServer == null) || (popUser == null) || (popPassword == null)) {
             return result;
         }
 
         try {
-            Session session = connect( popServer, popUser, popPassword, port );
-            if ( session == null ) {
+            Session session = connect(popServer, popUser, popPassword, port);
+            if (session == null) {
                 return false;
             }
 
-            store = session.getStore( (isSslEnabled() ? "pop3s" : "pop3") );
-            store.connect( popServer, popUser, popPassword );
+            store = session.getStore((isSslEnabled() ? "pop3s" : "pop3"));
+            store.connect(popServer, popUser, popPassword);
 
-            LOG.trace( "Connected to server, checking for email messages" );
+            LOG.trace("Connected to server, checking for email messages");
 
             // -- Try to get hold of the default folder --
             folder = store.getDefaultFolder();
-            if ( folder == null ) {
-                throw new Exception( "No default folder" );
+            if (folder == null) {
+                throw new Exception("No default folder");
             }
 
             // -- ...and its INBOX --
-            folder = folder.getFolder( "inbox" );
-            if ( folder == null ) {
-                throw new Exception( "No POP3 INBOX folder" );
+            folder = folder.getFolder("inbox");
+            if (folder == null) {
+                throw new Exception("No POP3 INBOX folder");
             }
 
             // -- Open the folder for read only --
-            folder.open( Folder.READ_WRITE );
+            folder.open(Folder.READ_WRITE);
 
             // -- Get the message wrappers and process them --
             Message[] msgs = folder.getMessages();
 
-            for ( int msgNum = 0; msgNum < msgs.length; msgNum++ ) {
-                LOG.debug( "Processing message " + ( msgNum + 1 ) + " of " + msgs.length );
+            for (int msgNum = 0; msgNum < msgs.length; msgNum++) {
+                LOG.debug("Processing message " + (msgNum + 1) + " of " + msgs.length);
                 Address[] addresses = msgs[msgNum].getFrom();
-                LOG.debug( "Sender: " + ( (InternetAddress) addresses[0] ).getAddress() );
+                LOG.debug("Sender: " + ((InternetAddress) addresses[0]).getAddress());
 
-                if ( LOG.isDebugEnabled() ) {
-                    if ( msgs[msgNum] instanceof MimeMessage ) {
+                if (LOG.isDebugEnabled()) {
+                    if (msgs[msgNum] instanceof MimeMessage) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ( (MimeMessage) msgs[msgNum] ).writeTo( baos );
+                        ((MimeMessage) msgs[msgNum]).writeTo(baos);
                         String dump = baos.toString();
-                        LOG.debug( "********** INBOUND **********\n" + dump + "\n*****************************" );
+                        LOG.debug("********** INBOUND **********\n" + dump + "\n*****************************");
                     }
                 }
 
                 try {
                     MessageContext messageContext = new MessageContext();
-                    messageContext.setData( msgs[msgNum] );
-                    MessageContext responseContext = transportReceiver.processMessage( messageContext );
-                    if ( responseContext != null ) {
+                    messageContext.setData(msgs[msgNum]);
+                    MessageContext responseContext = transportReceiver.processMessage(messageContext);
+                    if (responseContext != null) {
 
-                        LOG.trace( "ResponseContent:" + responseContext.getData() );
-                        LOG.error( "no synchronous message transmission available for email connections!" );
+                        LOG.trace("ResponseContent:" + responseContext.getData());
+                        LOG.error("no synchronous message transmission available for email connections!");
                     }
-                } catch ( Exception e ) {
-                    LOG.warn( "Error processing email message: ", e );
+                } catch (Exception e) {
+                    LOG.warn("Error processing email message: ", e);
                 }
-                msgs[msgNum].setFlag( Flags.Flag.DELETED, true );
+                msgs[msgNum].setFlag(Flags.Flag.DELETED, true);
             }
             result = true;
 
-        } catch ( Exception ex ) {
-            LOG.error( ex.getMessage(), ex );
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage(), ex);
             ex.printStackTrace();
             // handle error here
         } finally {
             // -- Close down nicely --
             try {
-                if ( folder != null ) {
-                    folder.close( true );
+                if (folder != null) {
+                    folder.close(true);
                 }
-                if ( store != null ) {
+                if (store != null) {
                     store.close();
                 }
-            } catch ( Exception ex2 ) {
-                LOG.error( ex2.getMessage(), ex2 );
+            } catch (Exception ex2) {
+                LOG.error(ex2.getMessage(), ex2);
             }
         }
 
@@ -245,59 +245,59 @@ public class Pop3Receiver extends AbstractService implements ReceiverAware, Runn
     }
 
     private boolean isSslEnabled() {
-        ListParameter lp = getParameter( ENCRYPTION_PARAM_NAME );
+        ListParameter lp = getParameter(ENCRYPTION_PARAM_NAME);
         if (lp != null) {
-            if ("ssl".equals( lp.getSelectedValue() )) {
+            if ("ssl".equals(lp.getSelectedValue())) {
                 return true;
             }
         }
         return false;
     }
-    
+
     private boolean isTlsEnabled() {
-        ListParameter lp = getParameter( ENCRYPTION_PARAM_NAME );
+        ListParameter lp = getParameter(ENCRYPTION_PARAM_NAME);
         if (lp != null) {
-            if ("tls".equals( lp.getSelectedValue() )) {
+            if ("tls".equals(lp.getSelectedValue())) {
                 return true;
             }
         }
         return false;
     }
-    
-    private Session connect( String host, String user, String password, String port ) throws Exception {
+
+    private Session connect(String host, String user, String password, String port) throws Exception {
 
         boolean ssl = isSslEnabled();
         boolean tls = isTlsEnabled();
-        
-        String protocol = (ssl ? "pop3s" : "pop3");
-        
-        if ( ( host != null ) && !host.equals( "" ) && !host.equals( " " ) ) {
-            Properties props = new Properties( System.getProperties() );
-            props.put( "mail.host", host );
 
-            if (port != null && !StringUtils.isEmpty( port )) {
-                props.put( "mail." + protocol + ".port", port );
+        String protocol = (ssl ? "pop3s" : "pop3");
+
+        if ((host != null) && !host.equals("") && !host.equals(" ")) {
+            Properties props = new Properties(System.getProperties());
+            props.put("mail.host", host);
+
+            if (port != null && !StringUtils.isEmpty(port)) {
+                props.put("mail." + protocol + ".port", port);
             } else {
-                props.remove( "mail." + protocol + ".port" );
+                props.remove("mail." + protocol + ".port");
             }
             if (ssl) {
-                props.put( "mail." + protocol + ".socketFactory.class", CertificatePojoSocketFactory.class.getName() );
+                props.put("mail." + protocol + ".socketFactory.class", CertificatePojoSocketFactory.class.getName());
             }
-            
+
             if (tls) {
                 // TODO: implement this
-                props.put( "mail" + protocol + ".starttls.enabled", Boolean.TRUE.toString() );
-                props.put( "mail" + protocol + ".starttls.required", Boolean.TRUE.toString() );
+                props.put("mail" + protocol + ".starttls.enabled", Boolean.TRUE.toString());
+                props.put("mail" + protocol + ".starttls.required", Boolean.TRUE.toString());
             }
-            
+
             // Get a Session object
-            Session session = Session.getInstance( props, null );
+            Session session = Session.getInstance(props, null);
 
-            PasswordAuthentication passwordAuthentication = new PasswordAuthentication( user, password );
+            PasswordAuthentication passwordAuthentication = new PasswordAuthentication(user, password);
             String urlNameString = protocol + "://" + host;
-            URLName urlName = new URLName( urlNameString );
+            URLName urlName = new URLName(urlNameString);
 
-            session.setPasswordAuthentication( urlName, passwordAuthentication );
+            session.setPasswordAuthentication(urlName, passwordAuthentication);
 
             return session;
         }
@@ -306,26 +306,26 @@ public class Pop3Receiver extends AbstractService implements ReceiverAware, Runn
     } // connect
 
     /**
-     * 
+     *
      */
     public void run() {
 
         try { // check mail
-            while ( getStatus().getValue() >= BeanStatus.STARTED.getValue() ) {
+            while (getStatus().getValue() >= BeanStatus.STARTED.getValue()) {
                 try {
                     // Wait predefined interval
-                    Thread.sleep( pollingInterval );
-                } catch ( InterruptedException iEx ) {
-                    LOG.info( "Email polling interrupted." );
+                    Thread.sleep(pollingInterval);
+                } catch (InterruptedException iEx) {
+                    LOG.info("Email polling interrupted.");
                 }
 
                 // Get new messages
                 poll();
 
             }
-        } catch ( Exception ioe ) {
-            LOG.error( "Email polling was interrupted!" );
-            if ( LOG.isDebugEnabled() ) {
+        } catch (Exception ioe) {
+            LOG.error("Email polling was interrupted!");
+            if (LOG.isDebugEnabled()) {
                 ioe.printStackTrace();
             }
             // Ignore errors here, intentionally interupted
@@ -343,7 +343,7 @@ public class Pop3Receiver extends AbstractService implements ReceiverAware, Runn
     /* (non-Javadoc)
      * @see org.nexuse2e.service.ReceiverAware#setTransportReceiver(org.nexuse2e.transport.TransportReceiver)
      */
-    public void setTransportReceiver( TransportReceiver transportReceiver ) {
+    public void setTransportReceiver(TransportReceiver transportReceiver) {
 
         this.transportReceiver = transportReceiver;
     }

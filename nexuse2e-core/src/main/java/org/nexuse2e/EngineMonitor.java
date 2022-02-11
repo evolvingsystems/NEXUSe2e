@@ -1,24 +1,31 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e;
 
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
+import org.nexuse2e.StatusSummary.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationObjectSupport;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,54 +44,43 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
-import org.nexuse2e.StatusSummary.Status;
-import org.springframework.web.context.support.WebApplicationObjectSupport;
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-
 /**
  * @author gesch
  *
  */
 public class EngineMonitor extends WebApplicationObjectSupport {
 
-    private static Logger               LOG                        = Logger.getLogger( EngineMonitor.class );
-
+    private static Logger LOG = LoggerFactory.getLogger(EngineMonitor.class);
+    protected EngineStatusSummary currentEngineStatusSummary = null;
     private List<EngineMonitorListener> listeners;
-    private Timer                       timer;
-    private String                      nexusE2ERoot               = null;
-    private boolean                     shutdownInitiated          = false;
-    private boolean                     autoStart                  = true;
-    private DataSource					dataSource 				   = null;
-    private ExecutorService 			executor 				   = null;
-	
-    public DataSource getDataSource() {
-		return dataSource;
-	}
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-
-	/**
-     * Database Timeout in miliseconds 
+    private Timer timer;
+    private String nexusE2ERoot = null;
+    private boolean shutdownInitiated = false;
+    private boolean autoStart = true;
+    private DataSource dataSource = null;
+    private ExecutorService executor = null;
+    /**
+     * Database Timeout in miliseconds
      */
-    private int                         timeout                    = 10000; 
-    
+    private int timeout = 10000;
     /**
      * Monitor probe Interval in miliseconds
      */
-    private int                         interval                    = 10000; 
-    
-    protected EngineStatusSummary       currentEngineStatusSummary = null;
+    private int interval = 10000;
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public void initialize() {
-    	
-    	
-    	// Set Derby home directory to determine where the DB will be created
-    	nexusE2ERoot = Engine.getInstance().getNexusE2ERoot();
+
+
+        // Set Derby home directory to determine where the DB will be created
+        nexusE2ERoot = Engine.getInstance().getNexusE2ERoot();
         try {
             if (nexusE2ERoot == null) {
                 ServletContext currentContext = getServletContext();
@@ -110,27 +106,28 @@ public class EngineMonitor extends WebApplicationObjectSupport {
     }
 
     /**
-     * 
+     *
      */
     public void start() {
-    	executor = Executors.newFixedThreadPool(1);
-    	
+        executor = Executors.newFixedThreadPool(1);
+
         // Set Derby home directory to determine where the DB will be created
         nexusE2ERoot = Engine.getInstance().getNexusE2ERoot();
-        if ( System.getProperty( "derby.system.home" ) == null ) {
-            LOG.trace( "Setting derby root directory to: " + nexusE2ERoot + Constants.DERBYROOT );
-            System.setProperty( "derby.system.home", nexusE2ERoot + Constants.DERBYROOT );
+        if (System.getProperty("derby.system.home") == null) {
+            LOG.trace("Setting derby root directory to: " + nexusE2ERoot + Constants.DERBYROOT);
+            System.setProperty("derby.system.home", nexusE2ERoot + Constants.DERBYROOT);
         } else {
-            LOG.trace( "Derby root directory already set: " + System.getProperty( "derby.system.home" ) );
+            LOG.trace("Derby root directory already set: " + System.getProperty("derby.system.home"));
         }
-    	if(dataSource == null){
-    		LOG.error("DataSouece not provided, the configuration is not valid. Please update beans.xml "
-    				+ "files engine monitor section. Also be aware of the unit change for timeout, its miliseconds now. Monitoring will be disabled");
-    	} else {
-    		LOG.debug( "Engine monitor initalized" );
+        if (dataSource == null) {
+            LOG.error("DataSouece not provided, the configuration is not valid. Please update beans.xml " + "files " +
+                    "engine monitor section. Also be aware of the unit change for timeout, its miliseconds now. " +
+                    "Monitoring will be disabled");
+        } else {
+            LOG.debug("Engine monitor initalized");
             timer = new Timer();
             TestSuite suite = new TestSuite();
-            timer.schedule( suite, 30000, interval ); //delayed first schedule
+            timer.schedule(suite, 30000, interval); //delayed first schedule
         }
     }
 
@@ -138,8 +135,8 @@ public class EngineMonitor extends WebApplicationObjectSupport {
      * shutdown probe timer and additional connection timeout guards
      */
     public void stop() {
-    	executor.shutdown();
-    	timer.cancel();
+        executor.shutdown();
+        timer.cancel();
     }
 
     /**
@@ -154,12 +151,12 @@ public class EngineMonitor extends WebApplicationObjectSupport {
      * @param summary
      * @return
      */
-    public EngineStatusSummary filloutStatusSummary( EngineStatusSummary summary ) {
+    public EngineStatusSummary filloutStatusSummary(EngineStatusSummary summary) {
 
-        if ( Engine.getInstance().getStatus() == BeanStatus.STARTED ) {
-            summary.setStatus( Status.ACTIVE );
+        if (Engine.getInstance().getStatus() == BeanStatus.STARTED) {
+            summary.setStatus(Status.ACTIVE);
         } else {
-            summary.setStatus( Status.INACTIVE );
+            summary.setStatus(Status.INACTIVE);
         }
         return summary;
     }
@@ -167,113 +164,161 @@ public class EngineMonitor extends WebApplicationObjectSupport {
     /**
      * @param listner
      */
-    public void addListener( EngineMonitorListener listener ) {
+    public void addListener(EngineMonitorListener listener) {
 
-        if ( listeners == null ) {
+        if (listeners == null) {
             listeners = new ArrayList<EngineMonitorListener>();
         }
-        listeners.add( listener );
+        listeners.add(listener);
     }
 
-    public void removeListener( EngineMonitorListener listener ) {
+    public void removeListener(EngineMonitorListener listener) {
 
-        if ( listeners != null ) {
-            listeners.remove( listener );
+        if (listeners != null) {
+            listeners.remove(listener);
         }
     }
 
     /**
      * be aware, LOG output might generate database queries because of the underlaying logging configuration. 
      * By default error message are also logged as engine logged. 
-     * 
+     *
      * @return
      */
-	private synchronized EngineStatusSummary probe() {
+    private synchronized EngineStatusSummary probe() {
 
-		final EngineStatusSummary summary = new EngineStatusSummary();
+        final EngineStatusSummary summary = new EngineStatusSummary();
 
-		// statement query timeout doesn't work for mssql mirror database. Maybe
-		// its working for mssql standalone.
-		
-		Boolean successful = false;
-		Future<Boolean> future = null;
-		String causeMsg = null;
-		try {
-			final Connection con = dataSource.getConnection();
-			
-			try {
-				
-				future = executor.submit(new Callable<Boolean>() {
-					public Boolean call() throws Exception {
-						ResultSet result = null;
-						try {
-							PreparedStatement statement = con.prepareStatement("select count(*) from nx_trp");
-							result = statement.executeQuery();
-							result.next();
-							int count = result.getInt(1);
-							if(count == 0) {
-								throw new NexusException("no TRP's found in database");
-					        }
-							
-						} catch (Exception e) {
-							throw e;
-						} finally {
-							if(result != null) {
-								try {
-									result.close();
-								} catch (SQLException e) {
-									// force close in case the result is not closed yet. isClosed throws an unexpected exception with mssql drivers. 
-								}
-							}
-							if(con != null && !con.isClosed()){
-								try {
-									con.close();
-								} catch (SQLException e) {
-									// isClosed seems to work for connections and mssql
-								}
-							}
-						}
-						return true;
-					}
-				});
-				
-				successful = future.get(timeout, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				causeMsg = "Exception occured while probing database: " + e.getMessage();
-			} finally {
-				try {
-					if(con != null && !con.isClosed()) {
-						con.close();
-					}
-				} catch (SQLException e) {
-					//finally failed to close...
-				}
-				if(!future.isDone()){
-					future.cancel(true);
-				}
-			}
-		} catch (SQLException e) {
-			causeMsg = "failed to open connection";
-		}
+        // statement query timeout doesn't work for mssql mirror database. Maybe
+        // its working for mssql standalone.
 
-		
+        Boolean successful = false;
+        Future<Boolean> future = null;
+        String causeMsg = null;
+        try {
+            final Connection con = dataSource.getConnection();
 
-		if (!successful) {
-			summary.setCause(causeMsg);
-			summary.setDatabaseStatus(Status.ERROR);
-			summary.setStatus(Status.ERROR);
-			return summary;
-		}
-		summary.setDatabaseStatus(Status.ACTIVE);
+            try {
 
-		if (Engine.getInstance().getStatus() == BeanStatus.STARTED) {
-			summary.setStatus(Status.ACTIVE);
-		} else {
-			summary.setStatus(Status.INACTIVE);
-		}
+                future = executor.submit(new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        ResultSet result = null;
+                        try {
+                            PreparedStatement statement = con.prepareStatement("select count(*) from nx_trp");
+                            result = statement.executeQuery();
+                            result.next();
+                            int count = result.getInt(1);
+                            if (count == 0) {
+                                throw new NexusException("no TRP's found in database");
+                            }
 
-		return summary;
-	}
+                        } catch (Exception e) {
+                            throw e;
+                        } finally {
+                            if (result != null) {
+                                try {
+                                    result.close();
+                                } catch (SQLException e) {
+                                    // force close in case the result is not closed yet. isClosed throws an
+                                    // unexpected exception with mssql drivers.
+                                }
+                            }
+                            if (con != null && !con.isClosed()) {
+                                try {
+                                    con.close();
+                                } catch (SQLException e) {
+                                    // isClosed seems to work for connections and mssql
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                });
+
+                successful = future.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                causeMsg = "Exception occured while probing database: " + e.getMessage();
+            } finally {
+                try {
+                    if (con != null && !con.isClosed()) {
+                        con.close();
+                    }
+                } catch (SQLException e) {
+                    //finally failed to close...
+                }
+                if (!future.isDone()) {
+                    future.cancel(true);
+                }
+            }
+        } catch (SQLException e) {
+            causeMsg = "failed to open connection";
+        }
+
+
+        if (!successful) {
+            summary.setCause(causeMsg);
+            summary.setDatabaseStatus(Status.ERROR);
+            summary.setStatus(Status.ERROR);
+            return summary;
+        }
+        summary.setDatabaseStatus(Status.ACTIVE);
+
+        if (Engine.getInstance().getStatus() == BeanStatus.STARTED) {
+            summary.setStatus(Status.ACTIVE);
+        } else {
+            summary.setStatus(Status.INACTIVE);
+        }
+
+        return summary;
+    }
+
+    /**
+     * @return the timeout
+     */
+    public int getTimeout() {
+
+        return timeout;
+    }
+
+    /**
+     * @param timeout the timeout to set
+     */
+    public void setTimeout(int timeout) {
+
+        this.timeout = timeout;
+    }
+
+    /**
+     * @return the interval
+     */
+    public int getInterval() {
+
+        return interval;
+    }
+
+    /**
+     * @param interval the interval to set
+     */
+    public void setInterval(int interval) {
+
+        this.interval = interval;
+    }
+
+    /**
+     * @return the autoStart
+     */
+    public boolean isAutoStart() {
+
+        return autoStart;
+    }
+
+    /**
+     * @param autoStart the autoStart to set
+     */
+    public void setAutoStart(boolean autoStart) {
+
+        this.autoStart = autoStart;
+    }
 
     /**
      * @author gesch
@@ -282,7 +327,7 @@ public class EngineMonitor extends WebApplicationObjectSupport {
     public class TestSuite extends TimerTask {
 
         /**
-         * 
+         *
          */
         public TestSuite() {
 
@@ -293,100 +338,48 @@ public class EngineMonitor extends WebApplicationObjectSupport {
 
             try {
                 EngineStatusSummary summary = probe();
-                if ( summary.getStatus() == Status.ERROR ) {
+                if (summary.getStatus() == Status.ERROR) {
                     try {
-                    	if ( !shutdownInitiated ) {
-	                        Engine.getInstance().changeStatus( BeanStatus.INSTANTIATED );
-	                        LOG.info( "Engine shutdown triggered (cause: " + summary.getCause() + ")" );
-	                        shutdownInitiated = true;
-	                        // required to reset all pooled connections to make sure, the jdbc driver takes the failover node if available.
-	                        if(dataSource instanceof ComboPooledDataSource) { // will not work for external datasource pools. (DataSource interface doesn't provide reset methods)
-	                        	((ComboPooledDataSource)dataSource).resetPoolManager(true); 
-	                        }
-                    	}
-                    } catch ( InstantiationException e ) {
-                        LOG.error( "Error while handling error: (cause: " + summary.getCause() + "): " + e );
+                        if (!shutdownInitiated) {
+                            Engine.getInstance().changeStatus(BeanStatus.INSTANTIATED);
+                            LOG.info("Engine shutdown triggered (cause: " + summary.getCause() + ")");
+                            shutdownInitiated = true;
+                            // required to reset all pooled connections to make sure, the jdbc driver takes the
+                            // failover node if available.
+                            if (dataSource instanceof ComboPooledDataSource) { // will not work for external
+                                // datasource pools. (DataSource interface doesn't provide reset methods)
+                                ((ComboPooledDataSource) dataSource).resetPoolManager(true);
+                            }
+                        }
+                    } catch (InstantiationException e) {
+                        LOG.error("Error while handling error: (cause: " + summary.getCause() + "): " + e);
                     }
-                } else if ( shutdownInitiated ) {
-                    if ( Engine.getInstance().getStatus().equals( BeanStatus.INSTANTIATED ) ) {
+                } else if (shutdownInitiated) {
+                    if (Engine.getInstance().getStatus().equals(BeanStatus.INSTANTIATED)) {
                         shutdownInitiated = false;
-                        Engine.getInstance().changeStatus( BeanStatus.STARTED );
-                        LOG.info( "Engine startup triggered" );
+                        Engine.getInstance().changeStatus(BeanStatus.STARTED);
+                        LOG.info("Engine startup triggered");
                     }
                 } else {
                     shutdownInitiated = false;
                 }
-                
-                currentEngineStatusSummary = summary;
-                
-                if ( listeners != null ) {
 
-                    for ( EngineMonitorListener listener : listeners ) {
+                currentEngineStatusSummary = summary;
+
+                if (listeners != null) {
+
+                    for (EngineMonitorListener listener : listeners) {
                         EngineStatusSummary specialSummary = listener.getSummaryInstance();
-                        specialSummary.update( summary );
-                        listener.engineEvent( specialSummary );
+                        specialSummary.update(summary);
+                        listener.engineEvent(specialSummary);
                     }
                 }
-            } catch ( Exception e ) {
-                System.out.println( "Monitoring: " + e );
+            } catch (Exception e) {
+                System.out.println("Monitoring: " + e);
                 e.printStackTrace();
             }
         }
     }
 
-    
-    /**
-     * @return the timeout
-     */
-    public int getTimeout() {
-    
-        return timeout;
-    }
 
-    
-    /**
-     * @param timeout the timeout to set
-     */
-    public void setTimeout( int timeout ) {
-    
-        this.timeout = timeout;
-    }
-
-    
-    /**
-     * @return the interval
-     */
-    public int getInterval() {
-    
-        return interval;
-    }
-
-    
-    /**
-     * @param interval the interval to set
-     */
-    public void setInterval( int interval ) {
-    
-        this.interval = interval;
-    }
-
-    
-    /**
-     * @return the autoStart
-     */
-    public boolean isAutoStart() {
-    
-        return autoStart;
-    }
-
-    
-    /**
-     * @param autoStart the autoStart to set
-     */
-    public void setAutoStart( boolean autoStart ) {
-    
-        this.autoStart = autoStart;
-    }
-    
-    
 }

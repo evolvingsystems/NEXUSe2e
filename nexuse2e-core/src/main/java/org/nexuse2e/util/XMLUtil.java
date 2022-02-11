@@ -1,37 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.util;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Properties;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParser;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.apache.xml.serialize.LineSeparator;
 import org.apache.xml.serialize.OutputFormat;
@@ -48,85 +37,100 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParser;
+
 /**
  * @author mbreilmann
  *
  */
 public class XMLUtil {
 
-    private static Logger LOG = Logger.getLogger( Engine.class );
+    private static Logger LOG = LogManager.getLogger(Engine.class);
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromURL( String url ) throws IOException {
+    public static Document loadXMLFileFromURL(String url) throws IOException {
 
-        return loadXMLFileFromInputSource( new InputSource( url ) );
+        return loadXMLFileFromInputSource(new InputSource(url));
     }
 
-    public static Element createNewElement( Document document, Node parentNode, String name ) {
+    public static Element createNewElement(Document document, Node parentNode, String name) {
 
         Element newElement = null;
         try {
-            newElement = document.createElement( name );
-            parentNode.appendChild( newElement );
-        } catch ( DOMException domEx ) {
-            System.err.println( "XMLHelper: createNewElement: Could not append record to DOM " + domEx );
+            newElement = document.createElement(name);
+            parentNode.appendChild(newElement);
+        } catch (DOMException domEx) {
+            System.err.println("XMLHelper: createNewElement: Could not append record to DOM " + domEx);
         }
         return newElement;
     } // create a Node
 
-    public static void serializeDocToDisk( Document document, String location, boolean resolveName )
-            throws NexusException {
+    public static void serializeDocToDisk(Document document, String location, boolean resolveName) throws NexusException {
 
         String absoluteLocation = null;
         try {
             absoluteLocation = location;
-            LOG.debug( "#### XMLHelper: serializeDocToDisk: Location : " + absoluteLocation );
+            LOG.debug("#### XMLHelper: serializeDocToDisk: Location : " + absoluteLocation);
 
-            OutputFormat format = new OutputFormat( document );
-            format.setLineSeparator( LineSeparator.Windows );
-            format.setIndenting( true );
-            format.setLineWidth( 0 );
-            format.setPreserveSpace( true );
-            XMLSerializer serializer = new XMLSerializer( new FileWriter( absoluteLocation ), format );
+            OutputFormat format = new OutputFormat(document);
+            format.setLineSeparator(LineSeparator.Windows);
+            format.setIndenting(true);
+            format.setLineWidth(0);
+            format.setPreserveSpace(true);
+            XMLSerializer serializer = new XMLSerializer(new FileWriter(absoluteLocation), format);
             serializer.asDOMSerializer();
-            serializer.serialize( document );
-        } catch ( FileNotFoundException fntfndEx ) {
-            LOG.error( "XMLHelper: serializeDocToDIsk: Could not update TPA " + fntfndEx );
-            throw new NexusException( "XMLHelper: serializeDocToDisk: Could not update XML, File not found." );
-        } catch ( IOException ioEx ) {
-            LOG.error( "XMLHelper: serializeDocToDIsk: IOException rewriting file Error updating TPA : " + ioEx );
-            throw new NexusException( "XMLHelper: serializeDocToDisk: Could not update XML, IO error." );
+            serializer.serialize(document);
+        } catch (FileNotFoundException fntfndEx) {
+            LOG.error("XMLHelper: serializeDocToDIsk: Could not update TPA " + fntfndEx);
+            throw new NexusException("XMLHelper: serializeDocToDisk: Could not update XML, File not found.");
+        } catch (IOException ioEx) {
+            LOG.error("XMLHelper: serializeDocToDIsk: IOException rewriting file Error updating TPA : " + ioEx);
+            throw new NexusException("XMLHelper: serializeDocToDisk: Could not update XML, IO error.");
         }
 
     }
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromStream( InputStream xmlInputStream ) throws IOException {
+    public static Document loadXMLFileFromStream(InputStream xmlInputStream) throws IOException {
 
-        return loadXMLFileFromInputSource( new InputSource( xmlInputStream ) );
+        return loadXMLFileFromInputSource(new InputSource(xmlInputStream));
     } // loadXMLFileFromStream
 
-    public static Document loadXMLFileFromFile( String fileName ) throws IOException {
+    public static Document loadXMLFileFromFile(String fileName) throws IOException {
 
-        if ( fileName.startsWith( "/" ) ) {
+        if (fileName.startsWith("/")) {
             fileName = "file://" + fileName;
         }
-        return loadXMLFileFromInputSource( new InputSource( fileName ) );
+        return loadXMLFileFromInputSource(new InputSource(fileName));
     } // loadXMLFileFromFile
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromStream( InputStream xmlInputStream, boolean validating ) throws IOException {
+    public static Document loadXMLFileFromStream(InputStream xmlInputStream, boolean validating) throws IOException {
 
-        return loadXMLFileFromInputSource( new InputSource( xmlInputStream ), validating );
+        return loadXMLFileFromInputSource(new InputSource(xmlInputStream), validating);
     } // loadXMLFileFromStream
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
     public static Document newDocument() {
@@ -134,116 +138,118 @@ public class XMLUtil {
         Document document = null;
         try {
             Properties properties = System.getProperties();
-            properties.setProperty( "javax.xml.parsers.DocumentBuilderFactory",
-                    "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl" );
+            properties.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp" +
+                    ".DocumentBuilderFactoryImpl");
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             document = docBuilder.newDocument();
-        } catch ( Exception ex ) {
-            LOG.error( "Could not create xml document: " + ex );
+        } catch (Exception ex) {
+            LOG.error("Could not create xml document: " + ex);
         }
         return document;
     }
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromURL( String url, boolean validating ) throws IOException {
+    public static Document loadXMLFileFromURL(String url, boolean validating) throws IOException {
 
-        return loadXMLFileFromInputSource( new InputSource( url ), validating );
+        return loadXMLFileFromInputSource(new InputSource(url), validating);
     }
 
-    public static Element createNewElement( Document document, Node parentNode, String name, String value ) {
+    public static Element createNewElement(Document document, Node parentNode, String name, String value) {
 
         Element newElement = null;
         try {
-            newElement = document.createElement( name );
-            if ( value != null ) {
-                Node textNode = document.createTextNode( value );
-                newElement.appendChild( textNode );
+            newElement = document.createElement(name);
+            if (value != null) {
+                Node textNode = document.createTextNode(value);
+                newElement.appendChild(textNode);
             }
-            parentNode.appendChild( newElement );
-        } catch ( DOMException domEx ) {
-            LOG.error( "Could not create new Element : " + name + " Exception: " + domEx );
+            parentNode.appendChild(newElement);
+        } catch (DOMException domEx) {
+            LOG.error("Could not create new Element : " + name + " Exception: " + domEx);
         }
         return newElement;
     } // create a Node
 
-    public static String serializeDocument( Document document ) {
+    public static String serializeDocument(Document document) {
 
         String xmlString = null;
         try {
             StringWriter stringWriter = new StringWriter();
-            OutputFormat format = new OutputFormat( document );
-            format.setLineSeparator( LineSeparator.Windows );
-            format.setIndenting( true );
-            format.setLineWidth( 0 );
-            format.setPreserveSpace( true );
-            XMLSerializer serializer = new XMLSerializer( stringWriter, format );
+            OutputFormat format = new OutputFormat(document);
+            format.setLineSeparator(LineSeparator.Windows);
+            format.setIndenting(true);
+            format.setLineWidth(0);
+            format.setPreserveSpace(true);
+            XMLSerializer serializer = new XMLSerializer(stringWriter, format);
             serializer.asDOMSerializer();
-            serializer.serialize( document );
+            serializer.serialize(document);
 
             xmlString = stringWriter.getBuffer().toString();
 
-        } catch ( Exception e ) {
-            LOG.error( "Warning: " + e );
+        } catch (Exception e) {
+            LOG.error("Warning: " + e);
             //  e.printStackTrace();
         }
 
         return xmlString;
     }
 
-    public static Document loadXMLFileFromFile( String fileName, boolean validating ) throws IOException {
+    public static Document loadXMLFileFromFile(String fileName, boolean validating) throws IOException {
 
-        if ( !fileName.startsWith( "file" ) ) {
-            if ( fileName.startsWith( "/" ) ) {
+        if (!fileName.startsWith("file")) {
+            if (fileName.startsWith("/")) {
                 fileName = "file://" + fileName;
             } else {
                 fileName = "file:///" + fileName;
             }
         }
 
-        return loadXMLFileFromInputSource( new InputSource( fileName ), validating );
+        return loadXMLFileFromInputSource(new InputSource(fileName), validating);
     } // loadXMLFileFromFile
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromInputSource( InputSource inputSource, boolean validating ) throws IOException {
+    public static Document loadXMLFileFromInputSource(InputSource inputSource, boolean validating) throws IOException {
 
         Document document = null;
         try {
             // Properties properties = System.getProperties();
 
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            docBuilderFactory.setValidating( validating );
-            docBuilderFactory.setNamespaceAware( true );
+            docBuilderFactory.setValidating(validating);
+            docBuilderFactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            docBuilder.setErrorHandler( new ErrorHandler() {
+            docBuilder.setErrorHandler(new ErrorHandler() {
 
-                public void fatalError( SAXParseException exception ) throws SAXException {
+                public void fatalError(SAXParseException exception) throws SAXException {
 
-                    LOG.error( "Fatal Error XMLHelper: static: Fatal Error: : " + exception );
+                    LOG.error("Fatal Error XMLHelper: static: Fatal Error: : " + exception);
                     exception.printStackTrace();
                 }
 
-                public void warning( SAXParseException exception ) throws SAXException {
+                public void warning(SAXParseException exception) throws SAXException {
 
-                    LOG.warn( "Warning: " + exception );
+                    LOG.warn("Warning: " + exception);
                 }
 
-                public void error( SAXParseException exception ) throws SAXException {
+                public void error(SAXParseException exception) throws SAXException {
 
-                    LOG.error( "Error: " + exception );
+                    LOG.error("Error: " + exception);
                 }
-            } );
-            document = docBuilder.parse( inputSource );
+            });
+            document = docBuilder.parse(inputSource);
 
-        } catch ( IOException ioEx ) {
-            throw new IOException( "Could not parse XML document: " + ioEx );
+        } catch (IOException ioEx) {
+            throw new IOException("Could not parse XML document: " + ioEx);
             // System.err.println( "Could not read xml document from input stream (IOException): " + ioEx );
-        } catch ( Exception ex ) {
-            throw new IOException( "Could not parse XML document: " + ex );
+        } catch (Exception ex) {
+            throw new IOException("Could not parse XML document: " + ex);
             // System.err.println( "Could not read xml document from input stream (Exception): " + ex );
         }
         return document;
@@ -259,41 +265,44 @@ public class XMLUtil {
      }
      */
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromInputSource( InputSource inputSource ) throws IOException {
+    public static Document loadXMLFileFromInputSource(InputSource inputSource) throws IOException {
 
-        return loadXMLFileFromInputSource( inputSource, true );
+        return loadXMLFileFromInputSource(inputSource, true);
     }
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromString( String inputString ) throws IOException {
+    public static Document loadXMLFileFromString(String inputString) throws IOException {
 
-        return loadXMLFileFromString( inputString, true );
+        return loadXMLFileFromString(inputString, true);
     }
 
-    /** ************************************************************************************************************************
+    /**
+     * ************************************************************************************************************************
      * Parse an XML file and return the DOM tree
      ************************************************************************************************************************ */
-    public static Document loadXMLFileFromString( String inputString, boolean validating ) throws IOException {
+    public static Document loadXMLFileFromString(String inputString, boolean validating) throws IOException {
 
-        return loadXMLFileFromInputSource( new InputSource( new StringReader( inputString ) ), validating );
+        return loadXMLFileFromInputSource(new InputSource(new StringReader(inputString)), validating);
     }
 
-    public static XMLReader getSaxParser( boolean validating ) {
+    public static XMLReader getSaxParser(boolean validating) {
 
         XMLReader xmlReader = null;
 
         try {
 
             SAXParserFactoryImpl spfi = new SAXParserFactoryImpl();
-            spfi.setFeature( "http://xml.org/sax/features/namespaces", true );
+            spfi.setFeature("http://xml.org/sax/features/namespaces", true);
             SAXParser spi = spfi.newSAXParser();
             xmlReader = spi.getXMLReader();
-        } catch ( Exception saxEx ) {
+        } catch (Exception saxEx) {
             saxEx.printStackTrace();
         }
 

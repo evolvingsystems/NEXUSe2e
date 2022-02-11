@@ -1,21 +1,21 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.util;
 
@@ -24,13 +24,10 @@ import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.ControllerThreadSocketFactory;
 import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.pojo.CertificatePojo;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -42,6 +39,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.TrustManager;
+
 /**
  * @author gesch
  */
@@ -50,7 +52,7 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
     /**
      * Log object for this class.
      */
-    private static final Logger LOG = Logger.getLogger(CertSSLProtocolSocketFactory.class);
+    private static final Logger LOG = LogManager.getLogger(CertSSLProtocolSocketFactory.class);
 
     private KeyStore keystore = null;
     private String keystorePassword = null;
@@ -70,11 +72,13 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
      * @param truststore         The keystore that shall be used for trusted roots server authentication.
      * @param truststorePassword The password to decrypt <code>truststore</code>.
      * @param trustedPartnerCert The trusted partner certificate to be checked. May be <code>null</code>
-     *                           if no special leaf certificate is expected and the certificate shall be checked for trusted root
+     *                           if no special leaf certificate is expected and the certificate shall be checked for
+     *                           trusted root
      *                           and validity only.
      */
     public CertSSLProtocolSocketFactory(final KeyStore keystore, final String keystorePassword,
-                                        final KeyStore truststore, final String truststorePassword, CertificatePojo trustedPartnerCert, String tlsProtocols, String tlsCiphers) {
+                                        final KeyStore truststore, final String truststorePassword,
+                                        CertificatePojo trustedPartnerCert, String tlsProtocols, String tlsCiphers) {
 
         super();
 
@@ -210,8 +214,8 @@ public class CertSSLProtocolSocketFactory implements SecureProtocolSocketFactory
      * @throws UnknownHostException if the IP address of the host cannot be
      *                              determined
      */
-    public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort,
-                               final HttpConnectionParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
+    public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort
+            , final HttpConnectionParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
 
         if (params == null) {
             throw new IllegalArgumentException("Parameters may not be null");

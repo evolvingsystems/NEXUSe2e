@@ -36,7 +36,7 @@ import org.nexuse2e.messaging.MessageContext;
  */
 public class MimeMessagePackager extends AbstractPipelet {
 
-    //private static Logger LOG = Logger.getLogger( MimeMessagePacker.class );
+    //private static Logger LOG = LogManager.getLogger( MimeMessagePacker.class );
 
     private Map<String, Object> parameters;
 

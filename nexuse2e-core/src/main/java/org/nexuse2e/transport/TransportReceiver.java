@@ -1,30 +1,26 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.transport;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
@@ -43,30 +39,32 @@ import org.nexuse2e.service.ReceiverAware;
 import org.nexuse2e.service.Service;
 import org.nexuse2e.service.http.HttpReceiverService;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * A <code>TransportReceiver</code> is the starting point of a pipeline. It uses
  * a <code>Service</code> referenced by it's unique name in order to perform the
  * "real" receiving action. It can be configured with Spring or the default
  * mechanism for <code>Configurable</code>s (this not supported yet).
- * 
+ *
  * @author jonas.reese
  */
 public class TransportReceiver implements Pipelet, ProtocolSpecific {
 
-    private static final String                SERVICE_PARAM_NAME                        = "service";
-
-    public static final String                 COMMUNICATION_PROTOCOL_ID_PARAM_NAME      = "communicationProtocolId";
-    public static final String                 COMMUNICATION_PROTOCOL_VERSION_PARAM_NAME = "communicationProtocolVersion";
-    public static final String                 TRANSPORT_PROTOCOL_ID_PARAM_NAME          = "transportProtocolId";
-
-    private static Logger                      LOG                                       = Logger
-                                                                                                 .getLogger( TransportReceiver.class );
+    public static final String COMMUNICATION_PROTOCOL_ID_PARAM_NAME = "communicationProtocolId";
+    public static final String COMMUNICATION_PROTOCOL_VERSION_PARAM_NAME = "communicationProtocolVersion";
+    public static final String TRANSPORT_PROTOCOL_ID_PARAM_NAME = "transportProtocolId";
+    private static final String SERVICE_PARAM_NAME = "service";
+    private static Logger LOG = LogManager.getLogger(TransportReceiver.class);
 
     protected Map<String, ParameterDescriptor> parameterDescriptors;
-    protected Map<String, Object>              parameters;
-    private FrontendPipeline                   frontendPipeline                          = null;
-    private BeanStatus                         status                                    = BeanStatus.UNDEFINED;
-    private ProtocolSpecificKey                key;
+    protected Map<String, Object> parameters;
+    private FrontendPipeline frontendPipeline = null;
+    private BeanStatus status = BeanStatus.UNDEFINED;
+    private ProtocolSpecificKey key;
 
     /**
      * Default constructor. This should only be called by the engine
@@ -76,8 +74,8 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
 
         parameters = new HashMap<String, Object>();
         parameterDescriptors = new LinkedHashMap<String, ParameterDescriptor>();
-        parameterDescriptors.put( SERVICE_PARAM_NAME, new ParameterDescriptor( ParameterType.SERVICE, "Service",
-                "The name of the service that shall be used by the receiver", ReceiverAware.class ) );
+        parameterDescriptors.put(SERVICE_PARAM_NAME, new ParameterDescriptor(ParameterType.SERVICE, "Service", "The " +
+                "name of the service that shall be used by the receiver", ReceiverAware.class));
         /*
         ListParameter communicationProtocolIdDropdown = new ListParameter();
         communicationProtocolIdDropdown.addElement( "EBXML", "ebxml" );
@@ -100,19 +98,19 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
 
     public void afterPropertiesSet() throws Exception {
 
-        if ( frontendPipeline == null ) {
-            throw new NexusException( "No frontend pipeline configured for TransportReceiver" );
+        if (frontendPipeline == null) {
+            throw new NexusException("No frontend pipeline configured for TransportReceiver");
         }
     }
 
-    public MessageContext processMessage( MessageContext data ) throws NexusException {
+    public MessageContext processMessage(MessageContext data) throws NexusException {
 
-        if ( LOG.isTraceEnabled() ) {
-            LOG.trace( new LogMessage( "TransportReceiver processing message..",data.getMessagePojo()) );
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(new LogMessage("TransportReceiver processing message..", data.getMessagePojo()));
         }
-        data.setProtocolSpecificKey( getKey() );
+        data.setProtocolSpecificKey(getKey());
 
-        return frontendPipeline.processMessage( data );
+        return frontendPipeline.processMessage(data);
     }
 
     /**
@@ -126,7 +124,7 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
     /**
      * @param frontendPipeline the frontendPipeline to set
      */
-    public void setFrontendPipeline( FrontendPipeline frontendPipeline ) {
+    public void setFrontendPipeline(FrontendPipeline frontendPipeline) {
 
         this.frontendPipeline = frontendPipeline;
     }
@@ -166,28 +164,28 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
     /* (non-Javadoc)
      * @see org.nexuse2e.Manageable#initialize(org.nexuse2e.configuration.EngineConfiguration)
      */
-    public void initialize( EngineConfiguration config ) {
+    public void initialize(EngineConfiguration config) {
 
         Service service = null;
-        String s = getParameter( SERVICE_PARAM_NAME );
-        LOG.trace( "TransportReceiver - service: " + s );
-        if ( s != null && s.trim().length() > 0 ) {
-            service = config.getStaticBeanContainer().getService( s );
-            if ( service == null ) {
-                LOG.error( "TransportReceiver.initialize(): Service \"" + s
-                        + "\" not found. Please check your configuration" );
+        String s = getParameter(SERVICE_PARAM_NAME);
+        LOG.trace("TransportReceiver - service: " + s);
+        if (s != null && s.trim().length() > 0) {
+            service = config.getStaticBeanContainer().getService(s);
+            if (service == null) {
+                LOG.error("TransportReceiver.initialize(): Service \"" + s + "\" not found. Please check your " +
+                        "configuration");
             }
         }
-        if ( !( service instanceof ReceiverAware ) ) {
-            if ( service == null ) {
-                LOG.warn( "No service configured for TransportReceiver. " + "Using default (HTTP with EBXML 2.0)" );
+        if (!(service instanceof ReceiverAware)) {
+            if (service == null) {
+                LOG.warn("No service configured for TransportReceiver. " + "Using default (HTTP with EBXML 2.0)");
             } else {
-                LOG.warn( "Invalid service configured for TransportReceiver. " + "Using default (HTTP with EBXML 2.0)" );
+                LOG.warn("Invalid service configured for TransportReceiver. " + "Using default (HTTP with EBXML 2.0)");
             }
             service = new HttpReceiverService();
         }
-        LOG.trace( "TransportReceiverService: " + service );
-        ( (ReceiverAware) service ).setTransportReceiver( this );
+        LOG.trace("TransportReceiverService: " + service);
+        ((ReceiverAware) service).setTransportReceiver(this);
         status = BeanStatus.INITIALIZED;
     }
 
@@ -196,7 +194,7 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
      */
     public void teardown() {
 
-        LOG.trace( "Freeing resources..." );
+        LOG.trace("Freeing resources...");
 
         // For properly restarting the engine the following refrences MUST NOT be cleared/reset!!!
         // parameterDescriptors
@@ -211,9 +209,9 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
      * @see org.nexuse2e.Configurable#getParameter(java.lang.String)
      */
     @SuppressWarnings("unchecked")
-    public <T> T getParameter( String name ) {
+    public <T> T getParameter(String name) {
 
-        return (T) parameters.get( name );
+        return (T) parameters.get(name);
     }
 
     /* (non-Javadoc)
@@ -229,34 +227,29 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
      */
     public Map<String, Object> getParameters() {
 
-        return Collections.unmodifiableMap( parameters );
+        return Collections.unmodifiableMap(parameters);
     }
 
-    public void setParameter( String name, Object value ) {
+    public void setParameter(String name, Object value) {
 
-        parameters.put( name, value );
+        parameters.put(name, value);
         // re-initialize when service is changed
-        if ( SERVICE_PARAM_NAME.equals( name ) ) {
-            Object v = getParameter( name );
-            if ( v == null && value != null || value == null && v != null || !( v.equals( value ) ) ) {
-                initialize( Engine.getInstance().getCurrentConfiguration() );
+        if (SERVICE_PARAM_NAME.equals(name)) {
+            Object v = getParameter(name);
+            if (v == null && value != null || value == null && v != null || !(v.equals(value))) {
+                initialize(Engine.getInstance().getCurrentConfiguration());
             }
         }
     }
 
-    public void setServiceName( String serviceName ) {
-
-        setParameter( SERVICE_PARAM_NAME, serviceName );
-    }
-
     public String getServiceName() {
 
-        return getParameter( SERVICE_PARAM_NAME );
+        return getParameter(SERVICE_PARAM_NAME);
     }
 
-    public void setKey( ProtocolSpecificKey key ) {
+    public void setServiceName(String serviceName) {
 
-        this.key = key;
+        setParameter(SERVICE_PARAM_NAME, serviceName);
     }
 
     /* (non-Javadoc)
@@ -265,6 +258,11 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
     public ProtocolSpecificKey getKey() {
 
         return key;
+    }
+
+    public void setKey(ProtocolSpecificKey key) {
+
+        this.key = key;
     }
 
     /* (non-Javadoc)
@@ -276,6 +274,13 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
     }
 
     /* (non-Javadoc)
+     * @see org.nexuse2e.messaging.Pipelet#setForwardPipelet(boolean)
+     */
+    public void setForwardPipelet(boolean isForwardPipelet) {
+
+    }
+
+    /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipelet#isFrontendPipelet()
      */
     public boolean isFrontendPipelet() {
@@ -284,27 +289,20 @@ public class TransportReceiver implements Pipelet, ProtocolSpecific {
     }
 
     /* (non-Javadoc)
-     * @see org.nexuse2e.messaging.Pipelet#setForwardPipelet(boolean)
-     */
-    public void setForwardPipelet( boolean isForwardPipelet ) {
-
-    }
-
-    /* (non-Javadoc)
      * @see org.nexuse2e.messaging.Pipelet#setFrontendPipelet(boolean)
      */
-    public void setFrontendPipelet( boolean isFrontendPipelet ) {
+    public void setFrontendPipelet(boolean isFrontendPipelet) {
 
     }
-    
-    public void setPipeline( Pipeline pipeline ) {
-        if (!(pipeline instanceof FrontendPipeline)) {
-            throw new IllegalArgumentException( "Parent pipeline for TransportReceiver must be a FrontendPipeline" );
-        }
-        this.frontendPipeline = (FrontendPipeline) pipeline;
-    }
-    
+
     public Pipeline getPipeline() {
         return getFrontendPipeline();
+    }
+
+    public void setPipeline(Pipeline pipeline) {
+        if (!(pipeline instanceof FrontendPipeline)) {
+            throw new IllegalArgumentException("Parent pipeline for TransportReceiver must be a FrontendPipeline");
+        }
+        this.frontendPipeline = (FrontendPipeline) pipeline;
     }
 }

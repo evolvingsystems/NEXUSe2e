@@ -1,27 +1,28 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.frontend.pipelets;
 
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.NexusException;
 import org.nexuse2e.configuration.EnumerationParameter;
@@ -36,6 +37,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -47,14 +57,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Map;
 
 
 /**
@@ -62,16 +64,14 @@ import java.util.Map;
  */
 public class AdvancedFileSavePipelet extends AbstractPipelet {
 
-    private static Logger LOG = Logger.getLogger(AdvancedFileSavePipelet.class);
-
-    public static final String DIRECTORY_PARAM_NAME         = "directory";
+    public static final String DIRECTORY_PARAM_NAME = "directory";
     public static final String FILE_NAME_PATTERN_PARAM_NAME = "fileNamePattern";
-    public static final String DEFAULT_TEMPLATE_PARAM_NAME  = "defaultTemplate";
-    public static final String USE_CONTENT_ID_PARAM_NAME    = "useContentId";
-    public static final String STOP_ON_ERROR_PARAM_NAME     = "stopOnError";
-    public static final String IGNORE_ACKS_PARAM_NAME       = "ignoreAcks";
-    public static final String TEMPLATES_MAP_PARAM_NAME     = "templatesMap";
-
+    public static final String DEFAULT_TEMPLATE_PARAM_NAME = "defaultTemplate";
+    public static final String USE_CONTENT_ID_PARAM_NAME = "useContentId";
+    public static final String STOP_ON_ERROR_PARAM_NAME = "stopOnError";
+    public static final String IGNORE_ACKS_PARAM_NAME = "ignoreAcks";
+    public static final String TEMPLATES_MAP_PARAM_NAME = "templatesMap";
+    private static Logger LOG = LogManager.getLogger(AdvancedFileSavePipelet.class);
     private TimestampFormatter formatter;
 
     public AdvancedFileSavePipelet() {
@@ -82,33 +82,32 @@ public class AdvancedFileSavePipelet extends AbstractPipelet {
         }
         setFrontendPipelet(true);
 
-        parameterMap.put(DIRECTORY_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Target directory", "Path to directory where to store files", ""));
-        parameterMap.put(DEFAULT_TEMPLATE_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "the default template",
-                                                                              "the default output template use for writing files. Also the fallback if "
-                                                                              + "nothing else matches", ""));
-        parameterMap
-            .put(FILE_NAME_PATTERN_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "File Name", "File Name Pattern", "${nexus.message.message}"));
-        parameterMap.put(USE_CONTENT_ID_PARAM_NAME,
-                         new ParameterDescriptor(ParameterType.BOOLEAN, "Use Content ID", "Flag whether to use the content ID as the file name",
-                                                 Boolean.FALSE));
-        parameterMap.put(STOP_ON_ERROR_PARAM_NAME,
-                         new ParameterDescriptor(ParameterType.BOOLEAN, "Stop on Errror", "Message processing fails in case off issues while writing the file.",
-                                                 Boolean.FALSE));
+        parameterMap.put(DIRECTORY_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Target directory",
+                "Path to directory where to store files", ""));
+        parameterMap.put(DEFAULT_TEMPLATE_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "the default " +
+                "template", "the default output template use for writing files. Also the fallback if " + "nothing " +
+                "else matches", ""));
+        parameterMap.put(FILE_NAME_PATTERN_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "File Name",
+                "File Name Pattern", "${nexus.message.message}"));
+        parameterMap.put(USE_CONTENT_ID_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Use Content ID",
+                "Flag whether to use the content ID as the file name", Boolean.FALSE));
+        parameterMap.put(STOP_ON_ERROR_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Stop on Errror",
+                "Message processing fails in case off issues while writing the file.", Boolean.FALSE));
 
-        parameterMap.put(IGNORE_ACKS_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Ignore technical acks",
-                                                                         "Normally Acks are also exported. By checking this box, they will be ignored",
-                                                                         Boolean.FALSE));
+        parameterMap.put(IGNORE_ACKS_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Ignore technical " +
+                "acks", "Normally Acks are also exported. By checking this box, they will be ignored", Boolean.FALSE));
 
-        parameterMap.put(TEMPLATES_MAP_PARAM_NAME, new ParameterDescriptor(ParameterType.ENUMERATION, "",
-                                                                           "Map of templates an nodes: node=\"ProductMovementReport\", "
-                                                                           + "value=\"c:/ProductMovementReport.xslt\"", new EnumerationParameter()));
+        parameterMap.put(TEMPLATES_MAP_PARAM_NAME, new ParameterDescriptor(ParameterType.ENUMERATION, "", "Map of " +
+                "templates an nodes: node=\"ProductMovementReport\", " + "value=\"c:/ProductMovementReport.xslt\"",
+                new EnumerationParameter()));
 
     }
 
     @Override
-    public MessageContext processMessage(MessageContext messageContext) throws NexusException /* ,IllegalArgumentException, IllegalStateException  */ {
+    public MessageContext processMessage(MessageContext messageContext) throws NexusException /* ,
+    IllegalArgumentException, IllegalStateException  */ {
 
-        if(getParameter(IGNORE_ACKS_PARAM_NAME) != null && (Boolean)getParameter(IGNORE_ACKS_PARAM_NAME) && messageContext.getMessagePojo().isAck()) {
+        if (getParameter(IGNORE_ACKS_PARAM_NAME) != null && (Boolean) getParameter(IGNORE_ACKS_PARAM_NAME) && messageContext.getMessagePojo().isAck()) {
             return messageContext;
         }
         try {
@@ -131,7 +130,8 @@ public class AdvancedFileSavePipelet extends AbstractPipelet {
                     if (data != null) {
                         EnumerationParameter enumeration = getParameter(TEMPLATES_MAP_PARAM_NAME);
                         for (Map.Entry<String, String> expressionTemplateEntry : enumeration.getElements().entrySet()) {
-                            if (expressionTemplateEntry.getKey() != null && isDocumentMatchingExpression(document, expressionTemplateEntry.getKey())) {
+                            if (expressionTemplateEntry.getKey() != null && isDocumentMatchingExpression(document,
+                                    expressionTemplateEntry.getKey())) {
                                 templatePath = expressionTemplateEntry.getValue();
                             }
                         }
@@ -159,7 +159,8 @@ public class AdvancedFileSavePipelet extends AbstractPipelet {
         return messageContext;
     }
 
-    private String writePayload(ByteArrayOutputStream baos, MessagePayloadPojo payload, MessageContext messageContext) throws IOException {
+    private String writePayload(ByteArrayOutputStream baos, MessagePayloadPojo payload,
+                                MessageContext messageContext) throws IOException {
 
         String destinationDirectory = getParameter(DIRECTORY_PARAM_NAME);
 
@@ -208,25 +209,37 @@ public class AdvancedFileSavePipelet extends AbstractPipelet {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer(new StreamSource(template));
             transformer.setParameter("messageId", messageContext.getMessagePojo().getMessageId());
-            transformer.setParameter("conversationId", messageContext.getMessagePojo().getConversation().getConversationId());
+            transformer.setParameter("conversationId",
+                    messageContext.getMessagePojo().getConversation().getConversationId());
             String date = formatter.getTimestamp(messageContext.getMessagePojo().getCreatedDate());
 
             transformer.setParameter("createdDate", date);
-            transformer.setParameter("choreographyId", messageContext.getMessagePojo().getConversation().getChoreography().getName());
+            transformer.setParameter("choreographyId",
+                    messageContext.getMessagePojo().getConversation().getChoreography().getName());
             transformer.setParameter("actionId", messageContext.getMessagePojo().getAction().getName());
-            transformer.setParameter("direction", messageContext.getMessagePojo().isOutbound() ? "Outbound" : "Inbound");
-            transformer.setParameter("messageType", messageContext.getMessagePojo().isAck() ? "TechnicalAck" : "BusinessMessage");
+            transformer.setParameter("direction", messageContext.getMessagePojo().isOutbound() ? "Outbound" :
+                    "Inbound");
+            transformer.setParameter("messageType", messageContext.getMessagePojo().isAck() ? "TechnicalAck" :
+                    "BusinessMessage");
 
             if (messageContext.getMessagePojo().isOutbound()) {
-                transformer.setParameter("fromId", messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerId());
-                transformer.setParameter("fromType", messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerIdType());
-                transformer.setParameter("toId", messageContext.getMessagePojo().getConversation().getPartner().getPartnerId());
-                transformer.setParameter("toType", messageContext.getMessagePojo().getConversation().getPartner().getPartnerIdType());
+                transformer.setParameter("fromId",
+                        messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerId());
+                transformer.setParameter("fromType",
+                        messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerIdType());
+                transformer.setParameter("toId",
+                        messageContext.getMessagePojo().getConversation().getPartner().getPartnerId());
+                transformer.setParameter("toType",
+                        messageContext.getMessagePojo().getConversation().getPartner().getPartnerIdType());
             } else {
-                transformer.setParameter("toId", messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerId());
-                transformer.setParameter("toType", messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerIdType());
-                transformer.setParameter("fromId", messageContext.getMessagePojo().getConversation().getPartner().getPartnerId());
-                transformer.setParameter("fromType", messageContext.getMessagePojo().getConversation().getPartner().getPartnerIdType());
+                transformer.setParameter("toId",
+                        messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerId());
+                transformer.setParameter("toType",
+                        messageContext.getMessagePojo().getParticipant().getLocalPartner().getPartnerIdType());
+                transformer.setParameter("fromId",
+                        messageContext.getMessagePojo().getConversation().getPartner().getPartnerId());
+                transformer.setParameter("fromType",
+                        messageContext.getMessagePojo().getConversation().getPartner().getPartnerIdType());
             }
 
             transformer.transform(new DOMSource(document), new StreamResult(baos));

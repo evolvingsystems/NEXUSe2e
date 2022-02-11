@@ -1,33 +1,27 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.dao;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -51,6 +45,13 @@ import org.nexuse2e.pojo.UserPojo;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author gesch
  *
@@ -59,18 +60,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
 
-	
-    private static Logger LOG = Logger.getLogger( ConfigDAOImpl.class );
 
-   
-    
+    private static Logger LOG = LogManager.getLogger(ConfigDAOImpl.class);
+
+
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#saveTRP(org.nexuse2e.pojo.TRPPojo)
      */
     @Transactional
-    public void saveTRP( TRPPojo trp ) {
+    public void saveTRP(TRPPojo trp) {
 
-        saveRecord( trp );
+        saveRecord(trp);
 
     }
 
@@ -78,9 +78,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updateTRP(org.nexuse2e.pojo.TRPPojo)
      */
     @Transactional
-    public void updateTRP( TRPPojo trp ) {
+    public void updateTRP(TRPPojo trp) {
 
-        updateRecord( trp );
+        updateRecord(trp);
 
     }
 
@@ -88,11 +88,11 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#savePartner(org.nexuse2e.pojo.PartnerPojo)
      */
     @Transactional
-    public void savePartner( PartnerPojo partner ) {
+    public void savePartner(PartnerPojo partner) {
 
-        partner.setCreatedDate( new Date() );
-        partner.setModifiedDate( new Date() );
-        saveRecord( partner );
+        partner.setCreatedDate(new Date());
+        partner.setModifiedDate(new Date());
+        saveRecord(partner);
 
     }
 
@@ -100,24 +100,24 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updatePartner(org.nexuse2e.pojo.PartnerPojo)
      */
     @Transactional
-    public void updatePartner( PartnerPojo partner ) {
+    public void updatePartner(PartnerPojo partner) {
 
-        partner.setModifiedDate( new Date() );
-        updateRecord( partner );
+        partner.setModifiedDate(new Date());
+        updateRecord(partner);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deletePartner(org.nexuse2e.pojo.PartnerPojo)
      */
     @Transactional
-    public void deletePartner( PartnerPojo partner ) {
+    public void deletePartner(PartnerPojo partner) {
 
-        if ( partner != null ) {
+        if (partner != null) {
             ArrayList<Object> list = new ArrayList<Object>();
-            list.addAll( partner.getConnections() );
-            list.addAll( partner.getCertificates() );
-            list.add( partner );
-            deleteRecords( list );
+            list.addAll(partner.getConnections());
+            list.addAll(partner.getCertificates());
+            list.add(partner);
+            deleteRecords(list);
         }
     }
 
@@ -125,10 +125,10 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#deleteConnection(org.nexuse2e.pojo.ConnectionPojo)
      */
     @Transactional
-    public void deleteConnection( ConnectionPojo connection ) {
+    public void deleteConnection(ConnectionPojo connection) {
 
-        if ( connection != null ) {
-            deleteRecord( connection );
+        if (connection != null) {
+            deleteRecord(connection);
         }
     }
 
@@ -138,19 +138,19 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<PartnerPojo> getPartners() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( PartnerPojo.class );
-        return (List<PartnerPojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(PartnerPojo.class);
+        return (List<PartnerPojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#saveChoreography(org.nexuse2e.pojo.ChoreographyPojo)
      */
     @Transactional
-    public void saveChoreography( ChoreographyPojo choreography ) {
+    public void saveChoreography(ChoreographyPojo choreography) {
 
-        choreography.setCreatedDate( new Date() );
-        choreography.setModifiedDate( new Date() );
-        saveOrUpdateRecord( choreography );
+        choreography.setCreatedDate(new Date());
+        choreography.setModifiedDate(new Date());
+        saveOrUpdateRecord(choreography);
 
     }
 
@@ -158,20 +158,20 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updateChoreography(org.nexuse2e.pojo.ChoreographyPojo)
      */
     @Transactional
-    public void updateChoreography( ChoreographyPojo choreography ) {
+    public void updateChoreography(ChoreographyPojo choreography) {
 
-        choreography.setModifiedDate( new Date() );
-        updateRecord( choreography );
+        choreography.setModifiedDate(new Date());
+        updateRecord(choreography);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deleteChoreography(org.nexuse2e.pojo.ChoreographyPojo)
      */
     @Transactional
-    public void deleteChoreography( ChoreographyPojo choreography ) {
+    public void deleteChoreography(ChoreographyPojo choreography) {
 
-        if ( choreography != null ) {
-            deleteRecord( choreography );
+        if (choreography != null) {
+            deleteRecord(choreography);
         }
     }
 
@@ -181,19 +181,19 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<ChoreographyPojo> getChoreographies() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( ChoreographyPojo.class );
-        return (List<ChoreographyPojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(ChoreographyPojo.class);
+        return (List<ChoreographyPojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#savePipeline(org.nexuse2e.pojo.PipelinePojo)
      */
     @Transactional
-    public void savePipeline( PipelinePojo pipeline ) {
+    public void savePipeline(PipelinePojo pipeline) {
 
-        pipeline.setCreatedDate( new Date() );
-        pipeline.setModifiedDate( new Date() );
-        saveRecord( pipeline );
+        pipeline.setCreatedDate(new Date());
+        pipeline.setModifiedDate(new Date());
+        saveRecord(pipeline);
 
     }
 
@@ -201,20 +201,20 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updatePipeline(org.nexuse2e.pojo.PipelinePojo)
      */
     @Transactional
-    public void updatePipeline( PipelinePojo pipeline ) {
+    public void updatePipeline(PipelinePojo pipeline) {
 
-        pipeline.setModifiedDate( new Date() );
-        updateRecord( pipeline );
+        pipeline.setModifiedDate(new Date());
+        updateRecord(pipeline);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deletePipeline(org.nexuse2e.pojo.PipelinePojo)
      */
     @Transactional
-    public void deletePipeline( PipelinePojo pipeline ) {
+    public void deletePipeline(PipelinePojo pipeline) {
 
-        if ( pipeline != null ) {
-            deleteRecord( pipeline );
+        if (pipeline != null) {
+            deleteRecord(pipeline);
         }
     }
 
@@ -224,39 +224,39 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<PipelinePojo> getFrontendPipelines() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( PipelinePojo.class );
-        dc.add( Restrictions.eq( "frontend", true ) );
-        return (List<PipelinePojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(PipelinePojo.class);
+        dc.add(Restrictions.eq("frontend", true));
+        return (List<PipelinePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#getBackendPipelines()
      */
     @SuppressWarnings("unchecked")
-    public List<PipelinePojo> getBackendPipelines( ) {
+    public List<PipelinePojo> getBackendPipelines() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( PipelinePojo.class );
-        dc.add( Restrictions.eq( "frontend", false ) );
-        return (List<PipelinePojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(PipelinePojo.class);
+        dc.add(Restrictions.eq("frontend", false));
+        return (List<PipelinePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#getPipelines()
      */
     @SuppressWarnings("unchecked")
-    public List<PipelinePojo> getPipelines( ) {
+    public List<PipelinePojo> getPipelines() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( PipelinePojo.class );
-        return (List<PipelinePojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(PipelinePojo.class);
+        return (List<PipelinePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#saveTrp(org.nexuse2e.pojo.TRPPojo)
      */
     @Transactional
-    public void saveTrp( TRPPojo trp ) {
+    public void saveTrp(TRPPojo trp) {
 
-        saveRecord( trp );
+        saveRecord(trp);
 
     }
 
@@ -264,19 +264,19 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updateTrp(org.nexuse2e.pojo.TRPPojo)
      */
     @Transactional
-    public void updateTrp( TRPPojo trp ) {
+    public void updateTrp(TRPPojo trp) {
 
-        updateRecord( trp );
+        updateRecord(trp);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deleteTrp(org.nexuse2e.pojo.TRPPojo)
      */
     @Transactional
-    public void deleteTrp( TRPPojo trp ) {
+    public void deleteTrp(TRPPojo trp) {
 
-        if ( trp != null ) {
-            deleteRecord( trp );
+        if (trp != null) {
+            deleteRecord(trp);
         }
     }
 
@@ -286,8 +286,8 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<TRPPojo> getTrps() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( TRPPojo.class );
-        return (List<TRPPojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(TRPPojo.class);
+        return (List<TRPPojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
@@ -296,17 +296,17 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<ComponentPojo> getComponents() throws NexusException {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( ComponentPojo.class );
-        return (List<ComponentPojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(ComponentPojo.class);
+        return (List<ComponentPojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#saveComponent(org.nexuse2e.pojo.ComponentPojo)
      */
     @Transactional
-    public void saveComponent( ComponentPojo component ) {
+    public void saveComponent(ComponentPojo component) {
 
-        saveRecord( component );
+        saveRecord(component);
 
     }
 
@@ -314,19 +314,19 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updateComponent(org.nexuse2e.pojo.ComponentPojo)
      */
     @Transactional
-    public void updateComponent( ComponentPojo component ) {
+    public void updateComponent(ComponentPojo component) {
 
-        updateRecord( component );
+        updateRecord(component);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deleteComponent(org.nexuse2e.pojo.ComponentPojo)
      */
     @Transactional
-    public void deleteComponent( ComponentPojo component ) throws NexusException {
+    public void deleteComponent(ComponentPojo component) throws NexusException {
 
-        if ( component != null ) {
-            deleteRecord( component );
+        if (component != null) {
+            deleteRecord(component);
         }
     }
 
@@ -337,17 +337,17 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     public List<LoggerPojo> getLoggers() {
 
         Criteria c = sessionFactory.getCurrentSession().createCriteria(LoggerPojo.class);
-    	return (List<LoggerPojo>) c.list(); 
+        return (List<LoggerPojo>) c.list();
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deleteLogger(org.nexuse2e.pojo.LoggerPojo)
      */
     @Transactional
-    public void deleteLogger( LoggerPojo logger ) {
+    public void deleteLogger(LoggerPojo logger) {
 
-        if ( logger != null ) {
-            deleteRecord( logger );
+        if (logger != null) {
+            deleteRecord(logger);
         }
     }
 
@@ -355,9 +355,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updateLogger(org.nexuse2e.pojo.LoggerPojo)
      */
     @Transactional
-    public void updateLogger( LoggerPojo logger ) {
+    public void updateLogger(LoggerPojo logger) {
 
-        updateRecord( logger );
+        updateRecord(logger);
 
     }
 
@@ -365,9 +365,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveLogger(org.nexuse2e.pojo.LoggerPojo)
      */
     @Transactional
-    public void saveLogger( LoggerPojo logger ) {
+    public void saveLogger(LoggerPojo logger) {
 
-        saveRecord( logger );
+        saveRecord(logger);
 
     }
 
@@ -377,19 +377,19 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<ServicePojo> getServices() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( ServicePojo.class );
-        dc.addOrder( Order.asc( "position" ) );
-        return (List<ServicePojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(ServicePojo.class);
+        dc.addOrder(Order.asc("position"));
+        return (List<ServicePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deleteService(org.nexuse2e.pojo.ServicePojo)
      */
     @Transactional
-    public void deleteService( ServicePojo service ) {
+    public void deleteService(ServicePojo service) {
 
-        if ( service != null ) {
-            deleteRecord( service );
+        if (service != null) {
+            deleteRecord(service);
         }
     }
 
@@ -397,18 +397,18 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updateService(org.nexuse2e.pojo.ServicePojo)
      */
     @Transactional
-    public void updateService( ServicePojo service ) {
+    public void updateService(ServicePojo service) {
 
-        updateRecord( service );
+        updateRecord(service);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#saveService(org.nexuse2e.pojo.ServicePojo)
      */
     @Transactional
-    public void saveService( ServicePojo service ) {
+    public void saveService(ServicePojo service) {
 
-        saveRecord( service );
+        saveRecord(service);
     }
 
     /* (non-Javadoc)
@@ -417,18 +417,18 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<CertificatePojo> getCertificates() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( CertificatePojo.class );
-        return (List<CertificatePojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(CertificatePojo.class);
+        return (List<CertificatePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#deleteCertificate(org.nexuse2e.pojo.CertificatePojo)
      */
     @Transactional
-    public void deleteCertificate( CertificatePojo certificate ) {
+    public void deleteCertificate(CertificatePojo certificate) {
 
-        if ( certificate != null ) {
-            deleteRecord( certificate );
+        if (certificate != null) {
+            deleteRecord(certificate);
         }
     }
 
@@ -436,9 +436,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#updateCertificate(org.nexuse2e.pojo.CertificatePojo)
      */
     @Transactional
-    public void updateCertificate( CertificatePojo certificate ) {
+    public void updateCertificate(CertificatePojo certificate) {
 
-        updateRecord( certificate );
+        updateRecord(certificate);
 
     }
 
@@ -446,9 +446,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveCertificate(org.nexuse2e.pojo.CertificatePojo)
      */
     @Transactional
-    public void saveCertificate( CertificatePojo certificate ) {
+    public void saveCertificate(CertificatePojo certificate) {
 
-        saveRecord( certificate );
+        saveRecord(certificate);
 
     }
 
@@ -461,17 +461,17 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<UserPojo> getUsers() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( UserPojo.class );
-        return (List<UserPojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(UserPojo.class);
+        return (List<UserPojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#updateUser(org.nexuse2e.pojo.UserPojo)
      */
     @Transactional
-    public void updateUser( UserPojo user ) {
+    public void updateUser(UserPojo user) {
 
-        updateRecord( user );
+        updateRecord(user);
 
     }
 
@@ -479,9 +479,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveUser(org.nexuse2e.pojo.UserPojo)
      */
     @Transactional
-    public void saveUser( UserPojo user ) {
+    public void saveUser(UserPojo user) {
 
-        saveRecord( user );
+        saveRecord(user);
 
     }
 
@@ -489,10 +489,10 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#deleteUser(org.nexuse2e.pojo.UserPojo)
      */
     @Transactional
-    public void deleteUser( UserPojo user ) {
+    public void deleteUser(UserPojo user) {
 
-        if ( user != null ) {
-            deleteRecord( user );
+        if (user != null) {
+            deleteRecord(user);
         }
     }
 
@@ -505,17 +505,17 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<RolePojo> getRoles() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( RolePojo.class );
-        return (List<RolePojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(RolePojo.class);
+        return (List<RolePojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#updateRole(org.nexuse2e.pojo.RolePojo)
      */
     @Transactional
-    public void updateRole( RolePojo role ) {
+    public void updateRole(RolePojo role) {
 
-        updateRecord( role );
+        updateRecord(role);
 
     }
 
@@ -523,9 +523,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveRole(org.nexuse2e.pojo.RolePojo)
      */
     @Transactional
-    public void saveRole( RolePojo role ) throws NexusException {
+    public void saveRole(RolePojo role) throws NexusException {
 
-        saveRecord( role );
+        saveRecord(role);
 
     }
 
@@ -533,10 +533,10 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#deleteRole(org.nexuse2e.pojo.RolePojo)
      */
     @Transactional
-    public void deleteRole( RolePojo role ) throws NexusException {
+    public void deleteRole(RolePojo role) throws NexusException {
 
-        if ( role != null ) {
-            deleteRecord( role );
+        if (role != null) {
+            deleteRecord(role);
         }
     }
 
@@ -546,17 +546,17 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<GenericParamPojo> getGenericParameters() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( GenericParamPojo.class );
-        return (List<GenericParamPojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(GenericParamPojo.class);
+        return (List<GenericParamPojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#updateGenericParameter(org.nexuse2e.pojo.GenericParamPojo)
      */
     @Transactional
-    public void updateGenericParameter( GenericParamPojo param ) {
+    public void updateGenericParameter(GenericParamPojo param) {
 
-        updateRecord( param );
+        updateRecord(param);
 
     }
 
@@ -564,9 +564,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveGenericParameter(org.nexuse2e.pojo.GenericParamPojo)
      */
     @Transactional
-    public void saveGenericParameter( GenericParamPojo param ) {
+    public void saveGenericParameter(GenericParamPojo param) {
 
-        saveRecord( param );
+        saveRecord(param);
 
     }
 
@@ -574,10 +574,10 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#deleteGemericParameter(org.nexuse2e.pojo.GenericParamPojo)
      */
     @Transactional
-    public void deleteGemericParameter( GenericParamPojo param ) {
+    public void deleteGemericParameter(GenericParamPojo param) {
 
-        if ( param != null ) {
-            deleteRecord( param );
+        if (param != null) {
+            deleteRecord(param);
         }
     }
 
@@ -587,17 +587,17 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @SuppressWarnings("unchecked")
     public List<MappingPojo> getMappings() {
 
-        DetachedCriteria dc = DetachedCriteria.forClass( MappingPojo.class );
-        return (List<MappingPojo>) getListThroughSessionFind( dc,0,0 );
+        DetachedCriteria dc = DetachedCriteria.forClass(MappingPojo.class);
+        return (List<MappingPojo>) getListThroughSessionFind(dc, 0, 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#updateMapping(org.nexuse2e.pojo.MappingPojo)
      */
     @Transactional
-    public void updateMapping( MappingPojo mapping ) {
+    public void updateMapping(MappingPojo mapping) {
 
-        updateRecord( mapping );
+        updateRecord(mapping);
 
     }
 
@@ -605,9 +605,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveMapping(org.nexuse2e.pojo.MappingPojo)
      */
     @Transactional
-    public void saveMapping( MappingPojo mapping ) {
+    public void saveMapping(MappingPojo mapping) {
 
-        saveRecord( mapping );
+        saveRecord(mapping);
 
     }
 
@@ -615,10 +615,10 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#deleteMapping(org.nexuse2e.pojo.MappingPojo)
      */
     @Transactional
-    public void deleteMapping( MappingPojo mapping ) {
+    public void deleteMapping(MappingPojo mapping) {
 
-        if ( mapping != null ) {
-            deleteRecord( mapping );
+        if (mapping != null) {
+            deleteRecord(mapping);
         }
     }
 
@@ -628,21 +628,22 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     @Transactional
     public void deleteAll() throws NexusException {
 
-        String[] typeNames = new String[] { "MessageLabelPojo", "MessagePayloadPojo", "MessagePojo",
-                "ConversationPojo", "FollowUpActionPojo", "ActionPojo", "ParticipantPojo", "ConnectionPojo",
-                "CertificatePojo", "PartnerPojo", "ChoreographyPojo", "ServiceParamPojo", "ServicePojo",
-                "LoggerParamPojo", "LoggerPojo", "PipeletParamPojo", "PipeletPojo", "ComponentPojo", "PipelinePojo",
-                "TRPPojo", "UserPojo", "GrantPojo", "RolePojo", "GenericParamPojo", "MappingPojo",};
+        String[] typeNames = new String[]{"MessageLabelPojo", "MessagePayloadPojo", "MessagePojo", "ConversationPojo"
+                , "FollowUpActionPojo", "ActionPojo", "ParticipantPojo", "ConnectionPojo", "CertificatePojo",
+                "PartnerPojo", "ChoreographyPojo", "ServiceParamPojo", "ServicePojo", "LoggerParamPojo", "LoggerPojo"
+                , "PipeletParamPojo", "PipeletPojo", "ComponentPojo", "PipelinePojo", "TRPPojo", "UserPojo",
+                "GrantPojo", "RolePojo", "GenericParamPojo", "MappingPojo",};
 
-        for ( String typeName : typeNames ) {
+        for (String typeName : typeNames) {
             if ("MessagePojo".equals(typeName)) {
                 try {
-                	sessionFactory.getCurrentSession().createQuery("delete from MessagePojo where referencedMessage is not null").executeUpdate();
+                    sessionFactory.getCurrentSession().createQuery("delete from MessagePojo where referencedMessage " +
+                            "is not null").executeUpdate();
                 } catch (Exception ex) {
                     LOG.warn(ex);
                 }
             }
-            sessionFactory.getCurrentSession().createQuery( "delete from " + typeName ).executeUpdate();
+            sessionFactory.getCurrentSession().createQuery("delete from " + typeName).executeUpdate();
         }
 
     }
@@ -654,97 +655,97 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
     public boolean isDatabasePopulated() throws NexusException {
 
         List<TRPPojo> tempTRPs = getTrps();
-        return ( tempTRPs != null ) && ( tempTRPs.size() != 0 );
+        return (tempTRPs != null) && (tempTRPs.size() != 0);
     }
 
     /* (non-Javadoc)
      * @see org.nexuse2e.dao.ConfigDAO#loadDatafromDB(org.nexuse2e.configuration.EngineConfiguration)
      */
-    public void loadDatafromDB( EngineConfiguration configuration ) throws NexusException {
+    public void loadDatafromDB(EngineConfiguration configuration) throws NexusException {
 
         List<ChoreographyPojo> tempChoreographies = getChoreographies();
-        if ( tempChoreographies == null ) {
-            LOG.debug( "No choreographies available in database!" );
+        if (tempChoreographies == null) {
+            LOG.debug("No choreographies available in database!");
         } else {
-            LOG.trace( "ChoreographyCount:" + tempChoreographies.size() );
+            LOG.trace("ChoreographyCount:" + tempChoreographies.size());
         }
-        configuration.setChoreographies( tempChoreographies );
+        configuration.setChoreographies(tempChoreographies);
 
         List<PartnerPojo> tempPartners = getPartners();
-        if ( tempPartners == null ) {
-            LOG.debug( "No partners available in database!" );
+        if (tempPartners == null) {
+            LOG.debug("No partners available in database!");
         } else {
-            LOG.trace( "PartnerCount:" + tempPartners.size() );
+            LOG.trace("PartnerCount:" + tempPartners.size());
         }
-        configuration.setPartners( tempPartners );
+        configuration.setPartners(tempPartners);
 
         List<CertificatePojo> allCertificates = getCertificates();
-        if ( allCertificates == null || allCertificates.size() == 0 ) {
-            LOG.debug( "No certificates available in database!" );
+        if (allCertificates == null || allCertificates.size() == 0) {
+            LOG.debug("No certificates available in database!");
         }
-        configuration.setCertificates( allCertificates );
+        configuration.setCertificates(allCertificates);
 
         List<PipelinePojo> pipelines = getFrontendPipelines();
-        if ( pipelines == null || pipelines.size() == 0 ) {
-            LOG.debug( "No frontend pipelines available in database!" );
+        if (pipelines == null || pipelines.size() == 0) {
+            LOG.debug("No frontend pipelines available in database!");
         }
-        configuration.setFrontendPipelineTemplates( pipelines );
+        configuration.setFrontendPipelineTemplates(pipelines);
 
         pipelines = getBackendPipelines();
-        if ( pipelines == null || pipelines.size() == 0 ) {
-            LOG.debug( "No backend pipelines available in database!" );
+        if (pipelines == null || pipelines.size() == 0) {
+            LOG.debug("No backend pipelines available in database!");
         }
-        configuration.setBackendPipelineTemplates( pipelines );
+        configuration.setBackendPipelineTemplates(pipelines);
 
         List<TRPPojo> tempTRPs = getTrps();
-        configuration.setTrps( tempTRPs );
+        configuration.setTrps(tempTRPs);
 
         List<ComponentPojo> tempComponents = getComponents();
-        configuration.setComponents( tempComponents );
+        configuration.setComponents(tempComponents);
 
         List<LoggerPojo> loggers = getLoggers();
-        configuration.setLoggers( loggers );
+        configuration.setLoggers(loggers);
 
         List<ServicePojo> services = getServices();
-        configuration.setServices( services );
+        configuration.setServices(services);
 
         List<UserPojo> users = getUsers();
-        configuration.setUsers( users );
+        configuration.setUsers(users);
 
         List<RolePojo> roles = getRoles();
-        configuration.setRoles( roles );
+        configuration.setRoles(roles);
 
         List<MappingPojo> mappings = getMappings();
-        configuration.setMappings( mappings );
+        configuration.setMappings(mappings);
 
-        configuration.setGenericParameters( new HashMap<String, List<GenericParamPojo>>() );
+        configuration.setGenericParameters(new HashMap<String, List<GenericParamPojo>>());
         List<GenericParamPojo> tempParams = getGenericParameters();
-        if ( tempParams != null && tempParams.size() > 0 ) {
-            for ( GenericParamPojo pojo : tempParams ) {
-                List<GenericParamPojo> catParams = configuration.getGenericParameters().get( pojo.getCategory() );
-                if ( catParams == null ) {
+        if (tempParams != null && tempParams.size() > 0) {
+            for (GenericParamPojo pojo : tempParams) {
+                List<GenericParamPojo> catParams = configuration.getGenericParameters().get(pojo.getCategory());
+                if (catParams == null) {
                     catParams = new ArrayList<GenericParamPojo>();
-                    configuration.getGenericParameters().put( pojo.getCategory(), catParams );
+                    configuration.getGenericParameters().put(pojo.getCategory(), catParams);
                 }
-                catParams.add( pojo );
+                catParams.add(pojo);
             }
         }
 
         // Fix for database schema update of nx_trp table
         // Add protocol adapter class name in case it's not there
 
-        for ( TRPPojo trpPojo : configuration.getTrps() ) {
-            if ( StringUtils.isEmpty( trpPojo.getAdapterClassName() ) ) {
-                if ( trpPojo.getProtocol().equalsIgnoreCase( "ebxml" ) ) {
-                    if ( trpPojo.getVersion().equalsIgnoreCase( "1.0" ) ) {
-                        trpPojo.setAdapterClassName( "org.nexuse2e.messaging.ebxml.v10.ProtocolAdapter" );
+        for (TRPPojo trpPojo : configuration.getTrps()) {
+            if (StringUtils.isEmpty(trpPojo.getAdapterClassName())) {
+                if (trpPojo.getProtocol().equalsIgnoreCase("ebxml")) {
+                    if (trpPojo.getVersion().equalsIgnoreCase("1.0")) {
+                        trpPojo.setAdapterClassName("org.nexuse2e.messaging.ebxml.v10.ProtocolAdapter");
                     } else {
-                        trpPojo.setAdapterClassName( "org.nexuse2e.messaging.ebxml.v20.ProtocolAdapter" );
+                        trpPojo.setAdapterClassName("org.nexuse2e.messaging.ebxml.v20.ProtocolAdapter");
                     }
                 } else {
-                    trpPojo.setAdapterClassName( "org.nexuse2e.messaging.DefaultProtocolAdapter" );
+                    trpPojo.setAdapterClassName("org.nexuse2e.messaging.DefaultProtocolAdapter");
                 }
-                LOG.trace( "Set adapterClassName to: " + trpPojo.getAdapterClassName() );
+                LOG.trace("Set adapterClassName to: " + trpPojo.getAdapterClassName());
             }
         }
 
@@ -754,26 +755,26 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveDelta(org.nexuse2e.configuration.EngineConfiguration)
      */
     @Transactional
-    public void saveDelta( EngineConfiguration configuration ) {
+    public void saveDelta(EngineConfiguration configuration) {
 
         // patch records that got a temporary (negative) ID
-        for ( NEXUSe2ePojo record : configuration.getUpdateList() ) {
-            if ( record.getNxId() < 0 ) {
-                record.setNxId( 0 );
+        for (NEXUSe2ePojo record : configuration.getUpdateList()) {
+            if (record.getNxId() < 0) {
+                record.setNxId(0);
             }
         }
-        for ( NEXUSe2ePojo record : configuration.getImplicitUpdateList() ) {
-            if ( record.getNxId() < 0 ) {
-                record.setNxId( 0 );
+        for (NEXUSe2ePojo record : configuration.getImplicitUpdateList()) {
+            if (record.getNxId() < 0) {
+                record.setNxId(0);
             }
         }
         // save records
-        for ( NEXUSe2ePojo record : configuration.getUpdateList() ) {
-            saveOrUpdateRecord( record );
+        for (NEXUSe2ePojo record : configuration.getUpdateList()) {
+            saveOrUpdateRecord(record);
         }
         // delete records
-        for ( NEXUSe2ePojo record : configuration.getDeleteList() ) {
-            deleteRecord( record );
+        for (NEXUSe2ePojo record : configuration.getDeleteList()) {
+            deleteRecord(record);
         }
 
     }
@@ -782,9 +783,9 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
      * @see org.nexuse2e.dao.ConfigDAO#saveConfigurationToDB(org.nexuse2e.configuration.EngineConfiguration)
      */
     @Transactional
-    public void saveConfigurationToDB( EngineConfiguration configuration ) throws NexusException {
+    public void saveConfigurationToDB(EngineConfiguration configuration) throws NexusException {
 
-        
+
         List<TRPPojo> trps = configuration.getTrps();
         List<ComponentPojo> components = configuration.getComponents();
         List<PipelinePojo> backendPipelineTemplates = configuration.getBackendPipelineTemplates();
@@ -799,216 +800,214 @@ public class ConfigDAOImpl extends BasicDAOImpl implements ConfigDAO {
         Map<String, List<GenericParamPojo>> genericParameters = configuration.getGenericParameters();
         List<MappingPojo> mappings = configuration.getMappings();
 
-        if ( trps != null && trps.size() > 0 ) {
+        if (trps != null && trps.size() > 0) {
 
             Iterator<TRPPojo> i = trps.iterator();
-            while ( i.hasNext() ) {
+            while (i.hasNext()) {
                 TRPPojo pojo = i.next();
-                LOG.debug( "TRP: " + pojo.getNxTRPId() + " - " + pojo.getProtocol() + " - " + pojo.getVersion() + " - "
-                        + pojo.getTransport() );
-                if ( pojo.getNxTRPId() != 0 ) {
-                    updateTRP( pojo );
+                LOG.debug("TRP: " + pojo.getNxTRPId() + " - " + pojo.getProtocol() + " - " + pojo.getVersion() + " - "
+                        + pojo.getTransport());
+                if (pojo.getNxTRPId() != 0) {
+                    updateTRP(pojo);
                 } else {
-                    saveTRP( pojo );
+                    saveTRP(pojo);
                 }
             }
         }
 
-        if ( components != null && components.size() > 0 ) {
+        if (components != null && components.size() > 0) {
 
-            for ( ComponentPojo pojo : components ) {
-                LOG.debug( "Component: " + pojo.getNxComponentId() + " - " + pojo.getType() + " - " + pojo.getName() );
-                if ( pojo.getNxComponentId() != 0 ) {
-                    pojo.setModifiedDate( new Date() );
-                    updateComponent( pojo );
+            for (ComponentPojo pojo : components) {
+                LOG.debug("Component: " + pojo.getNxComponentId() + " - " + pojo.getType() + " - " + pojo.getName());
+                if (pojo.getNxComponentId() != 0) {
+                    pojo.setModifiedDate(new Date());
+                    updateComponent(pojo);
                 } else {
-                    pojo.setCreatedDate( new Date() );
-                    pojo.setModifiedDate( new Date() );
-                    saveComponent( pojo );
+                    pojo.setCreatedDate(new Date());
+                    pojo.setModifiedDate(new Date());
+                    saveComponent(pojo);
                 }
             }
         }
 
-        if ( backendPipelineTemplates != null && backendPipelineTemplates.size() > 0 ) {
+        if (backendPipelineTemplates != null && backendPipelineTemplates.size() > 0) {
 
-            for ( PipelinePojo pojo : backendPipelineTemplates ) {
-                LOG.debug( "BackendPipeline: " + pojo.getNxPipelineId() + " - " + pojo.getName() );
-                if ( pojo.getNxPipelineId() != 0 ) {
-                    pojo.setModifiedDate( new Date() );
-                    updatePipeline( pojo );
+            for (PipelinePojo pojo : backendPipelineTemplates) {
+                LOG.debug("BackendPipeline: " + pojo.getNxPipelineId() + " - " + pojo.getName());
+                if (pojo.getNxPipelineId() != 0) {
+                    pojo.setModifiedDate(new Date());
+                    updatePipeline(pojo);
                 } else {
-                    pojo.setCreatedDate( new Date() );
-                    pojo.setModifiedDate( new Date() );
-                    savePipeline( pojo );
+                    pojo.setCreatedDate(new Date());
+                    pojo.setModifiedDate(new Date());
+                    savePipeline(pojo);
                 }
             }
         }
 
-        if ( frontendPipelineTemplates != null && frontendPipelineTemplates.size() > 0 ) {
+        if (frontendPipelineTemplates != null && frontendPipelineTemplates.size() > 0) {
 
-            for ( PipelinePojo pojo : frontendPipelineTemplates ) {
-                LOG.debug( "FrontendPipeline: " + pojo.getNxPipelineId() + " - " + pojo.getName() );
-                if ( pojo.getNxPipelineId() != 0 ) {
-                    pojo.setModifiedDate( new Date() );
-                    updatePipeline( pojo );
+            for (PipelinePojo pojo : frontendPipelineTemplates) {
+                LOG.debug("FrontendPipeline: " + pojo.getNxPipelineId() + " - " + pojo.getName());
+                if (pojo.getNxPipelineId() != 0) {
+                    pojo.setModifiedDate(new Date());
+                    updatePipeline(pojo);
                 } else {
-                    pojo.setCreatedDate( new Date() );
-                    pojo.setModifiedDate( new Date() );
-                    savePipeline( pojo );
+                    pojo.setCreatedDate(new Date());
+                    pojo.setModifiedDate(new Date());
+                    savePipeline(pojo);
                 }
             }
         }
 
-        if ( partners != null && partners.size() > 0 ) {
+        if (partners != null && partners.size() > 0) {
 
             Iterator<PartnerPojo> i = partners.iterator();
-            while ( i.hasNext() ) {
+            while (i.hasNext()) {
                 PartnerPojo pojo = i.next();
-                LOG.debug( "Partner: " + pojo.getNxPartnerId() + " - " + pojo.getPartnerId() + " - " + pojo.getName() );
+                LOG.debug("Partner: " + pojo.getNxPartnerId() + " - " + pojo.getPartnerId() + " - " + pojo.getName());
 
-                if ( pojo.getNxPartnerId() != 0 ) {
-                    pojo.setModifiedDate( new Date() );
-                    updatePartner( pojo );
+                if (pojo.getNxPartnerId() != 0) {
+                    pojo.setModifiedDate(new Date());
+                    updatePartner(pojo);
                 } else {
-                    pojo.setCreatedDate( new Date() );
-                    pojo.setModifiedDate( new Date() );
-                    savePartner( pojo );
+                    pojo.setCreatedDate(new Date());
+                    pojo.setModifiedDate(new Date());
+                    savePartner(pojo);
                 }
             }
         }
 
-        if ( certificates != null && certificates.size() > 0 ) {
+        if (certificates != null && certificates.size() > 0) {
 
-            for ( CertificatePojo certificate : certificates ) {
-                LOG.debug( "Certificate: " + certificate.getNxCertificateId() + " - " + certificate.getName() );
-                if ( certificate.getNxCertificateId() != 0 ) {
-                    certificate.setModifiedDate( new Date() );
-                    updateCertificate( certificate );
+            for (CertificatePojo certificate : certificates) {
+                LOG.debug("Certificate: " + certificate.getNxCertificateId() + " - " + certificate.getName());
+                if (certificate.getNxCertificateId() != 0) {
+                    certificate.setModifiedDate(new Date());
+                    updateCertificate(certificate);
                 } else {
-                    certificate.setCreatedDate( new Date() );
-                    certificate.setModifiedDate( new Date() );
-                    saveCertificate( certificate );
+                    certificate.setCreatedDate(new Date());
+                    certificate.setModifiedDate(new Date());
+                    saveCertificate(certificate);
                 }
             }
         }
 
-        if ( choreographies != null && choreographies.size() > 0 ) {
+        if (choreographies != null && choreographies.size() > 0) {
 
             Iterator<ChoreographyPojo> i = choreographies.iterator();
-            while ( i.hasNext() ) {
+            while (i.hasNext()) {
 
                 ChoreographyPojo pojo = i.next();
-                LOG.debug( "Choreography: " + pojo.getNxChoreographyId() + " - " + pojo.getName() );
+                LOG.debug("Choreography: " + pojo.getNxChoreographyId() + " - " + pojo.getName());
 
-                if ( pojo.getNxChoreographyId() != 0 ) {
-                    pojo.setModifiedDate( new Date() );
-                    updateChoreography( pojo );
+                if (pojo.getNxChoreographyId() != 0) {
+                    pojo.setModifiedDate(new Date());
+                    updateChoreography(pojo);
                 } else {
-                    pojo.setCreatedDate( new Date() );
-                    pojo.setModifiedDate( new Date() );
-                    saveChoreography( pojo );
+                    pojo.setCreatedDate(new Date());
+                    pojo.setModifiedDate(new Date());
+                    saveChoreography(pojo);
                 }
             }
         }
 
-        if ( services != null && services.size() > 0 ) {
-            for ( ServicePojo pojo : services ) {
-                LOG.debug( "Service: " + pojo.getNxServiceId() + " - " + pojo.getName() );
-                if ( pojo.getNxServiceId() != 0 ) {
-                    pojo.setModifiedDate( new Date() );
-                    updateService( pojo );
+        if (services != null && services.size() > 0) {
+            for (ServicePojo pojo : services) {
+                LOG.debug("Service: " + pojo.getNxServiceId() + " - " + pojo.getName());
+                if (pojo.getNxServiceId() != 0) {
+                    pojo.setModifiedDate(new Date());
+                    updateService(pojo);
                 } else {
-                    pojo.setCreatedDate( new Date() );
-                    pojo.setModifiedDate( new Date() );
-                    saveService( pojo );
+                    pojo.setCreatedDate(new Date());
+                    pojo.setModifiedDate(new Date());
+                    saveService(pojo);
                 }
             }
         }
 
-        if ( loggers != null && loggers.size() > 0 ) {
+        if (loggers != null && loggers.size() > 0) {
 
-            for ( LoggerPojo logger : loggers ) {
-                LOG.debug( "Logger: " + logger.getNxLoggerId() + " - " + logger.getName() );
-                if ( logger.getNxLoggerId() != 0 ) {
-                    logger.setModifiedDate( new Date() );
-                    updateLogger( logger );
+            for (LoggerPojo logger : loggers) {
+                LOG.debug("Logger: " + logger.getNxLoggerId() + " - " + logger.getName());
+                if (logger.getNxLoggerId() != 0) {
+                    logger.setModifiedDate(new Date());
+                    updateLogger(logger);
                 } else {
-                    logger.setCreatedDate( new Date() );
-                    logger.setModifiedDate( new Date() );
-                    saveLogger( logger );
+                    logger.setCreatedDate(new Date());
+                    logger.setModifiedDate(new Date());
+                    saveLogger(logger);
                 }
             }
         }
 
         // save roles first to ensure referential integrity
-        if ( roles != null && roles.size() > 0 ) {
+        if (roles != null && roles.size() > 0) {
 
-            for ( RolePojo role : roles ) {
-                LOG.debug( "Role: " + role.getNxRoleId() + " - " + role.getName() );
-                if ( role.getNxRoleId() != 0 ) {
-                    role.setModifiedDate( new Date() );
-                    updateRole( role );
+            for (RolePojo role : roles) {
+                LOG.debug("Role: " + role.getNxRoleId() + " - " + role.getName());
+                if (role.getNxRoleId() != 0) {
+                    role.setModifiedDate(new Date());
+                    updateRole(role);
                 } else {
-                    role.setCreatedDate( new Date() );
-                    role.setModifiedDate( new Date() );
-                    saveRole( role );
+                    role.setCreatedDate(new Date());
+                    role.setModifiedDate(new Date());
+                    saveRole(role);
                 }
             }
         }
 
-        if ( users != null && users.size() > 0 ) {
+        if (users != null && users.size() > 0) {
 
-            for ( UserPojo user : users ) {
-                LOG.debug( "User: " + user.getNxUserId() + " - " + user.getLoginName() );
-                if ( user.getNxUserId() != 0 ) {
-                    user.setModifiedDate( new Date() );
-                    updateUser( user );
+            for (UserPojo user : users) {
+                LOG.debug("User: " + user.getNxUserId() + " - " + user.getLoginName());
+                if (user.getNxUserId() != 0) {
+                    user.setModifiedDate(new Date());
+                    updateUser(user);
                 } else {
-                    user.setCreatedDate( new Date() );
-                    user.setModifiedDate( new Date() );
-                    saveUser( user );
+                    user.setCreatedDate(new Date());
+                    user.setModifiedDate(new Date());
+                    saveUser(user);
                 }
             }
         }
 
         List<GenericParamPojo> tempList = new ArrayList<GenericParamPojo>();
-        for ( String name : genericParameters.keySet() ) {
-            List<GenericParamPojo> values = genericParameters.get( name );
-            tempList.addAll( values );
+        for (String name : genericParameters.keySet()) {
+            List<GenericParamPojo> values = genericParameters.get(name);
+            tempList.addAll(values);
         }
 
-        if ( tempList != null && tempList.size() > 0 ) {
+        if (tempList != null && tempList.size() > 0) {
 
-            for ( GenericParamPojo param : tempList ) {
-                LOG.debug( "Parameter: " + param.getNxGenericParamId() + " - (" + param.getCategory() + "/"
-                        + param.getTag() + "):" + param.getParamName() + "=" + param.getValue() );
-                if ( param.getNxGenericParamId() != 0 ) {
-                    param.setModifiedDate( new Date() );
-                    updateGenericParameter( param );
+            for (GenericParamPojo param : tempList) {
+                LOG.debug("Parameter: " + param.getNxGenericParamId() + " - (" + param.getCategory() + "/" + param.getTag() + "):" + param.getParamName() + "=" + param.getValue());
+                if (param.getNxGenericParamId() != 0) {
+                    param.setModifiedDate(new Date());
+                    updateGenericParameter(param);
                 } else {
-                    param.setCreatedDate( new Date() );
-                    param.setModifiedDate( new Date() );
-                    saveGenericParameter( param );
+                    param.setCreatedDate(new Date());
+                    param.setModifiedDate(new Date());
+                    saveGenericParameter(param);
                 }
             }
         }
 
-        if ( mappings != null && mappings.size() > 0 ) {
+        if (mappings != null && mappings.size() > 0) {
 
-            for ( MappingPojo pojo : mappings ) {
-                LOG.debug( "Mapping: " + pojo.getNxMappingId() + " - " + pojo.getCategory() + " - "
-                        + pojo.getLeftValue() + " - " + pojo.getRightValue() );
-                if ( pojo.getNxMappingId() != 0 ) {
-                    pojo.setModifiedDate( new Date() );
-                    updateMapping( pojo );
+            for (MappingPojo pojo : mappings) {
+                LOG.debug("Mapping: " + pojo.getNxMappingId() + " - " + pojo.getCategory() + " - " + pojo.getLeftValue() + " - " + pojo.getRightValue());
+                if (pojo.getNxMappingId() != 0) {
+                    pojo.setModifiedDate(new Date());
+                    updateMapping(pojo);
                 } else {
-                    pojo.setCreatedDate( new Date() );
-                    pojo.setModifiedDate( new Date() );
-                    saveMapping( pojo );
+                    pojo.setCreatedDate(new Date());
+                    pojo.setModifiedDate(new Date());
+                    saveMapping(pojo);
                 }
             }
         }
 
-        
+
     } // saveConfigurationToDB
 } // CommunicationPartnerDAO

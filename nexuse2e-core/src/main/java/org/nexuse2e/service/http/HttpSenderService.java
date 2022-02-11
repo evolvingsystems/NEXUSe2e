@@ -30,7 +30,8 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.Layer;
 import org.nexuse2e.MessageStatus;
@@ -41,7 +42,12 @@ import org.nexuse2e.configuration.ParameterType;
 import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.FrontendPipeline;
 import org.nexuse2e.messaging.MessageContext;
-import org.nexuse2e.pojo.*;
+import org.nexuse2e.pojo.CertificatePojo;
+import org.nexuse2e.pojo.ChoreographyPojo;
+import org.nexuse2e.pojo.MessagePayloadPojo;
+import org.nexuse2e.pojo.MessagePojo;
+import org.nexuse2e.pojo.ParticipantPojo;
+import org.nexuse2e.pojo.TRPPojo;
 import org.nexuse2e.service.AbstractService;
 import org.nexuse2e.service.SenderAware;
 import org.nexuse2e.transport.TransportSender;
@@ -49,12 +55,13 @@ import org.nexuse2e.util.CertSSLProtocolSocketFactory;
 import org.nexuse2e.util.CertificateUtil;
 import org.nexuse2e.util.EncryptionUtil;
 
-import javax.mail.internet.ContentType;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Map;
+
+import javax.mail.internet.ContentType;
 
 /**
  * A service that can be used by a <code>TransportSender</code> in order
@@ -64,20 +71,21 @@ import java.util.Map;
  */
 public class HttpSenderService extends AbstractService implements SenderAware {
 
-    private static Logger LOG = Logger.getLogger(HttpSenderService.class);
-
-    /** PARAMETERS **/
+    /**
+     * PARAMETERS
+     **/
     public static final String PREEMPTIVE_AUTH_PARAM_NAME = "preemptiveAuth";
     public static final String LEGACY_HTTP_HEADER_FOLDING = "httpHeaderFolding";
-
+    private static Logger LOG = LogManager.getLogger(HttpSenderService.class);
     private TransportSender transportSender;
 
     @Override
     public void fillParameterMap(Map<String, ParameterDescriptor> parameterMap) {
-        parameterMap.put(PREEMPTIVE_AUTH_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Preemptive Authentication",
-                "Check, if the HTTP client should use preemtive authentication.", Boolean.FALSE));
-        parameterMap.put(LEGACY_HTTP_HEADER_FOLDING, new ParameterDescriptor(ParameterType.BOOLEAN, "Legacy Http header Folding",
-                "HTTP Header folding is deprecated. In case of issues, the old behavior can be activated.", Boolean.FALSE));
+        parameterMap.put(PREEMPTIVE_AUTH_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "Preemptive " +
+                "Authentication", "Check, if the HTTP client should use preemtive authentication.", Boolean.FALSE));
+        parameterMap.put(LEGACY_HTTP_HEADER_FOLDING, new ParameterDescriptor(ParameterType.BOOLEAN, "Legacy Http " +
+                "header Folding", "HTTP Header folding is deprecated. In case of issues, the old behavior can be " +
+                "activated.", Boolean.FALSE));
     }
 
     @Override
@@ -128,8 +136,10 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 if (LOG.isTraceEnabled()) {
                     LOG.trace(new LogMessage("participant: " + participant, messageContext.getMessagePojo()));
-                    LOG.trace(new LogMessage("participant.name: " + participant.getPartner().getName(), messageContext.getMessagePojo()));
-                    LOG.trace(new LogMessage("participant.localcerts: " + participant.getLocalCertificate(), messageContext.getMessagePojo()));
+                    LOG.trace(new LogMessage("participant.name: " + participant.getPartner().getName(),
+                            messageContext.getMessagePojo()));
+                    LOG.trace(new LogMessage("participant.localcerts: " + participant.getLocalCertificate(),
+                            messageContext.getMessagePojo()));
                     if (participant.getLocalCertificate() != null) {
                         LOG.trace(new LogMessage("localcert.name(" + participant.getLocalCertificate().getNxCertificateId() + "): " + participant.getLocalCertificate().getName(), messageContext.getMessagePojo()));
                     }
@@ -137,14 +147,13 @@ public class HttpSenderService extends AbstractService implements SenderAware {
 
                 CertificatePojo localCert = participant.getLocalCertificate();
                 if (localCert == null) {
-                    LOG.error(new LogMessage("No local certificate selected for using SSL with partner " + participant.getPartner().getName(), messageContext
-                            .getMessagePojo()));
+                    LOG.error(new LogMessage("No local certificate selected for using SSL with partner " + participant.getPartner().getName(), messageContext.getMessagePojo()));
                     throw new NexusException("No local certificate selected for using SSL with partner " + participant.getPartner().getName());
                 }
 
                 CertificatePojo partnerCert = participant.getConnection().getCertificate();
-                CertificatePojo metaPojo = Engine.getInstance().getActiveConfigurationAccessService()
-                        .getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(), true);
+                CertificatePojo metaPojo =
+                        Engine.getInstance().getActiveConfigurationAccessService().getFirstCertificateByType(CertificateType.CACERT_METADATA.getOrdinal(), true);
 
                 String cacertspwd = "changeit";
                 if (metaPojo != null) {
@@ -152,9 +161,11 @@ public class HttpSenderService extends AbstractService implements SenderAware {
                 }
                 KeyStore privateKeyChain = CertificateUtil.getPKCS12KeyStore(localCert);
 
-                myhttps = new Protocol("https", (ProtocolSocketFactory) new CertSSLProtocolSocketFactory(privateKeyChain,
-                        EncryptionUtil.decryptString(localCert.getPassword()), Engine.getInstance().getActiveConfigurationAccessService().getCacertsKeyStore(),
-                        cacertspwd, partnerCert, tlsProtocols, tlsCiphers), 443);
+                myhttps = new Protocol("https",
+                        (ProtocolSocketFactory) new CertSSLProtocolSocketFactory(privateKeyChain,
+                                EncryptionUtil.decryptString(localCert.getPassword()),
+                                Engine.getInstance().getActiveConfigurationAccessService().getCacertsKeyStore(),
+                                cacertspwd, partnerCert, tlsProtocols, tlsCiphers), 443);
 
                 client.getHostConfiguration().setHost(receiverURL.getHost(), receiverURL.getPort(), myhttps);
 
@@ -169,8 +180,7 @@ public class HttpSenderService extends AbstractService implements SenderAware {
             method.setQueryString(receiverURL.getQuery());
             method.setFollowRedirects(false);
             method.getParams().setSoTimeout(timeout);
-            LOG.trace(new LogMessage("Created new NexusHttpConnection with timeout: " + timeout + ", SSL: " + participant.getConnection().isSecure(),
-                    messageContext.getMessagePojo()));
+            LOG.trace(new LogMessage("Created new NexusHttpConnection with timeout: " + timeout + ", SSL: " + participant.getConnection().isSecure(), messageContext.getMessagePojo()));
 
             // Use basic auth if credentials are present
             if ((user != null) && (user.length() != 0) && (pwd != null)) {
@@ -188,8 +198,8 @@ public class HttpSenderService extends AbstractService implements SenderAware {
             String httpReply = null;
 
             if (LOG.isTraceEnabled()) {
-                LOG.trace(new LogMessage("HTTP Message Data:\n" + (messageContext.getData() == null ? null : new String((byte[]) messageContext.getData())),
-                        messageContext));
+                LOG.trace(new LogMessage("HTTP Message Data:\n" + (messageContext.getData() == null ? null :
+                        new String((byte[]) messageContext.getData())), messageContext));
             }
 
             // Support for HTTP plain
@@ -205,14 +215,16 @@ public class HttpSenderService extends AbstractService implements SenderAware {
                     ContentType contentType = new ContentType("multipart/related");
                     contentType.setParameter("type", "text/xml");
                     contentType.setParameter("boundary", "MIME_boundary");
-                    contentType.setParameter("start", messageContext.getMessagePojo().getMessageId() + messageContext.getMessagePojo().getTRP().getProtocol()
-                            + "-Header");
+                    contentType.setParameter("start",
+                            messageContext.getMessagePojo().getMessageId() + messageContext.getMessagePojo().getTRP().getProtocol() + "-Header");
                     contentTypeString = contentType.toString();
                 } else {
-                    contentTypeString = "multipart/related; type=\"text/xml\"; boundary=MIME_boundary; start=" + messageContext.getMessagePojo().getMessageId() + messageContext.getMessagePojo().getTRP().getProtocol() + "-Header";
+                    contentTypeString =
+                            "multipart/related; type=\"text/xml\"; boundary=MIME_boundary; start=" + messageContext.getMessagePojo().getMessageId() + messageContext.getMessagePojo().getTRP().getProtocol() + "-Header";
                 }
 
-                RequestEntity requestEntity = new ByteArrayRequestEntity((byte[]) messageContext.getData(), "Content-Type:" + contentTypeString);
+                RequestEntity requestEntity = new ByteArrayRequestEntity((byte[]) messageContext.getData(), "Content" +
+                        "-Type:" + contentTypeString);
 
                 method.setRequestEntity(requestEntity);
 
@@ -225,11 +237,8 @@ public class HttpSenderService extends AbstractService implements SenderAware {
                 uriParams.append("&ActionID=" + messageContext.getMessagePojo().getConversation().getCurrentAction().getName());
 
                 ChoreographyPojo choreographyPojo = messageContext.getMessagePojo().getConversation().getChoreography();
-                ParticipantPojo participantPojo = Engine
-                        .getInstance()
-                        .getActiveConfigurationAccessService()
-                        .getParticipantFromChoreographyByNxPartnerId(choreographyPojo,
-                                messageContext.getMessagePojo().getConversation().getPartner().getNxPartnerId());
+                ParticipantPojo participantPojo =
+                        Engine.getInstance().getActiveConfigurationAccessService().getParticipantFromChoreographyByNxPartnerId(choreographyPojo, messageContext.getMessagePojo().getConversation().getPartner().getNxPartnerId());
                 uriParams.append("&ParticipantID=" + participantPojo.getLocalPartner().getPartnerId());
                 uriParams.append("&ConversationID=" + messageContext.getMessagePojo().getConversation().getConversationId());
                 uriParams.append("&MessageID=" + messageContext.getMessagePojo().getMessageId());
@@ -256,18 +265,16 @@ public class HttpSenderService extends AbstractService implements SenderAware {
             LOG.debug(new LogMessage("HTTP call done", messageContext.getMessagePojo()));
             int statusCode = method.getStatusCode();
             if (statusCode > 299) {
-                LogMessage lm = new LogMessage("Message submission failed, server " + messageContext.getParticipant().getConnection().getUri()
-                        + " responded with status: " + statusCode, messageContext.getMessagePojo());
+                LogMessage lm =
+                        new LogMessage("Message submission failed, server " + messageContext.getParticipant().getConnection().getUri() + " responded with status: " + statusCode, messageContext.getMessagePojo());
                 LOG.error(lm);
                 throw new NexusException(lm);
             } else if (statusCode < 200) {
-                LOG.warn(new LogMessage("Partner server " + messageContext.getParticipant().getConnection().getUri() + " responded with status: " + statusCode,
-                        messageContext.getMessagePojo()));
+                LOG.warn(new LogMessage("Partner server " + messageContext.getParticipant().getConnection().getUri() + " responded with status: " + statusCode, messageContext.getMessagePojo()));
             }
 
-            boolean processReturn = (transportSender != null && transportSender.getPipeline() instanceof FrontendPipeline
-                    && messageContext.isProcessThroughReturnPipeline() && ((FrontendPipeline) transportSender.getPipeline()).getReturnPipelets() != null && ((FrontendPipeline) transportSender
-                    .getPipeline()).getReturnPipelets().length > 0);
+            boolean processReturn =
+                    (transportSender != null && transportSender.getPipeline() instanceof FrontendPipeline && messageContext.isProcessThroughReturnPipeline() && ((FrontendPipeline) transportSender.getPipeline()).getReturnPipelets() != null && ((FrontendPipeline) transportSender.getPipeline()).getReturnPipelets().length > 0);
 
             if (processReturn || LOG.isTraceEnabled()) {
                 byte[] body = method.getResponseBody();
@@ -295,11 +302,13 @@ public class HttpSenderService extends AbstractService implements SenderAware {
             method.releaseConnection();
 
         } catch (ConnectTimeoutException e) {
-            LogMessage lm = new LogMessage("Message submission failed, connection timeout for URL: " + messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(), e);
+            LogMessage lm =
+                    new LogMessage("Message submission failed, connection timeout for URL: " + messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(), e);
             LOG.warn(lm, e);
             throw new NexusException(lm, e);
         } catch (Exception ex) {
-            LogMessage lm = new LogMessage("Message submission failed for URL: " + messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(), ex);
+            LogMessage lm =
+                    new LogMessage("Message submission failed for URL: " + messageContext.getParticipant().getConnection().getUri(), messageContext.getMessagePojo(), ex);
             LOG.warn(lm, ex);
             throw new NexusException(lm, ex);
         }

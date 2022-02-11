@@ -48,7 +48,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Index;
@@ -91,7 +91,7 @@ public class LoggerPojo implements NEXUSe2ePojo {
     private int                         modifiedNxUserId;
 
     @Column(name = "threshold", nullable = false)
-    private int                         threshold        = Level.INFO_INT;
+    private int                         threshold        =  400; // Level.INFO_INT;
 
     @Column(name = "name", length = 64, nullable = false)
     private String                      name;

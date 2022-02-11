@@ -1,27 +1,28 @@
 /**
- *  NEXUSe2e Business Messaging Open Source
- *  Copyright 2000-2021, direkt gruppe GmbH
- *
- *  This is free software; you can redistribute it and/or modify it
- *  under the terms of the GNU Lesser General Public License as
- *  published by the Free Software Foundation version 3 of
- *  the License.
- *
- *  This software is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this software; if not, write to the Free
- *  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- *  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * NEXUSe2e Business Messaging Open Source
+ * Copyright 2000-2021, direkt gruppe GmbH
+ * <p>
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation version 3 of
+ * the License.
+ * <p>
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.nexuse2e.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -44,42 +45,75 @@ import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.CertificatePojo;
 import org.nexuse2e.ui.form.CertificatePropertiesForm;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertPathBuilder;
+import java.security.cert.CertPathBuilderException;
+import java.security.cert.CertStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.CollectionCertStoreParameters;
+import java.security.cert.PKIXBuilderParameters;
+import java.security.cert.PKIXCertPathBuilderResult;
+import java.security.cert.TrustAnchor;
+import java.security.cert.X509CertSelector;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.x500.X500Principal;
-import java.io.*;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.cert.Certificate;
-import java.security.cert.*;
-import java.security.interfaces.RSAPublicKey;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Utility class to work with certificates (mostly instances of <code>X509Certificate</code>).
  * Uses the BouncyCastly cryptography provider under the covers.
- * 
+ *
  * @author gesch
  * @version $ID:$
  */
 public class CertificateUtil {
 
-    private static Logger      LOG                                 = Logger.getLogger(CertificateUtil.class);
-
-    public static final int    DEFAULT_RSA_KEY_LENGTH              = 2048;
+    public static final int DEFAULT_RSA_KEY_LENGTH = 2048;
     public static final String DEFAULT_DIGITAL_SIGNATURE_ALGORITHM = "SHA1withRSA";
-    public static final String DEFAULT_KEY_ALGORITHM               = "RSA";
-    public static final String DEFAULT_CERT_TYPE                   = "X.509";
-    public static final String DEFAULT_KEY_STORE                   = "PKCS12";
-    public static final String DEFAULT_JCE_PROVIDER                = "BC";
-    private static final int   PEM_LINE_LENGTH                     = 64;
+    public static final String DEFAULT_KEY_ALGORITHM = "RSA";
+    public static final String DEFAULT_CERT_TYPE = "X.509";
+    public static final String DEFAULT_KEY_STORE = "PKCS12";
+    public static final String DEFAULT_JCE_PROVIDER = "BC";
+    private static final int PEM_LINE_LENGTH = 64;
+    private static Logger LOG = LogManager.getLogger(CertificateUtil.class);
 
     /**
      * Gets a private key from the given <code>KeyStore</code>.
-     * 
+     *
      * @param keyStore
      *            The key store, not <code>null</code>.
      * @return The private key.
@@ -207,7 +241,7 @@ public class CertificateUtil {
 
     /**
      * Not tested
-     * 
+     *
      * @param certs
      * @return
      */
@@ -278,7 +312,7 @@ public class CertificateUtil {
 
     /**
      * Get the public certificate chain pkcs12 KeyStore
-     * 
+     *
      * @return The public certificate chain
      */
     public static Certificate[] getCertificateChain(KeyStore pkcs12) throws IllegalArgumentException {
@@ -306,8 +340,8 @@ public class CertificateUtil {
     /**
      * Gets the head of the certificate chain which is the public certificate matching the private key. For CA
      * certificates use {@link CertificateUtil#getCertificateChain(KeyStore)} .
-     * 
-     * 
+     *
+     *
      * @param pkcs12
      * @return the head certificate
      * @throws IllegalArgumentException
@@ -453,7 +487,7 @@ public class CertificateUtil {
 
     /**
      * Return the remaining time till certificate expires as rounded human readable String.
-     * 
+     *
      * @param x509certificate
      *            The <code>X509Certificate</code> to inspect
      * @return remaining time till certificate expires as rounded human readable string
@@ -535,7 +569,7 @@ public class CertificateUtil {
 
     /**
      * Get a <code>X509Certificate</code> as a PEM encoded byte array
-     * 
+     *
      * @param x509Certificate
      *            The <code>X509Certificate</code>
      * @return The <code>X509Certificate</code> as a PEM encoded byte array
@@ -696,7 +730,7 @@ public class CertificateUtil {
     /**
      * creates an PKCS10 Certificate Request using the given keys and parameters
      * Use java.security.KeyPairGenerator for key creation. see {@link CertificateUtil.generateKeyPair()};
-     * 
+     *
      * @param keyPair
      * @param commonName
      * @param organization
@@ -708,8 +742,11 @@ public class CertificateUtil {
      * @return
      * @throws IllegalArgumentException
      */
-    public static PKCS10CertificationRequest generatePKCS10CertificateRequest(KeyPair keyPair, String commonName, String organization, String organizationUnit,
-            String location, String country, String state, String email) throws IllegalArgumentException {
+    public static PKCS10CertificationRequest generatePKCS10CertificateRequest(KeyPair keyPair, String commonName,
+                                                                              String organization,
+                                                                              String organizationUnit,
+                                                                              String location, String country,
+                                                                              String state, String email) throws IllegalArgumentException {
 
         try {
 
@@ -739,8 +776,9 @@ public class CertificateUtil {
 
             X509Name subject = new X509Name(oids, values);
 
-            PKCS10CertificationRequest certificationRequest = new PKCS10CertificationRequest(DEFAULT_DIGITAL_SIGNATURE_ALGORITHM, subject, keyPair.getPublic(),
-                    null, keyPair.getPrivate());
+            PKCS10CertificationRequest certificationRequest =
+                    new PKCS10CertificationRequest(DEFAULT_DIGITAL_SIGNATURE_ALGORITHM, subject, keyPair.getPublic(),
+                            null, keyPair.getPrivate());
 
             return certificationRequest;
         } catch (Exception ex) {
@@ -750,8 +788,9 @@ public class CertificateUtil {
     }
 
     /**
-     * Generate a <code>KeyPair</code> with default settings (<code>DEFAULT_KEY_ALGORITHM</code>, <code>DEFAULT_RSA_KEY_LENGTH</code>).
-     * 
+     * Generate a <code>KeyPair</code> with default settings (<code>DEFAULT_KEY_ALGORITHM</code>,
+     * <code>DEFAULT_RSA_KEY_LENGTH</code>).
+     *
      * @return The generated key pair.
      * @throws NoSuchAlgorithmException
      *             If the JCE provider is not set up correctly
@@ -765,7 +804,7 @@ public class CertificateUtil {
 
     /**
      * Generate a <code>KeyPair</code> with given key length and <code>DEFAULT_KEY_ALGORITHM</code>.
-     * 
+     *
      * @param keyLength
      *            The key length.
      * @return The generated key pair.
@@ -781,7 +820,7 @@ public class CertificateUtil {
 
     /**
      * Generate a <code>KeyPair</code> with given key length and algorithm.
-     * 
+     *
      * @param keyLength
      *            The key length.
      * @return The generated key pair.
@@ -790,7 +829,8 @@ public class CertificateUtil {
      * @throws NoSuchProviderException
      *             If the JCE provider is not set up correctly
      */
-    public static KeyPair generateKeyPair(int keyLength, String algorithm) throws NoSuchAlgorithmException, NoSuchProviderException {
+    public static KeyPair generateKeyPair(int keyLength, String algorithm) throws NoSuchAlgorithmException,
+            NoSuchProviderException {
 
         KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm, DEFAULT_JCE_PROVIDER);
         kpg.initialize(keyLength);
@@ -799,7 +839,7 @@ public class CertificateUtil {
 
     /**
      * Creates a <code>CertificatePojo</code> from the given <code>KeyStore</code>.
-     * 
+     *
      * @param type
      *            The type, e.g. CertificateType.STAGING.getOrdinal().
      * @param keyStore
@@ -812,7 +852,8 @@ public class CertificateUtil {
     public static CertificatePojo createPojoFromPKCS12(int type, KeyStore keyStore, String password) throws NexusException {
 
         try {
-            // Fix MS IIS exported PKCS12 structures (.pfx) (remove all aliases, create new keyStore with friendly named alias)
+            // Fix MS IIS exported PKCS12 structures (.pfx) (remove all aliases, create new keyStore with friendly
+            // named alias)
             Key pk = getPrivateKey(keyStore);
             Certificate[] tempCerts = getCertificateChain(keyStore);
             KeyStore newKs = KeyStore.getInstance(DEFAULT_KEY_STORE, DEFAULT_JCE_PROVIDER);
@@ -907,7 +948,8 @@ public class CertificateUtil {
 
     }
 
-    public static PKIXCertPathBuilderResult getCertificateChain(X509Certificate head, List<X509Certificate> certs, List<X509Certificate> trustedCerts) {
+    public static PKIXCertPathBuilderResult getCertificateChain(X509Certificate head, List<X509Certificate> certs,
+                                                                List<X509Certificate> trustedCerts) {
 
         BigInteger requestModulus = ((RSAPublicKey) head.getPublicKey()).getModulus();
         BigInteger requestExponent = ((RSAPublicKey) head.getPublicKey()).getPublicExponent();
@@ -940,7 +982,8 @@ public class CertificateUtil {
             X509CertSelector targetConstraints = new X509CertSelector();
             targetConstraints.setCertificate(head);
 
-            // Trust should contain only trusted certificates, see for-loop above. The second parameter is the certificate to check.
+            // Trust should contain only trusted certificates, see for-loop above. The second parameter is the
+            // certificate to check.
             PKIXBuilderParameters params = new PKIXBuilderParameters(trust, targetConstraints);
             params.setRevocationEnabled(false);
             params.addCertStore(store);
@@ -1010,7 +1053,7 @@ public class CertificateUtil {
 
     /**
      * Determines if the given certificate is self-signed.
-     * 
+     *
      * @param cert
      *            The certificate to check.
      * @return <code>true</code> if and only if the given certificate is self-signed.
@@ -1053,7 +1096,7 @@ public class CertificateUtil {
 
     /**
      * Recursively searched the certificate pool for a valid issuer certificate of the last chain link.
-     * 
+     *
      * @param chain
      *            The chain of trust so far. This is an in/out parameter.
      *            The method recursively adds certificates to the end of the chain,
@@ -1066,7 +1109,8 @@ public class CertificateUtil {
             X509Certificate lastChainLink = chain.get(chain.size() - 1);
             if (lastChainLink != null) {
                 X500Principal issuer = lastChainLink.getIssuerX500Principal();
-                // only try to find issuer cert, if cert is not self-signed; otherwise we would end up with an infinite loop
+                // only try to find issuer cert, if cert is not self-signed; otherwise we would end up with an
+                // infinite loop
                 if (issuer != null && !issuer.equals(lastChainLink.getSubjectX500Principal())) {
                     for (X509Certificate currCert : certPool) {
                         // the issuer of the last chain link must be the subject of the next chain link
@@ -1111,7 +1155,7 @@ public class CertificateUtil {
 
     /**
      * Creates the <code>KeyManager</code>s for the given keystore and encryption password.
-     * 
+     *
      * @param keystore
      * @param password
      * @return
@@ -1119,8 +1163,7 @@ public class CertificateUtil {
      * @throws NoSuchAlgorithmException
      * @throws UnrecoverableKeyException
      */
-    public static KeyManager[] createKeyManagers(final KeyStore keystore, final String password) throws KeyStoreException, NoSuchAlgorithmException,
-            UnrecoverableKeyException {
+    public static KeyManager[] createKeyManagers(final KeyStore keystore, final String password) throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
 
         if (keystore == null) {
             throw new IllegalArgumentException("Keystore may not be null");
@@ -1133,7 +1176,7 @@ public class CertificateUtil {
 
     /**
      * Creates the <code>TrustManager</code>s for the given trusted keystore.
-     * 
+     *
      * @param keystore
      *            The keystore.
      * @param leafCertificate
@@ -1143,8 +1186,7 @@ public class CertificateUtil {
      * @throws KeyStoreException
      * @throws NoSuchAlgorithmException
      */
-    public static TrustManager[] createTrustManagers(final KeyStore keystore, CertificatePojo leafCertificate) throws KeyStoreException,
-            NoSuchAlgorithmException {
+    public static TrustManager[] createTrustManagers(final KeyStore keystore, CertificatePojo leafCertificate) throws KeyStoreException, NoSuchAlgorithmException {
 
         if (keystore == null) {
             throw new IllegalArgumentException("Keystore may not be null");
@@ -1165,15 +1207,17 @@ public class CertificateUtil {
         return trustmanagers;
     }
 
-    public static List<CertificatePojo> getDuplicates(EngineConfiguration engineConfiguration, CertificateType type, X509Certificate cert) throws NexusException, CertificateEncodingException, IOException {
+    public static List<CertificatePojo> getDuplicates(EngineConfiguration engineConfiguration, CertificateType type,
+                                                      X509Certificate cert) throws NexusException,
+            CertificateEncodingException, IOException {
         List<CertificatePojo> duplicates = new ArrayList<>();
         List<CertificatePojo> allCertificates = engineConfiguration.getCertificates(type.getOrdinal(), null);
         X509Certificate certificate;
         for (CertificatePojo cPojo : allCertificates) {
             certificate = getX509Certificate(cPojo);
-            if (certificate != null
-                    && (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert, certificate)
-                    || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert, certificate))) {
+            if (certificate != null && (hasSameMD5FingerPrint(cert, certificate) || hasSameSHA1FingerPrint(cert,
+                    certificate) || hasSameDistinguishedName(cert, certificate) || hasSameSubjectKeyIdentifier(cert,
+                    certificate))) {
                 duplicates.add(cPojo);
             }
         }
@@ -1273,8 +1317,10 @@ public class CertificateUtil {
                 byte[] data = certificate.getBinaryData();
                 if (data != null) {
 
-                    KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE, CertificateUtil.DEFAULT_JCE_PROVIDER);
-                    jks.load(new ByteArrayInputStream(data), EncryptionUtil.decryptString(certificate.getPassword()).toCharArray());
+                    KeyStore jks = KeyStore.getInstance(CertificateUtil.DEFAULT_KEY_STORE,
+                            CertificateUtil.DEFAULT_JCE_PROVIDER);
+                    jks.load(new ByteArrayInputStream(data),
+                            EncryptionUtil.decryptString(certificate.getPassword()).toCharArray());
 
                     Enumeration<String> aliases = jks.aliases();
                     if (!aliases.hasMoreElements()) {
@@ -1295,7 +1341,9 @@ public class CertificateUtil {
                                 Date date = certificate.getCreatedDate();
                                 SimpleDateFormat databaseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 form.setCreated(databaseDateFormat.format(date));
-                                String issuerCN = CertificateUtil.getIssuer((X509Certificate) certsArray[certsArray.length - 1], X509Name.CN);
+                                String issuerCN =
+                                        CertificateUtil.getIssuer((X509Certificate) certsArray[certsArray.length - 1]
+                                                , X509Name.CN);
                                 form.setIssuerCN(issuerCN);
                                 certs.addElement(form);
 
