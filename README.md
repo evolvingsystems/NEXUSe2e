@@ -6,4 +6,4 @@ Because of its component-based architecture, it can be easily extended to suppor
 
 The main use of NEXUSe2e is for supply chain integration e.g., for exchanging orders and other business documents in electronic form.
 
-![Screenshot](./screenshot.jpg)
+![Screenshot](./screenshot.png)
