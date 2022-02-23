@@ -28,7 +28,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/config/beans.xml /WEB-INF/cxf-config.xml</param-value>
+      <param-value>/WEB-INF/config/beans.xml </param-value> <!--   /WEB-INF/cxf-config.xml-->
     </context-param>
 
     <listener>
@@ -36,31 +36,31 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
-    <servlet>
-        <servlet-name>NexusDynamicWebServiceDispatcher</servlet-name>
-        <servlet-class>org.nexuse2e.DynamicWSDispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>NexusDynamicWebServiceDispatcher</servlet-name>-->
+<!--        <servlet-class>org.nexuse2e.DynamicWSDispatcherServlet</servlet-class>-->
+<!--        <load-on-startup>1</load-on-startup>-->
+<!--    </servlet>-->
     <servlet>
         <servlet-name>NexusTransportDispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>NexusWebServiceDispatcher</servlet-name>
-        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-        <load-on-startup>4</load-on-startup>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>NexusWebServiceDispatcher</servlet-name>-->
+<!--        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>-->
+<!--        <load-on-startup>4</load-on-startup>-->
+<!--    </servlet>-->
     <servlet>
         <servlet-name>NexusIntegrationDispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>5</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>ReportImageHandlerServlet</servlet-name>
-        <servlet-class>org.nexuse2e.reporting.ReportImageHandlerServlet</servlet-class>
-        <load-on-startup>6</load-on-startup>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>ReportImageHandlerServlet</servlet-name>-->
+<!--        <servlet-class>org.nexuse2e.reporting.ReportImageHandlerServlet</servlet-class>-->
+<!--        <load-on-startup>6</load-on-startup>-->
+<!--    </servlet>-->
 
     <servlet>
         <servlet-name>MetricsServlet</servlet-name>
@@ -74,11 +74,11 @@
     </servlet>
 
 
-    <servlet>
-        <servlet-name>BirtReportServlet</servlet-name>
-        <servlet-class>org.nexuse2e.reporting.BirtReportServlet</servlet-class>
-        <load-on-startup>9</load-on-startup>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>BirtReportServlet</servlet-name>-->
+<!--        <servlet-class>org.nexuse2e.reporting.BirtReportServlet</servlet-class>-->
+<!--        <load-on-startup>9</load-on-startup>-->
+<!--    </servlet>-->
 
     <servlet>
         <servlet-name>ExecutePatch</servlet-name>
@@ -148,26 +148,26 @@
         <servlet-name>NexusTransportDispatcher</servlet-name>
         <url-pattern>/handler/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>NexusWebServiceDispatcher</servlet-name>
-        <url-pattern>/webservice/*</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>NexusWebServiceDispatcher</servlet-name>-->
+<!--        <url-pattern>/webservice/*</url-pattern>-->
+<!--    </servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>NexusIntegrationDispatcher</servlet-name>
         <url-pattern>/integration/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>NexusDynamicWebServiceDispatcher</servlet-name>
-        <url-pattern>/wshandler/*</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>NexusDynamicWebServiceDispatcher</servlet-name>-->
+<!--        <url-pattern>/wshandler/*</url-pattern>-->
+<!--    </servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>ExecutePatch</servlet-name>
         <url-pattern>/ExecutePatch</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ReportImageHandlerServlet</servlet-name>
-        <url-pattern>/reportimage/*</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>ReportImageHandlerServlet</servlet-name>-->
+<!--        <url-pattern>/reportimage/*</url-pattern>-->
+<!--    </servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>MetricsServlet</servlet-name>
         <url-pattern>/metrics</url-pattern>

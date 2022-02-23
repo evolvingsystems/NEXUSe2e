@@ -27,44 +27,44 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+<!--	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />-->
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
-    <jaxws:endpoint publish="false"
-      id="nexusE2EInterface" 
-      implementor="#nexusE2EInterfaceBean" 
-      address="/NEXUSe2eInterface" />
+<!--    <jaxws:endpoint publish="false"-->
+<!--      id="nexusE2EInterface" -->
+<!--      implementor="#nexusE2EInterfaceBean" -->
+<!--      address="/NEXUSe2eInterface" />-->
 
-    <jaxws:endpoint 
-      id="engineStatusInterface" 
-      implementor="#engineStatusInterfaceBean" 
-      address="/EngineStatusInterface" />
+<!--    <jaxws:endpoint -->
+<!--      id="engineStatusInterface" -->
+<!--      implementor="#engineStatusInterfaceBean" -->
+<!--      address="/EngineStatusInterface" />-->
 
-    <jaxws:endpoint 
-      id="nexuse2eUtilities" 
-      implementor="#nexuse2eUtilitiesBean" 
-      address="/NEXUSe2eUtilities" />
+<!--    <jaxws:endpoint -->
+<!--      id="nexuse2eUtilities" -->
+<!--      implementor="#nexuse2eUtilitiesBean" -->
+<!--      address="/NEXUSe2eUtilities" />-->
     
 
     <bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
     <bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
-  
-    <bean id="cxf" class="org.apache.cxf.bus.CXFBusImpl">
-        <property name="inInterceptors">
-            <list>
-                <ref bean="logInbound"/>
-            </list>
-        </property>
-        <property name="outInterceptors">
-            <list>
-                <ref bean="logOutbound"/>
-            </list>
-        </property>
-        <property name="outFaultInterceptors">
-            <list>
-                <ref bean="logOutbound"/>
-            </list>
-        </property>
-    </bean> 
+<!--  -->
+<!--    <bean id="cxf" class="org.apache.cxf.bus.CXFBusImpl">-->
+<!--        <property name="inInterceptors">-->
+<!--            <list>-->
+<!--                <ref bean="logInbound"/>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--        <property name="outInterceptors">-->
+<!--            <list>-->
+<!--                <ref bean="logOutbound"/>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--        <property name="outFaultInterceptors">-->
+<!--            <list>-->
+<!--                <ref bean="logOutbound"/>-->
+<!--            </list>-->
+<!--        </property>-->
+<!--    </bean> -->
 
 </beans>
