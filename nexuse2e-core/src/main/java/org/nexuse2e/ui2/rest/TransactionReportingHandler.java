@@ -475,7 +475,7 @@ public class TransactionReportingHandler implements Handler {
 
         List<ConversationPojo> conversations = statistics.getConversations();
         LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
-        org.nexuse2e.integration.info.wsdl.ConversationStatus[] statuses = org.nexuse2e.integration.info.wsdl.ConversationStatus.values();
+        ConversationStatus[] statuses = ConversationStatus.values();
 
         for (int i = statuses.length - 1; i >= 0; i--) {
             statusCounts.put(statuses[i].name().toLowerCase(), 0);

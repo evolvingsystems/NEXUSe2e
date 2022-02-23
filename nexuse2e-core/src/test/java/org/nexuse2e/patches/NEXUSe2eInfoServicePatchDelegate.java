@@ -53,61 +53,61 @@ public class NEXUSe2eInfoServicePatchDelegate {
     public void executePatch() throws PatchException {
         success = false;
         
-        Engine.getInstance().invalidateConfigurations();
-        String key = getClass().getName();
-        EngineConfiguration config = Engine.getInstance().getConfiguration( key );
-        
-        try {
-            Date now = new Date();
-            patchReporter.info( "Checking component ..." );
-            String className = org.nexuse2e.integration.info.WSDispatcherService.class.getName();
-            ComponentPojo component = null;
-            for (ComponentPojo cp : config.getComponents()) {
-                if (className.equals( cp.getClassName() )) {
-                    component = cp;
-                    break;
-                }
-            }
-            if (component == null) {
-                component = new ComponentPojo();
-                component.setClassName( className );
-                component.setName( COMPONENT_NAME );
-                component.setCreatedDate( now );
-                component.setDescription( COMPONENT_DESCRIPTION );
-                component.setType( ComponentType.SERVICE.getValue() );
-                config.updateComponent( component );
-                patchReporter.info( "Component " + component.getName() + " (" + component.getDescription() + ") has been created" );
-            } else {
-                patchReporter.info( "Component of required type already exists: " + component.getName() + " (" + component.getDescription() );
-            }
-
-            patchReporter.info( "Creating service " + SERVICE_NAME + " (" + SERVICE_DESCRIPTION + ") ..." );
-            ServicePojo service = config.getServicePojoName( SERVICE_NAME );
-            if (service == null) {
-                service = new ServicePojo( component, now, now, 0, 0, SERVICE_NAME );
-                service.setAutostart( isAutostart() );
-                service.setDescription( SERVICE_DESCRIPTION );
-                ServiceParamPojo param = new ServiceParamPojo( service, now, now, 0, "url", MOUNT_POINT );
-                if (service.getServiceParams() == null) {
-                    service.setServiceParams( new ArrayList<ServiceParamPojo>() );
-                }
-                service.getServiceParams().add( param );
-                config.updateService( service );
-                patchReporter.info( "Created service with name " + service.getName() + " and mount point " + MOUNT_POINT + ". This is " + (isAutostart() ? "" : "NOT ") + "an autostart service." );
-            } else {
-                patchReporter.info( "Service with name " + service.getName() + " already exists. Please check service configuration for mount point (WS URL)." );
-            }
-            
-            patchReporter.info( "Applying configuration ..." );
-            Engine.getInstance().setCurrentConfiguration( config );
-            
-            patchReporter.info( "Done." );
-            
-            success = true;
-        } catch (NexusException e) {
-            patchReporter.error( e.getMessage() );
-            throw new PatchException( e );
-        }
+//        Engine.getInstance().invalidateConfigurations();
+//        String key = getClass().getName();
+//        EngineConfiguration config = Engine.getInstance().getConfiguration( key );
+//
+//        try {
+//            Date now = new Date();
+//            patchReporter.info( "Checking component ..." );
+//            String className = org.nexuse2e.integration.info.WSDispatcherService.class.getName();
+//            ComponentPojo component = null;
+//            for (ComponentPojo cp : config.getComponents()) {
+//                if (className.equals( cp.getClassName() )) {
+//                    component = cp;
+//                    break;
+//                }
+//            }
+//            if (component == null) {
+//                component = new ComponentPojo();
+//                component.setClassName( className );
+//                component.setName( COMPONENT_NAME );
+//                component.setCreatedDate( now );
+//                component.setDescription( COMPONENT_DESCRIPTION );
+//                component.setType( ComponentType.SERVICE.getValue() );
+//                config.updateComponent( component );
+//                patchReporter.info( "Component " + component.getName() + " (" + component.getDescription() + ") has been created" );
+//            } else {
+//                patchReporter.info( "Component of required type already exists: " + component.getName() + " (" + component.getDescription() );
+//            }
+//
+//            patchReporter.info( "Creating service " + SERVICE_NAME + " (" + SERVICE_DESCRIPTION + ") ..." );
+//            ServicePojo service = config.getServicePojoName( SERVICE_NAME );
+//            if (service == null) {
+//                service = new ServicePojo( component, now, now, 0, 0, SERVICE_NAME );
+//                service.setAutostart( isAutostart() );
+//                service.setDescription( SERVICE_DESCRIPTION );
+//                ServiceParamPojo param = new ServiceParamPojo( service, now, now, 0, "url", MOUNT_POINT );
+//                if (service.getServiceParams() == null) {
+//                    service.setServiceParams( new ArrayList<ServiceParamPojo>() );
+//                }
+//                service.getServiceParams().add( param );
+//                config.updateService( service );
+//                patchReporter.info( "Created service with name " + service.getName() + " and mount point " + MOUNT_POINT + ". This is " + (isAutostart() ? "" : "NOT ") + "an autostart service." );
+//            } else {
+//                patchReporter.info( "Service with name " + service.getName() + " already exists. Please check service configuration for mount point (WS URL)." );
+//            }
+//
+//            patchReporter.info( "Applying configuration ..." );
+//            Engine.getInstance().setCurrentConfiguration( config );
+//
+//            patchReporter.info( "Done." );
+//
+//            success = true;
+//        } catch (NexusException e) {
+//            patchReporter.error( e.getMessage() );
+//            throw new PatchException( e );
+//        }
     }
 
     public String getPatchDescription() {

@@ -25,7 +25,8 @@
     </licenses>
 
     <properties>
-        <org.springframework.version>3.2.4.RELEASE</org.springframework.version>
+        <org.springframework.version>4.3.30.RELEASE</org.springframework.version>
+        <cxf.version>3.3.5</cxf.version>
         <surefire.useFile>false</surefire.useFile>
     </properties>
 
@@ -50,43 +51,43 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>7.0.42</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-logging-juli</artifactId>
-            <version>7.0.42</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat.embed</groupId>-->
+<!--            <artifactId>tomcat-embed-core</artifactId>-->
+<!--            <version>7.0.42</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat.embed</groupId>-->
+<!--            <artifactId>tomcat-embed-logging-juli</artifactId>-->
+<!--            <version>7.0.42</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <!-- required for compiling jsps -->
-        <dependency>
-            <groupId>org.eclipse.jdt.core.compiler</groupId>
-            <artifactId>ecj</artifactId>
-            <version>3.7.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
-            <version>7.0.42</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-api</artifactId>
-            <version>1.2.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap</groupId>
-            <artifactId>shrinkwrap-impl-base</artifactId>
-            <version>1.2.0</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.jdt.core.compiler</groupId>-->
+<!--            <artifactId>ecj</artifactId>-->
+<!--            <version>3.7.1</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat.embed</groupId>-->
+<!--            <artifactId>tomcat-embed-jasper</artifactId>-->
+<!--            <version>7.0.42</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.jboss.shrinkwrap</groupId>-->
+<!--            <artifactId>shrinkwrap-api</artifactId>-->
+<!--            <version>1.2.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.jboss.shrinkwrap</groupId>-->
+<!--            <artifactId>shrinkwrap-impl-base</artifactId>-->
+<!--            <version>1.2.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
 
         <dependency>
@@ -567,8 +568,47 @@
             <artifactId>simpleclient_servlet</artifactId>
             <version>0.0.24</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-core</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.cxf</groupId>-->
+<!--            <artifactId>cxf-rt-frontend-jaxws</artifactId>-->
+<!--            <version>${cxf.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.cxf</groupId>-->
+<!--            <artifactId>cxf-rt-ws-security</artifactId>-->
+<!--            <version>${cxf.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.cxf</groupId>-->
+<!--            <artifactId>cxf-rt-transports-http</artifactId>-->
+<!--            <version>${cxf.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.cxf</groupId>-->
+<!--            <artifactId>cxf-rt-bindings-soap</artifactId>-->
+<!--            <version>${cxf.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>javax.xml.ws</groupId>-->
+<!--            <artifactId>jaxws-api</artifactId>-->
+<!--            <version>2.3.1</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.ws.security</groupId>-->
+<!--            <artifactId>wss4j</artifactId>-->
+<!--            <version>1.6.19</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+<!--
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-bundle</artifactId>
@@ -621,6 +661,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
         <!--
         <dependency>
           <groupId>org.apache.ws.commons.axiom</groupId>
@@ -663,42 +704,42 @@
             <version>1.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.birt</groupId>
-            <artifactId>coreapi</artifactId>
-            <version>2.3.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.birt</groupId>
-            <artifactId>engineapi</artifactId>
-            <version>2.3.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.birt</groupId>
-            <artifactId>scriptapi</artifactId>
-            <version>2.3.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.birt</groupId>
-            <artifactId>modelapi</artifactId>
-            <version>2.3.2</version>
-            <scope>compile</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.birt</groupId>-->
+<!--            <artifactId>coreapi</artifactId>-->
+<!--            <version>2.3.2</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.birt</groupId>-->
+<!--            <artifactId>engineapi</artifactId>-->
+<!--            <version>2.3.2</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.birt</groupId>-->
+<!--            <artifactId>scriptapi</artifactId>-->
+<!--            <version>2.3.2</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.birt</groupId>-->
+<!--            <artifactId>modelapi</artifactId>-->
+<!--            <version>2.3.2</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
             <version>3.6.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>rhino</groupId>
-            <artifactId>js</artifactId>
-            <version>1.6R7</version>
-            <scope>runtime</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>rhino</groupId>-->
+<!--            <artifactId>js</artifactId>-->
+<!--            <version>1.6R7</version>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>org.slf4j</groupId>-->
 <!--            <artifactId>slf4j-jdk14</artifactId>-->
@@ -807,72 +848,72 @@
             </plugin>
 
             <!-- Use wsdl2java in order to generate source from WSDL documents -->
-            <plugin>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-codegen-plugin</artifactId>
-                <version>3.3.5</version>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.cxf</groupId>-->
+<!--                <artifactId>cxf-codegen-plugin</artifactId>-->
+<!--                <version>3.3.5</version>-->
 
-                <dependencies>
+<!--                <dependencies>-->
 
-                    <!--
-                        need to add this to get around the following error on IBM's JDK
-                        org.apache.xerces.impl.dv.DVFactoryException: DTD factory class
-                        org.apache.xerces.impl.dv.dtd.DTDDVFactoryImpl does not extend from
-                        DTDDVFactory.
-                    -->
-                    <dependency>
-                        <groupId>xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                        <version>2.8.1</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>generate-aggateway-ws</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <sourceRoot>${basedir}/src/main/java</sourceRoot>
-                            <wsdlOptions>
-                                <wsdlOption>
-                                    <wsdl>${basedir}/src/main/resources/org/nexuse2e/integration/AgGateway.wsdl</wsdl>
-                                    <extraargs>
-                                        <extraarg>-p</extraarg>
-                                        <extraarg>org.nexuse2e.service.ws.aggateway.wsdl</extraarg>
-                                        <extraarg>-wsdlLocation</extraarg>
-                                        <extraarg>classpath:org/nexuse2e/integration/AgGateway.wsdl</extraarg>
-                                    </extraargs>
-                                </wsdlOption>
-                            </wsdlOptions>
-                        </configuration>
-                        <goals>
-                            <goal>wsdl2java</goal>
-                        </goals>
-                    </execution>
+<!--                    &lt;!&ndash;-->
+<!--                        need to add this to get around the following error on IBM's JDK-->
+<!--                        org.apache.xerces.impl.dv.DVFactoryException: DTD factory class-->
+<!--                        org.apache.xerces.impl.dv.dtd.DTDDVFactoryImpl does not extend from-->
+<!--                        DTDDVFactory.-->
+<!--                    &ndash;&gt;-->
+<!--                    <dependency>-->
+<!--                        <groupId>xerces</groupId>-->
+<!--                        <artifactId>xercesImpl</artifactId>-->
+<!--                        <version>2.8.1</version>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>generate-aggateway-ws</id>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <configuration>-->
+<!--                            <sourceRoot>${basedir}/src/main/java</sourceRoot>-->
+<!--                            <wsdlOptions>-->
+<!--                                <wsdlOption>-->
+<!--                                    <wsdl>${basedir}/src/main/resources/org/nexuse2e/integration/AgGateway.wsdl</wsdl>-->
+<!--                                    <extraargs>-->
+<!--                                        <extraarg>-p</extraarg>-->
+<!--                                        <extraarg>org.nexuse2e.service.ws.aggateway.wsdl</extraarg>-->
+<!--                                        <extraarg>-wsdlLocation</extraarg>-->
+<!--                                        <extraarg>classpath:org/nexuse2e/integration/AgGateway.wsdl</extraarg>-->
+<!--                                    </extraargs>-->
+<!--                                </wsdlOption>-->
+<!--                            </wsdlOptions>-->
+<!--                        </configuration>-->
+<!--                        <goals>-->
+<!--                            <goal>wsdl2java</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
 
-                    <execution>
-                        <id>generate-info-ws</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <sourceRoot>${basedir}/src/main/java</sourceRoot>
-                            <wsdlOptions>
-                                <wsdlOption>
-                                    <wsdl>${basedir}/src/main/resources/org/nexuse2e/integration/NEXUSe2eInfo.wsdl
-                                    </wsdl>
-                                    <extraargs>
-                                        <extraarg>-p</extraarg>
-                                        <extraarg>org.nexuse2e.integration.info.wsdl</extraarg>
-                                        <extraarg>-wsdlLocation</extraarg>
-                                        <extraarg>classpath:org/nexuse2e/integration/NEXUSe2eInfo.wsdl</extraarg>
-                                    </extraargs>
-                                </wsdlOption>
-                            </wsdlOptions>
-                        </configuration>
-                        <goals>
-                            <goal>wsdl2java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--                    <execution>-->
+<!--                        <id>generate-info-ws</id>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <configuration>-->
+<!--                            <sourceRoot>${basedir}/src/main/java</sourceRoot>-->
+<!--                            <wsdlOptions>-->
+<!--                                <wsdlOption>-->
+<!--                                    <wsdl>${basedir}/src/main/resources/org/nexuse2e/integration/NEXUSe2eInfo.wsdl-->
+<!--                                    </wsdl>-->
+<!--                                    <extraargs>-->
+<!--                                        <extraarg>-p</extraarg>-->
+<!--                                        <extraarg>org.nexuse2e.integration.info.wsdl</extraarg>-->
+<!--                                        <extraarg>-wsdlLocation</extraarg>-->
+<!--                                        <extraarg>classpath:org/nexuse2e/integration/NEXUSe2eInfo.wsdl</extraarg>-->
+<!--                                    </extraargs>-->
+<!--                                </wsdlOption>-->
+<!--                            </wsdlOptions>-->
+<!--                        </configuration>-->
+<!--                        <goals>-->
+<!--                            <goal>wsdl2java</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <!--
