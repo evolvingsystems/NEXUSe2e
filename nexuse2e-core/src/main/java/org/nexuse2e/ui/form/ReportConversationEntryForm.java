@@ -54,7 +54,9 @@ public class ReportConversationEntryForm extends ActionForm {
         setChoreographyId( pojo.getChoreography().getName() );
         setConversationId( pojo.getConversationId() );
         setNxConversationId( pojo.getNxConversationId() );
-        setParticipantId( pojo.getPartner().getPartnerId() );
+        setParticipantId( pojo.getPartner(
+
+        ).getPartnerId() );
 
         setStatus( "" + pojo.getStatus() );
         switch ( pojo.getStatus() ) {

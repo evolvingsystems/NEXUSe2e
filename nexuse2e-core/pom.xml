@@ -26,7 +26,8 @@
 
     <properties>
         <org.springframework.version>4.3.30.RELEASE</org.springframework.version>
-        <cxf.version>3.3.5</cxf.version>
+        <cxf.version>3.3.5</cxf.version> <!-- ws stuff currently removed, dependencies for saop messages required -->
+        <hibernate.version>5.6.5.Final</hibernate.version>
         <surefire.useFile>false</surefire.useFile>
     </properties>
 
@@ -242,25 +243,25 @@
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <version>10.10.1.1</version>
+            <version>10.15.2.0</version> <!--  10.10.1.1 -->
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>2.7.4</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-jdk14</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.sf.ehcache</groupId>-->
+<!--            <artifactId>ehcache</artifactId>-->
+<!--            <version>2.7.4</version>-->
+<!--            <scope>compile</scope>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.slf4j</groupId>-->
+<!--                    <artifactId>slf4j-jdk14</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.slf4j</groupId>-->
+<!--                    <artifactId>slf4j-api</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>emma</groupId>
             <artifactId>emma</artifactId>
@@ -283,7 +284,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>4.2.8.Final</version>
+            <version>${hibernate.version}</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -307,7 +308,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>4.2.8.Final</version>
+            <version>${hibernate.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>
