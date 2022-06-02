@@ -92,8 +92,8 @@ public class HttpReceiverService extends AbstractControllerService implements Re
 
         parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Logical Name", "Logical name " +
                 "that is appended to the URL", "not_defined"));
-        parameterMap.put(BASIC_AUTH_ENABLED, new ParameterDescriptor(ParameterType.BOOLEAN, "Basic Auth", "enable basic auth for incoming messages", Boolean.FALSE));
-        parameterMap.put(BASIC_AUTH_NAME, new ParameterDescriptor(ParameterType.STRING, "Username", "basic auth user name", ""));
+        parameterMap.put(BASIC_AUTH_ENABLED, new ParameterDescriptor(ParameterType.BOOLEAN, "Basic Auth", "Enable basic auth for incoming messages", Boolean.FALSE));
+        parameterMap.put(BASIC_AUTH_NAME, new ParameterDescriptor(ParameterType.STRING, "Username", "Basic auth user name", ""));
         parameterMap.put(BASIC_AUTH_PASSWORD, new ParameterDescriptor(ParameterType.STRING, "Password", "Basic auth password", ""));
     }
 
@@ -115,7 +115,7 @@ public class HttpReceiverService extends AbstractControllerService implements Re
             if(basicAuthEnabled != null && basicAuthEnabled) {
                 String authHeader = request.getHeader("Authorization");
                 if(StringUtils.isBlank(authHeader)) {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return null;
                 }
                 String basicAuthUsername = getParameter(BASIC_AUTH_NAME);
@@ -123,7 +123,7 @@ public class HttpReceiverService extends AbstractControllerService implements Re
                 byte[] tokenBytes = Base64.encodeBase64((basicAuthUsername+":"+basicAuthPassword).getBytes(StandardCharsets.UTF_8));
                 String expected = "Basic "+new String(tokenBytes,StandardCharsets.UTF_8);
                 if(!Objects.equals(expected,authHeader)) {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return null;
                 }
             }
