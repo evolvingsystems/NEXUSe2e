@@ -20,6 +20,8 @@
 package org.nexuse2e.service.http;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.net.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
@@ -46,6 +48,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +57,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -75,6 +80,10 @@ import javax.xml.soap.SOAPPart;
 public class HttpReceiverService extends AbstractControllerService implements ReceiverAware, MessageProcessor {
 
     public static final String URL_PARAM_NAME = "logical_name";
+    public static final String BASIC_AUTH_ENABLED = "basic_auth_enabled";
+    public static final String BASIC_AUTH_NAME = "basic_auth_name";
+    public static final String BASIC_AUTH_PASSWORD = "basic_auth_password";
+
     private static Logger LOG = LogManager.getLogger(HttpReceiverService.class);
     private TransportReceiver transportReceiver;
 
@@ -83,6 +92,9 @@ public class HttpReceiverService extends AbstractControllerService implements Re
 
         parameterMap.put(URL_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Logical Name", "Logical name " +
                 "that is appended to the URL", "not_defined"));
+        parameterMap.put(BASIC_AUTH_ENABLED, new ParameterDescriptor(ParameterType.BOOLEAN, "Basic Auth", "Enable basic auth for incoming messages", Boolean.FALSE));
+        parameterMap.put(BASIC_AUTH_NAME, new ParameterDescriptor(ParameterType.STRING, "Username", "Basic auth user name", ""));
+        parameterMap.put(BASIC_AUTH_PASSWORD, new ParameterDescriptor(ParameterType.STRING, "Password", "Basic auth password", ""));
     }
 
     /* (non-Javadoc)
@@ -97,6 +109,23 @@ public class HttpReceiverService extends AbstractControllerService implements Re
             if (getStatus() != BeanStatus.STARTED) {
                 response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return null;
+            }
+
+            Boolean basicAuthEnabled = getParameter(BASIC_AUTH_ENABLED);
+            if(basicAuthEnabled != null && basicAuthEnabled) {
+                String authHeader = request.getHeader("Authorization");
+                if(StringUtils.isBlank(authHeader)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return null;
+                }
+                String basicAuthUsername = getParameter(BASIC_AUTH_NAME);
+                String basicAuthPassword = getParameter(BASIC_AUTH_PASSWORD);
+                byte[] tokenBytes = Base64.encodeBase64((basicAuthUsername+":"+basicAuthPassword).getBytes(StandardCharsets.UTF_8));
+                String expected = "Basic "+new String(tokenBytes,StandardCharsets.UTF_8);
+                if(!Objects.equals(expected,authHeader)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return null;
+                }
             }
 
             MessageContext messageContext = new MessageContext();
