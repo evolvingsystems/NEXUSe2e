@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -78,6 +79,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 /**
  * The SMTP sender service.
@@ -93,6 +95,8 @@ public class SmtpSender extends AbstractService implements SenderAware {
     public static final String USER_PARAM_NAME = "user";
     public static final String PASSWORD_PARAM_NAME = "password";
     public static final String ENCRYPTION_PARAM_NAME = "encryption";
+    public static final String EBXML_PARAM_NAME = "ebxml";
+    public static final String SUBJECT_PARAM_NAME = "subject";
     private static Logger LOG = LogManager.getLogger(SmtpSender.class);
     private TransportSender transportSender;
 
@@ -106,7 +110,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
      * @param msg
      */
     private static MimeMessage createMimeSMTPMsg(Session session, MessageContext messagePipelineParameter,
-                                                 boolean useEncryption) throws NexusException {
+                                                 boolean useEncryption, Boolean isEbxmlMessage) throws NexusException {
 
         MimeMessage mimeMessage = null;
         MimeMultipart mimeMultipart = null;
@@ -172,15 +176,18 @@ public class SmtpSender extends AbstractService implements SenderAware {
                 }
             }
 
-            // ebxml header
             MessagePojo msg = messagePipelineParameter.getMessagePojo();
-            String ebXmlHeader = new String(msg.getHeaderData());
-            mimeBodyPart = new MimeBodyPart();
-            mimeBodyPart.setContent(ebXmlHeader, "text/xml");
-            mimeBodyPart.setHeader("Content-ID", msg.getMessageId() + "-" + msg.getTRP().getProtocol() + "-Header");
-            mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
 
-            mimeMultipart.addBodyPart(mimeBodyPart);
+            if (isEbxmlMessage == null || isEbxmlMessage) {
+                // ebxml header
+                String ebXmlHeader = new String(msg.getHeaderData());
+                mimeBodyPart = new MimeBodyPart();
+                mimeBodyPart.setContent(ebXmlHeader, "text/xml");
+                mimeBodyPart.setHeader("Content-ID", msg.getMessageId() + "-" + msg.getTRP().getProtocol() + "-Header");
+                mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
+
+                mimeMultipart.addBodyPart(mimeBodyPart);
+            }
 
             // Encode body
             int partCount = 0;
@@ -194,8 +201,9 @@ public class SmtpSender extends AbstractService implements SenderAware {
                     mimeBodyPart.setContent(new String(payload.getPayloadData()), "text/xml");
                     mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
                 } else {
-                    // TODO (encoding) should be byte[], not string ?
-                    mimeBodyPart.setContent(new String(payload.getPayloadData()), payload.getMimeType());
+                    ByteArrayDataSource bds = new ByteArrayDataSource(payload.getPayloadData(), payload.getMimeType());
+                    mimeBodyPart.setDataHandler(new DataHandler(bds));
+                    mimeBodyPart.setFileName(payload.getContentId());
                 }
 
                 if (useEncryption && (generator != null)) {
@@ -255,6 +263,10 @@ public class SmtpSender extends AbstractService implements SenderAware {
         encryptionTypeDrowdown.addElement("SSL", "ssl");
         parameterMap.put(ENCRYPTION_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Encryption", "Connection" +
                 " encryption type", encryptionTypeDrowdown));
+        parameterMap.put(EBXML_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "EBXML",
+                "Used for ebxml messages", Boolean.TRUE));
+        parameterMap.put(SUBJECT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Subject",
+                "E-Mail subject. If empty, conversation id will be used.", ""));
     }
 
     private boolean isSslEnabled() {
@@ -324,13 +336,23 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
                 InternetAddress addr = new InternetAddress(emailAddr);
 
+                Boolean isEbxmlMessage = getParameter(EBXML_PARAM_NAME);
+
                 MimeMessage mimeMsg = createMimeSMTPMsg(session, messageContext,
-                        participant.getConnection().isSecure());
+                        participant.getConnection().isSecure(), isEbxmlMessage);
+
                 mimeMsg.setRecipient(javax.mail.Message.RecipientType.TO, addr);
                 mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
-                mimeMsg.setSubject(messageContext.getMessagePojo().getConversation().getConversationId());
+                String subject = getParameter(SUBJECT_PARAM_NAME);
+                if (StringUtils.isNotBlank(subject)) {
+                    mimeMsg.setSubject(subject);
+                } else {
+                    mimeMsg.setSubject(messageContext.getMessagePojo().getConversation().getConversationId());
+                }
                 mimeMsg.setSentDate(new java.util.Date());
-                mimeMsg.setHeader("SOAPAction", "ebXML");
+                if (isEbxmlMessage == null || isEbxmlMessage) {
+                    mimeMsg.setHeader("SOAPAction", "ebXML");
+                }
                 mimeMsg.saveChanges();
 
                 // DEBUG OUTPUT--------------------------------
@@ -443,7 +465,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
             MimeMessage mimeMsg = null;
 
             // Create the message
-            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL);
+            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL, (Boolean) getParameter(EBXML_PARAM_NAME));
             mimeMsg.setRecipient(Message.RecipientType.TO, addr);
             mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
             mimeMsg.setSubject(messagePipelineParameter.getConversation().getConversationId());
