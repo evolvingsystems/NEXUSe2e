@@ -51,6 +51,7 @@ import org.nexuse2e.service.SenderAware;
 import org.nexuse2e.transport.TransportSender;
 import org.nexuse2e.util.CertificatePojoSocketFactory;
 import org.nexuse2e.util.CertificateUtil;
+import org.nexuse2e.util.ServerPropertiesUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.security.KeyStore;
@@ -178,16 +179,18 @@ public class SmtpSender extends AbstractService implements SenderAware {
             MessagePojo msg = messagePipelineParameter.getMessagePojo();
 
             if (msg.getHeaderData() != null) {
-                // ebxml header
-                String ebXmlHeader = new String(msg.getHeaderData());
+                // ebxml(?) header
+                String header = new String(msg.getHeaderData());
                 mimeBodyPart = new MimeBodyPart();
-                mimeBodyPart.setContent(ebXmlHeader, "text/xml");
+                mimeBodyPart.setContent(header, "text/xml");
                 mimeBodyPart.setHeader("Content-ID", msg.getMessageId() + "-" + msg.getTRP().getProtocol() + "-Header");
                 mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
 
                 mimeMultipart.addBodyPart(mimeBodyPart);
 
-                mimeMessage.setHeader("SOAPAction", "ebXML");
+                if (header.contains("ebxml")) {
+                    mimeMessage.setHeader("SOAPAction", "ebXML");
+                }
             }
 
             // Encode body
@@ -231,6 +234,18 @@ public class SmtpSender extends AbstractService implements SenderAware {
             // contentType.setParameter( "version", msg.getProtocolVersion() );
             mimeMessage.setHeader("Content-Type", contentType.toString());
 
+            // Set mail body
+            MimeBodyPart bodyMessagePart  = new MimeBodyPart();
+            String body =
+                    "Choreography: " + ServerPropertiesUtil.ServerProperty.CHOREOGRAPHY.getValue() + "<br>" +
+                    "Action: " + ServerPropertiesUtil.ServerProperty.ACTION.getValue() + "<br>" +
+                    "Conversation Id: " + ServerPropertiesUtil.ServerProperty.CONVERSATION.getValue() + "<br>" +
+                    "Message Id: " + ServerPropertiesUtil.ServerProperty.MESSAGE.getValue() + "<br>" +
+                    "Created Date: " + ServerPropertiesUtil.ServerProperty.CREATED_DATE.getValue();
+            body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
+            bodyMessagePart.setContent(body, "text/html; charset=UTF-8");
+            mimeMultipart.addBodyPart(bodyMessagePart);
+
             // MUST appear after setHeader with content-type!!!
             mimeMessage.setContent(mimeMultipart);
 
@@ -265,7 +280,8 @@ public class SmtpSender extends AbstractService implements SenderAware {
         parameterMap.put(ENCRYPTION_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Encryption", "Connection" +
                 " encryption type", encryptionTypeDrowdown));
         parameterMap.put(SUBJECT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Subject",
-                "E-Mail subject. If empty, conversation id will be used.", ""));
+                "E-Mail subject. Use ${systemProperty} e.g. ${nexus.message.message} for replacements. If empty, messageId will be used.",
+                ""));
     }
 
     private boolean isSslEnabled() {
@@ -341,9 +357,10 @@ public class SmtpSender extends AbstractService implements SenderAware {
                 mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
                 String subject = getParameter(SUBJECT_PARAM_NAME);
                 if (StringUtils.isNotBlank(subject)) {
+                    subject = ServerPropertiesUtil.replaceServerProperties(subject, messageContext);
                     mimeMsg.setSubject(subject);
                 } else {
-                    mimeMsg.setSubject(messageContext.getMessagePojo().getConversation().getConversationId());
+                    mimeMsg.setSubject(messageContext.getMessagePojo().getMessageId());
                 }
                 mimeMsg.setSentDate(new java.util.Date());
                 mimeMsg.saveChanges();
