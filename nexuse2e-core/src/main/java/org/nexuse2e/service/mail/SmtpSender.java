@@ -95,7 +95,6 @@ public class SmtpSender extends AbstractService implements SenderAware {
     public static final String USER_PARAM_NAME = "user";
     public static final String PASSWORD_PARAM_NAME = "password";
     public static final String ENCRYPTION_PARAM_NAME = "encryption";
-    public static final String EBXML_PARAM_NAME = "ebxml";
     public static final String SUBJECT_PARAM_NAME = "subject";
     private static Logger LOG = LogManager.getLogger(SmtpSender.class);
     private TransportSender transportSender;
@@ -110,7 +109,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
      * @param msg
      */
     private static MimeMessage createMimeSMTPMsg(Session session, MessageContext messagePipelineParameter,
-                                                 boolean useEncryption, Boolean isEbxmlMessage) throws NexusException {
+                                                 boolean useEncryption) throws NexusException {
 
         MimeMessage mimeMessage = null;
         MimeMultipart mimeMultipart = null;
@@ -178,7 +177,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
             MessagePojo msg = messagePipelineParameter.getMessagePojo();
 
-            if (isEbxmlMessage == null || isEbxmlMessage) {
+            if (msg.getHeaderData() != null) {
                 // ebxml header
                 String ebXmlHeader = new String(msg.getHeaderData());
                 mimeBodyPart = new MimeBodyPart();
@@ -187,6 +186,8 @@ public class SmtpSender extends AbstractService implements SenderAware {
                 mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
 
                 mimeMultipart.addBodyPart(mimeBodyPart);
+
+                mimeMessage.setHeader("SOAPAction", "ebXML");
             }
 
             // Encode body
@@ -263,8 +264,6 @@ public class SmtpSender extends AbstractService implements SenderAware {
         encryptionTypeDrowdown.addElement("SSL", "ssl");
         parameterMap.put(ENCRYPTION_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Encryption", "Connection" +
                 " encryption type", encryptionTypeDrowdown));
-        parameterMap.put(EBXML_PARAM_NAME, new ParameterDescriptor(ParameterType.BOOLEAN, "EBXML",
-                "Used for ebxml messages", Boolean.TRUE));
         parameterMap.put(SUBJECT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Subject",
                 "E-Mail subject. If empty, conversation id will be used.", ""));
     }
@@ -336,10 +335,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
                 InternetAddress addr = new InternetAddress(emailAddr);
 
-                Boolean isEbxmlMessage = getParameter(EBXML_PARAM_NAME);
-
-                MimeMessage mimeMsg = createMimeSMTPMsg(session, messageContext,
-                        participant.getConnection().isSecure(), isEbxmlMessage);
+                MimeMessage mimeMsg = createMimeSMTPMsg(session, messageContext, participant.getConnection().isSecure());
 
                 mimeMsg.setRecipient(javax.mail.Message.RecipientType.TO, addr);
                 mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
@@ -350,9 +346,6 @@ public class SmtpSender extends AbstractService implements SenderAware {
                     mimeMsg.setSubject(messageContext.getMessagePojo().getConversation().getConversationId());
                 }
                 mimeMsg.setSentDate(new java.util.Date());
-                if (isEbxmlMessage == null || isEbxmlMessage) {
-                    mimeMsg.setHeader("SOAPAction", "ebXML");
-                }
                 mimeMsg.saveChanges();
 
                 // DEBUG OUTPUT--------------------------------
@@ -465,12 +458,11 @@ public class SmtpSender extends AbstractService implements SenderAware {
             MimeMessage mimeMsg = null;
 
             // Create the message
-            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL, (Boolean) getParameter(EBXML_PARAM_NAME));
+            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL);
             mimeMsg.setRecipient(Message.RecipientType.TO, addr);
             mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
             mimeMsg.setSubject(messagePipelineParameter.getConversation().getConversationId());
             mimeMsg.setSentDate(new Date());
-            mimeMsg.setHeader("SOAPAction", "ebXML");
             mimeMsg.saveChanges();
 
             // DEBUG OUTPUT--------------------------------
