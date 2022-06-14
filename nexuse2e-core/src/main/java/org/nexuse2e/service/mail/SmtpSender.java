@@ -97,6 +97,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
     public static final String PASSWORD_PARAM_NAME = "password";
     public static final String ENCRYPTION_PARAM_NAME = "encryption";
     public static final String SUBJECT_PARAM_NAME = "subject";
+    public static final String BODY_PARAM_NAME = "body";
     private static Logger LOG = LogManager.getLogger(SmtpSender.class);
     private TransportSender transportSender;
 
@@ -110,7 +111,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
      * @param msg
      */
     private static MimeMessage createMimeSMTPMsg(Session session, MessageContext messagePipelineParameter,
-                                                 boolean useEncryption) throws NexusException {
+                                                 boolean useEncryption, String body) throws NexusException {
 
         MimeMessage mimeMessage = null;
         MimeMultipart mimeMultipart = null;
@@ -234,17 +235,13 @@ public class SmtpSender extends AbstractService implements SenderAware {
             // contentType.setParameter( "version", msg.getProtocolVersion() );
             mimeMessage.setHeader("Content-Type", contentType.toString());
 
-            // Set mail body
-            MimeBodyPart bodyMessagePart  = new MimeBodyPart();
-            String body =
-                    "Choreography: " + ServerPropertiesUtil.ServerProperty.CHOREOGRAPHY.getValue() + "<br>" +
-                    "Action: " + ServerPropertiesUtil.ServerProperty.ACTION.getValue() + "<br>" +
-                    "Conversation Id: " + ServerPropertiesUtil.ServerProperty.CONVERSATION.getValue() + "<br>" +
-                    "Message Id: " + ServerPropertiesUtil.ServerProperty.MESSAGE.getValue() + "<br>" +
-                    "Created Date: " + ServerPropertiesUtil.ServerProperty.CREATED_DATE.getValue();
-            body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
-            bodyMessagePart.setContent(body, "text/html; charset=UTF-8");
-            mimeMultipart.addBodyPart(bodyMessagePart);
+            if(StringUtils.isNotBlank(body)) {
+                // Set mail body
+                MimeBodyPart bodyMessagePart  = new MimeBodyPart();
+                body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
+                bodyMessagePart.setContent(body, "text/html; charset=UTF-8");
+                mimeMultipart.addBodyPart(bodyMessagePart);
+            }
 
             // MUST appear after setHeader with content-type!!!
             mimeMessage.setContent(mimeMultipart);
@@ -280,7 +277,10 @@ public class SmtpSender extends AbstractService implements SenderAware {
         parameterMap.put(ENCRYPTION_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Encryption", "Connection" +
                 " encryption type", encryptionTypeDrowdown));
         parameterMap.put(SUBJECT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Subject",
-                "E-Mail subject. Use ${systemProperty} e.g. ${nexus.message.message} for replacements. If empty, messageId will be used.",
+                "Optional E-Mail subject. Use ${systemProperty} e.g. ${nexus.message.message} for replacements. If empty, messageId will be used.",
+                ""));
+        parameterMap.put(BODY_PARAM_NAME, new ParameterDescriptor(ParameterType.TEXT, "Body",
+                "Optional E-Mail html body. Use ${systemProperty} e.g. ${nexus.message.message} for replacements.",
                 ""));
     }
 
@@ -351,7 +351,8 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
                 InternetAddress addr = new InternetAddress(emailAddr);
 
-                MimeMessage mimeMsg = createMimeSMTPMsg(session, messageContext, participant.getConnection().isSecure());
+                MimeMessage mimeMsg =
+                        createMimeSMTPMsg(session, messageContext, participant.getConnection().isSecure(), this.<String>getParameter(BODY_PARAM_NAME));
 
                 mimeMsg.setRecipient(javax.mail.Message.RecipientType.TO, addr);
                 mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
@@ -475,7 +476,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
             MimeMessage mimeMsg = null;
 
             // Create the message
-            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL);
+            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL, null);
             mimeMsg.setRecipient(Message.RecipientType.TO, addr);
             mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
             mimeMsg.setSubject(messagePipelineParameter.getConversation().getConversationId());
