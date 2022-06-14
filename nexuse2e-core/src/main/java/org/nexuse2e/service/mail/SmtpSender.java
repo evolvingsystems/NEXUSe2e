@@ -51,6 +51,7 @@ import org.nexuse2e.service.SenderAware;
 import org.nexuse2e.transport.TransportSender;
 import org.nexuse2e.util.CertificatePojoSocketFactory;
 import org.nexuse2e.util.CertificateUtil;
+import org.nexuse2e.util.ServerPropertiesUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.security.KeyStore;
@@ -65,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -78,6 +80,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 /**
  * The SMTP sender service.
@@ -93,6 +96,8 @@ public class SmtpSender extends AbstractService implements SenderAware {
     public static final String USER_PARAM_NAME = "user";
     public static final String PASSWORD_PARAM_NAME = "password";
     public static final String ENCRYPTION_PARAM_NAME = "encryption";
+    public static final String SUBJECT_PARAM_NAME = "subject";
+    public static final String BODY_PARAM_NAME = "body";
     private static Logger LOG = LogManager.getLogger(SmtpSender.class);
     private TransportSender transportSender;
 
@@ -106,7 +111,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
      * @param msg
      */
     private static MimeMessage createMimeSMTPMsg(Session session, MessageContext messagePipelineParameter,
-                                                 boolean useEncryption) throws NexusException {
+                                                 boolean useEncryption, String body) throws NexusException {
 
         MimeMessage mimeMessage = null;
         MimeMultipart mimeMultipart = null;
@@ -172,15 +177,22 @@ public class SmtpSender extends AbstractService implements SenderAware {
                 }
             }
 
-            // ebxml header
             MessagePojo msg = messagePipelineParameter.getMessagePojo();
-            String ebXmlHeader = new String(msg.getHeaderData());
-            mimeBodyPart = new MimeBodyPart();
-            mimeBodyPart.setContent(ebXmlHeader, "text/xml");
-            mimeBodyPart.setHeader("Content-ID", msg.getMessageId() + "-" + msg.getTRP().getProtocol() + "-Header");
-            mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
 
-            mimeMultipart.addBodyPart(mimeBodyPart);
+            if (msg.getHeaderData() != null) {
+                // ebxml(?) header
+                String header = new String(msg.getHeaderData());
+                mimeBodyPart = new MimeBodyPart();
+                mimeBodyPart.setContent(header, "text/xml");
+                mimeBodyPart.setHeader("Content-ID", msg.getMessageId() + "-" + msg.getTRP().getProtocol() + "-Header");
+                mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
+
+                mimeMultipart.addBodyPart(mimeBodyPart);
+
+                if (header.contains("ebxml")) {
+                    mimeMessage.setHeader("SOAPAction", "ebXML");
+                }
+            }
 
             // Encode body
             int partCount = 0;
@@ -194,8 +206,9 @@ public class SmtpSender extends AbstractService implements SenderAware {
                     mimeBodyPart.setContent(new String(payload.getPayloadData()), "text/xml");
                     mimeBodyPart.setHeader("Content-Type", "text/xml; charset=UTF-8");
                 } else {
-                    // TODO (encoding) should be byte[], not string ?
-                    mimeBodyPart.setContent(new String(payload.getPayloadData()), payload.getMimeType());
+                    ByteArrayDataSource bds = new ByteArrayDataSource(payload.getPayloadData(), payload.getMimeType());
+                    mimeBodyPart.setDataHandler(new DataHandler(bds));
+                    mimeBodyPart.setFileName(payload.getContentId());
                 }
 
                 if (useEncryption && (generator != null)) {
@@ -221,6 +234,14 @@ public class SmtpSender extends AbstractService implements SenderAware {
             // contentType.setParameter( "version", "2.0" );
             // contentType.setParameter( "version", msg.getProtocolVersion() );
             mimeMessage.setHeader("Content-Type", contentType.toString());
+
+            if(StringUtils.isNotBlank(body)) {
+                // Set mail body
+                MimeBodyPart bodyMessagePart  = new MimeBodyPart();
+                body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
+                bodyMessagePart.setContent(body, "text/html; charset=UTF-8");
+                mimeMultipart.addBodyPart(bodyMessagePart);
+            }
 
             // MUST appear after setHeader with content-type!!!
             mimeMessage.setContent(mimeMultipart);
@@ -255,6 +276,12 @@ public class SmtpSender extends AbstractService implements SenderAware {
         encryptionTypeDrowdown.addElement("SSL", "ssl");
         parameterMap.put(ENCRYPTION_PARAM_NAME, new ParameterDescriptor(ParameterType.LIST, "Encryption", "Connection" +
                 " encryption type", encryptionTypeDrowdown));
+        parameterMap.put(SUBJECT_PARAM_NAME, new ParameterDescriptor(ParameterType.STRING, "Subject",
+                "Optional E-Mail subject. Use ${systemProperty} e.g. ${nexus.message.message} for replacements. If empty, messageId will be used.",
+                ""));
+        parameterMap.put(BODY_PARAM_NAME, new ParameterDescriptor(ParameterType.TEXT, "Body",
+                "Optional E-Mail html body. Use ${systemProperty} e.g. ${nexus.message.message} for replacements.",
+                ""));
     }
 
     private boolean isSslEnabled() {
@@ -324,13 +351,19 @@ public class SmtpSender extends AbstractService implements SenderAware {
 
                 InternetAddress addr = new InternetAddress(emailAddr);
 
-                MimeMessage mimeMsg = createMimeSMTPMsg(session, messageContext,
-                        participant.getConnection().isSecure());
+                MimeMessage mimeMsg =
+                        createMimeSMTPMsg(session, messageContext, participant.getConnection().isSecure(), this.<String>getParameter(BODY_PARAM_NAME));
+
                 mimeMsg.setRecipient(javax.mail.Message.RecipientType.TO, addr);
                 mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
-                mimeMsg.setSubject(messageContext.getMessagePojo().getConversation().getConversationId());
+                String subject = getParameter(SUBJECT_PARAM_NAME);
+                if (StringUtils.isNotBlank(subject)) {
+                    subject = ServerPropertiesUtil.replaceServerProperties(subject, messageContext);
+                    mimeMsg.setSubject(subject);
+                } else {
+                    mimeMsg.setSubject(messageContext.getMessagePojo().getMessageId());
+                }
                 mimeMsg.setSentDate(new java.util.Date());
-                mimeMsg.setHeader("SOAPAction", "ebXML");
                 mimeMsg.saveChanges();
 
                 // DEBUG OUTPUT--------------------------------
@@ -443,12 +476,11 @@ public class SmtpSender extends AbstractService implements SenderAware {
             MimeMessage mimeMsg = null;
 
             // Create the message
-            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL);
+            mimeMsg = createMimeSMTPMsg(session, messagePipelineParameter, useSSL, null);
             mimeMsg.setRecipient(Message.RecipientType.TO, addr);
             mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
             mimeMsg.setSubject(messagePipelineParameter.getConversation().getConversationId());
             mimeMsg.setSentDate(new Date());
-            mimeMsg.setHeader("SOAPAction", "ebXML");
             mimeMsg.saveChanges();
 
             // DEBUG OUTPUT--------------------------------
