@@ -23,6 +23,8 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.nexuse2e.Engine;
@@ -52,7 +54,8 @@ public class ServerPropertiesUtil {
         PAYLOAD_CONDITIONAL_SEQUENCE("${nexus.message.payload.conditionalsequence}"),
         PAYLOAD_MIME_TYPE("${nexus.message.payload.mimetype}"),
         SERVER_CURRENTMILLIS("${nexus.server.time.millis}"),
-        SERVER_CURRENTTIME("${nexus.server.time.formated}");
+        SERVER_CURRENTTIME("${nexus.server.time.formated}"), // required for compatibility
+        SERVER_CURRENTTIME2("${nexus.server.time.formatted}");
 
         private String value;
 
@@ -66,6 +69,9 @@ public class ServerPropertiesUtil {
             return value;
         }
     }
+
+    public static String PATTERN_PREFIX = "nexus.server.time.formatted.";
+
 
     /**
      * Replaces '/' and '\\' with File.seperatorChar. 
@@ -110,16 +116,18 @@ public class ServerPropertiesUtil {
                     break;
                 }
                 if ( property.equals( ServerProperty.ROOTDIR ) ) {
-                    String nexusRoot = Engine.getInstance().getNexusE2ERoot();
-                    if ( !StringUtils.isEmpty( nexusRoot ) ) {
-                        if ( nexusRoot.endsWith( "/" ) || nexusRoot.endsWith( "\\" ) ) {
-                            nexusRoot = nexusRoot.substring( 0, nexusRoot.length() - 1 );
+                    if(Engine.getInstance() != null) {
+                        String nexusRoot = Engine.getInstance().getNexusE2ERoot();
+                        if (!StringUtils.isEmpty(nexusRoot)) {
+                            if (nexusRoot.endsWith("/") || nexusRoot.endsWith("\\")) {
+                                nexusRoot = nexusRoot.substring(0, nexusRoot.length() - 1);
+                            }
+                            value = StringUtils.replace(value, property.getValue(), nexusRoot);
                         }
-                        value = StringUtils.replace( value, property.getValue(), nexusRoot );
                     }
                 } else if ( property.equals( ServerProperty.SERVER_CURRENTMILLIS ) ) {
                     value = StringUtils.replace( value, property.getValue(), ""+System.currentTimeMillis() );
-                } else if ( property.equals( ServerProperty.SERVER_CURRENTTIME ) ) {
+                } else if ( property.equals( ServerProperty.SERVER_CURRENTTIME ) || property.equals( ServerProperty.SERVER_CURRENTTIME2 ) ) {
                     DateFormat df = new SimpleDateFormat( "yyyyMMddHHmmssSSS" );
                     value = StringUtils.replace( value, property.getValue(), df.format( new Date() ) );
                 }
@@ -231,6 +239,28 @@ public class ServerPropertiesUtil {
                     }
                 }
             }
+
+            if (value.contains("${")) {
+                Matcher m = Pattern.compile("\\$\\{([^}]+)}").matcher(value);
+                Date now = new Date();
+                while (m.find()) {
+                    String token = m.group(1);
+                    if(StringUtils.isNotBlank(token) && token.length() > PATTERN_PREFIX.length() && token.startsWith(PATTERN_PREFIX)) {
+                        String pattern = token.substring(PATTERN_PREFIX.length());
+                        try {
+                            DateFormat df = new SimpleDateFormat( pattern );
+                            value = StringUtils.replace( value, "${"+token+"}", df.format( now ) );
+                        } catch (IllegalArgumentException e) {
+                            // not a valid pattern. replace ignored.
+                        }
+
+                    }
+                }
+
+            }
+
+
+
         }
         return value;
     }
