@@ -70,7 +70,7 @@ public class ServerPropertiesUtil {
         }
     }
 
-    public static String PATTERN_PREFIX = "nexus.server.time.formatted.";
+    public static String DATETIME_PATTERN_PREFIX = "nexus.server.time.formatted.";
 
 
     /**
@@ -245,8 +245,8 @@ public class ServerPropertiesUtil {
                 Date now = new Date();
                 while (m.find()) {
                     String token = m.group(1);
-                    if(StringUtils.isNotBlank(token) && token.length() > PATTERN_PREFIX.length() && token.startsWith(PATTERN_PREFIX)) {
-                        String pattern = token.substring(PATTERN_PREFIX.length());
+                    if(StringUtils.isNotBlank(token) && token.length() > DATETIME_PATTERN_PREFIX.length() && token.startsWith(DATETIME_PATTERN_PREFIX)) {
+                        String pattern = token.substring(DATETIME_PATTERN_PREFIX.length());
                         try {
                             DateFormat df = new SimpleDateFormat( pattern );
                             value = StringUtils.replace( value, "${"+token+"}", df.format( now ) );
