@@ -195,14 +195,6 @@ public class SmtpSender extends AbstractService implements SenderAware {
             }
 
             // Encode body
-            if(StringUtils.isNotBlank(body)) {
-                // Set mail body
-                MimeBodyPart bodyMessagePart  = new MimeBodyPart();
-                body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
-                bodyMessagePart.setText(body, "UTF-8", "html");
-                mimeMultipart.addBodyPart(bodyMessagePart);
-            }
-
             int partCount = 0;
             for (MessagePayloadPojo payload : msg.getMessagePayloads()) {
 
@@ -242,6 +234,14 @@ public class SmtpSender extends AbstractService implements SenderAware {
             // contentType.setParameter( "version", "2.0" );
             // contentType.setParameter( "version", msg.getProtocolVersion() );
             mimeMessage.setHeader("Content-Type", contentType.toString());
+
+            if(StringUtils.isNotBlank(body)) {
+                // Set mail body
+                MimeBodyPart bodyMessagePart  = new MimeBodyPart();
+                body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
+                bodyMessagePart.setContent(body, "text/html; charset=UTF-8");
+                mimeMultipart.addBodyPart(bodyMessagePart);
+            }
 
             // MUST appear after setHeader with content-type!!!
             mimeMessage.setContent(mimeMultipart);
