@@ -195,6 +195,14 @@ public class SmtpSender extends AbstractService implements SenderAware {
             }
 
             // Encode body
+            if(StringUtils.isNotBlank(body)) {
+                // Set mail body
+                MimeBodyPart bodyMessagePart  = new MimeBodyPart();
+                body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
+                bodyMessagePart.setText(body, "UTF-8", "html");
+                mimeMultipart.addBodyPart(bodyMessagePart);
+            }
+
             int partCount = 0;
             for (MessagePayloadPojo payload : msg.getMessagePayloads()) {
 
@@ -234,14 +242,6 @@ public class SmtpSender extends AbstractService implements SenderAware {
             // contentType.setParameter( "version", "2.0" );
             // contentType.setParameter( "version", msg.getProtocolVersion() );
             mimeMessage.setHeader("Content-Type", contentType.toString());
-
-            if(StringUtils.isNotBlank(body)) {
-                // Set mail body
-                MimeBodyPart bodyMessagePart  = new MimeBodyPart();
-                body = ServerPropertiesUtil.replaceServerProperties(body, messagePipelineParameter);
-                bodyMessagePart.setContent(body, "text/html; charset=UTF-8");
-                mimeMultipart.addBodyPart(bodyMessagePart);
-            }
 
             // MUST appear after setHeader with content-type!!!
             mimeMessage.setContent(mimeMultipart);
@@ -338,9 +338,6 @@ public class SmtpSender extends AbstractService implements SenderAware {
         }
 
         try {
-            ParticipantPojo participant = messageContext.getParticipant();
-            String emailAddr = participant.getConnection().getUri();
-
             // LOG.trace( "sendMessage: " + smtpHost + " - " + smtpUser + " - " + smtpPassword );
             Object[] connectionInfo = connect((String) getParameter(HOST_PARAM_NAME),
                     (String) getParameter(USER_PARAM_NAME), (String) getParameter(PASSWORD_PARAM_NAME),
@@ -349,12 +346,13 @@ public class SmtpSender extends AbstractService implements SenderAware {
                 session = (Session) connectionInfo[0];
                 transport = (Transport) connectionInfo[1];
 
-                InternetAddress addr = new InternetAddress(emailAddr);
+                ParticipantPojo participant = messageContext.getParticipant();
 
                 MimeMessage mimeMsg =
                         createMimeSMTPMsg(session, messageContext, participant.getConnection().isSecure(), this.<String>getParameter(BODY_PARAM_NAME));
 
-                mimeMsg.setRecipient(javax.mail.Message.RecipientType.TO, addr);
+                InternetAddress[] toAdresses = InternetAddress.parse(participant.getConnection().getUri());
+                mimeMsg.setRecipients(javax.mail.Message.RecipientType.TO, toAdresses);
                 mimeMsg.setFrom(new InternetAddress((String) getParameter(EMAIL_PARAM_NAME)));
                 String subject = getParameter(SUBJECT_PARAM_NAME);
                 if (StringUtils.isNotBlank(subject)) {
@@ -376,7 +374,7 @@ public class SmtpSender extends AbstractService implements SenderAware {
                 }
 
                 // Send the message
-                sendMessage(transport, mimeMsg, new Address[]{addr});
+                sendMessage(transport, mimeMsg, toAdresses);
 
                 transport.close();
             } else {
