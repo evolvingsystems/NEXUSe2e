@@ -30,7 +30,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.eclipse.jetty.util.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -58,6 +59,8 @@ public class MapBuilder extends DefaultHandler {
     private StringBuffer          mappingBuffer       = null;
     private StringBuffer          flatfileBuffer      = null;
     private int                   positionCount       = 0;
+
+    private static Logger LOG = LoggerFactory.getLogger(MapBuilder.class);
 
     /** Default parser name. */
     protected static final String DEFAULT_PARSER_NAME = "org.apache.xerces.parsers.SAXParser";
@@ -112,7 +115,7 @@ public class MapBuilder extends DefaultHandler {
             flatfileFileWriter.flush();
             flatfileFileWriter.close();
         } catch ( IOException e ) {
-            Log.warn( e );
+            LOG.error("Error creating xml files", e);
         }
     }
 

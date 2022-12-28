@@ -27,7 +27,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
-	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<!--<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />-->
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
     <jaxws:endpoint publish="false"
@@ -49,7 +49,7 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
     <bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
     <bean id="logOutbound" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
   
-    <bean id="cxf" class="org.apache.cxf.bus.CXFBusImpl">
+    <!--<bean id="cxf" class="org.apache.cxf.bus.CXFBusImpl">
         <property name="inInterceptors">
             <list>
                 <ref bean="logInbound"/>
@@ -65,6 +65,6 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
                 <ref bean="logOutbound"/>
             </list>
         </property>
-    </bean> 
+    </bean> -->
 
 </beans>
