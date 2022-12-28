@@ -19,6 +19,7 @@
  */
 package org.nexuse2e.service.ws;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.nexuse2e.BeanStatus;
@@ -142,10 +143,15 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
             try {
                 Object implementor = wsType.getSeiClass().newInstance();
                 ((ReceiverAware) implementor).setTransportReceiver(transportReceiver);
+                System.out.println("WSDispatcherService url: '" + url);
                 endpoint = Endpoint.publish(url, implementor);
                 super.start();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                if (!StringUtils.equals(url, "/wsplain") && !StringUtils.equals(url, "/wscidx")) {
+                    ex.printStackTrace();
+                } else {
+                    System.out.println("Suppressed Exception in WSDispatcherService for url '" + url + "' : " + ex.getMessage());
+                }
                 LOG.error(ex);
             }
         }

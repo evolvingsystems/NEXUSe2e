@@ -35,7 +35,7 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
       implementor="#nexusE2EInterfaceBean" 
       address="/NEXUSe2eInterface" />
 
-    <jaxws:endpoint 
+    <!--<jaxws:endpoint
       id="engineStatusInterface" 
       implementor="#engineStatusInterfaceBean" 
       address="/EngineStatusInterface" />
@@ -43,7 +43,7 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
     <jaxws:endpoint 
       id="nexuse2eUtilities" 
       implementor="#nexuse2eUtilitiesBean" 
-      address="/NEXUSe2eUtilities" />
+      address="/NEXUSe2eUtilities" />-->
     
 
     <bean id="logInbound" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
