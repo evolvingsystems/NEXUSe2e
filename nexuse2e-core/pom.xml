@@ -25,7 +25,7 @@
     </licenses>
 
     <properties>
-        <org.springframework.version>4.1.9.RELEASE</org.springframework.version>
+        <org.springframework.version>4.3.30.RELEASE</org.springframework.version>
         <surefire.useFile>false</surefire.useFile>
     </properties>
 
