@@ -85,8 +85,8 @@ public class WSDispatcherService extends AbstractService {
         LOG.debug("Web service URL extension: " + url);
 
         try {
-            Object implementor = new NEXUSe2eInfoServiceImpl();
-            endpoint = Endpoint.publish(url, implementor);
+            /*Object implementor = new NEXUSe2eInfoServiceImpl();
+            endpoint = Endpoint.publish(url, implementor);*/
             org.apache.cxf.endpoint.Endpoint cxfEndpoint = ((EndpointImpl) endpoint).getServer().getEndpoint();
             Map<String, Object> inProps = new HashMap<String, Object>();
             inProps.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);

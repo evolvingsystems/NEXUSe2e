@@ -27,7 +27,6 @@ import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.Constants;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.dao.TransactionDAO;
-import org.nexuse2e.integration.info.wsdl.ConversationStatus;
 import org.nexuse2e.pojo.*;
 import org.nexuse2e.reporting.*;
 import org.nexuse2e.ui.form.ReportingPropertiesForm;
@@ -146,14 +145,14 @@ public class ReportingStatisticsAction extends ReportingAction {
 
     private Map<String, Integer> getConversationCounts(List<ConversationPojo> conversations) {
         LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
-        ConversationStatus[] statuses = ConversationStatus.values();
+        /*ConversationStatus[] statuses = ConversationStatus.values();
         for (int i = statuses.length - 1; i >= 0; i--) {
             statusCounts.put(statuses[i].name().toLowerCase(), 0);
         }
         for (ConversationPojo conversation : conversations) {
             String status = conversation.getStatusName().toLowerCase();
             statusCounts.put(status, statusCounts.get(status) + 1);
-        }
+        }*/
         return statusCounts;
     }
 

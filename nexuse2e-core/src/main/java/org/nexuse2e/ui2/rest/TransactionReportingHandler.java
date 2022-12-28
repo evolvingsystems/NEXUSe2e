@@ -475,7 +475,7 @@ public class TransactionReportingHandler implements Handler {
 
         List<ConversationPojo> conversations = statistics.getConversations();
         LinkedHashMap<String, Integer> statusCounts = new LinkedHashMap<>();
-        org.nexuse2e.integration.info.wsdl.ConversationStatus[] statuses = org.nexuse2e.integration.info.wsdl.ConversationStatus.values();
+        /*org.nexuse2e.integration.info.wsdl.ConversationStatus[] statuses = org.nexuse2e.integration.info.wsdl.ConversationStatus.values();
 
         for (int i = statuses.length - 1; i >= 0; i--) {
             statusCounts.put(statuses[i].name().toLowerCase(), 0);
@@ -483,7 +483,7 @@ public class TransactionReportingHandler implements Handler {
         for (ConversationPojo conversation : conversations) {
             String status = conversation.getStatusName().toLowerCase();
             statusCounts.put(status, statusCounts.get(status) + 1);
-        }
+        }*/
 
         String statusCountsJson = new Gson().toJson(statusCounts);
         response.getOutputStream().print(statusCountsJson);

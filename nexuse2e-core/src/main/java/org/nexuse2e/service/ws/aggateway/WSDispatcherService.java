@@ -42,11 +42,7 @@ import org.nexuse2e.pojo.MessagePayloadPojo;
 import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.service.AbstractService;
 import org.nexuse2e.service.ReceiverAware;
-import org.nexuse2e.service.ws.aggateway.wsdl.DocExchangeFault;
-import org.nexuse2e.service.ws.aggateway.wsdl.DocExchangePortType;
-import org.nexuse2e.service.ws.aggateway.wsdl.InboundData;
-import org.nexuse2e.service.ws.aggateway.wsdl.OutboundData;
-import org.nexuse2e.service.ws.aggateway.wsdl.XmlPayload;
+
 import org.nexuse2e.transport.TransportReceiver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -121,10 +117,10 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
         Boolean cache = (Boolean) getParameter(CACHE_DOM_TREE_PARAM_NAME);
 
         try {
-            AgGatewayDocumentExchangeImpl implementor = new AgGatewayDocumentExchangeImpl();
+            /*AgGatewayDocumentExchangeImpl implementor = new AgGatewayDocumentExchangeImpl();
             implementor.cache = (cache == null || cache.booleanValue());
             implementor.setTransportReceiver(transportReceiver);
-            endpoint = Endpoint.publish(url, implementor);
+            endpoint = Endpoint.publish(url, implementor);*/
 
             Boolean b = getParameter(WS_AUTH_PARAM_NAME);
             // configure WS security
@@ -187,7 +183,7 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
         this.transportReceiver = transportReceiver;
     }
 
-    @javax.jws.WebService(portName = "DocExchangePortType", serviceName = "AgGatewayDocumentExchange",
+    /*@javax.jws.WebService(portName = "DocExchangePortType", serviceName = "AgGatewayDocumentExchange",
             targetNamespace = "urn:aggateway:names:ws:docexchange", endpointInterface = "org.nexuse2e.service.ws" +
             ".aggateway.wsdl.DocExchangePortType", wsdlLocation = "classpath:org/nexuse2e/integration/AgGateway.wsdl")
     public static class AgGatewayDocumentExchangeImpl implements DocExchangePortType, ReceiverAware {
@@ -308,5 +304,5 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
             return messageContext;
         }
 
-    }
+    }*/
 }

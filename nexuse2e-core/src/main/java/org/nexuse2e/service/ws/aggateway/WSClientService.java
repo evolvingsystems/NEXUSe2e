@@ -60,10 +60,6 @@ import org.nexuse2e.pojo.MessagePojo;
 import org.nexuse2e.pojo.ParticipantPojo;
 import org.nexuse2e.service.AbstractService;
 import org.nexuse2e.service.SenderAware;
-import org.nexuse2e.service.ws.aggateway.wsdl.DocExchangePortType;
-import org.nexuse2e.service.ws.aggateway.wsdl.InboundData;
-import org.nexuse2e.service.ws.aggateway.wsdl.OutboundData;
-import org.nexuse2e.service.ws.aggateway.wsdl.XmlPayload;
 import org.nexuse2e.transport.TransportSender;
 import org.nexuse2e.util.CertificateUtil;
 import org.nexuse2e.util.EncryptionUtil;
@@ -150,7 +146,7 @@ public class WSClientService extends AbstractService implements SenderAware {
             throw new NexusException("Service " + getClass().getSimpleName() + " not started");
         }
 
-        String receiverURL = messageContext.getParticipant().getConnection().getUri();
+        /*String receiverURL = messageContext.getParticipant().getConnection().getUri();
 
         JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean(new JaxWsClientFactoryBean());
 
@@ -324,7 +320,7 @@ public class WSClientService extends AbstractService implements SenderAware {
                 LOG.error(new LogMessage("Error calling web service", messageContext, e));
                 throw new NexusException(e);
             }
-        }
+        }*/
         return replyMessageContext;
     }
 
@@ -347,7 +343,7 @@ public class WSClientService extends AbstractService implements SenderAware {
         return !(match ^ (b == null || b.booleanValue()));
     }
 
-    private MessageContext initializeReplyMessageContext(MessageContext replyMessageContext,
+    /*private MessageContext initializeReplyMessageContext(MessageContext replyMessageContext,
                                                          OutboundData outboundData, String conversationId,
                                                          String choreographyId) throws NexusException {
 
@@ -429,5 +425,5 @@ public class WSClientService extends AbstractService implements SenderAware {
 
 
         return replyMessageContext;
-    }
+    }*/
 }
