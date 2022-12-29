@@ -53,6 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 import org.nexuse2e.ui.security.AccessController;
 import org.nexuse2e.ui.security.AccessController.ParsedRequest;
 
@@ -71,7 +72,8 @@ public class RolePojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_role_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int                    nxRoleId;
 
     @Column(name = "name", length = 64, nullable = false)

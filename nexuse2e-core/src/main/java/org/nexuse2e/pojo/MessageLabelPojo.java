@@ -37,6 +37,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 
 /**
@@ -55,7 +56,8 @@ public class MessageLabelPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_message_label_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int               nxMessageLabelId;
 
     @ManyToOne(fetch = FetchType.EAGER)

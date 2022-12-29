@@ -51,6 +51,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.logging.log4j.Level;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 
 /**
@@ -71,7 +72,8 @@ public class LoggerPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_logger_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int                         nxLoggerId;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -19,6 +19,8 @@
  */
 package org.nexuse2e.pojo;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.Date;
 
 import javax.persistence.Access;
@@ -49,7 +51,8 @@ public class GenericParamPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_generic_param_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int               nxGenericParamId;
 
     @Column(name = "category", nullable = false, length = 128)

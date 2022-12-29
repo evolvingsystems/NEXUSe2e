@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 import org.nexuse2e.Engine;
 
@@ -65,7 +66,8 @@ public class ParticipantPojo implements NEXUSe2ePojo {
 	@Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_participant_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
 	private int nxParticipantId;
 
     @ManyToOne(fetch = FetchType.EAGER)

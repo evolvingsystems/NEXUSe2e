@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 import org.nexuse2e.configuration.ParameterDescriptor;
 
@@ -63,7 +64,8 @@ public class ServiceParamPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_service_param_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int                 nxServiceParamId;
 
     @ManyToOne(fetch = FetchType.EAGER)

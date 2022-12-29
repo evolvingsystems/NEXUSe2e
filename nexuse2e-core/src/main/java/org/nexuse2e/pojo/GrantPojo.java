@@ -21,6 +21,8 @@ package org.nexuse2e.pojo;
 
 // Generated 15.12.2006 16:07:02 by Hibernate Tools 3.2.0.beta6a
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.Date;
 
 import javax.persistence.Access;
@@ -55,7 +57,8 @@ public class GrantPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_grant_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int               nxGrantId;
 
     @Column(name = "target", length = 64, nullable = false)

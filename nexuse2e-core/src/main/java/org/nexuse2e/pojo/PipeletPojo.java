@@ -50,6 +50,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 
 /**
@@ -70,7 +71,8 @@ public class PipeletPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_pipelet_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int                    nxPipeletId;
 
     @ManyToOne(fetch = FetchType.EAGER)

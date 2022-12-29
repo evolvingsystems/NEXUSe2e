@@ -23,6 +23,7 @@ package org.nexuse2e.pojo;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 import org.nexuse2e.Constants;
 
@@ -61,7 +62,8 @@ public class ConversationPojo implements NEXUSe2ePojo {
     @Id
     @Column(name = "nx_conversation_id")
     @Index(name = "fk_conv_conv_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int nxConversationId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

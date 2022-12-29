@@ -21,6 +21,8 @@ package org.nexuse2e.pojo;
 
 // Generated 02.11.2006 11:50:54 by Hibernate Tools 3.2.0.beta6a
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.Date;
 
 import javax.persistence.Access;
@@ -56,7 +58,8 @@ public class ComponentPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_component_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int               nxComponentId;
 
     @Column(name = "created_date", nullable = false)

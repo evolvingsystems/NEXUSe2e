@@ -58,7 +58,8 @@ public class MessagePojo implements NEXUSe2ePojo {
     @Id
     @Column(name = "nx_message_id")
     @Index(name="fk_message_message_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int                      nxMessageId;
 
     @ManyToOne(fetch=FetchType.EAGER)

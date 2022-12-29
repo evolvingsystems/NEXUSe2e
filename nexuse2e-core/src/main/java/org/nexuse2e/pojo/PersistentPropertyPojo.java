@@ -19,6 +19,8 @@
  */
 package org.nexuse2e.pojo;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -41,7 +43,8 @@ public class PersistentPropertyPojo {
 	@Access(AccessType.PROPERTY)
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int nxPersistentPropertyId;
 
     @Column(name = "namespace", length = 128)

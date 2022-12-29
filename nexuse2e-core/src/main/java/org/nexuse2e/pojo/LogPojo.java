@@ -21,6 +21,7 @@ package org.nexuse2e.pojo;
 
 // Generated 22.12.2006 15:46:31 by Hibernate Tools 3.2.0.beta6a
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Index;
 
 import java.util.Date;
@@ -52,7 +53,8 @@ public class LogPojo implements NEXUSe2ePojo {
     @Access(AccessType.PROPERTY)
     @Id
     @Column(name = "nx_log_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private int               nxLogId;
 
     @Column(name = "log_id", length = 255, nullable = false)
