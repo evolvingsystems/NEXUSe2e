@@ -186,7 +186,9 @@ public class BasicDAOImpl implements BasicDAO {
         
         try {
         	Criteria crit = criteria.getExecutableCriteria(sessionFactory.getCurrentSession());
-            crit.setMaxResults(maxResult);
+            if (maxResult > 0) {
+                crit.setMaxResults(maxResult);
+            }
             crit.setFirstResult(firstResult);
             
         	return crit.list();
