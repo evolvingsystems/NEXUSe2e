@@ -47,7 +47,7 @@ public class DebugFrontendPipelet extends AbstractPipelet {
     @Override
     public MessageContext processMessage(MessageContext messageContext) throws IllegalArgumentException,
             IllegalStateException, NexusException {
-        LOG.info(getParameter(TEXT_PARAM_NAME));
+        LOG.info((String) getParameter(TEXT_PARAM_NAME));
 
         return messageContext;
     }

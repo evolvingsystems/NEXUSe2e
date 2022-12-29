@@ -25,7 +25,7 @@
     </licenses>
 
     <properties>
-        <org.springframework.version>4.3.30.RELEASE</org.springframework.version>
+        <org.springframework.version>5.3.24</org.springframework.version>
         <surefire.useFile>false</surefire.useFile>
     </properties>
 
@@ -282,7 +282,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>4.2.8.Final</version>
+            <version>5.6.14.Final</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -306,7 +306,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>4.2.8.Final</version>
+            <version>5.6.14.Final</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>

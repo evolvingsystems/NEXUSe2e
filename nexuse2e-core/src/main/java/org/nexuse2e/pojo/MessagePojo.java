@@ -34,6 +34,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Index;
 import org.nexuse2e.MessageStatus;
 import org.nexuse2e.messaging.Constants;
 import org.nexuse2e.messaging.ErrorDescriptor;
