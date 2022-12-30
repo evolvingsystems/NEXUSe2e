@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.nexuse2e.logging.LogMessage;
 
-import javax.servlet.ServletConfig;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 
 /**

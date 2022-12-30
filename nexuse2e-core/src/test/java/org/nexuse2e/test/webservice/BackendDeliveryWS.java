@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.nexuse2e.integration.BackendDeliveryInterface;
 
-import javax.jws.WebService;
+import jakarta.jws.WebService;
 
 /**
  * @author jonas.reese

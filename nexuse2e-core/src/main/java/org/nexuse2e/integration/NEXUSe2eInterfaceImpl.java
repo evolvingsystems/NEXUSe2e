@@ -30,7 +30,7 @@ import org.nexuse2e.messaging.MessageContext;
 import org.nexuse2e.pojo.ChoreographyPojo;
 import org.nexuse2e.pojo.ConversationPojo;
 
-import javax.jws.WebService;
+import jakarta.jws.WebService;
 
 @WebService(serviceName = "NEXUSe2eInterface", portName = "NEXUSe2eInterfacePort", endpointInterface = "org.nexuse2e" +
         ".integration.NEXUSe2eInterface")

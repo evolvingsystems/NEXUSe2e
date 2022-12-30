@@ -43,8 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jws.WebService;
-import javax.xml.ws.Endpoint;
+import jakarta.jws.WebService;
+import jakarta.xml.ws.Endpoint;
 
 /**
  * A service that dynamically registers web services.

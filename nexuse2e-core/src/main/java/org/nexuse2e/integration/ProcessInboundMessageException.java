@@ -19,7 +19,7 @@
  */
 package org.nexuse2e.integration;
 
-import javax.xml.ws.WebFault;
+import jakarta.xml.ws.WebFault;
 
 /**
  * Indicates a processing error on an inbound message.

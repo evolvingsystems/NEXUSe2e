@@ -24,7 +24,7 @@ import org.nexuse2e.logging.LogMessage;
 import org.nexuse2e.messaging.MessageProcessor;
 import org.nexuse2e.util.NexusThreadStorage;
 
-import javax.xml.ws.WebFault;
+import jakarta.xml.ws.WebFault;
 
 
 @WebFault(name = "NexusException", targetNamespace = "http://integration.nexuse2e.org")

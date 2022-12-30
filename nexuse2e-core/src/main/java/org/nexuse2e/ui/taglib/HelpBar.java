@@ -26,8 +26,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.nexuse2e.ui.action.NexusE2EAction;
-
 /**
  * Prints code for the "help" and "login"/"logout" bar.
  * @author Sebastian Schulze
@@ -41,6 +39,7 @@ public class HelpBar extends TagSupport {
      * Default style class for the generated elements (i.e. to reference in CSS) is <code>subheader</code>.
      */
     protected static final String DEFAULT_STYLE_CLASS = "helpBar";
+    private static final String ATTRIBUTE_USER = "nxUser";
     /**
      * The default widget id is <code>docpane</code>.
      */
@@ -70,7 +69,7 @@ public class HelpBar extends TagSupport {
             }
             // if user is logged in
             HttpSession session = pageContext.getSession();
-            if ( session != null && session.getAttribute( NexusE2EAction.ATTRIBUTE_USER ) != null ) {
+            if ( session != null && session.getAttribute( ATTRIBUTE_USER ) != null ) {
                 if ( printDelimiter ) {
                     writer.print( "&nbsp;|&nbsp;" );
                 }
