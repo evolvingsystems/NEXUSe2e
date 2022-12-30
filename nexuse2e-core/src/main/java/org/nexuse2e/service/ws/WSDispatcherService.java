@@ -162,7 +162,9 @@ public class WSDispatcherService extends AbstractService implements ReceiverAwar
         if (endpoint != null) {
             endpoint.stop();
             endpoint = null;
-            DynamicWSDispatcherServlet.getInstance().reinitialize();
+            if (DynamicWSDispatcherServlet.getInstance() != null) {
+                DynamicWSDispatcherServlet.getInstance().reinitialize();
+            }
         }
         super.stop();
     }
