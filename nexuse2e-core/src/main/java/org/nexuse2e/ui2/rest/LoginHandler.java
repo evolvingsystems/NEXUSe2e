@@ -13,20 +13,21 @@ import org.apache.logging.log4j.Logger;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.UserPojo;
-import org.nexuse2e.ui.action.NexusE2EAction;
+
 import org.nexuse2e.util.PasswordUtil;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import static org.nexuse2e.util.FileUtil.readAll;
 
 public class LoginHandler implements Handler {
     private static final Logger LOG = LogManager.getLogger(LoginHandler.class);
+    private static final String ATTRIBUTE_USER = "nxUser";
 
     @Override
     public boolean canHandle(String path, String method) {
@@ -52,7 +53,7 @@ public class LoginHandler implements Handler {
     }
 
     private void probeLogin(HttpServletRequest request, HttpServletResponse response) {
-        UserPojo user = (UserPojo) request.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER);
+        UserPojo user = (UserPojo) request.getSession().getAttribute(ATTRIBUTE_USER);
         if (user != null) {
             response.setStatus(HttpServletResponse.SC_OK);
             return;
@@ -77,7 +78,7 @@ public class LoginHandler implements Handler {
         UserPojo userInstance = engineConfig.getUserByLoginName(loginData.user);
         if (userInstance != null && constantTimeCompare(userInstance.getPassword(), password)) {
             HttpSession session = request.getSession();
-            session.setAttribute(NexusE2EAction.ATTRIBUTE_USER, userInstance);
+            session.setAttribute(ATTRIBUTE_USER, userInstance);
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -86,7 +87,7 @@ public class LoginHandler implements Handler {
 
     private void logout(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
-        session.removeAttribute(NexusE2EAction.ATTRIBUTE_USER);
+        session.removeAttribute(ATTRIBUTE_USER);
         session.removeAttribute("patchManagementForm"); // remove patches
         response.setStatus(HttpServletResponse.SC_OK);
     }

@@ -27,8 +27,8 @@ import org.nexuse2e.ui2.model.TransactionReportingMessage;
 import org.nexuse2e.util.DateUtil;
 import org.nexuse2e.util.DateWithTimezoneSerializer;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;

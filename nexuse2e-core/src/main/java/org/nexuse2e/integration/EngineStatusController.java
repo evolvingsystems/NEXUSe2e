@@ -19,8 +19,8 @@
  */
 package org.nexuse2e.integration;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.nexuse2e.Engine;
 import org.nexuse2e.EngineMonitor;

@@ -19,7 +19,7 @@
  */
 package org.nexuse2e.ui.ajax;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.codehaus.jettison.json.JSONException;
 

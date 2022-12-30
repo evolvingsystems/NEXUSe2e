@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.nexuse2e.logging.LogMessage;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 /**
  * This subclass of <code>CXFNonSpringServlet</code> keeps a reference on the instance

@@ -28,7 +28,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.nexuse2e.Engine;
 import org.nexuse2e.configuration.EngineConfiguration;
 import org.nexuse2e.pojo.UserPojo;
-import org.nexuse2e.ui.action.NexusE2EAction;
+
 import org.nexuse2e.ui.ajax.AjaxRequestHandler;
 import org.nexuse2e.ui.structure.ParentalStructureNode;
 import org.nexuse2e.ui.structure.StructureException;
@@ -42,7 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -57,11 +57,12 @@ public class TreeProvider implements AjaxRequestHandler {
     private static final Logger LOG = LogManager.getLogger(TreeProvider.class);
 
     private static final String BEAN_STRUCTURE_SERVICE = "structureService";
+    private static final String ATTRIBUTE_USER = "nxUser";
 
     public String handleRequest(HttpServletRequest request) throws JSONException {
 
         // get applicable engine configuration
-        UserPojo user = (UserPojo) request.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER);
+        UserPojo user = (UserPojo) request.getSession().getAttribute(ATTRIBUTE_USER);
         EngineConfiguration engineConfiguration;
         if (user != null) {
             engineConfiguration = Engine.getInstance().getConfiguration(user.getNxUserId());

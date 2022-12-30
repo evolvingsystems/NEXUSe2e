@@ -24,16 +24,15 @@ import org.apache.logging.log4j.Logger;
 import org.nexuse2e.patch.Patch;
 import org.nexuse2e.patch.PatchException;
 import org.nexuse2e.patch.PatchReporter;
-import org.nexuse2e.ui.form.PatchManagementForm;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This <code>Servlet</code> executes a patch, delegating the patch output directly to the
@@ -54,15 +53,6 @@ public class ExecutePatchServlet extends HttpServlet {
 
         Patch patch = null;
         int index = Integer.parseInt(request.getParameter("index"));
-
-        PatchManagementForm form = (PatchManagementForm) request.getSession().getAttribute("patchManagementForm");
-
-        if (form != null) {
-            List<Patch> patches = form.getPatchBundles().getPatches();
-            if (index >= 0 && index < patches.size()) {
-                patch = patches.get(index);
-            }
-        }
 
         if (patch == null) {
             throw new ServletException("Patch could not be located");

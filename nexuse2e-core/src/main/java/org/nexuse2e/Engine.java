@@ -68,7 +68,7 @@ import javax.activation.FileTypeMap;
 import javax.activation.MailcapCommandMap;
 import javax.activation.MimetypesFileTypeMap;
 import javax.crypto.Cipher;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;

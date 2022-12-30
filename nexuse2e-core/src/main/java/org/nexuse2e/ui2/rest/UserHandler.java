@@ -7,18 +7,19 @@ package org.nexuse2e.ui2.rest;
 
 import com.google.gson.Gson;
 import org.nexuse2e.pojo.UserPojo;
-import org.nexuse2e.ui.action.NexusE2EAction;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.nexuse2e.ui.action.NexusE2EAction.ATTRIBUTE_USER;
 
 public class UserHandler implements Handler {
+    private static final String ATTRIBUTE_USER = "nxUser";
+
     @Override
     public boolean canHandle(String path, String method) {
         return ("GET".equalsIgnoreCase(method) && "/full-username".equalsIgnoreCase(path)) ||
@@ -48,7 +49,7 @@ public class UserHandler implements Handler {
     }
 
     private void getAllowedEndpoints(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserPojo user = (UserPojo) request.getSession().getAttribute(NexusE2EAction.ATTRIBUTE_USER);
+        UserPojo user = (UserPojo) request.getSession().getAttribute(ATTRIBUTE_USER);
         if (user != null) {
             response.getOutputStream().print(new Gson().toJson(buildAllowedEndpointsList(user)));
         } else {
