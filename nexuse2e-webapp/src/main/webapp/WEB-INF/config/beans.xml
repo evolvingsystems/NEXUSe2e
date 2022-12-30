@@ -389,18 +389,5 @@
       <ref bean="targetProviderManager" />
     </property>
   </bean>
-  
-  <!-- Configuration bean for file download feature -->
-  <bean id="fileDownloadConfiguration" class="org.nexuse2e.ui.action.tools.FileDownloadConfiguration">
-    <property name="configuration">
-      <map>
-        <entry key="${configuration.share1.path}"><value>${configuration.share1.name}</value></entry>
-        <entry key="${configuration.share2.path}"><value>${configuration.share2.name}</value></entry>
-        <entry key="${configuration.share3.path}"><value>${configuration.share3.name}</value></entry>
-        <entry key="${configuration.share4.path}"><value>${configuration.share4.name}</value></entry>
-        <entry key="${configuration.share5.path}"><value>${configuration.share5.name}</value></entry>
-      </map>
-    </property>
-  </bean>
 
 </beans>
